@@ -973,21 +973,59 @@ polygon, exclusion zones, the panel tables, and a **summary placemark**
 folder aggregating every boundary. Inverters, ICR, arresters and cables are
 also written. Opens in Google Earth.
 
-### 13.3 DXF — `dxf_exporter.py:1-26`
+### 13.3 DXF — `dxf_exporter.py:166-218`
 
-All coordinates in UTM metres. Layers:
+⚠️ **The module docstring's layer list is incomplete — it omits six layers.**
+The list below is read from the `layers.new(...)` calls that actually run.
 
-`BOUNDARY` (plant boundaries, yellow) · `OBSTACLES` (exclusions, red) ·
-`WATER` (water bodies, blue) · `TERRAIN` (RL contour lines, grey) ·
-`TABLES` (blue) · `ICR` (cyan) · `OBSTRUCTIONS` (user-drawn, green) ·
-`INVERTERS` (lime; named SMB in Central mode) · `DC_CABLES` (orange) ·
-`AC_CABLES` (magenta) · `MV_CABLES` (ICR→MCR, green) · `MCR` (violet) ·
-`DC_TRENCH` (green) · `AC_TRENCH` (red) · `MV_TRENCH` (dark green) ·
-`SKETCH` (Sketch-Mode annotations) · `LA` (arrester symbols) ·
-`ANNOTATIONS` (labels and text).
+All coordinates in UTM metres.
 
-Cable layers are written only when cable calculation was on; the `LA` layer
-only when arresters were placed.
+**Always written:**
+
+| Layer | Carries | Colour |
+|---|---|---|
+| `BOUNDARY` | plant boundaries | yellow |
+| `PERIMETER_ROAD` | the road setback band, as two outline polylines with no fill | grey |
+| `OBSTACLES` | exclusion zones | red |
+| `WATER` | water bodies | light blue |
+| `TERRAIN` | reduced-level contour lines | grey |
+| `TABLES` | module tables / tracker units | blue |
+| `ICR` | inverter control rooms | cyan |
+| `MCR` | main control room | violet |
+| `INVERTERS`, or `SMB` in Central Inverter mode | inverters or string monitoring boxes | lime |
+| `OBSTRUCTIONS` | hand-drawn obstructions | green |
+| `OBJECTS` | user-placed objects | brown |
+| `STREET_LIGHT` | street-light poles | orange |
+| `ICR_MCR_SHADOW` | the year-round keep-clear shadow of the control rooms | grey |
+| `OBJECT_SHADOW` | the keep-clear shadow of placed objects | grey |
+| `STREET_LIGHT_SHADOW` | the keep-clear shadow of the street lights | grey |
+| `DC_TRENCH` / `AC_TRENCH` / `MV_TRENCH` | trench routes, automatic and hand-drawn | green / red / dark green |
+| `SKETCH` | **all** Sketch-Mode annotations | white |
+| `ANNOTATIONS` | labels and text | white |
+
+**Conditional:**
+
+| Layer | Written when |
+|---|---|
+| `DC_CABLES` (orange), `AC_CABLES` (magenta), `MV_CABLES` (green) | cable calculation was on |
+| `LA` (maroon) | arresters were placed |
+| `PILES` (orange) | a pile pattern has been defined |
+
+- ⛔ **Sketch-Mode layers do NOT become CAD layers.** The layer set is fixed;
+  every annotation lands on the single `SKETCH` layer regardless of which
+  in-application layer it was drawn on.
+- **Tables are written as block references**, not as individual polylines —
+  every table of a given size is an insert of one shared block definition, so
+  editing that block in a CAD program updates every table in the plant at once
+  (`dxf_exporter.py:212-218`). The block's own geometry sits on layer `0` so it
+  inherits the properties of the layer each insert is placed on, per standard
+  CAD practice. This is worth telling a drafting team.
+
+### 13.4 What the Google Earth export does NOT carry
+
+Checked against `kmz_exporter.py`: **street lights, piles and terrain contours
+are not written.** They appear on the plot, in the PDF drawing and in the CAD
+export, but not in the Google Earth file. Do not imply otherwise.
 
 ## 14. Projects — `project_io.py`
 
@@ -1081,6 +1119,89 @@ only when arresters were placed.
 | Image scale example "1000 m = 10 mm" | `image_boundary_parser.py` docstring | Dialog default is 100 m / 10 mm |
 | A 15 m TL setback is fixed | `README.md`, `layout_engine.py:29` | Default 15 m per side, reader-editable 0–500 |
 | Flat `core/` `gui/` `models/` project layout, `main.py` | `README.md` | Restructured into `packages/` + `apps/` — irrelevant to readers either way |
+
+## 19a. Resolved queries — behaviours that are easy to get wrong
+
+Each of these was a question a writer raised; each is answered from code. They
+are collected here because in every case the intuitive answer is wrong.
+
+**How the performance ratio is combined** — `energy_calculator.py:597-607`.
+**Multiplicatively**, not additively:
+
+```
+PR = (inverter efficiency / 100)
+   × (1 − DC cable loss)   × (1 − AC cable loss)
+   × (1 − soiling)         × (1 − temperature)
+   × (1 − mismatch)        × (1 − shading)
+   × (availability / 100)
+   × (1 − transformer)     × (1 − other)
+```
+
+A reader defending the figure will be asked, so state it. The **monthly**
+performance ratio is built the same way but with the annual temperature term
+left out and a month-specific one substituted — `energy_calculator.py:796-797,
+891-898`.
+
+**The first-year degradation factor** used in the time-series export is exactly
+`1 − first-year degradation ÷ 100`, the same field the annual figures use —
+`energy_calculator.py:667`.
+
+**`Plant Area (Acres)` is the gross boundary area**, taken from the full
+boundary polygon before the perimeter-road setback —
+`layout_engine.py:484-485`. It is **not** the usable area, so it does not fall
+when obstructions or terrain exclusions grow.
+
+**Ground albedo affects only the bifacial gain.** The GHI-to-in-plane
+transposition carries its own fixed ground-reflectance of 0.20 internally and
+is **not** passed the reader's **Ground albedo** field
+(`solar_transposition.py:47, 162, 178, 305`; no albedo argument is passed from
+`energy_calculator.py`). This matches the field's own tooltip, which says it has
+no effect for a monofacial module.
+
+**The bifacial gain is computed as a percentage** (`bifacial_gain_pct`) and
+surfaces on the report's energy pages — `pdf_exporter.py:2336`. There is no
+separate on-screen readout for it.
+
+**Loading an inverter file does NOT set the inverter efficiency.** It stores the
+nominal and maximum AC power, updates the status line, and recomputes the
+DC/AC ratio — `MW:6562-6579`. The **String / Central Inverter efficiency** field
+in the loss breakdown stays at whatever the reader entered. Say so, or a reader
+will assume the file filled it.
+
+**Computed shading is calculated on Generate Layout, not on Calculate Energy** —
+`MW:3340-3362`, in the same block that fills the derived tilt and pitch.
+
+**Module ground clearance does not enter the computed shading loss.** The
+shading routine takes latitude, tilt, ground coverage ratio, surface azimuth and
+the tracker flag — and no clearance argument at all
+(`shading.py:188-199`; the call site passes none). Clearance feeds the
+**Shadow View** cross-section only. Do not describe it as a loss input.
+
+**A hand-drawn transmission line does not use the Transmission line corridor
+setback.** The T-Line tool **prompts for a corridor width**, buffers the
+centre-line by **half** that width so the cleared strip equals the width, draws
+the red centre-line, records the corridor as a keep-out and removes the tables
+inside it. With no width supplied it defaults to **10.0 m** —
+`sketch_manager.py:2753-2778`. Same model as a road line feature (§3.1), not the
+setback field.
+
+**There is no way to clear manual trench edits.** Once a trench has been drawn
+or an automatic one deleted, the flag that freezes cable routing is set and
+**never reset** — no control clears it (`sketch_manager.py:2322, 2372`; no
+assignment back to false exists anywhere). The route back is a fresh layout or a
+new project. Tell the reader that plainly rather than implying a toggle exists.
+
+**Arresters on the exported drawing ignore the on-screen switch.** The PDF
+export forces the arrester rectangles and labels **visible** and forces the
+protection circles **hidden**, then restores the previous state —
+`MW:4266-4280`. So arresters always appear on the drawing page and the coverage
+circles never do, whatever the **Lightning Arresters** switch is set to.
+
+**The Symbol Editor's buttons are labelled `Accept` and `Reject`** —
+`sld_symbol_editor.py:57-59`.
+
+**Auto-build needs no energy calculation.** Its ratings come from the materials
+list, which is computed from the layout alone. Generating the layout is enough.
 
 ## 19. Facts we do not have
 
