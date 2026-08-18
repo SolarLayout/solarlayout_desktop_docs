@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# fumadocs-mdx generated collections (rebuilt by `postinstall` / `typecheck`)
+/.source/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Vercel
+.vercel
+
+# Generated screenshot worklist — rebuilt by `bun run screenshots:index`.
+# Committed deliberately (see README) so whoever takes the screenshots can
+# download it from the repo without installing the toolchain; the ignore
+# below is only for the temp file Excel leaves behind while it is open.
+~$*.xlsx
+
+# Environment
+.env
+.env*.local
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

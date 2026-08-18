@@ -1,0 +1,13 @@
+{
+  "title": "Energy yield",
+  "pages": [
+    "overview",
+    "weather",
+    "losses",
+    "temperature",
+    "bifacial",
+    "shading",
+    "lifetime-and-p-values",
+    "timeseries"
+  ]
+}

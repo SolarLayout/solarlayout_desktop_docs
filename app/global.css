@@ -1,0 +1,206 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+/* Pull Fumadocs UI dist into Tailwind's source scan so its class
+   variants are emitted by JIT. Path is relative to this file. */
+@source "../node_modules/fumadocs-ui/dist/**/*.js";
+
+/* ────────────────────────────────────────────────────────────────
+   Self-hosted Geist + Geist Mono. Three weights per family
+   (400 / 500 / 600), no italic, no 700 — the SolarLayout weight
+   discipline.
+   ──────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Geist-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Geist-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/Geist-SemiBold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/GeistMono-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/GeistMono-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/GeistMono-SemiBold.woff2") format("woff2");
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Theme bridge — map Fumadocs UI's `--color-fd-*` design tokens
+   onto the SolarLayout palette. Values mirror the product design
+   tokens 1:1, so this site reads as the same product family as
+   solarlayout.app.
+
+   Type scale tokens (`--fs-*`): xs=11 sm=12 base=13 md=14 lg=16
+   xl=20 2xl=28. Available to this app's own components.
+   ──────────────────────────────────────────────────────────────── */
+:root {
+  /* Light theme — warm off-white ground, dark warm-neutral text. */
+  --color-fd-background: #faf9f7; /* surface-ground */
+  --color-fd-foreground: #1a1a19; /* text-primary */
+  --color-fd-muted: #f1efeb; /* surface-muted */
+  --color-fd-muted-foreground: #60605d; /* text-secondary */
+  --color-fd-popover: #ffffff;
+  --color-fd-popover-foreground: #1a1a19;
+  --color-fd-card: #ffffff; /* surface-panel */
+  --color-fd-card-foreground: #1a1a19;
+  --color-fd-border: rgba(26, 26, 25, 0.12); /* border-default */
+  --color-fd-primary: #d36e31; /* accent-default — brand orange */
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #f1efeb;
+  --color-fd-secondary-foreground: #1a1a19;
+  --color-fd-accent: rgba(211, 110, 49, 0.12); /* accent-muted */
+  --color-fd-accent-foreground: #6e3a1a; /* accent-ink */
+  --color-fd-ring: rgba(211, 110, 49, 0.55); /* border-focus */
+
+  /* Type scale */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-base: 13px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+  --fs-2xl: 28px;
+}
+
+.dark {
+  --color-fd-background: #1a1a1c; /* surface-ground (dark) */
+  --color-fd-foreground: #ededeb;
+  --color-fd-muted: #232326;
+  --color-fd-muted-foreground: #a3a39f;
+  --color-fd-popover: #1f1f22;
+  --color-fd-popover-foreground: #ededeb;
+  --color-fd-card: #1f1f22; /* surface-panel (dark) */
+  --color-fd-card-foreground: #ededeb;
+  --color-fd-border: rgba(237, 237, 235, 0.1);
+  --color-fd-primary: #e0864a; /* brand orange, dark variant */
+  --color-fd-primary-foreground: #1a1a1c;
+  --color-fd-secondary: #232326;
+  --color-fd-secondary-foreground: #ededeb;
+  --color-fd-accent: rgba(224, 134, 74, 0.15);
+  --color-fd-accent-foreground: #f0b58a;
+  --color-fd-ring: rgba(224, 134, 74, 0.55);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   TOC breakpoint shift — Fumadocs' Notebook layout shows the
+   desktop right-side TOC at ≥1280px (Tailwind `xl`) and falls back
+   to the top popover below that. We shift the breakpoint down to
+   `lg` (1024px) so the TOC stays visible on smaller laptop screens.
+
+   Three rules keep the two in sync at the new breakpoint:
+     1. Show `#nd-toc` (override vendor's `max-xl:hidden`)
+     2. Hide `[data-toc-popover]` (override vendor's `xl:hidden`)
+     3. Restore a TOC width (vendor sets it only at `xl`)
+   ──────────────────────────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  /* The Notebook layout's grid container is `#nd-notebook-layout` (not
+     `#nd-docs-layout` — that's the default docs layout). The container
+     declares `--fd-toc-width: 0px` and only overrides to 268px at xl,
+     so the TOC slot stays 0px wide below xl even if we unhide it.
+     Override the var on the actual container ID. */
+  #nd-notebook-layout {
+    --fd-toc-width: 240px;
+  }
+  #nd-toc {
+    display: flex !important;
+  }
+  [data-toc-popover] {
+    display: none !important;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Sidebar width — tighter than vendor's 268px default.
+
+   Fumadocs defines a custom `layout:` Tailwind variant in
+   `fumadocs-ui/css/lib/base.css`:
+
+     @variant layout {
+       #nd-docs-layout:has(&),
+       #nd-notebook-layout:has(&),
+       ... { @slot; }
+     }
+
+   So `md:layout:[--fd-sidebar-width:268px]` on the sidebar element
+   actually LIFTS the var declaration up to `#nd-notebook-layout`
+   via `:has()` — the pattern that makes vendor's grid math work.
+   Our override must therefore also target the container, with
+   higher specificity than the `:has()` rule provides — `!important`
+   is the cleanest path without forking the layout. Setting it on
+   `#nd-sidebar` (a descendant) does NOT propagate to the grid
+   column width.
+
+   This site's sidebar carries deeper nesting than the sibling web
+   docs (Inputs / Layout / Energy / SLD trees), so it gets 240px
+   rather than 220px — enough for a two-level label without
+   wrapping.
+   ──────────────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  #nd-notebook-layout {
+    --fd-sidebar-width: 240px !important;
+  }
+}
+
+/* Tailwind v4 removed the legacy preflight `button { cursor: pointer }`
+   rule (it was in v3) to match modern browser defaults. Restore it
+   per the v4 upgrade guide so sidebar collapsible triggers, the theme
+   toggle, and any other plain <button> render with a pointer on hover
+   instead of the default arrow. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+html {
+  font-family:
+    "Geist",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scrollbar-gutter: stable;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}

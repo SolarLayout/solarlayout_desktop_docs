@@ -1,0 +1,121 @@
+---
+title: What SolarLayout Desktop does
+description: A Windows application that turns a site boundary into a complete PV plant design — layout, energy yield, diagrams, and the drawings your team builds from.
+---
+
+SolarLayout Desktop is a Windows application for designing utility-scale solar
+PV plants. You give it the boundary of a site. It places the module tables,
+adds the control rooms, inverters, cables and lightning arresters, estimates
+the energy the plant will generate over its life, and produces the drawings
+and schedules an engineering team builds from.
+
+It runs entirely on your own machine. The only steps that reach the internet
+are fetching weather data and fetching elevation data, and both are optional.
+
+## What you give it
+
+One file describing where the plant goes:
+
+<Cards>
+  <Card
+    title="A Google Earth file"
+    href="/docs/inputs/kmz-requirements"
+    description="KMZ or KML — the recommended input. Carries the boundary, water bodies, obstructions and transmission lines together."
+  />
+  <Card
+    title="A CAD drawing"
+    href="/docs/inputs/cad-boundary"
+    description="DXF or DWG. Add the site latitude and longitude so energy can be calculated."
+  />
+  <Card
+    title="A scanned or exported image"
+    href="/docs/inputs/image-boundary"
+    description="A boundary drawn on an image, traced using a scale you supply."
+  />
+</Cards>
+
+Everything else — module dimensions, table configuration, spacing, equipment
+sizes, loss assumptions — has a working default, so a first layout takes a few
+minutes. See [Your first layout](/docs/first-layout).
+
+## What it produces
+
+**A placed layout.** Module tables or tracker units filling the usable ground,
+with the perimeter road, water bodies, transmission line corridors, steep
+terrain and any obstructions kept clear. Rows run east to west and panels face
+the equator. See [How placement works](/docs/layout/how-placement-works).
+
+**Electrical equipment.** Inverter control rooms sized to a capacity block you
+set, string inverters or string monitoring boxes clustered across the plant,
+lightning arresters on a coverage grid, and — when you ask for it — routed
+DC, AC and medium-voltage cables with lengths. See
+[Cable routing](/docs/layout/cables).
+
+**An energy estimate.** Year-one and lifetime generation from a performance
+ratio you can break down loss by loss, with degradation, a capacity factor,
+and exceedance probabilities for a lender's case. See
+[How yield is calculated](/docs/energy/overview).
+
+**Documents.** A multi-page A3 PDF report, a single-line diagram, a bill of
+materials, a Google Earth file, and a layered CAD drawing. See
+[Exports](/docs/exports/pdf-report).
+
+<Screenshot id="layout-fixed-tilt" />
+
+## Two decisions you make at launch
+
+Every session starts by choosing how the plant is mounted and how it is wired.
+The choice changes which inputs you see and how the plant is put together, and
+it cannot be changed for a session already in progress — though you can move
+to a new session at any time.
+
+| Mounting | What it means |
+| --- | --- |
+| **Fixed Tilt** | Modules sit at a fixed angle on static racks, facing the equator. |
+| **Single Axis Tracker** | Modules rotate about a horizontal north–south axis and sweep east to west through the day. |
+
+| Electrical | What it means |
+| --- | --- |
+| **String Inverter** | Many string inverters distributed across the plant, each feeding AC to a control room. |
+| **Central Inverter** | String monitoring boxes collect the strings and feed DC trunks to central inverters inside the control rooms. |
+
+See [Choosing a design mode](/docs/design-modes) for which to pick and what
+changes.
+
+## What it is not
+
+- It is **not** a shading simulation tool. It models row-to-row shading and
+  the year-round shadow of buildings you place, and it will keep tables out of
+  those shadows — but it does not model terrain shading or distant horizon
+  profiles.
+- It is **not** a structural design tool. Structure heights and pile patterns
+  are inputs used for shadow geometry and construction schedules, not
+  engineering checks.
+- It does **not** issue a grid connection study or a protection design. The
+  single-line diagram is a drawing you build and edit, not a validated
+  electrical model.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Install on Windows"
+    href="/docs/install/windows"
+    description="Install from the Microsoft Store"
+  />
+  <Card
+    title="Activate your licence"
+    href="/docs/licence/activate"
+    description="Layout generation needs a valid licence for your machine"
+  />
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="Boundary file in, finished layout out"
+  />
+  <Card
+    title="Every parameter and its default"
+    href="/docs/reference/parameters"
+    description="The complete input reference"
+  />
+</Cards>

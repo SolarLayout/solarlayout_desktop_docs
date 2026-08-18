@@ -1,0 +1,24 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "intro",
+    "getting-started",
+    "install",
+    "licence",
+    "first-layout",
+    "design-modes",
+    "inputs",
+    "layout",
+    "editing",
+    "energy",
+    "simulation",
+    "sld",
+    "bom",
+    "exports",
+    "projects",
+    "reference",
+    "troubleshooting",
+    "releases",
+    "support"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Inputs",
+  "pages": [
+    "boundary-files",
+    "kmz-requirements",
+    "cad-boundary",
+    "image-boundary",
+    "module",
+    "table",
+    "tracker",
+    "spacing-and-tilt",
+    "site",
+    "structures-and-shadow",
+    "topography",
+    "inverter",
+    "string-sizing"
+  ]
+}
