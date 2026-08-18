@@ -53,8 +53,15 @@ A modal 4-card dialog appears at every launch before the main window
 - Central Inverter mode renames the inverter group to *SMB – String
   Monitoring Box*, adds *Max SMB per Central Inverter*, and relabels the
   cable rows — `IP:767-795`.
-- Switching mode later: **File ▸ Move to String / Central Window…**, also on
-  the toolbar as **⊕ Move to String / Central Window** — `MW:974, MW:2197`.
+- Switching mode later: **File ▸ Move to String / Central Window…** (shortcut
+  **Ctrl+N**), also on the toolbar as **⊕ Move to String / Central Window** —
+  `MW:974-980, MW:2197`. Two things about it that the label understates
+  (`MW:2685-2704`):
+  - It shows the **same four-card dialog**, so it switches the **mounting type
+    as well** as the inverter topology — not only the electrical axis.
+  - It opens a **new, independent window**. The current session stays open
+    alongside it, so two design modes can be compared side by side. It is not
+    a mode switch applied to the work in progress.
 
 ## 3. Boundary input
 
@@ -89,6 +96,29 @@ Accepted extensions in the file dialog — `IP:1310-1314`:
   each problem boundary with a checkbox to exclude it and proceed with the
   rest, or Cancel to go fix the file — `boundary_validation_dialog.py:1-13`.
 
+#### Road line features get their own width — not the TL setback
+
+A distinct behaviour worth its own subsection, because the corridor width is
+computed differently — `kmz_parser.py:39-44, 96-133, 311-319, 452-470`:
+
+- A LineString whose **name matches a road keyword** is treated as a road, not
+  as a transmission line. Road keywords: `road`, `roads`, `street`, `highway`,
+  `internal road`, `access road`, `service road`, `farm road`, `track`.
+- A road corridor is buffered by **half its own width each side** — i.e. the
+  cleared strip is the road width — rather than by the transmission-line
+  setback.
+- The width is read from the placemark's KML `ExtendedData`, under any
+  attribute named `width`, `road_width`, `roadwidth` or `lane_width`. Both the
+  `<Data><value>` and `<SimpleData>` forms are accepted. Values below 1 m are
+  raised to 1 m.
+- With no recognised width attribute the default is **5.0 m**.
+- Roads are assigned to whichever boundary contains the line's midpoint, or to
+  the nearest boundary if none contains it.
+- Every **other** LineString — transmission line, canal, or a line matching
+  no keyword list at all — is buffered by the **Transmission line corridor**
+  setback in §4.5. So an unnamed or oddly-named line still becomes a corridor;
+  it just uses the setback rather than a width.
+
 ### 3.2 DXF / DWG
 
 - CAD drawings carry no geographic position. A **DXF Site Coordinates**
@@ -98,6 +128,13 @@ Accepted extensions in the file dialog — `IP:1310-1314`:
 - Geo-referencing preserves shape and area exactly: each DXF point is
   treated as a metre offset from the drawing centroid, added to the
   reference point projected to UTM — `dxf_parser.py:8-22`.
+- **Only `LWPOLYLINE` and `POLYLINE` entities are read** —
+  `dxf_parser.py:64-69, 171-172`. Circles, splines, arcs, hatches and plain
+  lines are ignored, for both the boundary and interior obstacles. The
+  application's own error text tells the reader to draw the boundary as a
+  closed `LWPOLYLINE` or `POLYLINE` — `dxf_parser.py:281`. This is a
+  reader-facing requirement: a boundary drawn as anything else will not be
+  found.
 
 ### 3.3 Raster image
 
@@ -323,6 +360,47 @@ comes from the user's fields, passed through as `icr_w`/`icr_h` —
   *Efficiency curve*, *Additional parameters*, *Output parameters*, *Sizes
   and Technology*, *Commercial data* — `ond_viewer_dialog.py:1-9`.
 - Max central inverters housed in one ICR building: **4** — `MP:132`.
+
+### 4.8a Automatic string sizing — `string_sizing.py`, `string_sizing_dialog.py`
+
+Offered after a module file loads (§4.1). **Auto** needs the inverter file,
+because the MPPT window comes from it; with no MPPT range in the file, sizing
+is not possible and the reader enters the counts by hand — `IP:1463-1476`.
+
+The three constraints, all evaluated at module/cell temperature, not ambient —
+`string_sizing.py:1-22`:
+
+1. `Voc_cold × N ≤ V_system` — the hard insulation / equipment limit.
+2. `Vmp_cold × N ≤ Vmpp_max` — so the operating point is trackable on a cold,
+   sunny morning.
+3. `Vmp_hot × N ≥ Vmpp_min` — so the inverter can still track on a hot
+   afternoon.
+
+Cold therefore sets the **maximum** string length and hot the **minimum**.
+
+Window fields, with shipped defaults — `string_sizing_dialog.py:52-126`:
+
+| Field | Default | Range / options | Notes |
+|---|---|---|---|
+| System voltage (V) | 1500 | 1000 / 1100 / 1500 / 2000, and editable | DC system voltage class |
+| Site min temperature | −5.0 °C | −40–40 | cold case — drives the maximum string length |
+| Site max temperature | 45.0 °C | 10–70 | hot case base — drives the minimum |
+| Cell-temp model | Sandia (wind-based) | Sandia, or NOCT model | see the two relations below |
+| NOCT | from the module file | 30–60 °C | estimated from module efficiency when the file has none, and the window says so |
+| Irradiance G (hot case) | 1000 W/m² | 100–1200 | tooltip suggests 800–1000 |
+| Wind speed (Sandia) | 3.0 m/s | 0–15 | Sandia model only |
+| Voltage temp. coeff | from the module file, else −0.28 %/°C | −1.0 to −0.05 | from the Voc coefficient; applied to **both** Voc and Vmp |
+
+Cell-temperature relations offered — `string_sizing_dialog.py:80-84`:
+- NOCT: `T_cell = T_amb + ((NOCT − 20) / 800) × G`
+- Sandia: `T_cell = T_amb + G × (0.0126 − 0.0029 × wind)`
+
+The window also displays, read-only, the module's STC Voc and Vmp and the
+inverter's MPPT window, then the feasible range of modules in series. The
+reader picks the final series count and the number of parallel strings; these
+land in **Modules per row** / **Rows per MMS-Table** (Fixed Tilt) or
+**Modules per string (N–S)** / **No. of strings per tracker** (SAT) —
+`IP:1478-1505`.
 
 ### 4.9 Energy Yield group — `IP:939-1272`
 
@@ -556,6 +634,14 @@ then `LA` · `St.Lt` · `Robots` · `Piles` · `MV(m)` · `DC-Tr(m)` · `AC-Tr(m
 `P50Yr1(MWh)` · `P75Yr1(MWh)` · `P90Yr1(MWh)` · `CUF(%)` · `25yrP50(MWh)`.
 
 - The three P-columns are named from the reader's exceedance probabilities.
+- ⚠️ **`25yrP50(MWh)` is a mislabelled header.** The header text is hard-coded
+  `MW:7314`, but the value is the lifetime total — the sum of years 1 to
+  **Plant lifetime** (`energy_calculator.py:696-706`, default **30** years),
+  scaled to the first exceedance probability (`p1_lifetime_mwh`,
+  `energy_calculator.py:715-717`). So on default settings the column headed
+  "25yr" reports a **30-year** figure. Document the column as the lifetime
+  total at the first exceedance probability, and say the header text does not
+  follow the lifetime setting.
 - A trailing **`*`** on Tilt or Pitch means the value was auto-calculated
   rather than entered — shown for Fixed Tilt only — `MW:7325-7328`.
 - A `—` means not computed (e.g. cable columns with cable calculation off).
@@ -890,6 +976,15 @@ only when arresters were placed.
 - Stored at `%APPDATA%\SolarLayout.Desktop\license.lic`; a file beside the
   executable also works as a read-only fallback. Clock tracking lives in
   `%APPDATA%\SolarLayout.Desktop\.lastseen`.
+- **Clock tolerance: more than two days backwards** triggers the check —
+  `licensing.py:_clock_rolled_back` compares today against the latest date
+  seen minus two days, so minor drift and time-zone travel are allowed.
+- When generation is blocked the message is titled **Subscription Required**
+  and reads: *"Layout generation is locked."*, then the specific reason from
+  the list below, then *"Open Help ▸ License / Subscription… to view your
+  Machine ID and load a license file."* The licence window then opens by
+  itself — `MW:2713-2729`. Note the message says **Machine ID** where the
+  licence window's own label says **Device ID**; they are the same value.
 - On first run the app looks for a licence left by a previous installation and
   adopts it automatically, so upgrading does not lose the licence.
 - Reader-facing messages, verbatim: *"No license found"*, *"License signature
@@ -952,6 +1047,9 @@ invent a value.
 |---|---|
 | The Microsoft Store listing URL | Tell the reader to open the Microsoft Store and search for the application by name. Do not write a URL or a `ms-windows-store:` link. |
 | The current version number and release date | Do not state a version anywhere. On the release-notes page, leave a `{/* VERIFY: current version number and release date */}` and describe where the reader can see their installed version. |
+| Where the installed version number is displayed | Nothing in the interface shows it — there is no About window, and the Help menu has only the two items in §16. Point the reader at the Store listing instead. |
+| Whether uninstalling removes the licence file | Not determinable from the application's own code. Say the licence lives in a per-user location outside the application folder and that a licence file is worth keeping regardless. Leave a `{/* VERIFY: whether uninstalling removes %APPDATA%\SolarLayout.Desktop */}`. |
+| What changes the Device ID | The fingerprint is derived per machine, but which hardware or OS changes alter it is not something to promise. Say a reinstall of Windows or a change of machine can change it, and that a changed ID needs a reissued licence. |
 | Any release history | There is none to write. Do not invent changelog entries. |
 | Minimum Windows build, RAM, disk, or screen resolution | State the requirements qualitatively — a 64-bit Windows PC, a display wide enough for the panel and plot side by side, an internet connection only for weather and elevation data. Leave a `{/* VERIFY: minimum Windows version and hardware requirements */}`. |
 | Support email address or contact route | Say to contact the vendor who supplied the licence. Leave a `{/* VERIFY: support contact route */}`. |
