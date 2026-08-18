@@ -148,6 +148,57 @@ the shape changes.
 
 ---
 
+## Product videos
+
+`content/videos.mjs` is the single source of truth for the product video set —
+**25 clips, about 76 minutes finished**, one per genuinely distinct feature.
+
+```bash
+bun run videos:index    # writes docs/video-index.xlsx
+```
+
+The manifest is the reviewable artefact; the workbook is generated output and is
+never hand-edited. Nothing on the site renders these rows yet, so the manifest is
+plain JavaScript and the generator imports it directly rather than parsing it. If
+a `<Video id="…" />` component is ever added, move the array to `videos.ts` and
+give it an interface, the way `screenshots.ts` has one.
+
+The workbook is written for somebody who uses the application confidently and
+knows nothing about the code, so it is self-contained — five sheets:
+
+| Sheet | Holds |
+| --- | --- |
+| **Start here** | What the workbook is, the order to work in, what each column means, and what happens to their audio |
+| **Videos** | The worklist. One row per clip: the shot list, the sentences to speak, the set-up state, what to hold on, what must not appear |
+| **How to record** | 16:9 at 1920×1080, 30 fps, display scaling, clean background, the demonstration file set, no added effects |
+| **Narration and audio** | The recorded voice is replaced by an AI narration built from their words — so content and room noise matter, accent and grammar do not |
+| **Words to say clearly** | How to pronounce every domain term in the set, so the voice pipeline transcribes it correctly |
+
+Priority is `High` / `Medium` / `Low` (12 / 9 / 4): High is what a new customer
+cannot use the product without, Medium is what a working designer reaches for,
+Low is depth for a specific workflow. Filter the column and record in waves.
+
+### ⚠️ Every sentence in `say` is spoken verbatim
+
+The recorders are told to speak the `say` lines rather than explain in their own
+words — that is deliberate, and it is what keeps a wrong number out of a
+published video. So the same rule as the pages applies, harder:
+**`docs/PRODUCT_FACTS.md` is the only permitted source for anything in `say`.**
+Do not add a number, label or behaviour that is not in the fact sheet.
+
+### Adding or changing a video
+
+Edit `content/videos.mjs` and regenerate. The generator refuses to write a
+workbook with a missing field, a blank shot or narration line, a duplicate id or
+file, or a priority outside 1–3 — a half-filled row is a build failure rather
+than a blank cell somebody has to guess at.
+
+The **Status** column reads `Recorded` when a file of that name exists under
+`public/videos/`. Where the finished clips are hosted is a separate decision —
+they are not committed to this repository.
+
+---
+
 ## Deployment
 
 Hosted on **Vercel**. `vercel.json` sets
