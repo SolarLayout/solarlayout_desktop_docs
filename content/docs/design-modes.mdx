@@ -1,0 +1,231 @@
+---
+title: Choosing a design mode
+description: The four startup cards — fixed tilt or tracker, string or central inverter — what each means and what each changes in the interface.
+---
+
+Every launch begins with two questions: how the modules are mounted, and how
+the plant is wired. The answers are offered as four cards before the main
+window opens, and one of them must be chosen to get any further.
+
+<Screenshot id="startup-design-modes" />
+
+The choice is not a preference you can revise later. It decides which input
+groups exist, how units are placed on the ground, what equipment is counted,
+and what the summary columns are called. **It cannot be changed for a session
+already in progress** — to work in a different mode you move to a new session,
+which the next-to-last section covers.
+
+## The four combinations
+
+| Mounting | Electrical | Chain shown on the card |
+| --- | --- | --- |
+| Fixed Tilt | String Inverter | Modules → MMS-Table → String Inverter → ICR |
+| Fixed Tilt | Central Inverter | Modules → MMS-Table → SMB → Central Inverter |
+| Single Axis Tracker | String Inverter | Modules → Tracker MMS → String Inverter → ICR |
+| Single Axis Tracker | Central Inverter | Modules → Tracker MMS → SMB → Central Inverter |
+
+The chain on each card is the equipment path from module to grid connection.
+MMS is the module mounting structure; SMB is the string monitoring box; ICR is
+the inverter control room building.
+
+## Fixed tilt or single axis tracker
+
+This is a decision about the structure, and it is the one that changes the
+plant's geometry.
+
+**Fixed Tilt.** Modules sit at one angle on static racks, facing the equator —
+south in the northern hemisphere, north in the southern. Rows run east to west
+and repeat northward at a row pitch. The tilt and the pitch are derived from
+the site latitude unless you override them, and the pitch is what keeps one row
+from shading the row behind it in midwinter.
+
+**Single Axis Tracker.** Modules are carried on a **horizontal, north–south
+axis** and rotate about it through the day, so the panels sweep from facing
+east in the morning to facing west in the afternoon. There is no fixed tilt to
+set: what you set instead is the rotation limit the structure allows. Tracker
+units are long in the north–south direction and repeat eastward at an
+east–west pitch.
+
+<Screenshot id="layout-tracker" />
+
+The two mountings are configured through different groups in the input panel:
+
+<Tabs items={["Fixed Tilt", "Single Axis Tracker"]}>
+<Tab value="Fixed Tilt">
+
+Two groups: **MMS-Table Configuration** and **Spacing & Tilt**.
+
+| Field | Default | Unit |
+| --- | --- | --- |
+| Orientation | Portrait | — |
+| Modules per row | 28 | — |
+| Rows per MMS-Table | 2 | — |
+| Gap between modules E-W | 0.020 | m |
+| Gap between modules N-S | 0.020 | m |
+| Gap between MMS-Tables | 1.0 | m |
+| Override tilt angle | off — derived from latitude | — |
+| Override row pitch | off — derived | — |
+
+With portrait orientation the module's short side runs east–west and its long
+side north–south; landscape reverses that. See
+[Table configuration](/docs/inputs/table) and
+[Spacing and tilt](/docs/inputs/spacing-and-tilt).
+
+</Tab>
+<Tab value="Single Axis Tracker">
+
+One group, **Tracker Configuration**, replaces both of the fixed-tilt groups.
+
+| Field | Default | Unit |
+| --- | --- | --- |
+| No. of strings per tracker | 2 | — |
+| Modules across tracker (E–W) | 1 | — |
+| Module orientation | P config (Portrait) | — |
+| Modules per string (N–S) | 28 | — |
+| Gap between modules E–W / N–S | 0.020 each | m |
+| Tracker E-W pitch | 5.5 | m |
+| N–S service gap between units | 2.0 | m |
+| Max rotation angle (±) | 55.0 | ° |
+| Tracker height from ground | 1.5 | m |
+
+A live preview line under the group reports the unit's **Aperture (E-W)**, its
+**Length (N-S)**, the **GCR** — ground coverage ratio, the collector area as a
+fraction of the ground it occupies — and **Modules/tracker**, so the geometry
+is visible before you generate anything. See [Tracker](/docs/inputs/tracker).
+
+</Tab>
+</Tabs>
+
+## String inverter or central inverter
+
+This is a decision about the electrical topology, and it changes what is
+counted and how cables are run rather than where units sit on the ground.
+
+<Tabs items={["String Inverter", "Central Inverter"]}>
+<Tab value="String Inverter">
+
+Many string inverters are distributed across the plant, sited in the gap bands
+between rows, from clusters of the tables they serve. Each is drawn as a small
+marker on the plot.
+
+Cabling has two legs:
+
+- **DC string cables**, table to inverter, counted twice over for the positive
+  and negative conductors.
+- **AC cables**, inverter to the nearest control room, counted once as a
+  three-phase run and routed on right angles only — horizontal and vertical
+  segments, never diagonals.
+
+**Max strings per inverter** governs how many strings one inverter accepts,
+which in turn sets how many inverters the plant needs. One string is one row of
+modules within an MMS-table.
+
+</Tab>
+<Tab value="Central Inverter">
+
+String monitoring boxes — SMBs — take the place of distributed inverters. Each
+collects the strings around it, and the central inverters themselves sit
+**inside the control room buildings**, up to four to a building.
+
+Cabling therefore has no AC leg at all:
+
+- **DC string cables**, table to SMB, counted twice over.
+- **A DC trunk**, SMB to the control room, also counted twice over.
+
+Because the inverter is inside the building, everything downstream of it is
+inside the building too. **Max strings per SMB** sizes each monitoring box, and
+**Max SMB per Central Inverter** — 10 by default — sizes the central inverter:
+its capacity is the monitoring box capacity multiplied by that number.
+
+</Tab>
+</Tabs>
+
+Both topologies then carry medium-voltage cables from each control room to the
+main control room, over a shared trunk rather than parallel runs. See
+[Cable routing](/docs/layout/cables).
+
+## What changes in the interface
+
+The mode does not hide optional extras. It decides which input groups are built
+at all, how several labels and column headings read, and how a few pieces of
+equipment are placed.
+
+### Mounting
+
+| In the interface | Fixed Tilt | Single Axis Tracker |
+| --- | --- | --- |
+| Input groups | **MMS-Table Configuration** and **Spacing & Tilt** | Both replaced by a single **Tracker Configuration** group |
+| Unit count columns | `Full Tbl` and `Half Tbl` | `Full Trk` and `Half Trk` |
+| Angle column | `Tilt(°)`, with a trailing `*` when auto-calculated | `MaxAng(°)` |
+| Lightning arrester footprint | A 30 m by 7 m rectangle; tables overlapping it are removed | A 1 m by 1 m pole marker, snapped into the nearest gap between tracker columns, so **no tracker units are removed** |
+| Cleaning robot lines | Run west to east | Run north to south |
+
+### Electrical
+
+| In the interface | String Inverter | Central Inverter |
+| --- | --- | --- |
+| Group title | **String Inverter** | **SMB – String Monitoring Box** |
+| Strings field | **Max strings per inverter** | **Max strings per SMB** |
+| Extra field | — | **Max SMB per Central Inverter** |
+| Equipment columns | `Str.Inv` · `Inv kWp` | `SMBs` · `SMB kWp` · `C.Inv` · `CInv kWp` |
+| Cable columns | `StrDC(m)` · `AC-ICR(m)` | `StrDC(m)` · `DC-CInv(m)` |
+| Loss row labels | **String DC cable losses**, **AC cable losses (Str. Inv. → ICR)** | The same rows read MMS → SMB and SMB → Central Inv. |
+| Efficiency row | **String Inverter efficiency** | **Central Inverter efficiency** |
+| CAD export layer | `INVERTERS` | The same layer, named for the monitoring boxes |
+| Auto-built diagram | PV → String Inverter → ACCB → Transformer → MV Panel → Grid | PV → SMB → Central Inverter → Transformer → MV Panel → Grid |
+| Maximum practical DC/AC ratio offered when sizing from an AC capacity | 1.5× | 1.4× |
+
+The full column list, in order, is in
+[Summary columns](/docs/reference/summary-columns).
+
+## Moving to a different mode
+
+The mode belongs to the session. **File ▸ Move to String / Central Window…**
+(**Ctrl+N**), also on the toolbar as **⊕ Move to String / Central Window**,
+presents the choice again. Two things about it the label understates:
+
+- **It switches the mounting type as well.** What opens is the same four cards
+  you chose from at launch, so the new session can be fixed tilt where the one
+  you came from was a tracker plant. The name reads as though only the inverter
+  topology were on offer; the choice is the full four.
+- **It opens a new, independent window.** The session you came from stays open
+  beside it. This is not a mode switch applied to the work in progress, which
+  is why two design modes can be held on screen at once and read against each
+  other.
+
+<Callout type="warn">
+The new window does not inherit the work in progress. Its boundary file and its
+inputs are entered again there, and the layout, hand edits, diagram and
+materials list of the session you came from stay with that session. Save each
+one with **File ▸ Save Project…** to its own project file.
+</Callout>
+
+Comparing two topologies on the same site is therefore two sessions and two
+project files, not one session switched back and forth — but both windows can
+be open together. Load the same boundary file in each, leave the shared inputs
+identical, and compare the summary rows.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="A complete run in fixed tilt with string inverters"
+  />
+  <Card
+    title="Tracker configuration"
+    href="/docs/inputs/tracker"
+    description="Every tracker field, its default and what it drives"
+  />
+  <Card
+    title="Inverters and monitoring boxes"
+    href="/docs/inputs/inverter"
+    description="Strings per unit, inverter files, and turning cable calculation on"
+  />
+  <Card
+    title="Saving and reopening projects"
+    href="/docs/projects"
+    description="What a project file keeps, and why a mode change means a new session"
+  />
+</Cards>

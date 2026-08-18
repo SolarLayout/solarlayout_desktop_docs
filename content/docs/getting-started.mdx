@@ -1,0 +1,154 @@
+---
+title: Getting started
+description: What you need before you can generate anything, the regions of the main window, and the order the work happens in.
+---
+
+Three things have to be in place before the application can place a single
+module table: the application installed on a Windows PC, a valid licence for
+that machine, and one file describing where the plant goes. Every other input
+ships with a working default, so a first run needs almost none of them.
+
+The work happens on your own machine. The only steps that reach the internet
+are fetching weather data for the energy estimate and fetching elevation data
+for the terrain check, and both are optional.
+
+## Before you start
+
+| What you need | Why | Where |
+| --- | --- | --- |
+| The application | A Windows PC, installed from the Microsoft Store | [Install on Windows](/docs/install/windows) |
+| A valid licence for that machine | The application opens without one, but layout generation is blocked until a valid, in-date licence is loaded | [Activate your licence](/docs/licence/activate) |
+| A boundary file | The plant boundary, and any water bodies, obstructions and transmission lines inside it | [Boundary files](/docs/inputs/boundary-files) |
+
+A licence is issued per machine for a subscription period. Copy the **Device
+ID** from **Help ▸ License / Subscription…**, send it to the vendor who
+supplied the application, and load the `license.lic` file you receive back.
+
+The boundary file can be a Google Earth file (`.kmz` or `.kml`), a CAD drawing
+(`.dxf` or `.dwg`), or a raster image with a scale you supply. A Google Earth
+file is the recommended input, because it carries geographic position and the
+site's features in one place. A CAD drawing carries no position, so you are
+asked for the site latitude and longitude — without them the layout is still
+generated geometrically, but energy cannot be calculated.
+
+## Two decisions at launch
+
+Every launch opens a four-card window before the main window: how the plant is
+mounted — **Fixed Tilt** or **Single Axis Tracker** — and how it is wired —
+**String Inverter** or **Central Inverter**. The choice controls which input
+groups you see and how the plant is put together, and it cannot be changed for
+a session already in progress. See
+[Choosing a design mode](/docs/design-modes).
+
+## The main window
+
+<Screenshot id="main-window-empty" />
+
+| Region | What it is |
+| --- | --- |
+| Menu bar | **File**, **Edit-Pile** and **Help**. Projects, mode switching, the pile editor, the in-app guide and the licence window. |
+| Input panel, on the left | Every design input, in groups from the boundary file at the top down to energy assumptions at the bottom, with **Generate Layout** below them. |
+| Toolbar, above the plot | Saving, view modes and the three editing modes — hand editing, the bill of materials, and the single-line diagram. |
+| Plot area | The plan drawing of the plant. Standard pan and zoom controls, except that **Home (⌂)** fits the view to the plant. |
+| View switches | On/off switches for cables, terrain contours, the layout itself, the legend, lightning arresters and the summary. |
+| Summary table, below the plot | **Layout & Energy Summary** — one row per plant boundary and a **TOTAL** row, with a **⛶ Maximize** button that opens it in its own window. |
+
+### The input panel
+
+The groups run top to bottom in the order you would normally work through
+them. Two of them depend on the design mode you chose at launch.
+
+| Group | Covers |
+| --- | --- |
+| **Input KMZ File** | The boundary file, a **Browse…** button, and an **ⓘ** button that opens the preparation guide — [Boundary files](/docs/inputs/boundary-files) |
+| **Module Specifications** | Module dimensions, wattage, bifaciality, and loading a PVsyst `.PAN` file — [Module](/docs/inputs/module) |
+| **MMS-Table Configuration** | Orientation, modules per row, rows per table and gaps. Fixed tilt only — [Table configuration](/docs/inputs/table) |
+| **Spacing & Tilt** | Tilt angle and row pitch, derived from latitude unless you override them. Fixed tilt only — [Spacing and tilt](/docs/inputs/spacing-and-tilt) |
+| **Tracker Configuration** | Tracker geometry, east–west pitch, rotation limit and height. Replaces the two groups above in tracker mode — [Tracker](/docs/inputs/tracker) |
+| **Site Parameters** | Perimeter road width, lightning arresters, the control-room capacity block, and the transmission line corridor — [Site parameters](/docs/inputs/site) |
+| **Structures & Shadow** | Footprints and heights of control rooms, substations and objects, the shadow window, and street lights — [Structures and shadow](/docs/inputs/structures-and-shadow) |
+| **Topography** | Slope limits and where the elevation data comes from — [Topography](/docs/inputs/topography) |
+| **String Inverter** / **SMB – String Monitoring Box** | Strings per inverter or per monitoring box, cable calculation, and loading a PVsyst `.OND` file — [Inverter](/docs/inputs/inverter) |
+| **Energy Yield** | Weather source, the performance ratio breakdown, degradation and exceedance probabilities — [How yield is calculated](/docs/energy/overview) |
+
+### The toolbar
+
+**💾 Save(Project)** and **⛶ Expand Plot** work at any time. **🛰 Satellite**
+and **📍 Piles: OFF** stay disabled until a layout exists. **▢ Wireframe**
+draws tables as outlines only. **✏ Sketch Mode**, **📋 BOM** and **⚡ SLD**
+switch the panel over to hand editing, the bill of materials, and the
+single-line diagram.
+
+### The view switches
+
+**Plant Layout**, **Legend** and **Summary** start on. The three cable
+switches, **Contour / Terrain** and **Lightning Arresters** start off, so a
+first layout is drawn without them even when the underlying figures have been
+computed.
+
+## How the work flows
+
+| Stage | What you do | More |
+| --- | --- | --- |
+| 1. Load a boundary | Point **Browse…** at your file. The boundaries, obstacles, water bodies and line features are read from it. | [Boundary files](/docs/inputs/boundary-files) |
+| 2. Set inputs, or accept the defaults | Change what your design fixes — module, table size, road width, capacity block — and leave the rest. | [Every parameter and its default](/docs/reference/parameters) |
+| 3. Generate the layout | Click **Generate Layout**. Tables, control rooms, inverters and arresters are placed, and the summary fills in. | [Your first layout](/docs/first-layout) |
+| 4. Refine | Change an input and generate again, or edit the layout by hand — move, add and delete units, draw obstructions, drag a control room. | [Editing by hand](/docs/editing/sketch-mode) |
+| 5. Calculate energy | Optional. Fetches irradiance for the site and reports year-one and lifetime generation against a performance ratio you control. | [How yield is calculated](/docs/energy/overview) |
+| 6. Build the diagram and the materials list | Auto-build a single-line diagram from the plant's own counts, and rebuild the bill of materials from the layout. | [Single-line diagram](/docs/sld/overview) |
+| 7. Export or save | A multi-page A3 PDF report, a Google Earth file, a layered CAD drawing, an Excel materials list — or save the session to reopen later. | [Exports](/docs/exports/pdf-report) |
+
+Steps 3 to 6 are not one-way. Generating again after a change is the normal
+way to work, and hand edits to cable trenches are preserved when you do.
+
+## Defaults mean a first run needs almost nothing
+
+The boundary file is the only input with no default. Everything else is
+pre-filled with a value a utility-scale design would recognise, so you can
+generate a complete layout on your first run and then decide what to change.
+
+| Input | Default |
+| --- | --- |
+| Module | 2.38 m × 1.13 m, 610 Wp, monofacial |
+| Table | Portrait, 28 modules per row, 2 rows per table |
+| Perimeter road width | 6.0 m |
+| Control-room capacity block | 18.0 MWp |
+| Tilt angle and row pitch | Derived from the site latitude |
+| Cable calculation | Off |
+
+Tilt and row pitch deserve a note: with both override boxes left unticked,
+the application derives the tilt from the site latitude and the row pitch from
+the no-shading spacing at winter-solstice solar noon. After a run, both derived
+values are reported in the panel and pre-filled into the override boxes, so
+you can see what was chosen before deciding to fix it yourself. Auto-calculated
+values are marked with an asterisk in the summary table.
+
+Cable calculation is off by default, and worth leaving off for a first run.
+It is the slow step on a large or complex layout, and the counts of inverters
+and monitoring boxes are computed either way — only the cable length columns
+are left blank.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="Boundary file in, finished layout, energy estimate and PDF report out"
+  />
+  <Card
+    title="Choosing a design mode"
+    href="/docs/design-modes"
+    description="What the four startup cards mean and what each one changes"
+  />
+  <Card
+    title="Preparing a Google Earth file"
+    href="/docs/inputs/kmz-requirements"
+    description="How boundaries, water bodies and transmission lines must be drawn and named"
+  />
+  <Card
+    title="Every parameter and its default"
+    href="/docs/reference/parameters"
+    description="The complete input reference"
+  />
+</Cards>

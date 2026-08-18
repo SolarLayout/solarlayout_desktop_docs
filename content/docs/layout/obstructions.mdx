@@ -1,0 +1,260 @@
+---
+title: Obstructions
+description: Every kind of ground kept clear of modules — water, buildings, line corridors, terrain, shadows — and how to draw an exclusion by hand.
+---
+
+An obstruction is **area subtracted from the usable area**. Whatever the reason
+for it — a pond, a building, a transmission line corridor, steep ground, a
+building's shadow, or a rectangle you drew yourself — the effect on the layout is
+identical: the ground stops being available, and **any module table overlapping
+it is removed**.
+
+That single rule is worth stating plainly because it makes the plot readable.
+Wherever you see a gap in the table grid, something was subtracted from the
+usable area there. This page collects every source of those gaps in one place.
+
+## How the usable area is built
+
+The order matters, because each step works on the result of the last.
+
+1. The plant boundary is **shrunk inward by the perimeter road width**. What is
+   left is the usable area.
+2. Polygon obstructions and water bodies are **subtracted** from it.
+3. Line features — transmission lines, canals, roads — are buffered into
+   corridors, and those corridors are subtracted too. A transmission line or a
+   canal takes the setback on each side; a road takes half its own width on each
+   side.
+4. Terrain exclusions are subtracted, when topography is enabled.
+5. Tables and tracker units are then placed only where they fit **entirely**
+   inside what remains.
+
+Because a table must fit entirely inside the usable area, an obstruction clears
+slightly more ground than its own outline: a table that merely clips the edge of
+a pond is dropped in full. See
+[How placement works](/docs/layout/how-placement-works).
+
+<Screenshot id="layout-obstructions" />
+
+## Obstructions that come from the boundary file
+
+A Google Earth file carries its exclusions with it, so a well-prepared file
+needs no hand drawing at all. Three kinds are read automatically:
+
+| Kind | Drawn in the file as | What the application does |
+| --- | --- | --- |
+| **Water body** | A closed polygon inside the plant boundary, named with a water keyword | Subtracted from the usable area, drawn blue, and exported as water |
+| **Generic obstruction** | A closed polygon inside the plant boundary, any other name | Subtracted from the usable area, drawn red, and exported as an exclusion |
+| **Line corridor** | A line — not a polygon — for a transmission line, canal or road | Buffered into a corridor and subtracted: the setback on **each** side, or half the road width each side for a road |
+
+Every feature must lie **inside** a plant boundary. A polygon drawn outside the
+boundary is subtracted from nothing, so tables are placed straight over the
+ground you meant to keep clear. See
+[Boundary file requirements](/docs/inputs/kmz-requirements) for how each feature
+must be named and drawn.
+
+### Classification is by name
+
+The application decides what a polygon is from its **name**, matching keywords
+case-insensitively — words for ponds, lakes, reservoirs and wetlands for water;
+words for canals, drains, nalas and rivers for a channel; words for transmission
+and power lines and their voltages for an overhead line.
+
+The consequence to know:
+
+<Callout type="warn">
+A water body whose name carries no water keyword is treated as a **generic
+obstruction**. It still clears the tables over it, so the layout is not wrong —
+but it is drawn in the obstruction colour instead of blue, and it is exported on
+the obstruction layer instead of the water layer. Name your ponds.
+</Callout>
+
+That is the whole cost of a misnamed pond: presentation and the export, not
+placement. It is still worth fixing, because the drawing goes to a contractor
+who will read a red polygon as a building and a blue one as water.
+
+## Line corridors and their setback
+
+A line feature has no width, so it cannot exclude anything on its own. A
+transmission line or canal is buffered on **both** sides by the setback, which
+means the corridor kept clear of modules is **twice** the setback you enter. A
+line named as a road is the exception: it is buffered by half its own width each
+side, so the strip kept clear is the road width, read from the boundary file
+rather than from this field.
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Transmission line corridor** | 15.0 per side, 30 m total | 0.0–500.0 | The distance kept clear each side of every line feature that is not a road |
+
+The setback that suits a distribution line will not suit an export line. The
+application's own guidance is to raise it for higher voltages — for example 30 m
+per side on a 400 kV line. Set it in the **Site Parameters** group; see
+[Site parameters](/docs/inputs/site).
+
+The corridor is subtracted from the usable area exactly like a polygon, so the
+tables stop short of it on both sides and you get the clean service strip a line
+crossing actually needs.
+
+## Steep and unsuitable ground
+
+Terrain exclusion is the same subtraction driven by elevation instead of by a
+drawn shape: ground steeper than your north–south and east–west slope limits,
+ground whose relief within a single table footprint exceeds the allowed
+variation, and — when you ask for it — depressions where water would pool.
+
+It is **off** by default, and turning it on needs either a contour file or an
+internet connection for the satellite elevation model. The excluded area is
+reported in acres. See [Topography](/docs/inputs/topography).
+
+## Shadows of structures
+
+The year-round shadow of a building or an object is also treated as ground to
+keep clear. With **Clear tables inside shadows** on — which is the default — any
+table falling inside the shadow footprint of an inverter control room, the main
+control room or a placed object across the shadow window is removed.
+
+This is how you exclude a tree, a mast or an existing shed: place an object with
+a realistic height and let its shadow clear the modules. See
+[Structures and shadow](/docs/inputs/structures-and-shadow) and
+[Main control room, substations and street lights](/docs/layout/site-equipment).
+
+Lightning arresters clear tables under their own footprint on a fixed-tilt
+plant — a different mechanism, described in
+[Lightning arresters](/docs/layout/lightning-arresters).
+
+## Drawing an obstruction by hand
+
+Use this when the boundary file did not carry an exclusion, when a site visit
+found something the survey missed, or when you want to reserve ground for
+something the application does not model — a laydown area, a construction
+compound, a future extension.
+
+The obstruction controls sit below the plot and act on the layout already on
+screen.
+
+| Button | What it does |
+| --- | --- |
+| **Draw Rectangle** | Arms the rectangle tool. Drag on the plot to define the rectangle. |
+| **Draw Polygon** | Arms the polygon tool. Click each vertex to define an arbitrary shape. |
+| **Undo Last** | Removes the most recently drawn obstruction. |
+| **Clear All** | Removes every hand-drawn obstruction. |
+
+<Screenshot id="obstruction-controls" maxWidth={420} />
+
+The application calls all of these **Obstruction**, whatever the ground is
+actually for. Tables overlapping a hand-drawn obstruction are removed the same
+way as for one read from the file.
+
+### The obstruction tool in Sketch Mode
+
+Sketch Mode carries its own rectangle obstruction tool in the tool palette: pick
+it, drag a rectangle, and the overlapping tables are removed. It is the same
+result as **Draw Rectangle**, reached from the palette you are already working
+in when you are editing tables by hand.
+
+The palette also has an **⚡ T-Line** tool for a transmission line the boundary
+file did not carry — click each vertex and right-click to finish. See
+[Sketch Mode](/docs/editing/sketch-mode).
+
+A hand-drawn transmission line **does not use the Transmission line corridor
+setback**. The tool asks you for a corridor width instead, and buffers the
+centre-line by half of it, so the strip cleared of tables is the width you gave —
+not twice it. Give no width and the corridor is **10.0 m**. The centre-line is
+drawn in red, the corridor becomes a keep-out, and the tables inside it are
+removed.
+
+So a line you draw and a line of the same route read from the boundary file clear
+different ground unless you convert one figure into the other. To match a 15 m
+setback each side, enter a corridor width of 30 m.
+
+## What else the usable area governs
+
+Subtracting an obstruction does more than remove tables. The same usable area is
+the test every other placement decision is made against, which is why a large
+exclusion changes the plant in ways that are not obvious from the table grid
+alone:
+
+- **Cable routes.** Every candidate route is checked against the usable area
+  before it is accepted, so cables detour around water bodies, corridors,
+  obstructions and excluded terrain. A big exclusion in the middle of a plant
+  lengthens the runs around it. See
+  [Cable routing and trenches](/docs/layout/cables).
+- **Lightning arrester positions.** Only grid positions whose centre falls inside
+  the usable area are kept, so an obstruction thins the arrester grid locally and
+  the coverage is completed afterwards from the nearest valid ground.
+- **Control room siting.** A control room must be **fully contained** in the
+  usable area, so an exclusion can push a room away from the centre of the group
+  of tables it serves.
+- **Reported area.** Excluded terrain is reported in acres, so you can see how
+  much ground the slope limits took.
+
+## What reaches the drawing
+
+Hand-drawn obstructions are exported to the CAD drawing on **their own layer**,
+separate from the exclusions that came out of the boundary file. That separation
+is deliberate and useful: a contractor opening the drawing can see at a glance
+which ground was excluded by the survey and which ground *you* decided to keep
+clear.
+
+| What it is | CAD layer |
+| --- | --- |
+| Exclusions from the boundary file | `OBSTACLES` |
+| Water bodies | `WATER` |
+| Hand-drawn obstructions | `OBSTRUCTIONS` |
+| Terrain contour lines | `TERRAIN` |
+
+See [CAD drawing export](/docs/exports/dxf). The Google Earth export carries the
+exclusion zones alongside the boundary and the tables; see
+[Google Earth export](/docs/exports/kmz).
+
+## Checking your exclusions before you trust the layout
+
+<Steps>
+<Step>
+### Generate and look at the gaps
+
+Every gap in the table grid should correspond to something you can name. A gap
+you cannot account for usually means a feature was classified as something you
+did not intend.
+</Step>
+
+<Step>
+### Switch the satellite view on
+
+The aerial photograph behind the layout shows the real ground. A pond visible on
+the imagery with tables sitting on it means the polygon is missing from the file
+or was drawn outside the boundary.
+</Step>
+
+<Step>
+### Fix the file, not the layout
+
+A missing exclusion is best fixed by naming and drawing it correctly in the
+boundary file, then generating again. Hand-drawn obstructions are for what the
+file genuinely cannot carry.
+</Step>
+</Steps>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Boundary file requirements"
+    href="/docs/inputs/kmz-requirements"
+    description="How each water body, obstruction and line must be named and drawn"
+  />
+  <Card
+    title="How placement works"
+    href="/docs/layout/how-placement-works"
+    description="The usable area, the row sweep, and why a table must fit entirely inside it"
+  />
+  <Card
+    title="Topography"
+    href="/docs/inputs/topography"
+    description="Slope limits, contour data and the ground they exclude"
+  />
+  <Card
+    title="Sketch Mode"
+    href="/docs/editing/sketch-mode"
+    description="The full tool palette for editing a generated layout by hand"
+  />
+</Cards>

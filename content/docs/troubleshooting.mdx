@@ -1,0 +1,400 @@
+---
+title: Troubleshooting
+description: Symptoms you can search for — nothing placed, missing cables, absent energy figures, empty export pages — with the setting or input behind each one.
+---
+
+Find the symptom below and read the entry under it. Each one says what the
+application is doing, why, and which input or switch to change.
+
+Licence messages are not here. Every message the licence check produces has its
+own entry in [Licence problems](/docs/licence/troubleshooting).
+
+## Three things that explain most surprises
+
+1. **A missing figure is usually a step you have not run.** Cables and energy are
+   separate, opt-in calculations, and a `—` in the summary means not computed.
+2. **Missing tables are usually a subtraction that is switched on.** The boundary
+   is shrunk by the perimeter road, then obstructions, corridors, terrain
+   exclusions and equipment footprints come out of what is left.
+3. **A table is placed only where it fits entirely inside the usable area.** A
+   partial fit is not placed at all, so table size decides how much of an
+   irregular plot is usable.
+
+## Starting up and licensing
+
+<Accordions>
+<Accordion title="Generate Layout does nothing when I click it">
+
+Layout generation is blocked until a valid, in-date licence for this machine is
+loaded. The application opens and every other control works, which is why the
+button appears to do nothing rather than reporting a problem. Open
+**Help ▸ License / Subscription…** and read the banner: if it does not report a
+valid licence with an expiry date, that is your answer — see
+[How licensing works](/docs/licence/overview) for what is checked, and
+[Activate your licence](/docs/licence/activate) if you have never loaded one. If it
+does report a valid licence, check that a boundary file is loaded in the
+**Input KMZ File** row and was read without a validation complaint.
+
+</Accordion>
+<Accordion title="An unexpected error occurred, but the application will keep running">
+
+Something failed in a way the application did not expect. It catches the failure,
+reports it with that exact message, and **keeps running** — your inputs and your
+layout are still there. It is a report, not a crash.
+
+<Screenshot id="unexpected-error" />
+
+Save the session with **File ▸ Save Project…** first, then retry the step, changing
+one input at a time to find which one the failure depends on. The details are
+appended to a file named `solarlayout_error.log` in the Windows temporary folder —
+type `%TEMP%` into the address bar of File Explorer to get there. Include it when
+you report the problem: see [Getting help](/docs/support).
+
+</Accordion>
+</Accordions>
+
+## Loading a boundary file
+
+<Accordions>
+<Accordion title="The file was refused, or a boundary is listed as a problem">
+
+A plant boundary must be a **closed polygon** — first and last ring coordinate
+identical. When one is open or otherwise invalid, a **Boundary Validation Issues**
+window lists each problem boundary and offers a choice: tick the ones to exclude
+and proceed with the rest, or Cancel and go and fix the file. Prefer fixing the
+file — excluding a boundary excludes the whole plot, so its capacity is lost.
+Close the ring in the tool you drew it with, save, and load it again. The rules
+are in [Boundary file requirements](/docs/inputs/kmz-requirements).
+
+</Accordion>
+<Accordion title="Tables have been placed on a pond or a building">
+
+A polygon inside a plant boundary is subtracted from the usable area, so tables on
+top of one mean the feature was not read as an area inside the plant. Check:
+
+1. **Is it inside the boundary?** Every feature has to lie inside a boundary
+   polygon. One that is not contained in a boundary is read as a top-level
+   polygon — which is what a plant boundary is.
+2. **Is it a closed polygon?** A shape drawn as a path is a line feature, and a line
+   feature is buffered as a corridor rather than treated as an area.
+3. **Is it named so it can be classified?** Classification is by **name
+   keyword**, case-insensitive: `Pond`, `Lake`, `Reservoir`, `Water body`,
+   `Wetland`, `Marsh` or `Swamp` is read as water, while a polygon with no water
+   keyword is still kept clear but as a generic obstruction — so a misnamed pond
+   is drawn and reported as an obstruction rather than as water.
+
+</Accordion>
+<Accordion title="An obstruction in the file had no effect">
+
+The polygon lies outside the plant boundary, or crosses its edge. Only polygons
+**fully contained** within a boundary become obstacles; one that is not contained is
+treated as a boundary in its own right. Open the file in Google Earth and check the
+obstruction sits wholly inside the boundary. If it genuinely straddles the fence
+line, clip it to the boundary, or draw the exclusion by hand after the run — see
+[Obstructions and exclusions](/docs/layout/obstructions).
+
+</Accordion>
+<Accordion title="Energy calculation is unavailable after loading a CAD drawing or an image">
+
+A CAD drawing and a raster image carry no geographic position, so the application
+asks for a site latitude and longitude when you load one. Both are optional and
+can be skipped. Without them the layout is still generated geometrically — but
+there is no site position, so there is no sun position, and **energy cannot be
+calculated**. Load the file again and supply the coordinates when asked. See
+[A CAD drawing as the boundary](/docs/inputs/cad-boundary) and
+[An image as the boundary](/docs/inputs/image-boundary). A Google Earth file
+carries its own coordinates and never has this problem.
+
+</Accordion>
+</Accordions>
+
+## The layout
+
+<Accordions>
+<Accordion title="No tables were placed, or far fewer than expected">
+
+The usable area is what is left after a series of subtractions, and a table is
+placed only where it fits **entirely** inside it. Work through them in the order
+they are applied, switching each off in turn to see what it cost you.
+
+| Step | The input behind it | How to test it |
+| --- | --- | --- |
+| Perimeter road | **Perimeter road width**, default 6.0 m | Set it to 0 and regenerate |
+| Obstructions and water | Polygons in the boundary file, plus anything drawn by hand | Compare against the file in Google Earth |
+| Transmission corridors | **Transmission line corridor**, default 15.0 m per side | Set it to 0 and regenerate |
+| Terrain exclusions | **Avoid steep / unsuitable ground** | Untick it and regenerate |
+| Structure shadows | **Clear tables inside shadows**, on by default | Untick it and regenerate |
+| Lightning arresters | **Place Lightning Arresters**, off by default | Untick it and regenerate |
+| Street lights | **Street lights**, off by default | Untick them and regenerate |
+
+Two further causes on a narrow or irregular plot. **The table is too big for the
+ground:** a long table cannot fit a narrow strip at all, so the strip stays empty —
+reduce **Modules per row**, or turn on **Add half tables in leftover space**. **The
+edges are diagonal or curved:** turn on **Maximize placement**. Both are covered in
+[Maximize placement and half tables](/docs/layout/maximize-and-half-tables); the
+pipeline order is in [How placement works](/docs/layout/how-placement-works) and
+every input above is in [Site parameters](/docs/inputs/site).
+
+</Accordion>
+<Accordion title="Tables are missing in a band right across the site">
+
+A straight strip with no tables in it, running the full width or length of the
+plot, is a **transmission line corridor**. A line feature in the boundary file is
+given a setback buffer on each side, so the corridor is twice the setback — the
+default 15.0 m per side is a 30 m band. The setback is yours to set, from 0 to
+500 m per side: raise it for a higher-voltage line — the field's own guidance
+suggests 30 m per side for a 400 kV line — or lower it if the corridor is
+over-wide, then regenerate. If the band is not straight, or does not run edge to
+edge, it is a water body, a canal or an obstruction instead.
+
+</Accordion>
+<Accordion title="The table columns do not line up across the plant">
+
+**Maximize placement** is on. It positions each row independently so the row hugs
+the exact boundary edge, fitting extra tables against diagonal and curved fences.
+The cost is that table columns are **not** vertically aligned across rows, and
+the computation takes longer on a large site. If aligned columns matter more than
+the extra tables — for a construction drawing, or a cleaning line that must run
+straight — untick it and regenerate.
+
+</Accordion>
+<Accordion title="There is empty ground on part of the plant">
+
+The likeliest cause is a **capacity cap**. Sizing the plant from a target AC
+capacity offers to regenerate the layout capped to the target DC capacity, and once
+that is accepted the layout stops at the target — so ground that could carry tables
+is deliberately left clear. Check whether the run came from **🔆 Simulation with AC
+Capacity**, then raise the target AC capacity or the target DC/AC ratio and run it
+again; the practical ceiling is 1.5× for string inverters and 1.4× for central
+inverters. See [Sizing from an AC capacity](/docs/simulation/ac-capacity).
+
+If no cap was applied, switch the terrain display on and check the empty ground is
+not excluded steep ground, a depression, or under an obstruction.
+
+</Accordion>
+<Accordion title="The number of control rooms changed after the run">
+
+The count is derived from capacity: one inverter control room per **ICR Block**,
+default 18.0 MWp, rounded up. Placing those buildings removes the tables their
+footprints cover, and arresters remove more, so capacity after clearing is lower
+than the capacity the first count was based on. The count is therefore **re-checked
+against the reduced capacity**, and can come out lower than it started. Nothing is
+wrong. If you want a particular number of buildings, set **ICR Block** to the
+capacity you want each one to serve — [Control rooms](/docs/layout/icr) covers how
+the blocks are formed and how to move a building by hand.
+
+</Accordion>
+</Accordions>
+
+## Cables
+
+<Accordions>
+<Accordion title="No cable lengths are reported">
+
+Cable calculation is **off** by default. Inverter and monitoring-box counts are
+still computed, but every cable column in the summary shows `—`. Tick
+**Calculate Cables for PV Power Plant** in the inverter group and regenerate. The
+application warns you first that the calculation can take a long time on a large or
+complex layout and recommends leaving it off until the layout is settled — which is
+the right order to work in. See [The inverter group](/docs/inputs/inverter).
+
+</Accordion>
+<Accordion title="Medium-voltage cables are missing">
+
+Medium-voltage cables run from each inverter control room to the **main control
+room**, so there is nothing to route until the main control room exists, and it is
+not placed automatically. Click **Place MCR**, then click a position inside the
+boundary: the routes appear and the total length is reported. On a multi-plot site,
+placing the main control room also drops a unit substation in every other plot, and
+each plot's control rooms route to theirs. See
+[Site equipment](/docs/layout/site-equipment).
+
+</Accordion>
+<Accordion title="A cable route is much longer than the direct line">
+
+Two behaviours can produce this. **Routing is right-angled and validated:** feeder
+routes are made of horizontal and vertical segments only — no diagonals — and
+every candidate path is checked against the usable area before use. A set of
+patterns is tried in turn, and when none is clear the router falls back to a
+best-effort path through the centroid, so it always returns something connected: a
+blocked corridor produces a long route, not no route. **A very large plant uses
+estimation:** cable figures there come from fast geometric estimation so
+generation stays quick, and the number is an estimate rather than a measured path.
+
+Look at what is blocking the direct line — an obstruction, a water body, a corridor.
+If the blockage is not real, remove it from the input and regenerate; otherwise draw
+the trench you intend to build by hand. See [Cable routing](/docs/layout/cables).
+
+</Accordion>
+<Accordion title="The cables did not change after I changed an input">
+
+Hand-edited trenches are deliberately preserved. Once you have deleted an
+automatic trench or drawn one yourself, **Generate Layout** keeps the current
+cables instead of re-routing, so your edits are not silently overwritten. The
+trench tools are in [Sketch Mode](/docs/editing/sketch-mode).
+
+<Callout type="warn">
+Cable figures can therefore go stale against a layout you have since changed. To make the router run again from scratch, remove your hand-drawn trenches first.
+</Callout>
+
+</Accordion>
+</Accordions>
+
+## Energy
+
+<Accordions>
+<Accordion title="There are no energy figures">
+
+Either energy has not been calculated — generating a layout does not calculate it,
+so click **Calculate Energy** once the layout exists — or the site has no
+position. Energy needs a latitude and longitude: a Google Earth file carries them,
+a CAD drawing or an image only if you supplied them when loading the file. See
+[How yield is calculated](/docs/energy/overview).
+
+</Accordion>
+<Accordion title="The irradiance came from a service I did not expect">
+
+With the automatic weather source selected, irradiance is fetched in a fixed order
+of preference. The first service returns in-plane irradiance directly for your
+position and tilt; when it has no data for the site a second service is used
+instead — monthly irradiance climatology with a simple tilt correction — and the
+label under the irradiance fields names whichever service was actually used. If
+neither returns data, the figures stay at zero and the source is reported as
+unavailable.
+
+Read that label before you trust a yield number. If the fallback was used and you
+need something better, select **Hourly GHI file (CSV)** and supply your own measured
+or purchased year. See [Weather data](/docs/energy/weather).
+
+</Accordion>
+<Accordion title="The time-series export is unavailable">
+
+The export writes a full year of irradiance and energy at a chosen interval, so it
+needs an **hourly** series to write from, and a monthly figure cannot be expanded
+into one. Either load an hourly file, or use the automatic source with an hourly
+fetch, then calculate energy and export again. See
+[The energy time series](/docs/energy/timeseries).
+
+</Accordion>
+<Accordion title="The temperature loss never changes">
+
+With no module file loaded, the temperature loss stays at its default of 6.0 % — an
+assumption you can edit, not a calculation. The model needs the module's power
+temperature coefficient, and that comes from the module file. Load a `.PAN` file and
+the loss is recomputed from the mounting type, the wind speed, the ambient
+temperature and the module's own coefficient, with the computed module temperature
+shown beside the row. See [Temperature losses](/docs/energy/temperature).
+
+</Accordion>
+</Accordions>
+
+## Terrain
+
+<Accordions>
+<Accordion title="Terrain is on but nothing was excluded">
+
+A terrain failure is **non-fatal by design**: if the elevation data cannot be
+fetched or a contour file cannot be read, the layout proceeds without terrain
+exclusion rather than stopping, so a successful run does not prove terrain was
+applied. Check, in order:
+
+1. **The excluded area was reported.** Excluded ground is reported in acres after
+   the run, so nothing reported means no exclusion happened.
+2. **The Terrain display shows contours** — green for low ground through blue to
+   red for high ground. No contours means no elevation data.
+3. **The connection.** With no contour file supplied, the elevation model is
+   fetched from public satellite data, which needs an internet connection.
+4. **The contour file's coordinates.** A supplied CAD contour file must be in the
+   project's UTM coordinates; a file in any other system will not line up.
+5. **The limits are tight enough to bite.** Ground has to exceed the north–south
+   or east–west slope limit to be excluded, and gentle ground never does. See
+   [Topography](/docs/inputs/topography).
+
+</Accordion>
+</Accordions>
+
+## Exports
+
+<Accordions>
+<Accordion title="The report has no diagram page">
+
+The single-line diagram page carries your diagram, and it is **skipped silently**
+if the drawing errors — so a diagram problem never blocks the rest of the report.
+Switch to diagram mode and check the diagram is actually there. If it is and the
+page is still absent, something in the drawing is at fault: remove the most
+recently added content — an imported background, or an imported symbol — and
+export again. See [The PDF report](/docs/exports/pdf-report).
+
+</Accordion>
+<Accordion title="The report has no energy pages">
+
+The energy pages are present only when an energy calculation has been run for the
+current layout; nothing else gates them. Click **Calculate Energy**, then export
+again. Two pages are written when monthly data is available, otherwise one combined
+page.
+
+</Accordion>
+<Accordion title="A layer is missing from the CAD drawing">
+
+Two groups of layers are conditional: the **cable and trench layers** are written
+only when cable calculation was on for the run, and the **arrester layer** only
+when arresters were placed. Tick the setting the layer depends on, regenerate and
+export again. The full layer list is in [The CAD drawing export](/docs/exports/dxf).
+
+</Accordion>
+<Accordion title="The diagram exported as a DXF, not a DWG">
+
+The diagram export writes a DXF directly. Converting that DXF to DWG needs the ODA
+File Converter installed on the machine; without it, the file stays a `.dxf`.
+Either install the converter and export again, or open the `.dxf` in your CAD
+program and save it as DWG there — the content is the same either way. See
+[Exporting the diagram](/docs/sld/export).
+
+</Accordion>
+</Accordions>
+
+## Projects
+
+<Accordions>
+<Accordion title="A project file will not open">
+
+A project file is a tamper-evident container. It carries a signature over its own
+contents, and a file whose signature does not match what it contains is **reported
+as an error rather than loaded** — the application will not open a session it
+cannot verify. Likely causes, most common first: the file was truncated in transit,
+cut short by a mail gateway or copied from a share while it was still being
+written; it was edited, or opened and re-saved by another program; or it is not a
+project file from this application.
+
+Fetch the file again from wherever it came from, ideally inside a compressed archive
+so nothing rewrites it on the way. If no intact copy exists, the session has to be
+rebuilt from the boundary file and your inputs. See
+[Saving and reopening a project](/docs/projects).
+
+</Accordion>
+</Accordions>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Getting help"
+    href="/docs/support"
+    description="The in-app guide, and what to include when you report a problem"
+  />
+  <Card
+    title="Every parameter and its default"
+    href="/docs/reference/parameters"
+    description="Field by field, with defaults and ranges"
+  />
+  <Card
+    title="Summary table columns"
+    href="/docs/reference/summary-columns"
+    description="What each column means, and why one reads as not computed"
+  />
+  <Card
+    title="Glossary"
+    href="/docs/reference/glossary"
+    description="The terms used across these pages"
+  />
+</Cards>

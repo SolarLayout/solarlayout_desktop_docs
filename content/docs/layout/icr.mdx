@@ -1,0 +1,255 @@
+---
+title: Inverter control rooms
+description: What an inverter control room is, how many the plant gets, where they are placed, the tables they clear, and how to move one by hand.
+---
+
+An **inverter control room (ICR)** is the building where the plant's collection
+cables terminate and its medium-voltage export begins. In a String Inverter
+plant the inverters stand out in the field and run their AC cables into it. In a
+Central Inverter plant the central inverters themselves stand inside it.
+
+The application places the rooms for you. It works out how many the plant needs
+from the capacity block you set, groups the tables around them, and clears the
+tables each room stands on. You can then move any room by hand if the ground
+does not suit it.
+
+## The footprint
+
+A control room is drawn and cleared as a rectangle with a height, and all three
+dimensions are yours to set in the **Structures & Shadow** group.
+
+| Dimension | Default | What it is |
+| --- | --- | --- |
+| Length | 10.0 m | The building's east–west extent |
+| Width | 4.0 m | The building's north–south extent |
+| Height | 5.0 m | Drives the shadow the building casts |
+
+Length is always the east–west side and width the north–south side, for the
+control room and for every other structure in that group. Enter the building
+you are actually going to build: the footprint is what clears tables, and the
+height is what casts the shadow. See
+[Structures and shadow](/docs/inputs/structures-and-shadow).
+
+## How many the plant gets
+
+The count comes from one field. **ICR Block** on
+[Site parameters](/docs/inputs/site) is the capacity one control room serves,
+in MWp, and defaults to **18.0 MWp** with a range of 0.1 to 500.
+
+The number of rooms is the plant's capacity divided by the block size, rounded
+**up**. A plant of any capacity therefore gets at least one room, and a plant
+that overshoots a block boundary by a small margin gets a whole extra room —
+which is worth checking against your own single-line concept before you accept
+it.
+
+Set the block size to the capacity your transformer and switchgear design
+actually serves. It is the single most consequential number on this page: it
+sets how many buildings the plant carries, how the tables are grouped around
+them, how far the AC runs are, and how many medium-voltage circuits leave the
+plant.
+
+## Where they go
+
+The rooms are placed after the table grid, once the plant's capacity is known,
+and their positions come from where the tables actually are rather than from a
+geometric division of the site.
+
+Tables are grouped spatially by position into blocks of roughly one
+block-size each. A control room is then placed at the centre of each group. The
+result is that every group of tables surrounds its own room, and the room sits
+near the middle of the load it serves — which is what keeps the AC runs from
+that group short.
+
+Each room must fit **entirely** inside the usable area, the same rule the tables
+follow. A position that would put part of the building in the perimeter road
+band, in a water body, in a transmission line corridor or on excluded ground is
+not used. See [How placement works](/docs/layout/how-placement-works).
+
+<Screenshot id="layout-icr-detail" />
+
+## The tables a room clears
+
+**Any table overlapping a control room's footprint is removed.** The building
+wins; the ground under it and the ground its footprint touches carry no
+structures.
+
+That has a consequence the order of the pipeline has to deal with. Removing
+tables lowers the plant's capacity, and the number of rooms was worked out from
+the capacity **before** the removal. So the count is **re-checked against the
+new, lower capacity** once the footprints have been cleared. If the reduced
+capacity no longer justifies the last room, the plant does not carry it.
+
+This is why the room count and the table count in the summary are consistent
+with each other rather than with a figure you would get by dividing the site
+area by the block size.
+
+## Moving a control room by hand
+
+The automatic position is derived from the tables. It knows nothing about where
+the site road reaches, where the ground is firm enough for a building, where the
+existing site access is, or where the owner will allow a structure. When one of
+those decides the position, move the room.
+
+<Steps>
+<Step>
+### Leave the pan and zoom tools inactive
+
+Dragging a room only works when no navigation tool is holding the mouse. If pan
+or zoom is active, switch it off first — otherwise the click pans the plot
+instead of picking up the building.
+</Step>
+
+<Step>
+### Click and hold the room
+
+Click the dark blue rectangle and keep the button down. Fit the view first with
+**Home (⌂)**, then zoom into the room you want, so you are picking up a building
+and not a table beside it.
+</Step>
+
+<Step>
+### Drag it inside the perimeter road and release
+
+Drop it anywhere the whole footprint stays inside the plant — inside the
+perimeter road, clear of the exclusions. On release the layout rebuilds around
+the new position.
+</Step>
+
+<Step>
+### Check what came back
+
+An invalid drop **snaps back** to where the room started, so a room that
+returns to its original position was dropped somewhere it cannot stand. A valid
+drop rebuilds the layout, so the tables the room used to clear come back and the
+tables at the new position go away.
+</Step>
+</Steps>
+
+<Screenshot id="layout-icr-drag" />
+
+<Callout type="warn">
+Moving a room away from the centre of its group of tables lengthens every AC run
+from that group. If cable lengths matter to your estimate, re-check the cable
+columns in the summary after the move rather than assuming they are unchanged.
+</Callout>
+
+## In Central Inverter mode
+
+The building's role changes with the electrical topology, and so does what it
+contains.
+
+<Tabs items={["String Inverter", "Central Inverter"]}>
+<Tab value="String Inverter">
+
+String inverters stand out in the field, in the gap bands between rows. DC
+string cables run from the tables to the inverters, and each inverter's AC
+cable runs to the **nearest** control room, where the medium-voltage circuit
+that leaves the plant begins.
+
+</Tab>
+<Tab value="Central Inverter">
+
+The central inverters sit **inside** the control room. String monitoring boxes
+(SMBs) stand out in the field collecting the strings, and a DC trunk runs from
+each box to the room. There is no AC leg in the field at all, because the
+conversion happens in the building.
+
+One room houses at most **4** central inverters. Size the **ICR Block** so the
+capacity of one block does not need more than that — the block capacity, the
+number of central inverters it implies, and the building you have drawn all have
+to agree.
+
+</Tab>
+</Tabs>
+
+Either way, the medium-voltage cables leave the control rooms and run to the
+main control room, sharing a trunk where their routes converge rather than
+running parallel lines. See [Cable routing](/docs/layout/cables).
+
+On a site with several plant boundaries, each plant's rooms route their
+medium-voltage cables to a unit substation in their own plot instead. See
+[Multi-plot sites](/docs/layout/multi-plot).
+
+## The shadow a control room casts
+
+A 5 m building next to a row of modules shades it. The application computes the
+year-round shadow footprint of every control room, main control room and placed
+object over the **Shadow Window** — the band of solar hours you care about,
+9.0 to 16.0 by default — and, with **Clear tables inside shadows** on, removes
+the tables that fall inside it.
+
+That option is **on** by default, so a first run already keeps tables out of
+building shadows. Switching it off leaves shaded tables in place, which raises
+reported capacity and makes the yield estimate optimistic for those rows. Change
+the room's height and the shadow footprint changes with it.
+
+## The fields that decide a control room
+
+Four fields, in two groups, decide everything about the rooms in a plant:
+
+| Field | Group | What it decides |
+| --- | --- | --- |
+| **ICR Block** | Site Parameters | How many rooms the plant carries, and therefore how the tables are grouped around them |
+| **ICR** length, width and height | Structures & Shadow | The footprint that clears tables, and the height that casts the shadow |
+| **Clear tables inside shadows** | Structures & Shadow | Whether the tables inside a room's year-round shadow are removed |
+| **Shadow Window** | Structures & Shadow | The band of solar hours the shadow footprint is accumulated over |
+
+Nothing else moves a room. In particular, the perimeter road width and the
+obstructions change **where** a room may stand, but never how many there are.
+
+## Checking the rooms after a run
+
+Four things are worth a look before you accept a layout:
+
+- **The count against your electrical concept.** The `ICR` column is the number
+  the capacity block produced. If it is one more than your single-line concept
+  expects, the plant has overshot a block boundary — adjust the block size, or
+  accept the extra building.
+- **Where each room landed.** Zoom into each one. A room at the centre of its
+  group of tables is what you want; a room pushed to one side of its group is
+  usually a room that had nowhere else to fit, and it is the first candidate for
+  a hand move.
+- **Whether the ground is buildable.** The application knows the boundary, the
+  exclusions and the slope limits. It does not know where the site access road
+  will run, or where the ground is firm. Those are yours to check.
+- **The gap the room left.** Turn on **▢ Wireframe** and look at the cleared
+  footprint. If it is much larger than the building you intend, the length and
+  width fields are set to something you did not mean.
+
+## What the summary reports
+
+The `ICR` column carries the count of rooms for each plant, and the TOTAL row
+carries the count for the site. In String Inverter mode the AC cable column is
+the total length of the runs from the inverters into the rooms; in Central
+Inverter mode it is replaced by the DC trunk length into them. Every column is
+listed in [Summary table columns](/docs/reference/summary-columns).
+
+The exported PDF report goes further than the summary table: its inverter and
+cable page breaks the cable lengths down **per control room**, which is the view
+to take to a cable schedule. See
+[The PDF report](/docs/exports/pdf-report).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Site parameters"
+    href="/docs/inputs/site"
+    description="The capacity block that sets how many rooms the plant gets"
+  />
+  <Card
+    title="Structures and shadow"
+    href="/docs/inputs/structures-and-shadow"
+    description="Footprints, heights, the shadow window and the clearing rule"
+  />
+  <Card
+    title="Site equipment"
+    href="/docs/layout/site-equipment"
+    description="Placing the main control room, objects and street lights"
+  />
+  <Card
+    title="Design modes"
+    href="/docs/design-modes"
+    description="What changes between String and Central Inverter plants"
+  />
+</Cards>

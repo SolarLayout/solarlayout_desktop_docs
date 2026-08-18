@@ -1,0 +1,347 @@
+---
+title: How yield is calculated
+description: The full energy model — in-plane irradiance, performance ratio, specific yield, degradation, capacity factor — and where each result appears.
+---
+
+The energy calculation turns one irradiance figure and one performance ratio
+into an annual generation number, then degrades that number across the plant
+lifetime and reports it at three exceedance probabilities. Every step is a
+single explicit relation, and every input to those relations is either a field
+you can see or a value fetched and displayed on screen. Nothing in the chain is
+hidden, which is what makes the output defensible.
+
+This page is the whole chain in order. The sub-pages hold the detail behind
+each link in it.
+
+## What the calculation needs before it can run
+
+Two things, and it will not produce a yield without either.
+
+**A generated layout.** Plant capacity in kWp is the placed module count
+multiplied by the module wattage, so it does not exist until placement has run.
+See [Your first layout](/docs/first-layout). Everything else in the chain is a
+per-kWp figure that only becomes energy when it is multiplied by that capacity.
+
+**A site position.** Latitude and longitude decide the solar geometry, the
+irradiance the weather source returns, the automatic tilt and the automatic row
+pitch. A Google Earth boundary file carries the position inside it. A CAD
+drawing and a raster image do not.
+
+<Callout type="warn">
+A CAD or image boundary loaded without a site latitude and longitude still
+produces a layout — the geometry is complete and the summary fills in — but
+**energy calculation is unavailable**. Enter the coordinates when the
+application asks for them. See [CAD boundary](/docs/inputs/cad-boundary) and
+[Image boundary](/docs/inputs/image-boundary).
+</Callout>
+
+## The controls
+
+Three controls sit together in one block, and they become available once a
+layout exists.
+
+| Control | What it does |
+| --- | --- |
+| **Calculate Energy** | Runs the whole chain below. With the automatic weather source selected, this is also the moment the irradiance is fetched. |
+| **📊 Show Energy Chart** | Opens the hourly and monthly charts built from the same series the calculation used. See [Charts and time series](/docs/energy/timeseries). |
+| **Export TMY data CSV** | Writes a full-year time series of horizontal irradiance, in-plane irradiance and energy, at the interval chosen in the selector beside it. |
+
+The interval selector offers **1 / 10 / 15 / 30 / 60 min** and ships at
+**15 min**. TMY is a typical meteorological year — a single representative
+year rather than a specific calendar year. The export needs an hourly series
+to work from, which means either a loaded hourly file or an hourly fetch from
+the automatic service; an annual total on its own is not enough.
+
+<Screenshot id="energy-buttons" />
+
+## The chain, in order
+
+### 1. In-plane irradiance
+
+The calculation starts from **GTI** — global tilted irradiance, the annual
+irradiation arriving on the plane of the modules, in kWh/m²/yr. It is not the
+same quantity as **GHI**, global horizontal irradiance, which is what most
+weather records contain. GTI is the one that drives the yield.
+
+Where GTI comes from depends on your weather source: the automatic service
+returns it directly for your position, tilt and orientation, and an hourly file
+either carries it or has it derived from the horizontal figure. See
+[Weather data](/docs/energy/weather).
+
+### 2. Performance ratio
+
+**PR**, the performance ratio, is the fraction of the energy a plant would
+produce if every module ran at its nameplate efficiency that it actually
+delivers to the grid. It is a dimensionless number below 1, and it carries
+every loss between the light hitting the glass and the energy leaving the
+plant: inverter conversion, cable resistance, soiling, module temperature,
+mismatch, shading, availability, transformer and the rest.
+
+You do not enter PR. You enter the components, and PR follows from them — the
+components are combined **multiplicatively**, as a product of the factors and of
+one minus each loss, not as one minus their sum. The full relation, component by
+component, is on [The loss breakdown](/docs/energy/losses).
+
+### 3. Specific yield
+
+```
+Specific yield = GTI (kWh/m²/yr) × PR
+```
+
+**Specific yield** is annual energy per unit of installed DC capacity, in
+kWh/kWp. It is the figure to compare two designs on the same site with,
+because it is independent of how big the plant is.
+
+### 4. Year-one energy, before first-year degradation
+
+```
+Year 1 energy = capacity_kWp × specific yield
+```
+
+`capacity_kWp` is the plant's installed DC capacity — the `DC(MWp)` column of
+the summary table, in kWp. The product is in kWh; the summary reports MWh.
+
+This figure is the plant before any degradation has been applied. It is not a
+number you will see reported on its own; it is the base the next two relations
+work from.
+
+### 5. First year, after first-year degradation
+
+```
+Year 1 (actual) = Year 1 × (1 − first-year degradation %)
+```
+
+**1st year degradation** ships at **1.0 %** and accepts 0–10 %. It stands for
+the loss a module takes in its first year of exposure that it never recovers —
+principally **LID**, light-induced degradation. It is separated from the
+annual figure because it is a one-off step, not a rate.
+
+`Year 1 (actual)` is the year-one energy every reported figure is built from:
+the three probability columns, the capacity factor, and the lifetime total.
+
+### 6. Every year after the first
+
+```
+Year n (n ≥ 2) = Year 1 (actual) × (1 − annual degradation %)^(n−1)
+```
+
+**Annual degradation** ships at **0.4 %/yr** and accepts 0–5 %/yr. It
+compounds: the exponent is `n − 1`, so year 2 has taken one year of
+degradation and the final year of a 30-year plant has taken 29.
+
+**Plant lifetime** ships at **30** years and accepts 1–50. It sets how far the
+series runs.
+
+### 7. Capacity factor
+
+```
+CUF = Year 1 (actual) / (capacity_kWp × 8760) × 100 %
+```
+
+**CUF**, the capacity utilisation factor, is year-one energy expressed as a
+percentage of what the plant would generate if it ran at full DC nameplate
+output for every hour of the year. 8760 is the number of hours in a year.
+
+Two things follow from the relation, and both matter when someone challenges
+the figure. It is computed on **year one after degradation**, not on the
+before-degradation figure, and it is computed against **DC** capacity, not AC.
+A capacity factor quoted against AC capacity on the same plant is a larger
+number and is not this number.
+
+## Degradation, worked from the shipped defaults
+
+The degradation part of the chain can be worked end to end from defaults
+alone, so it is worth seeing once. The table below is the output multiplier
+relative to the before-degradation year-one energy, at **1.0 %** first-year
+degradation and **0.4 %/yr** annual degradation.
+
+| Year | Relation | Multiplier |
+| --- | --- | --- |
+| 1, before degradation | — | 1.000 |
+| 1, actual | 1 − 0.010 | 0.990 |
+| 2 | 0.990 × 0.996 | 0.986 |
+| 10 | 0.990 × 0.996⁹ | 0.955 |
+| 30 | 0.990 × 0.996²⁹ | 0.881 |
+
+The last row is the one a lender's model usually wants: on the shipped
+defaults, the final year of a 30-year plant generates about 88.1 % of what
+year one would have generated before any degradation at all.
+
+The first three steps of the chain cannot be worked the same way, and it is
+worth being clear about why rather than picking plausible numbers. **GTI (in-plane)**
+ships at 0.0 until a weather source fills it, and capacity comes from your own
+placed layout — so any absolute MWh example would be an invented site, not a
+default. Run the chain on your own site instead.
+
+See [Lifetime and P-values](/docs/energy/lifetime-and-p-values) for how the
+same series is turned into the exceedance probabilities.
+
+## Monthly figures
+
+Alongside the annual numbers the application produces a month-by-month table
+following **IEC 61724-1**, the standard for PV system performance monitoring.
+Three quantities per month:
+
+```
+Y_r  = H_i / G_STC          reference yield, in hours
+Y_f  = E_AC / P_0           final yield, in kWh/kWp
+PR_m = Y_f / Y_r            monthly performance ratio
+```
+
+- `H_i` is the month's in-plane irradiation and `G_STC` the standard test
+  condition irradiance, so `Y_r` is the number of equivalent full-sun hours in
+  the month.
+- `E_AC` is the month's AC energy and `P_0` the installed DC capacity, so `Y_f`
+  is the month's specific yield.
+- `PR_m` is their ratio — the same definition as the annual PR, evaluated on
+  one month.
+
+Monthly PR is not the annual PR repeated twelve times. It moves with module
+temperature, and module temperature moves with the month's ambient temperature
+and its own operating irradiance:
+
+```
+G_m = monthly GTI × 1000 / (days × 8 h/day)   W/m²
+```
+
+Monthly ambient temperature comes from a sinusoidal seasonal model whose
+amplitude scales with the absolute latitude of the site — or, when your weather
+file carries a temperature column, from the file itself. The module temperature
+for the month then follows the Sandia relation on
+[Temperature loss](/docs/energy/temperature). A hot low-latitude site therefore
+shows its lowest monthly PR in the hottest months, which is the behaviour a
+reviewer expects to see.
+
+## Where the results appear
+
+Five columns at the right-hand end of the **Layout & Energy Summary** table
+carry the energy result, one row per plant plus a **TOTAL** row:
+
+| Column | What it holds |
+| --- | --- |
+| `P50Yr1(MWh)` | Year-one energy at the first exceedance probability |
+| `P75Yr1(MWh)` | Year-one energy at the second |
+| `P90Yr1(MWh)` | Year-one energy at the third |
+| `CUF(%)` | The capacity factor from the relation above |
+| `25yrP50(MWh)` | The **lifetime** total — every year from 1 to **Plant lifetime**, summed, at the first probability. The "25yr" in the header is fixed text and does not follow the setting. |
+
+<Screenshot id="energy-summary-columns" />
+
+The three probability headers are **built from your own settings**. They read
+`P50` / `P75` / `P90` because **Exceedance prob. 1**, **2** and **3** ship at
+50.0, 75.0 and 90.0 %. Change any of them and the header changes with it. Two
+reports are therefore only comparable column for column if both were run with
+the same three probabilities — check the headers, not the position.
+
+The two lower probabilities are derived from the first through the combined
+uncertainty:
+
+```
+P75 = P50 × (1 − 0.674 × σ)
+P90 = P50 × (1 − 1.282 × σ)
+```
+
+`σ` is **Combined uncertainty (1σ)**, which ships at **5.0 %** and accepts
+0.1–30.0 %. The multipliers are the standard normal deviates at those
+exceedance levels.
+
+<Callout type="warn">
+**The last column's header is mislabelled — the figure is not a 25-year one.**
+`25yrP50(MWh)` reads as fixed text whatever the lifetime is set to, while the
+value under it is the sum of every year from 1 to **Plant lifetime**, scaled to
+the first exceedance probability. On the shipped default lifetime of **30**
+years, the column headed "25yr" therefore reports a **30-year** total. Unlike the
+three probability headers, this one does not follow its own setting. Quote the
+figure as the lifetime total and state the lifetime you used alongside it.
+</Callout>
+
+The full column list, including everything to the left of these five, is on
+[Summary columns](/docs/reference/summary-columns). The monthly IEC 61724-1
+table and the multi-year forecast are written to the energy pages of the
+exported report — see [PDF report](/docs/exports/pdf-report).
+
+## What this model is and is not
+
+State these plainly to anyone reviewing the output, because they are the
+questions a careful reviewer asks.
+
+**It is a yield estimate from a loss model, not an hourly plant simulation.**
+The annual result is an annual irradiation total multiplied by a single
+performance ratio and a capacity. Hourly data is used — for the transposition
+from horizontal to in-plane irradiance, for the shading loss, and for the
+charts and the export — but the energy figure is not an hour-by-hour
+simulation of module, inverter and transformer behaviour, and it does not
+replace one.
+
+**Row-to-row shading is modelled; terrain and horizon shading are not.**
+The near-shading loss is computed from your own row geometry, and tables
+falling inside the year-round shadow of a structure you place are cleared from
+the layout. Distant horizon profiles and shading from the site's own relief are
+not part of the model. See [Shading loss](/docs/energy/shading).
+
+**The result is only as good as the weather data behind it.** Every number on
+this page is downstream of one irradiance figure. A monthly climatology
+average and a purchased site-specific typical meteorological year will not give
+the same answer, and the difference between them is larger than most of the
+loss components you might argue about. Check which source produced your
+irradiance before quoting the yield — the application reports it on screen.
+
+## The energy pages
+
+<Cards>
+  <Card
+    title="Weather data"
+    href="/docs/energy/weather"
+    description="The automatic service, your own hourly file, and how horizontal irradiance becomes in-plane"
+  />
+  <Card
+    title="The loss breakdown"
+    href="/docs/energy/losses"
+    description="Every component of the performance ratio, with defaults and ranges"
+  />
+  <Card
+    title="Temperature loss"
+    href="/docs/energy/temperature"
+    description="The thermal model, the four mounting types, and why this loss is computed rather than assumed"
+  />
+  <Card
+    title="Shading loss"
+    href="/docs/energy/shading"
+    description="Row-to-row near-shading from your own geometry, and the shadow view"
+  />
+  <Card
+    title="Bifacial gain"
+    href="/docs/energy/bifacial"
+    description="Ground albedo and how rear-side irradiance is estimated"
+  />
+  <Card
+    title="Lifetime and P-values"
+    href="/docs/energy/lifetime-and-p-values"
+    description="Degradation, plant lifetime, uncertainty and the exceedance probabilities"
+  />
+  <Card
+    title="Charts and time series"
+    href="/docs/energy/timeseries"
+    description="The hourly and monthly charts, and the time-series export"
+  />
+</Cards>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Summary columns"
+    href="/docs/reference/summary-columns"
+    description="Every column in the summary table, in order"
+  />
+  <Card
+    title="Every parameter and its default"
+    href="/docs/reference/parameters"
+    description="The complete input reference in one table"
+  />
+  <Card
+    title="PDF report"
+    href="/docs/exports/pdf-report"
+    description="Where the loss breakdown and the monthly table are written"
+  />
+</Cards>

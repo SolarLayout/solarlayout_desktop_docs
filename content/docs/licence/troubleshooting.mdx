@@ -1,0 +1,305 @@
+---
+title: Licence problems
+description: Every message the licence check produces, what each one means, the likely causes in order, and what to do about them.
+---
+
+The licence check runs on every start and applies eight checks in a fixed order.
+When one fails, the licence window reports it with a named message and layout
+generation stays blocked. This page lists every message, what it means, the
+likely causes in order of likelihood, and what to do.
+
+Open **Help ▸ License / Subscription…** to read the message. It is worth doing
+even when you already know something is wrong, because the message names the
+check that stopped the licence — and that is usually the whole diagnosis.
+
+## Check these three things first
+
+1. **Read the banner in the licence window.** Match its text against the
+   headings below.
+2. **Compare the Device ID.** The value in the window is this machine's. If it
+   is not the value the licence was issued against, no other explanation is
+   needed. The message you get when layout generation is blocked calls the same
+   value the **Machine ID**; the two labels name one identifier, and there is
+   only ever one of it.
+3. **Check the machine's date and time.** Two of the eight checks compare the
+   licence against the clock, so a wrong clock produces a message that has
+   nothing to do with the licence file.
+
+## The messages
+
+<Accordions>
+
+<Accordion title="No license found">
+
+**What it means.** The first check — a readable licence file exists — found
+nothing. Nothing else was examined.
+
+**Likely causes, most common first.**
+
+1. The licence has never been loaded on this machine. It is a new installation,
+   or a new PC.
+2. You are signed into a **different Windows user account** than the one the
+   licence was loaded under. The licence is stored at
+   `%APPDATA%\SolarLayout.Desktop\license.lic`, and `%APPDATA%` belongs to one
+   Windows user. The machine's Device ID is the same, so the same file works —
+   it only has to be loaded once under this account.
+3. The file was deleted, or the folder was cleared by a cleanup tool or a
+   corporate profile reset.
+4. The file was copied into a folder by hand rather than loaded through the
+   licence window.
+
+**What to do.** Load your saved `license.lic` through **Load License File…**. If
+you do not have the file, ask the vendor who supplied it to send it again —
+activation on this machine has not changed, so the same licence still applies.
+If you have never activated, follow
+[Activate your licence](/docs/licence/activate).
+
+</Accordion>
+
+<Accordion title="License signature invalid (tampered or wrong key)">
+
+**What it means.** The file is a licence, but the signature over its contents no
+longer matches those contents. Your copy of the application can check a
+signature; it cannot repair one. See
+[How licensing works](/docs/licence/overview) for why.
+
+**Likely causes, most common first.**
+
+1. The file was opened in a text editor and saved. Editors change line endings
+   or character encoding on save, and that alone breaks the signature — nobody
+   has to have edited the text.
+2. The file was damaged in transit: truncated by a mail gateway, mangled by a
+   chat client, or extracted from a compressed archive with the wrong settings.
+3. Somebody edited the contents deliberately — a later expiry date, a different
+   Device ID. This never works.
+4. It is not the file you were sent. An older licence, a licence for a different
+   application, or a partially downloaded copy.
+
+**What to do.** Go back to the original message from the vendor, save the
+attachment again without opening it, and load that copy. If it still fails, ask
+for the file to be sent again — ideally inside a compressed archive, so no mail
+gateway rewrites it in transit.
+Never attempt to fix the file yourself; the signature cannot be recomputed on
+your machine.
+
+</Accordion>
+
+<Accordion title="License is issued for a different computer">
+
+**What it means.** The signature is good, so the licence is genuine — but the
+Device ID inside it is not this computer's.
+
+**Likely causes, most common first.**
+
+1. The licence belongs to another PC. Copying `license.lic` between machines
+   does not transfer a licence.
+2. The Device ID was mistyped when you sent it, so the licence was issued
+   against a value that does not correspond to any machine. This is why the
+   window has a **Copy** button.
+3. You have changed machine — a new PC, or the same work moved to a laptop.
+4. The Device ID this machine reports is no longer the one the licence was
+   issued against.
+
+**What to do.** Open the licence window, copy the Device ID it shows now, and
+send it to the vendor for reissue. Include the email address the original
+licence was issued to so it can be matched to your subscription.
+
+**On the Device ID changing.** The identifier is derived from the machine, and
+exactly which changes to a machine alter it is not worth predicting. Plan around
+two cases: a reinstall of Windows and a move to a different computer can both
+change it. Once the value the window reports differs from the value the licence
+was issued against, the licence has to be reissued for the new value — nothing
+you load will make the old one match. Signing into a different Windows account
+does not change it, which is why the same file works once loaded under that
+account.
+
+</Accordion>
+
+<Accordion title="System clock appears to have been set backwards">
+
+**What it means.** The application keeps a record of the latest date it has
+seen, in `%APPDATA%\SolarLayout.Desktop\.lastseen`. This machine's clock is now
+behind that recorded date by more than the check tolerates. Because a licence is
+valid for a period, a clock that can be wound back would be a way to extend one,
+so the check treats a backwards jump as a reason to stop rather than a reason to
+carry on.
+
+**How far the clock may move back.** The check allows **two days**, and objects
+only beyond that: today's date is compared against the latest date seen, less two
+days. Ordinary drift, a machine that has been off for a while, and travel across
+time zones all pass. A date years in the past — the signature of a dead clock
+battery — does not.
+
+**Likely causes, most common first.**
+
+1. **A dead CMOS battery.** The clock resets every time the PC is fully powered
+   off, usually to a date years in the past. This is the single most common
+   cause on an older desktop, and it will recur every morning until the battery
+   is replaced.
+2. **A corporate image with a wrong clock.** A freshly imaged or freshly built
+   machine that has not yet synchronised its time, or one that cannot reach a
+   time server through the firewall.
+3. **The clock was changed by hand.** Someone set the date back — to test
+   something, to work around a different application, or by mistake in a time
+   zone setting.
+4. **The machine's time is correct now, but was wrong — ahead — earlier.** If
+   the clock briefly read a date in the future, that date was recorded, and the
+   correct date now looks like a jump backwards.
+
+**What to do.**
+
+1. Set the correct date, time and time zone, and turn on automatic time
+   synchronisation so it stays correct. Then reopen the licence window.
+2. If the clock resets whenever the machine is switched off, have the CMOS
+   battery replaced. No licence action will fix it.
+3. If the clock is demonstrably correct and the message persists, the recorded
+   date is ahead of today. Contact the vendor who supplied the licence, and say
+   the clock record is ahead of the true date — do not edit the licence file,
+   which has nothing to do with this check.
+
+</Accordion>
+
+<Accordion title="License is not active until …">
+
+**What it means.** The licence is genuine and for this machine, but its start
+date is in the future. The message names that date.
+
+**Likely causes, most common first.**
+
+1. The licence was issued ahead of the subscription period starting — for
+   example a renewal sent early, loaded before the current period ends.
+2. This machine's clock is **behind** the true date, so a licence that started
+   yesterday looks as though it starts tomorrow.
+3. The licence was issued against the wrong start date.
+
+**What to do.** Check the date the message names against today's date and
+against the machine's clock. If the clock is wrong, correct it. If the clock is
+right and the start date is genuinely in the future, either wait until that date
+or ask the vendor to reissue with the correct start. In the meantime, if you had
+a working licence for the current period, reload that file.
+
+</Accordion>
+
+<Accordion title="License expired on …">
+
+**What it means.** The subscription period the licence covers has ended. The
+message names the date. Everything else about the licence is fine.
+
+**Likely causes, most common first.**
+
+1. The subscription period has genuinely ended and has not been renewed.
+2. A renewal was issued but never loaded. Receiving the file is not the same as
+   loading it through **Load License File…**.
+3. This machine's clock is **ahead** of the true date, so a licence that is still
+   valid looks expired.
+
+**What to do.** If a renewal has already been sent to you, load it — the new
+file replaces the old one and needs nothing cleared first. If not, contact the
+vendor who supplied the licence to renew. Check the machine's clock before you
+do, so you are not chasing a renewal you do not need.
+
+</Accordion>
+
+<Accordion title="License has no valid expiry date">
+
+**What it means.** The licence passed its earlier checks but does not carry an
+end date the application can read. A licence with no readable expiry is refused
+rather than treated as unlimited.
+
+**Likely causes, most common first.**
+
+1. The file was truncated in transit, losing the part that carries the dates.
+2. The licence was issued with a malformed or missing expiry date.
+3. It is not a licence for this application, or not a complete one.
+
+**What to do.** Save the attachment again from the original message and load
+that copy. If it fails the same way, the file needs reissuing — contact the
+vendor, quote this message exactly, and say the expiry date is unreadable.
+Nothing on your side can fix it.
+
+</Accordion>
+
+</Accordions>
+
+## Other situations
+
+<Accordions>
+
+<Accordion title="I updated the application and the licence is gone">
+
+An update should never cost you an activation. The licence lives at
+`%APPDATA%\SolarLayout.Desktop\license.lic`, outside the application, and on
+first run the application looks for a licence left by a previous installation
+and adopts it automatically.
+
+If the licence window reports *"No license found"* after an update or a
+reinstall, work through these in order:
+
+1. **Check which Windows account you are signed into.** This is the most common
+   answer. That storage location is per user, so a licence loaded under one
+   Windows account is invisible to another. Load your saved file once under this
+   account.
+2. **Load your saved `license.lic` again.** One click in **Load License File…**,
+   and nothing has to be uninstalled or cleared first. The licence is still
+   valid for this machine.
+3. **If you no longer have the file, ask the vendor to resend it.** Your machine
+   has not changed, so the same licence still applies — this is not a reissue.
+
+This is the reason to keep the `license.lic` you were sent somewhere outside the
+machine, such as a mailbox folder or a network share. See
+[Updates and reinstalling](/docs/install/updates).
+
+</Accordion>
+
+<Accordion title="Generate Layout still does nothing after I loaded a licence">
+
+Reopen **Help ▸ License / Subscription…** and read the banner. If it does not
+report a valid licence with an expiry date, the load did not take effect — find
+the message it does show in the list above and follow that.
+
+If the banner does report a valid licence, the licence is not what is stopping
+you. Check that a boundary file has been loaded, and that it was read without a
+validation complaint. [Boundary files](/docs/inputs/boundary-files) covers what
+the application expects, and [Troubleshooting](/docs/troubleshooting) covers
+problems that are not licence-related.
+
+</Accordion>
+
+<Accordion title="What to send when you ask for help">
+
+Send all of this in one message, so the licence can be checked without a
+round trip:
+
+- **The Device ID**, copied with the **Copy** button in the licence window — not
+  retyped.
+- **The exact message text** from the banner, including any date it names.
+- **The email address the licence was issued to.**
+- **Today's date and time as the machine reports it**, if the message concerns
+  the clock, the start date or the expiry date.
+- **Whether the file has been opened in any editor** since you received it.
+
+Send it to the vendor who supplied your licence.
+
+</Accordion>
+
+</Accordions>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="How licensing works"
+    href="/docs/licence/overview"
+    description="Per-machine licensing, the eight checks, and where the file is stored"
+  />
+  <Card
+    title="Activate your licence"
+    href="/docs/licence/activate"
+    description="The four steps, and what the Device ID identifies"
+  />
+  <Card
+    title="Getting help"
+    href="/docs/support"
+    description="The in-app guide and how to report a problem"
+  />
+</Cards>

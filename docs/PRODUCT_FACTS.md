@@ -128,6 +128,20 @@ computed differently — `kmz_parser.py:39-44, 96-133, 311-319, 452-470`:
 - Geo-referencing preserves shape and area exactly: each DXF point is
   treated as a metre offset from the drawing centroid, added to the
   reference point projected to UTM — `dxf_parser.py:8-22`.
+- ⚠️ **Skipping the coordinates does not stop the layout — it silently uses a
+  fallback position.** The parser falls back to **latitude 20.0° N, longitude
+  78.0° E** (`dxf_parser.py:38-39, 274-275`). Consequences the reader must know:
+  - The layout is generated normally, but the **automatic tilt and row pitch
+    are derived from that fallback latitude**, not from the real site. On a site
+    far from that latitude they will be wrong. Overriding both is the fix.
+  - **Calculate Energy is properly disabled** in this case
+    (`MW:2914, 3135-3140`), with a tooltip explaining why and telling the reader
+    to reload with coordinates. So no wrong energy figure is produced — the
+    exposure is limited to tilt and pitch.
+- **Every interior ring becomes a hard obstacle.** Water bodies cannot be
+  distinguished, because there are no feature names to classify on —
+  `dxf_parser.py:268-272`. The largest closed ring is the boundary; anything
+  fully inside it is an obstacle.
 - **Only `LWPOLYLINE` and `POLYLINE` entities are read** —
   `dxf_parser.py:64-69, 171-172`. Circles, splines, arcs, hatches and plain
   lines are ignored, for both the boundary and interior obstacles. The
@@ -303,6 +317,10 @@ the shadow footprint.
 | MCR | **15.0** | **8.0** | 5.0 | m |
 | USS | 5.0 | 4.0 | 5.0 | m |
 | Object | 0.0 | 0.0 | 0.0 (0 = not configured) | m |
+
+Ranges for those twelve fields — `IP:582-587`: **Length 0.0–500.0 m**,
+**Width 0.0–500.0 m**, **Height 0.0–200.0 m**, each to one decimal place. They
+are the same for all four structures.
 
 Corroborated by the constants — `MP:233-243`: `ICR_EW=10.0`, `ICR_NS=4.0`,
 `MCR_EW=15.0`, `MCR_NS=8.0`, `USS_EW=5.0`, `USS_NS=4.0`. The runtime footprint
@@ -1227,6 +1245,37 @@ circles never do, whatever the **Lightning Arresters** switch is set to.
 
 **Auto-build needs no energy calculation.** Its ratings come from the materials
 list, which is computed from the layout alone. Generating the layout is enough.
+
+**What Generate Layout does to Sketch-Mode edits** — `MW:2739-2771`. This is
+consequential and easy to get wrong, so state it precisely:
+
+1. If the reader is still in Sketch Mode, Generate leaves it first, so the
+   edits are committed rather than lost.
+2. If the layout was edited, Generate **re-places every table, tracker,
+   inverter and control room from scratch** into the newly available space. So
+   hand-placed and hand-deleted **tables do not survive** a Generate.
+3. But the obstructions, corridors and main control room the reader drew **do**
+   survive — they are collected and fed to the placement as **keep-outs**. That
+   is the point of the re-plot: the design is rebuilt *around* the reader's
+   constraints.
+4. The re-plot is forced to the **aligned grid** — **Maximize placement** is
+   switched off for it, deliberately, so pile coordinates stay uniform for
+   construction. A reader who had Maximize placement on will get an aligned
+   plant back.
+5. The status line reads *"Re-plotting the aligned grid around your sketch
+   edits…"*.
+6. Hand-drawn cable trenches are the exception and do persist — see the trench
+   entry above.
+
+`_refresh_layout_keep_edits` exists in the code but nothing calls it, so there
+is **no** "keep my layout, just refresh the numbers" path. Do not document one.
+
+**A half table receives the full pile pattern and counts as a whole table.**
+The pattern is stamped onto every entry in the placed-table list without
+regard to `is_half` (`MW:4029, 8016`), and the summary's pile column is
+`table count × piles per table` (`MW:7373, 7462`) — halves included at full
+weight. So on a plant with half-table infill the pile count is optimistic, and
+some stamped piles can fall outside a half table's narrower footprint. Say so.
 
 ## 19. Facts we do not have
 

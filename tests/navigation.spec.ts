@@ -64,46 +64,84 @@ test("the table of contents shows at laptop width and links to a heading", async
   await expect(page).toHaveURL(new RegExp(`${href?.replace("#", "\\#")}$`))
 })
 
-test("the theme toggle switches between light and dark", async ({ page }) => {
+test("the theme toggle changes the theme and the painted background", async ({
+  page,
+}) => {
   await page.goto("/docs/intro")
 
-  const initial = await page.evaluate(() =>
-    document.documentElement.classList.contains("dark"),
-  )
+  // Fumadocs renders a single control labelled "Toggle Theme" that cycles
+  // through the modes — not one button per mode. So assert that the theme
+  // CHANGED, rather than that it reached a particular one.
+  const toggle = page.getByRole("button", { name: /toggle theme/i }).first()
+  await expect(toggle).toBeVisible()
 
-  // Fumadocs renders the theme control as a group of buttons; pick the one
-  // for the mode we are not currently in.
-  const target = initial ? /light/i : /dark/i
-  await page.getByRole("button", { name: target }).first().click()
+  const readState = () =>
+    page.evaluate(() => ({
+      dark: document.documentElement.classList.contains("dark"),
+      bg: getComputedStyle(document.body).backgroundColor,
+    }))
 
-  await expect
-    .poll(() =>
-      page.evaluate(() => document.documentElement.classList.contains("dark")),
-    )
-    .toBe(!initial)
+  const before = await readState()
 
-  // And the change is real, not just a class: the page background moves.
-  const bg = await page.evaluate(
-    () => getComputedStyle(document.body).backgroundColor,
-  )
-  expect(bg).toBeTruthy()
+  // Cycle until the resolved theme flips. Three clicks covers a
+  // light/dark/system cycle from any starting point.
+  for (let i = 0; i < 3; i += 1) {
+    await toggle.click()
+    const now = await readState()
+    if (now.dark !== before.dark) break
+  }
+
+  const after = await readState()
+  expect(
+    after.dark,
+    "the .dark class on <html> did not change after cycling the theme control",
+  ).not.toBe(before.dark)
+
+  // The class change must actually repaint — this is what catches a broken
+  // theme bridge in app/global.css, which a class-only assertion would miss.
+  expect(
+    after.bg,
+    "the theme class changed but the page background did not, so the token bridge is not applying",
+  ).not.toBe(before.bg)
 })
 
-test("search finds a page by its title", async ({ page }) => {
+test("search returns a real result, not just an empty dialog", async ({
+  page,
+}) => {
+  // Worth asserting a result rather than the dialog: without the /api/search
+  // route the dialog still opens and accepts typing, and every query silently
+  // returns nothing. That reads as "search is bad" rather than "search is
+  // broken", so only a positive result proves the backend is wired.
   await page.goto("/docs/intro")
 
-  // Fumadocs binds the search dialog to Ctrl/Cmd+K.
   await page.keyboard.press("ControlOrMeta+k")
 
-  const input = page.getByRole("searchbox").or(
-    page.getByPlaceholder(/search/i),
-  )
-  await expect(input.first()).toBeVisible()
+  const input = page
+    .getByRole("searchbox")
+    .or(page.getByPlaceholder(/search/i))
+    .first()
+  await expect(input).toBeVisible()
 
-  await input.first().fill("lightning")
+  await input.fill("lightning")
+
+  // Results render as buttons inside the dialog, not as anchors — so match on
+  // the button role rather than the link role.
+  const dialog = page.getByRole("dialog")
+  const result = dialog
+    .getByRole("button", { name: /lightning arresters/i })
+    .first()
+
   await expect(
-    page.getByRole("link", { name: /lightning/i }).first(),
-  ).toBeVisible({ timeout: 10_000 })
+    result,
+    "search returned no result for a term that appears in a page title — check /api/search",
+  ).toBeVisible({ timeout: 15_000 })
+
+  // And the result must navigate somewhere real. Which page ranks first is the
+  // search engine's business — several pages mention arresters — so assert the
+  // invariant that matters: it lands on a docs page that renders.
+  await result.click()
+  await expect(page).toHaveURL(/\/docs\//)
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
 })
 
 test("the top navigation offers the cross-surface links", async ({ page }) => {

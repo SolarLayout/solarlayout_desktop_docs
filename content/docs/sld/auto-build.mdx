@@ -1,0 +1,205 @@
+---
+title: Building a diagram from the plant
+description: Auto-build draws a starter single-line diagram from the plant's own equipment counts and the materials list's ratings, for you to check and extend.
+---
+
+Auto-build draws a starter **single-line diagram** — SLD — from the plant you
+have already laid out. It reads the plant's own equipment counts and the bill of
+materials' ratings, places the chain from the modules through to the grid, and
+annotates each block with how many of that item there are and what it is rated
+at. What you get is a correct-by-count skeleton on the drawing sheet, which you
+then edit.
+
+It is a starting point, not a finished drawing. The chain it places is the
+generation-to-grid path; the protection, switching and instrumentation an issued
+SLD carries is drawing work you do on top of it.
+
+<Screenshot id="sld-autobuild" />
+
+## Before you run it
+
+Auto-build reads the plant as it stands at the moment you use it, so the plant
+has to exist first.
+
+<Steps>
+<Step>
+### Generate the layout
+
+The equipment counts come from the placed plant — the inverters or string
+monitoring boxes, and the control rooms they feed. With no layout there is
+nothing to count. See [Your first layout](/docs/first-layout).
+
+A generated layout is the **whole** prerequisite. The ratings auto-build
+annotates come from the bill of materials, which is computed from the layout
+alone, so **no energy calculation is needed** — running the yield calculation
+first adds nothing to the diagram.
+</Step>
+
+<Step>
+### Switch diagram mode on and run auto-build
+
+Click **⚡ SLD** on the plot toolbar, then **Auto-build**. The chain is drawn on
+the sheet.
+</Step>
+</Steps>
+
+<Callout type="warn">
+Auto-build reads the plant at the moment you run it. If the layout changes
+afterwards, run it again on a sheet you have emptied with **🗑 Clear SLD**, so
+that the chain and the plant describe each other.
+</Callout>
+
+## The chain it draws
+
+Which chain you get follows the electrical topology chosen at launch, because the
+two topologies convert the DC in different places. See
+[Choosing a design mode](/docs/design-modes).
+
+<Tabs items={["String Inverter", "Central Inverter"]}>
+<Tab value="String Inverter">
+
+```
+PV → String Inverter (×N) → ACCB (×n) → Transformer → MV Panel → Grid
+```
+
+| Stage | What it is |
+| --- | --- |
+| **PV** | The module field feeding the inverters |
+| **String Inverter (×N)** | The string inverters placed across the plant, each converting DC to AC where it stands. `N` is how many the layout placed |
+| **ACCB (×n)** | The AC circuit breakers the inverters land on. `n` follows from the inverter count and the inverters-per-breaker rule |
+| **Transformer** | The machine taking the collected AC output up to medium voltage |
+| **MV Panel** | The medium-voltage switchgear the transformer feeds |
+| **Grid** | The outgoing connection |
+
+The AC leg is what distinguishes this chain: conversion happens out in the field,
+so what arrives at the breaker is already AC.
+
+</Tab>
+<Tab value="Central Inverter">
+
+```
+PV → SMB (×N) → Central Inverter (×n) → Transformer → MV Panel → Grid
+```
+
+| Stage | What it is |
+| --- | --- |
+| **PV** | The module field feeding the string monitoring boxes |
+| **SMB (×N)** | The string monitoring boxes placed across the plant, each collecting strings and passing their combined DC output on without converting it. `N` is how many the layout placed |
+| **Central Inverter (×n)** | The central inverters the DC trunks land on, inside the control rooms |
+| **Transformer** | The machine taking the inverter output up to medium voltage |
+| **MV Panel** | The medium-voltage switchgear the transformer feeds |
+| **Grid** | The outgoing connection |
+
+There is no AC leg before the inverter here, because the conversion happens
+inside the control room rather than in the field.
+
+</Tab>
+</Tabs>
+
+Both chains end the same way, and both are drawn along a horizontal bus — which
+is why the inverter and every transformer are placed already rotated to line up
+with it. See [Building the single-line diagram](/docs/sld/overview).
+
+## The topology rules it applies
+
+Three rules decide how many breakers and transformers the chain carries:
+
+| Rule | Value |
+| --- | --- |
+| Inverters per AC circuit breaker | 15 |
+| AC circuit breakers per inverter duty transformer | 4 |
+| Maximum inverter duty transformer capacity | 17.2 MVA |
+
+Read them as a cascade. Inverters are grouped fifteen to a breaker; breakers are
+grouped four to a transformer; and a transformer is capped at 17.2 MVA, so a
+grouping that would exceed the cap is split rather than carried.
+
+**These are the same rules the bill of materials uses.** The diagram's breaker
+and transformer counts therefore agree with the quantities in the materials list
+for the same plant — the two are not derived independently, so there is no
+reconciliation to do between them. See
+[Bill of materials](/docs/bom/overview).
+
+<Callout>
+If your own scheme groups equipment differently — a different number of inverters
+per breaker, or a transformer size you have already fixed with a supplier — the
+chain will not match it. Edit the drawing to your scheme, and expect the
+materials list to still show the rule-based quantities.
+</Callout>
+
+## What the annotations mean
+
+Each block on the chain is annotated with two things:
+
+- **A multiplicity**, written as `×N` — how many of that item the plant carries.
+  One inverter symbol carrying a multiplicity stands for every inverter in the
+  plant, drawn once. That is normal single-line practice, and it is what keeps
+  the sheet readable on a plant with dozens of machines.
+- **A rating**, taken from the bill of materials for that item.
+
+Both are put on the sheet by auto-build rather than typed by you. Where one is
+wrong — a rating that does not match the machine you are buying, or a count you
+have since revised — correct it on the sheet with the **Text** tool.
+
+## What to do next
+
+Treat the result as a first draft, in this order:
+
+<Steps>
+<Step>
+### Check every rating
+
+The ratings come from the materials list, which is itself derived from the
+layout. Read each one against the equipment you are actually procuring, and
+correct the annotation where it differs.
+</Step>
+
+<Step>
+### Add what the rules do not cover
+
+The chain carries the generation-to-grid path. Isolators, breakers other than the
+AC circuit breakers on the chain, instrument transformers, meters, relays,
+arresters and phase indication are all yours to place from the palette and wire
+in. See [Symbol reference](/docs/sld/symbols).
+</Step>
+
+<Step>
+### Fill in the legend, the notes and the title block
+
+All three ship blank — no company name, no project name, no drawing number.
+Complete them with **Text**.
+</Step>
+
+<Step>
+### Fit and export
+
+Use **⤢ Fit** to see the whole sheet, then export it, or leave it to be carried
+into the PDF report as the report's diagram page. See
+[Exporting the diagram](/docs/sld/export).
+</Step>
+</Steps>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Symbol reference"
+    href="/docs/sld/symbols"
+    description="The symbols to add on top of the auto-built chain"
+  />
+  <Card
+    title="Building the single-line diagram"
+    href="/docs/sld/overview"
+    description="The sheet, the tools, and editing what auto-build placed"
+  />
+  <Card
+    title="Bill of materials"
+    href="/docs/bom/overview"
+    description="Where the ratings and the matching quantities come from"
+  />
+  <Card
+    title="Exporting the diagram"
+    href="/docs/sld/export"
+    description="The report page, a standalone PDF, and the CAD file"
+  />
+</Cards>

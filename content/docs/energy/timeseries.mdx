@@ -1,0 +1,254 @@
+---
+title: Energy charts and time-series export
+description: The daily and monthly energy charts, which data source is behind them, and exporting a full-year generation series at your chosen interval.
+---
+
+The summary table gives you annual totals. The chart window and the time-series
+export give you the shape underneath them — hour by hour through a day, month by
+month through a year, and, when you need it, a full-year generation series in a
+file. Both come from the energy calculation, so run **Calculate Energy** first;
+both are unavailable until you have.
+
+Three controls sit together: **Calculate Energy**, **📊 Show Energy Chart**, and
+**Export TMY data CSV** with an interval selector beside it. TMY is a typical
+meteorological year — a single representative year assembled to stand for the
+long-run climate at the site, rather than any particular calendar year.
+
+## The daily view
+
+The chart window opens on the daily view: one day of the year at a time, in two
+stacked charts sharing a time axis.
+
+- **24 hourly bars of energy**, in kWh per hour, in the upper chart.
+- **Hourly in-plane irradiance** beneath it, in W/m² — the global tilted
+  irradiance, GTI, striking the plane of the array rather than a horizontal
+  surface.
+- **A slider across all 365 days**, so you can walk the whole year one day at a
+  time.
+- **A month jump**, to move to a month directly instead of dragging.
+- **A crosshair readout that reads both charts at once.** Move the pointer and
+  it reports the time, the energy and the irradiance at that instant in both
+  subplots together.
+
+<Screenshot id="energy-chart-daily" />
+
+The two charts stacked this way are the point of the view. Energy is in-plane
+irradiance put through the plant's capacity and its losses, so the pairing gives
+you both numbers at a chosen hour: so many W/m² arriving, so many kWh coming out,
+on a plant of a known capacity. That is a check anyone can do on the back of an
+envelope, and it is the fastest way to catch a capacity or a loss assumption that
+is not what you thought.
+
+One thing not to expect from it: the ratio between the two charts is not the same
+figure all year. The monthly performance figures follow IEC 61724-1, and the
+performance ratio inside them varies with module temperature — a hot month
+converts a given irradiance into less energy than a cool one. Comparing the same
+hour in January and in June is therefore comparing two slightly different
+conversion efficiencies, which is the behaviour you want and not an
+inconsistency.
+
+The day slider is what makes it a design tool rather than a picture. Compare a
+day near the winter solstice against one near the summer solstice, at the same
+site: the peak height, the number of generating hours, and the total under the
+bars all move, and that swing is what the monthly view then aggregates.
+
+### Working the daily view
+
+<Steps>
+<Step>
+### Calculate energy, then open the chart
+
+**📊 Show Energy Chart** has nothing to draw until **Calculate Energy** has run.
+Re-run it after any change to the layout, the losses or the weather source, or
+the chart is describing the previous design.
+</Step>
+
+<Step>
+### Use the month jump to reach a season, then the slider to pick the day
+
+The month jump moves you to a month in one action; the day slider then walks the
+days inside it. Working month-first is quicker than dragging across 365 days.
+</Step>
+
+<Step>
+### Read a pair of values off the crosshair
+
+Put the pointer near the middle of the day. The readout gives the time, the
+energy in that hour and the in-plane irradiance at once, in both charts, so you
+never have to line the two axes up by eye.
+</Step>
+
+<Step>
+### Check a midwinter day and a midsummer day
+
+The ratio between them is the seasonal swing your operations and revenue
+profiles have to live with. Then step across two or three consecutive days: if
+they are indistinguishable smooth curves, the chart is drawn from a
+reconstruction rather than from hourly weather — see the priority list below.
+</Step>
+
+<Step>
+### Switch to the monthly view to sum it up
+
+The monthly view is the same data aggregated. Use it to reconcile against the
+annual figures you are about to report.
+</Step>
+</Steps>
+
+## The monthly view
+
+Switch to the monthly view for the whole year in one frame:
+
+- **Twelve bars of energy**, in MWh per month.
+- **Twelve bars of irradiance**, in kWh/m² per month.
+- **Annual totals** for both.
+
+<Screenshot id="energy-chart-monthly" />
+
+This is the view to cross-check against the summary and against the report
+before either goes out. The annual irradiance total is the in-plane irradiation
+the whole calculation is built on, and the annual energy total is the year-one
+generation. A material disagreement with the figures you are about to issue is
+worth understanding before you issue them — the usual cause is an energy
+calculation that predates a change to the layout or the losses.
+
+The same monthly data is published in the report as an IEC 61724-1 table — the
+international standard for photovoltaic performance monitoring, which defines
+reference yield, final yield and performance ratio month by month. See
+[The PDF report](/docs/exports/pdf-report).
+
+## Where the chart's data comes from
+
+The chart is only as good as the series behind it, and the application will
+always draw something. It works down a priority list and uses the best source
+available:
+
+| Priority | Source | What it means for the chart |
+| --- | --- | --- |
+| 1 | Hourly in-plane irradiance already present in your loaded weather file | Best case. The hourly shape is measured or modelled data for your site, and the chart is showing real variation |
+| 2 | Hourly horizontal irradiance from your file, transposed to the plane of the array | Strong. The hour-to-hour variation is real; the split into beam and diffuse and the tilt transposition are modelled |
+| 3 | Synthesised from twelve monthly in-plane values plus solar geometry | Weak for any hourly question. The monthly totals are real; the hourly shape inside each month is a smooth reconstruction from sun position, with no weather variation in it |
+| 4 | A uniform annual distribution | Placeholder only. It carries no daily or seasonal shape at all |
+
+**Know which of these you are looking at before you use a chart to make a
+decision.** A daily profile drawn from priority 3 is a clean, plausible-looking
+curve that contains no cloud, no haze and no real day-to-day variation — it will
+never show you the ragged afternoons that matter to a dispatch or a storage
+study. Its monthly totals are still sound; its hourly detail is a reconstruction.
+
+The way to move up the list is to supply better weather data. An hourly file, or
+an hourly fetch from the automatic service, puts you at priority 1 or 2 — see
+[Weather data](/docs/energy/weather).
+
+## Exporting the series
+
+**Export TMY data CSV** writes the full-year series to a file. The interval
+selector beside the button sets the time step, and offers **1**, **10**, **15**,
+**30** and **60 min**. The default is **15 min**.
+
+Pick the interval to match what the series is for, not the finest one on offer.
+A 60-minute file is the smallest and is enough for an annual reconciliation; a
+1-minute file is sixty times the size and, as below, contains no more weather
+detail than the source it was built from.
+
+### The per-interval energy relation
+
+```
+E (kWh) = capacity_kWp × GTI(W/m²)/1000 × PR × LID × (interval/60)
+```
+
+| Term | What it is |
+| --- | --- |
+| `E` | Energy generated in that one interval, in kWh |
+| `capacity_kWp` | Installed DC capacity in kWp |
+| `GTI(W/m²)` | In-plane irradiance at that instant, in W/m² |
+| `/1000` | Converts W/m² to kW/m², so that the product with capacity in kWp comes out in kW |
+| `PR` | Performance ratio — the combined effect of every loss in the breakdown, as a fraction |
+| `LID` | The one-off first-year reduction, as a factor: exactly `1 − 1st year degradation ÷ 100`, from the same field the annual figures use. On the shipped 1.0 % it is 0.99 |
+| `interval/60` | Converts the interval in minutes into hours, turning power into energy. At 15 min it is 0.25 |
+
+The `LID` factor is worth pinning down, because it decides which year the file
+describes. It is the **1st year degradation** field and nothing else — the same
+one-off step applied to the annual figures, taken as `1 − 1st year degradation
+÷ 100`. So the exported series is a **first-year** series, consistent with the
+year-one energy in the summary, and the annual degradation rate does not enter it
+at all: there is no exported series for year 10. See
+[Lifetime, degradation and P-values](/docs/energy/lifetime-and-p-values).
+
+The relation is linear in irradiance, so the exported series has the same shape
+as the irradiance series it was built from. Two consequences the file records
+directly:
+
+- **Timestamps are local time.** Values are therefore zero through the night and
+  peak around solar noon. A series that peaks at midnight has been read with the
+  wrong time base somewhere downstream, not exported wrongly.
+- **A sub-hourly interval does not create sub-hourly weather.** Choosing 1 min
+  gives you 1-minute rows, but the underlying irradiance resolution is whatever
+  your weather source provided. Finer intervals give a finer grid, not more
+  information.
+
+### The export needs an hourly series
+
+**The export requires an hourly series to work from — either an hourly weather
+file you loaded, or an hourly fetch from the automatic service.** Monthly data
+alone is not enough, and the export is not available from it.
+
+This is the one place where the choice of weather source is not a question of
+quality but of capability. If you need a generation series, arrange for hourly
+data before you plan the work around the export.
+
+## What the file contains, and what it is for
+
+The file carries the full-year series at your chosen interval:
+
+- **Horizontal irradiance (GHI)** — what arrives on a horizontal surface.
+- **In-plane irradiance (GTI)** — what arrives on the plane of the array.
+- **Energy** — the generation computed by the relation above.
+
+Having all three in one file is what makes it checkable by someone else: a
+reviewer can re-derive the energy column from the irradiance column, your stated
+capacity and your stated performance ratio, without needing the application.
+
+Typical uses:
+
+- **A dispatch or curtailment study.** The generation profile against a
+  connection limit or a scheduled export, interval by interval.
+- **A storage study.** Sizing a battery against the daily shape and the ramp
+  rates, where the annual total tells you nothing useful on its own.
+- **A tender or grid submission asking for sub-hourly generation.** Set the
+  interval selector to whatever the request specifies and export directly,
+  rather than resampling an hourly file by hand.
+- **Reconciliation.** Summing the energy column must reproduce the first-year
+  energy in the summary. It is the quickest independent check that the run you
+  are reporting is the run you think it is.
+
+<Callout type="warn">
+The exported series is a modelled typical year, not a forecast for any named
+calendar year and not a measured production record. Label it that way wherever
+it goes, particularly when it leaves your organisation.
+</Callout>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Weather data"
+    href="/docs/energy/weather"
+    description="Automatic fetch or your own hourly file, and what each enables"
+  />
+  <Card
+    title="How yield is calculated"
+    href="/docs/energy/overview"
+    description="The performance ratio and annual figures behind these charts"
+  />
+  <Card
+    title="Lifetime, degradation and P-values"
+    href="/docs/energy/lifetime-and-p-values"
+    description="Turning the first-year figure into a lender's case"
+  />
+  <Card
+    title="The PDF report"
+    href="/docs/exports/pdf-report"
+    description="Where the monthly table and the multi-year forecast are published"
+  />
+</Cards>

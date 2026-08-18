@@ -177,7 +177,10 @@ Add reviewers to `Production` if a production deploy should need approval.
 - **Domain:** attach it in Vercel ▸ Settings ▸ Domains. Nothing in this
   repository hard-codes a hostname, so no code change is needed.
 
-The site is fully static — every page is prerendered at build time.
+Every content page is prerendered at build time. The one exception is
+`/api/search`, which backs the search dialog and runs as a function — it builds
+its index from the same content loader the pages use, so there is no separate
+indexing step and nothing to configure.
 
 ---
 

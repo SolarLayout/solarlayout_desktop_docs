@@ -1,0 +1,150 @@
+---
+title: Getting help
+description: The guide inside the application, the pages in this documentation, how to reach a person, and what to include so a report can be acted on.
+---
+
+Help comes from three places, in this order: the guide inside the application,
+these pages, and the vendor who supplied your licence. Work down the list — the
+first two are immediate, and the third goes faster when you arrive with the right
+details.
+
+## The guide inside the application
+
+The application carries its own guide, so it is available with no internet
+connection and no second window to find.
+
+**Press F1**, or use **Help ▸ How to Use This Tool**. The guide opens in its own
+window, with its sections on tabs, and covers the application's inputs and tools.
+
+<Screenshot id="help-menu" />
+
+<Screenshot id="f1-help" />
+
+**The boundary-preparation guide** is separate and more specific. Click the **ⓘ**
+button beside **Browse…** in the **Input KMZ File** row. It covers how to prepare
+the file you are about to load: the plant boundary as a closed polygon, water
+bodies, transmission lines and obstructions, and the fact that every feature has
+to lie inside a boundary. Read it before you draw the file rather than after: a
+file that follows those rules loads without a validation complaint, and its water
+bodies, corridors and obstructions are all recognised. The same ground is covered
+in [Boundary file requirements](/docs/inputs/kmz-requirements).
+
+<Callout type="warn">
+A few figures in the in-application guide are out of date, including the control
+room and lightning arrester footprints it quotes. Take structure sizes from the
+fields in your own input panel, and take defaults and ranges from
+[Every parameter and its default](/docs/reference/parameters).
+</Callout>
+
+### When the question is about a file you loaded
+
+Two more things inside the application answer questions on their own, before
+anyone else is involved. Next to a loaded module file, **View** opens a read-only
+viewer of everything read from it — the basic data, the sizes and technology, the
+model parameters, and the current and power curves drawn from the values it
+declares. Next to a loaded inverter file, **View** does the same for the inverter's
+main parameters, efficiency curve and output parameters.
+
+If a yield or a string length looks wrong, open the viewer first. It shows what
+the application actually read, which is not always what the datasheet says.
+
+## This documentation
+
+Three pages answer most questions without anyone else being involved.
+
+| Page | Use it for |
+| --- | --- |
+| [Troubleshooting](/docs/troubleshooting) | A symptom — nothing placed, no cable lengths, a missing report page — and the setting behind it |
+| [Every parameter and its default](/docs/reference/parameters) | What a field does, what it defaults to, and the range it accepts |
+| [Glossary](/docs/reference/glossary) | A term or abbreviation used in the interface or in these pages |
+
+Licence messages have their own page:
+[Licence problems](/docs/licence/troubleshooting) lists every message the licence
+check produces, what each one means, and what to do about it.
+
+## Contacting a person
+
+Support runs through **the vendor who supplied your licence**. They issued the
+licence against your machine, so they already hold the record of your
+subscription, and they are the route for a renewal, a reissue for a new machine,
+or a problem these pages do not resolve.
+
+{/* VERIFY: support contact route */}
+
+Two things these pages deliberately do not cover, because they are not properties
+of the application: what the product costs, and how long a licence period runs.
+Both are commercial questions for the vendor. What the documentation does cover is
+everything on your side of the licence — activation, the Device ID, and every
+message the check can produce.
+
+## What to include in a report
+
+A report that carries its own evidence is usually answered in one exchange. One
+that does not takes several. Include as much of this as applies:
+
+- **What you were doing.** The mounting and electrical mode you chose at launch,
+  which step you had reached, and what you clicked last.
+- **The exact message text**, if there was one. Copy the wording rather than
+  describing it — the wording identifies which check or which stage stopped, and
+  that is usually most of the diagnosis. Include any date or name the message
+  quotes.
+- **What you expected, and what happened instead.** One sentence each. "I
+  expected tables across the north half; the north half is empty."
+- **The boundary file**, if the problem concerns the layout. Send the file you
+  loaded, unedited. Almost every layout question — missing tables, a band with
+  nothing in it, an obstruction that had no effect — is answered by reading the
+  file.
+- **The project file**, if you can save one. **File ▸ Save Project…** stores the
+  whole session: inputs, the layout, sketch edits, the diagram, the bill of
+  materials and terrain. It reproduces what you were looking at without anyone
+  having to guess at your inputs. See
+  [Saving and reopening a project](/docs/projects).
+- **Your Device ID**, if the problem concerns the licence. Open
+  **Help ▸ License / Subscription…** and use the **Copy** button — never retype
+  it. See [Activate your licence](/docs/licence/activate).
+- **The version you are running**, taken from the application's entry in the
+  Microsoft Store.
+
+Send it as one message with the files attached. A report that arrives in pieces is
+answered in pieces, and every round trip adds delay.
+
+### After an unexpected error
+
+If the message read *"An unexpected error occurred, but the application will keep
+running."*, include the log as well. The details are appended to a file named
+`solarlayout_error.log` in the Windows temporary folder — type `%TEMP%` into the
+address bar of File Explorer to open it. Attach the file itself rather than a
+screenshot of it, and say roughly when the error happened, because the file
+accumulates every error the application has reported.
+
+### Send screenshots of the interface, not of numbers
+
+A screenshot is the fastest way to show a window, a message or a layout that
+looks wrong. It is the slowest way to communicate figures — nobody can compare
+columns from an image. For anything numeric, send the project file, or export the
+report and send that.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="Boundary file in, finished layout out"
+  />
+  <Card
+    title="Keyboard shortcuts and commands"
+    href="/docs/reference/keyboard-and-commands"
+    description="Shortcuts, and the typed command aliases in Sketch Mode"
+  />
+  <Card
+    title="Updates and reinstalling"
+    href="/docs/install/updates"
+    description="How updates arrive, and why your licence survives one"
+  />
+  <Card
+    title="Release notes"
+    href="/docs/releases"
+    description="What changed between versions"
+  />
+</Cards>

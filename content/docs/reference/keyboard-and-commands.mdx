@@ -1,0 +1,188 @@
+---
+title: Shortcuts and commands
+description: The keyboard shortcuts, the CAD-style command line in Sketch Mode, the mouse conventions on the plot, and the full menu map.
+---
+
+SolarLayout Desktop is driven from buttons. A small set of keyboard shortcuts
+exists for the editing work where reaching for the palette would slow you down,
+and Sketch Mode adds a typed command line so a CAD operator can arm a drawing
+tool by name instead of hunting for its icon.
+
+The shortcuts in the first table work inside
+[Sketch Mode](/docs/editing/sketch-mode) unless the table says otherwise, so
+they need a generated layout to act on. The menus work at any time.
+
+## Keyboard shortcuts
+
+| Keys | What it does | Where it works |
+| --- | --- | --- |
+| **Ctrl+C** | Copies the current selection | Sketch Mode |
+| **Ctrl+V** | Pastes the copy, offset 5 m east and 5 m north of the original | Sketch Mode |
+| **Ctrl+Arrow** | Nudges the selection 1 m in the arrow's direction | Sketch Mode, with **↖ Move** active |
+| **Shift+click** | Adds the object under the pointer to the current selection | Sketch Mode |
+| **Ctrl+N** | Opens a second window and asks for the design mode again — the same as **File ▸ Move to String / Central Window…** | The main window |
+| **F1** | Opens the in-app guide | The main window |
+
+**Ctrl+C** and **Ctrl+V** do the same job as the **⎘ Copy** tool in the palette,
+including the offset: a pasted copy lands 5 m east and 5 m north of the original,
+so it never sits exactly on top of what you copied. Move it from there with
+**↖ Move**, or nudge it with **Ctrl+Arrow**.
+
+The nudge needs the **Ctrl** modifier, and one press moves the whole selection
+1 m — so eight presses is 8 m, which is a practical way to shift a run of tables
+by a known distance without measuring.
+
+Generating a layout, calculating energy and every export are driven from their
+own buttons.
+
+## The typed command line
+
+Sketch Mode carries a command line that accepts CAD-style aliases. Type an alias
+into it and the matching tool is armed, exactly as if you had clicked its palette
+button. It exists so that a drafter who already knows `L` for a line and `REC`
+for a rectangle does not have to learn a new palette.
+
+| Tool | Aliases |
+| --- | --- |
+| **╱ Line** | `L`, `LINE` |
+| **⌒ Polyline** | `PL`, `POLY` |
+| **□ Rect** | `REC`, `RECT`, `R` |
+| **○ Circle** | `C`, `CIR` |
+| **◜ Arc** | `ARC`, `A` |
+| **⬭ Ellipse** | `EL`, `ELL` |
+| **∿ Spline** | `SPL`, `SP` |
+| **▨ Fill/Zone** | `H`, `HATCH`, `FILL` |
+| **📐 Dimension** | `DIM`, `D` |
+| **🅣 Text** | `T`, `TEXT` |
+| **📏 Measure** | `M`, `MEA` |
+| **↖ Move** | `S`, `SEL` |
+
+Every alias in a row arms the same tool, so `REC`, `RECT` and `R` are
+interchangeable. The tools without an alias — placing a table, a half table, an
+arrester, an obstruction, a transmission line, or any of the three trench types
+— are palette buttons only.
+
+<Callout>
+Watch the single letters. `R` arms the rectangle, not a road; `C` arms the
+circle; `D` arms the dimension tool and `T` the text tool. `A` is the arc and
+`S` is the selection tool.
+</Callout>
+
+## Mouse conventions on the plot
+
+The same gestures apply to every object Sketch Mode can select — tables, half
+tables, arresters, annotations and groups.
+
+| Gesture | What it does |
+| --- | --- |
+| **Click** | Selects the object under the pointer |
+| **Shift-click** | Adds to the selection, so several objects can be moved or deleted together |
+| **Drag on empty space** | Draws a rubber band and selects everything inside it |
+| **Drag a selection** | Moves every selected object together |
+| **Right-click** | Finishes a multi-point tool — a polyline, a spline, or a transmission line |
+| **Double-click** | Also finishes a polyline or a spline |
+| **Click and hold a control room** | Drags it, when no navigation tool is active |
+
+Dragging a control room is the one gesture that changes the plant rather than the
+drawing. Hold the blue room, drag it to a valid position inside the perimeter
+road, and release: the layout rebuilds around its new position. An invalid drop
+snaps back. See [Control rooms](/docs/layout/icr).
+
+Navigation is separate. **🖐 Pan** and **🔍 Zoom** are palette tools, and the
+plot's own **Home (⌂)** button refits the view to the plant — not to whatever the
+view was when the window opened. While either navigation tool is active,
+click-and-hold no longer drags a control room.
+
+## Toolbar buttons
+
+The row above the plot. Two of these stay disabled until a layout exists.
+
+| Button | What it does |
+| --- | --- |
+| **💾 Save(Project)** | Saves the session to a `.slp` file |
+| **⛶ Expand Plot** | Opens the plot in a large window with **⟵ Return to Main Window** |
+| **🛰 Satellite** | Draws aerial imagery behind the layout, aligned to the file's coordinates. Needs an internet connection, and a layout |
+| **▢ Wireframe** | Draws tables and tracker units as outlines only |
+| **📍 Piles: OFF** | Turns the pile overlay on. The first use opens the pile editor. Needs a layout |
+| **✏ Sketch Mode** | Enters hand-editing |
+| **📋 BOM** | Opens the bill-of-materials editor |
+| **⚡ SLD** | Opens the single-line-diagram editor |
+
+## Sketch Mode palette controls
+
+These are not drawing tools. They change how the drawing tools behave, or manage
+what has already been drawn, and none of them has an alias.
+
+| Control | What it does |
+| --- | --- |
+| **🎨 Colour** | Sets the stroke colour for new annotations. New strokes are 1.5 pt in orange-red until you change it |
+| **🧲 Snap** | Turns snapping on and off while you draw |
+| **⊾ Ortho** | Turns the orthogonal constraint on and off |
+| **↶ Undo** / **↷ Redo** | Steps back and forward through sketch edits |
+| **▦ Grid** | Shows and hides the reference grid |
+| **＋** / **👁** | Adds an annotation layer, and toggles a layer's visibility. Every annotation carries a layer and an optional named group |
+| **📂 Import DXF** | Brings CAD geometry into the sketch |
+| **⧉ Group** / **⿲ Ungroup** | Groups the selection under a name, or breaks a group apart |
+| **🧭 Scale bar + North** | Drops a scale bar and a north arrow onto the drawing |
+| **🗑 Clear Annotations** | Removes every annotation |
+
+## Diagram mode controls
+
+Diagram mode has its own small set of tools and no command line. See
+[Single-line diagram](/docs/sld/overview).
+
+| Control | What it does |
+| --- | --- |
+| **↖ Move** | Selects a symbol and drags it |
+| **Wire** | Click-drag a connecting wire |
+| **Text** | Places a multi-line label |
+| **Delete** | Removes a symbol or a wire |
+| **⟲ 90°** | Rotates the selection by 90° |
+| **⟳ Apply** | Rotates the selection by the angle you type beside it |
+| **🔗 Group** / **✂ Ungroup** / **⧉ Copy** | Groups, breaks apart, and duplicates the selection |
+| **✋ Pan** / **🔍 Zoom** / **⤢ Fit** | Navigates the sheet |
+| **🗑 Clear SLD** | Empties the sheet |
+
+## Menu map
+
+Three menus, eight items. An item ending in an ellipsis opens a window.
+
+| Menu | Item | What it does |
+| --- | --- | --- |
+| **File** | **New Project** | Starts a fresh session |
+| **File** | **Move to String / Central Window…** | Opens a new, independent window on the four design-mode cards — the mounting type as well as the inverter topology — leaving the current session open beside it. **Ctrl+N**, and on the toolbar as **⊕ Move to String / Central Window** |
+| **File** | **Save Project…** | Writes the whole session — inputs, layout, sketch edits, diagram, bill of materials, terrain — to a `.slp` file |
+| **File** | **Open Project…** | Reads a saved `.slp` file back |
+| **File** | **Exit** | Closes the application |
+| **Edit-Pile** | **Define Pile Layout…** | Opens the pile pattern editor for the reference table |
+| **Help** | **How to Use This Tool** | Opens the in-app guide — the same window as **F1** |
+| **Help** | **License / Subscription…** | Shows the Device ID and the licence status, and loads a licence file |
+
+Saving and opening are covered on [Projects](/docs/projects); the pile editor on
+[Piles](/docs/editing/piles); the licence window on
+[Activate your licence](/docs/licence/activate).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Sketch Mode"
+    href="/docs/editing/sketch-mode"
+    description="The tool palette these shortcuts and aliases drive"
+  />
+  <Card
+    title="Annotations"
+    href="/docs/editing/annotations"
+    description="Text, dimensions, measurements and the drawing tools"
+  />
+  <Card
+    title="Every parameter and its default"
+    href="/docs/reference/parameters"
+    description="The complete input reference"
+  />
+  <Card
+    title="Glossary"
+    href="/docs/reference/glossary"
+    description="Every term used across these pages, defined"
+  />
+</Cards>

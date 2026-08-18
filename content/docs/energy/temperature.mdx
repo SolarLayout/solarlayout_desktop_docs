@@ -1,0 +1,209 @@
+---
+title: Temperature loss
+description: The thermal model behind the temperature row — module temperature from ambient, irradiance and wind, the four mounting types, and the loss it produces.
+---
+
+Temperature is the largest single loss in the breakdown and the only one the
+application works out for you. As soon as a module file is loaded, the
+temperature row stops being an assumption and becomes a calculation, because
+the number it needs — the module's temperature coefficient of maximum power —
+is read from that file and appears nowhere in the input panel.
+
+That is why this loss has its own page. Every other row on
+[The loss breakdown](/docs/energy/losses) is a percentage you defend by
+judgement. This one you defend by showing the working, and the application
+shows it on screen.
+
+## The model
+
+Two relations, applied in order.
+
+```
+T_module = T_ambient + G × exp(a + b × W)
+```
+
+```
+Loss (%) = |μ_Pmpp| × (T_module − 25)
+```
+
+| Term | What it is | Where it comes from |
+| --- | --- | --- |
+| `T_module` | Module operating temperature, °C | Computed, and displayed beside the loss row |
+| `T_ambient` | Average ambient air temperature, °C | **Avg. ambient temp.**, or your weather file's temperature column |
+| `G` | Average operating irradiance on the module plane, W/m² | Derived from the annual in-plane irradiance — see below |
+| `a` | Sandia temperature-rise coefficient for the mounting, dimensionless | Fixed by **Mounting type** |
+| `b` | Sandia wind coefficient for the mounting, in s/m | Fixed by **Mounting type** |
+| `W` | Average wind speed, m/s | **Avg. wind speed** |
+| `μ_Pmpp` | The module's temperature coefficient of maximum power, in % per °C — negative for every silicon module, so its magnitude is taken | Read from the module file |
+| `25` | Cell temperature at standard test conditions, °C | The rating condition the coefficient is defined against |
+
+Read the first relation as a temperature **rise** added to the air temperature.
+The rise is proportional to irradiance, and the constant of proportionality is
+an exponential in the mounting coefficients and the wind speed. The exponential
+is always a small positive number, so the module always runs hotter than the
+air, never cooler.
+
+The second relation is then the definition of the coefficient itself. A module
+rated at 25 °C and operating at `T_module` loses `|μ_Pmpp|` per cent of its
+maximum power for every degree of that difference. Nothing is lost when the
+module sits at 25 °C, which is the only condition at which the nameplate
+wattage is the truth.
+
+## The four mounting configurations
+
+**Mounting type** selects a pair of Sandia coefficients. It does not change the
+form of the relation, only how much the module heats up for a given irradiance
+and wind.
+
+| Mounting type | `a` | `b` |
+| --- | --- | --- |
+| **Open Rack – Ground Mount** | −3.56 | −0.075 |
+| **Roof Mount – Close** | −2.81 | −0.0455 |
+| **Stand-off Mount** | −3.23 | −0.130 |
+| **Insulated Back** | −2.81 | −0.0455 |
+
+**Open Rack – Ground Mount** is the default, and it is the right one for
+essentially every plant this application designs. Air reaches both faces of the
+module and both sides of the rack, so heat leaves the module in every direction.
+It carries the most negative `a` of the four, which is the smallest temperature
+rise per unit of irradiance in still air.
+
+**Roof Mount – Close** and **Insulated Back** sit at the other end. A module
+mounted tight against a roof deck, or one with its rear face insulated, has no
+air path behind it at all — the heat has to leave through the front. They carry
+the least negative `a`, so the largest rise. Note that the two share an
+identical coefficient pair: chosen either way they produce exactly the same
+module temperature, and the distinction between them is descriptive rather than
+numerical.
+
+**Stand-off Mount** sits between the two — a module held off a roof surface on
+brackets, with a restricted but real air gap behind it.
+
+`b` is a separate property: it is multiplied by wind speed inside the
+exponential, so it sets how quickly the mounting sheds its temperature rise as
+the wind picks up. **Stand-off Mount** carries by far the strongest wind
+response of the four, so the ordering of the four configurations at any given
+wind speed follows from the combination `a + b × W`, not from `a` alone.
+
+## The three inputs you control
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Avg. ambient temp.** | 28.0 °C | −10 to 55 °C | The air temperature the rise is added to. Overridden by your weather file's temperature column when one is present. |
+| **Mounting type** | Open Rack – Ground Mount | 4 options | Selects the coefficient pair above. |
+| **Avg. wind speed** | 3.0 m/s | 0.5–15.0 m/s | Convective cooling. Because `b` is negative, a higher wind speed makes the exponential smaller, which makes the temperature rise smaller and the loss lower. |
+
+The direction of the wind effect is worth being explicit about, because it is
+the input most often left at its default: **more wind means more cooling, a
+cooler module, and a smaller loss.** A coastal site with a genuine annual
+average above the default will show a lower temperature loss than the same
+design inland, and that difference is real rather than an artefact.
+
+Use annual averages in both fields, not summer peaks. The relation is applied
+once to produce one annual loss figure, so a peak-condition input produces a
+loss that is true at noon in June and wrong for the year.
+
+## Where the operating irradiance comes from
+
+`G` is not an input. It is derived from the annual in-plane irradiance you
+have fetched or entered:
+
+```
+G = min(900, GTI × 1000 / (365 × 8))   W/m²
+```
+
+Read the division first. `GTI × 1000` converts the annual figure from
+kWh/m²/yr to Wh/m²/yr; dividing by 365 days and by 8 hours a day spreads it
+across an **eight-hour equivalent generating day**. The result is the average
+irradiance the modules see while they are actually producing — deliberately not
+the 24-hour average, which would include the night and understate the operating
+temperature badly.
+
+Two special values complete it:
+
+- **The cap is 900 W/m².** However high the annual irradiance, `G` never
+  exceeds 900, so the modelled temperature rise cannot run away on a very sunny
+  site.
+- **When no irradiance is set, `G` is 600 W/m².** The in-plane field ships at
+  0.0, so before any weather data has arrived the model still has a sensible
+  operating point to work from rather than reporting a zero temperature rise.
+
+The consequence is that the temperature loss changes when your irradiance
+changes. Fetch a higher in-plane figure and the modules are modelled hotter, so
+the temperature loss grows — which is correct, and is one reason a loss schedule
+copied between two sites does not transfer.
+
+## What you see
+
+The computed **module temperature is displayed next to the temperature loss
+row**, in degrees Celsius, so the intermediate result is visible rather than
+buried inside the percentage.
+
+Below the inputs sits a **formula trace**: the relation with your own values
+substituted into it. Between the two, the loss row is auditable — a reviewer
+can take the trace, the coefficient pair from the table above and the module's
+datasheet coefficient, and reproduce the percentage by hand.
+
+<Screenshot id="energy-temperature-trace" />
+
+Check the module temperature rather than only the loss. It is the quantity with
+a physical meaning, and it is the one that tells you immediately whether the
+inputs are sane: a module temperature that has not moved from the ambient
+temperature means no irradiance has arrived yet.
+
+## Monthly temperature loss
+
+The annual figure is one number, but the monthly performance-ratio table is not
+built by repeating it twelve times. Each month gets its own module temperature
+from the same Sandia relation, using that month's own operating irradiance and
+its own ambient temperature. Monthly ambient temperature comes from your weather
+file's temperature column when it has one, and otherwise from a sinusoidal
+seasonal model whose amplitude scales with the site's absolute latitude.
+
+This is why a hot low-latitude site shows its worst monthly performance ratio
+in the hottest months rather than the least sunny ones. See
+[How yield is calculated](/docs/energy/overview) for the monthly relations, and
+[Weather data](/docs/energy/weather) for what a temperature column in your file
+changes.
+
+## Without a module file
+
+<Callout type="warn">
+With no module file loaded, **Temperature losses** stays at its shipped default
+of 6.0 % and is an assumption like any other row. The relation cannot run
+without a temperature coefficient, and the coefficient only exists in the
+module file.
+</Callout>
+
+Typing the module dimensions and wattage by hand is a complete input for
+placement and capacity, but it leaves this row uncalculated. If a yield figure
+has to stand up to review, load the manufacturer's `.PAN` file for the module
+you are actually buying — see
+[Module specifications](/docs/inputs/module). It takes one click and it converts
+the largest loss in the breakdown from a number you have to argue for into a
+number you can derive.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="The loss breakdown"
+    href="/docs/energy/losses"
+    description="Every other component of the performance ratio"
+  />
+  <Card
+    title="Module specifications"
+    href="/docs/inputs/module"
+    description="Loading the module file that supplies the temperature coefficient"
+  />
+  <Card
+    title="Weather data"
+    href="/docs/energy/weather"
+    description="Where the ambient temperature and the in-plane irradiance come from"
+  />
+  <Card
+    title="How yield is calculated"
+    href="/docs/energy/overview"
+    description="The whole chain from irradiance to lifetime energy"
+  />
+</Cards>

@@ -1,0 +1,176 @@
+---
+title: Updates and reinstalling
+description: How Microsoft Store updates arrive, how to check for one by hand, why your licence survives, and how to reinstall or remove the application.
+---
+
+Updates arrive through the Microsoft Store. Microsoft delivers them, so there
+is nothing to download, no installer to run, and no patch to apply by hand. In
+normal use an update installs itself and the next launch is the new version.
+
+Your licence is not part of the package. It lives in a per-user location on
+your machine, so replacing the application does not touch it, and an update
+never asks you to activate again.
+
+## How updates arrive
+
+Windows checks the Store for updates on its own schedule and installs them in
+the background. Two things follow from that:
+
+- You may be updated without having asked. That is the intended behaviour of a
+  Store application, and it is why the Store route is the only one documented.
+- An update may wait until the application is closed. Close it if an update
+  appears to be stuck.
+
+## Check for an update by hand
+
+Worth doing if you have been told a fix is out, or if the application has been
+open for weeks.
+
+<Steps>
+
+<Step>
+### Open the Microsoft Store
+
+Press Start, type *Microsoft Store*, and open it.
+</Step>
+
+<Step>
+### Open the Library
+
+It is in the left-hand navigation. The Library lists the applications installed
+on this machine and any updates waiting for them.
+
+<Screenshot id="store-updates" />
+</Step>
+
+<Step>
+### Click Get updates
+
+The Store checks every installed application at once and downloads whatever is
+pending. If SolarLayout Desktop is already current it is not listed as needing
+anything.
+</Step>
+
+<Step>
+### Close the application before the update installs
+
+If the application is open, close it and let the Store finish. Save your work
+first — an update does not preserve an unsaved session.
+</Step>
+
+</Steps>
+
+## Which version you have
+
+**The application does not show its own version.** There is no About window, and
+the **Help** menu carries two items only — **How to Use This Tool** and
+**License / Subscription…**. Nothing in the interface names a version number, so
+there is nothing to read on the plot, in a title bar or in a menu.
+
+The Store listing is where to look instead. Open the Microsoft Store, find the
+application in your **Library**, and read the version from its listing page. That
+is also the page that tells you whether an update is waiting.
+
+[Release notes](/docs/releases) lists what changed between versions.
+
+## Your licence survives an update
+
+The licence is stored per user, at:
+
+```
+%APPDATA%\SolarLayout.Desktop\license.lic
+```
+
+That path is outside the application itself, so an update — which replaces the
+application — leaves it alone. Two behaviours together make this reliable:
+
+1. **The licence is not inside the package.** Nothing an update writes goes
+   near `%APPDATA%`.
+2. **A licence left by a previous installation is adopted automatically.** On
+   first run the application looks for one and picks it up, so upgrading does
+   not lose the licence and there is no re-activation step after an update.
+
+If a launch after an update reports no licence, the cause is almost always that
+you are signed into a **different Windows user account** than the one the
+licence was loaded under — that location is per user. See
+[Licence problems](/docs/licence/troubleshooting).
+
+<Callout type="warn">
+Keep the `license.lic` file you were sent, somewhere outside this machine — a
+mailbox folder or a network share. It is the only thing you need to get running
+again on a rebuilt PC, and re-loading it takes one click.
+</Callout>
+
+## Reinstalling
+
+Reinstalling is worth trying when the application will not start at all, or
+starts and misbehaves in a way that survives a restart. It is not a fix for a
+licence problem — the licence is not part of the installation.
+
+<Steps>
+
+<Step>
+### Remove the application
+
+Uninstall it the way you remove any Store application: from its entry in the
+Start menu, or from the installed-applications list in Windows Settings.
+</Step>
+
+<Step>
+### Install it again from the Store
+
+Follow [Install on Windows](/docs/install/windows) — open the Store, search for
+the application, check the publisher reads **Rensaar**, and install.
+</Step>
+
+<Step>
+### Launch it and check the licence
+
+The design-mode window appears as usual. Once the main window is open, check
+**Help ▸ License / Subscription…** — the licence left by the previous
+installation should already have been adopted. If it has not, load your saved
+`license.lic` through **Load License File…**.
+</Step>
+
+</Steps>
+
+{/* VERIFY: does uninstalling from the Microsoft Store delete %APPDATA%\SolarLayout.Desktop, including the licence file and the clock record? */}
+
+## Uninstalling
+
+Removing the application removes the application. It does **not** remove the
+work you have done with it:
+
+- **Project files** (`.slp`) sit wherever you saved them and are untouched.
+- **Exported PDFs, drawings and mapping files** sit wherever you exported them
+  and are untouched.
+
+If you are moving to a different machine rather than leaving the product, copy
+your project files and your `license.lic` across first, then ask the vendor who
+supplied the licence to reissue it for the new machine's Device ID — a licence
+is tied to one computer. See [How licensing works](/docs/licence/overview).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Install on Windows"
+    href="/docs/install/windows"
+    description="The Store listing, the install steps, and the first launch"
+  />
+  <Card
+    title="Licence problems"
+    href="/docs/licence/troubleshooting"
+    description="Every licence message, what it means, and what to do"
+  />
+  <Card
+    title="Saving and reopening a project"
+    href="/docs/projects"
+    description="What a project file stores and how to reopen one"
+  />
+  <Card
+    title="Release notes"
+    href="/docs/releases"
+    description="What changed between versions"
+  />
+</Cards>

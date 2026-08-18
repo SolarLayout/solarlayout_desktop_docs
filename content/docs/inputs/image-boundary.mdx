@@ -1,0 +1,155 @@
+---
+title: Image boundaries
+description: Tracing a plant boundary from a scan, a screenshot or an exported picture, and setting the scale that turns pixels into metres.
+---
+
+When the only record of the site is a picture — a scanned site plan, a
+screenshot of a map, an image exported from a report — the application can trace
+the boundary out of it. You supply the scale; it finds the outline.
+
+This is the least capable of the three inputs and the one that most rewards a
+tidy source image. It carries one boundary, no named features and no position on
+the earth. Where a Google Earth file exists, use that instead — see
+[Which boundary file to use](/docs/inputs/boundary-files).
+
+## Accepted formats
+
+`.jpg` `.jpeg` `.png` `.gif` `.bmp` `.tif` `.tiff`
+
+## What is traced
+
+The **largest closed outline in the image becomes the boundary**. Nothing else
+in the image is used, and one image yields one boundary — a multi-plot site
+cannot be described this way.
+
+That rule is worth reading twice, because it is also the failure mode. If the
+image has a border, a page frame, a map neat line or a legend box that encloses
+more area than the site outline does, that shape wins and becomes your plant
+boundary. Crop the image down to the site before loading it.
+
+## The scale
+
+An image has no units. To convert it, the application asks how a distance on the
+real site maps to a distance on the drawing, in the
+**Image Boundary — Scale & Coordinates** window.
+
+<Screenshot id="image-scale-dialog" />
+
+| Field | Default | What it means |
+| --- | --- | --- |
+| Site distance | 100 m | A distance on the ground |
+| Drawing distance | 10 mm | The distance that stands for it on the drawing |
+
+The pair reads as a drawing scale: 100 m of site drawn as 10 mm is 1:10 000.
+Read it off the scale bar or the title block of the plan you are tracing.
+
+### From millimetres to pixels
+
+The scale pair fixes metres per millimetre. Turning that into metres per pixel
+needs the image's resolution in dots per inch, which is read from the image's own
+metadata and **defaults to 96 dpi** when the image does not declare one:
+
+| Quantity | How it is found |
+| --- | --- |
+| Millimetres per pixel | 25.4 ÷ dpi |
+| Metres per millimetre | site distance in metres ÷ drawing distance in millimetres |
+| Metres per pixel | millimetres per pixel × metres per millimetre |
+
+At the defaults — 96 dpi, 100 m drawn as 10 mm — one pixel is
+`25.4 / 96 × (100 / 10)`, about 2.65 m on the ground. A boundary traced 400
+pixels across is therefore about 1 060 m across.
+
+<Callout type="warn">
+Resolution and scale multiply. An image that declares a different dpi from the
+one you assumed changes every dimension in the plant by that ratio, and nothing
+about the layout looks wrong when it happens — the shape is right, the size is
+not. After the first run, check the plant area the summary table reports against
+the acreage you expect, and adjust the scale pair until they agree.
+</Callout>
+
+## Latitude and longitude
+
+The same window takes an optional site latitude and longitude. Supply them.
+Without them the layout is still generated geometrically, but **energy
+calculation is unavailable** — there is no latitude to derive the tilt angle and
+row pitch from, and no point on the earth to fetch a weather record for. The
+consequences are identical to a CAD drawing without coordinates, set out in
+[CAD drawing boundaries](/docs/inputs/cad-boundary).
+
+If you have to work without coordinates, tick both override boxes in
+[Spacing and tilt](/docs/inputs/spacing-and-tilt) and enter the tilt angle and
+row pitch yourself, so at least the table count and the capacity are the ones
+you intend.
+
+## Getting a usable result
+
+<Steps>
+<Step>
+### Give it a clean, high-contrast outline
+
+The boundary must read as an unbroken closed line against its background. A
+crisp black outline on white traces well. A faint pencil line, a dashed
+boundary, a compressed screenshot with speckle around the line, or an outline
+crossing a busy aerial photograph traces badly or not at all. Redraw the
+boundary over the image in an image editor if that is what it takes.
+</Step>
+
+<Step>
+### Remove every closed shape larger than the boundary
+
+Crop away page borders, map frames, legend and title blocks, north arrows in
+boxes, and any surrounding survey extent. Only the site outline should be the
+largest closed shape left.
+</Step>
+
+<Step>
+### Know the scale before you start
+
+Find a stated scale, a scale bar, or two points whose real separation you know.
+Guessing here does not produce a slightly wrong plant; it produces a plant of
+the wrong capacity.
+</Step>
+
+<Step>
+### Check the reported area against the survey
+
+Generate the layout and read the plant area in acres from the summary table. If
+it disagrees with the survey, the scale pair is wrong — correct it and load the
+image again. Do this before spending time on module, table or energy settings.
+</Step>
+</Steps>
+
+## What an image cannot carry
+
+- **No named features.** There is no classification by name, so water bodies,
+  buildings and corridors cannot be described in the image at all.
+- **No interior exclusions.** Only the boundary is traced.
+- **No position**, unless you type the coordinates.
+
+Add the exclusions after the layout is generated, by drawing them on the plot.
+See [Obstructions and exclusions](/docs/layout/obstructions).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Which boundary file to use"
+    href="/docs/inputs/boundary-files"
+    description="The three input types compared"
+  />
+  <Card
+    title="Boundary file requirements"
+    href="/docs/inputs/kmz-requirements"
+    description="Preparing a Google Earth file, which carries everything an image cannot"
+  />
+  <Card
+    title="Obstructions and exclusions"
+    href="/docs/layout/obstructions"
+    description="Drawing keep-clear areas on the plot by hand"
+  />
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="Boundary file in, finished layout out"
+  />
+</Cards>

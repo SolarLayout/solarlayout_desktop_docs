@@ -1,0 +1,163 @@
+---
+title: Which boundary file to use
+description: The three kinds of boundary file the application accepts, what each one carries, and why a Google Earth file is the input to prepare.
+---
+
+Every design starts from one file that says where the plant goes. The
+application accepts three kinds of file: a Google Earth file, a CAD drawing, or
+a raster image with the boundary drawn on it. All three produce a layout. They
+differ in how much of the site they carry with them — and therefore in how much
+work is left for you to do by hand afterwards.
+
+**Prepare a Google Earth file.** It is the only input that carries the plant
+boundary, the water bodies, the obstructions and the transmission lines
+together in one file, already positioned on the earth. A CAD drawing and a
+raster image carry geometry and nothing else.
+
+## The three input types
+
+| Input | What it carries | Obstructions come across automatically | Energy can be calculated with no extra input | Choose it when |
+| --- | --- | --- | --- | --- |
+| **Google Earth file** (`.kmz`, `.kml`) | The plant boundary — or several, for a multi-plot site — plus water bodies, buildings and other obstructions, and transmission lines, canals and roads. Positioned on the earth, so the site's latitude and longitude are already known. | Yes | Yes | Always, unless you have no way to produce one. |
+| **CAD drawing** (`.dxf`, `.dwg`) | The boundary outline and any interior obstacles drawn as closed shapes. No geographic position. | Only the closed shapes; nothing is identified as water | No — you must type the site latitude and longitude | The survey exists only as a drawing and redrawing the boundary in Google Earth is not practical. |
+| **Raster image** (`.jpg`, `.png`, and the other formats below) | One boundary outline, traced from the image at a scale you state. No geographic position. | No | No — you must type the site latitude and longitude | All you have is a scan, a screenshot or an exported picture of the site plan. |
+
+## Why a Google Earth file
+
+Four things follow from the file being a Google Earth file, and only from that:
+
+- **The site features come with the boundary.** Water bodies, buildings,
+  substations, transmission lines, canals and roads that you have drawn inside
+  the boundary are read from the same file and kept clear of module tables. The
+  application decides which is which from the **name** of each feature, so the
+  naming rules matter — see
+  [Boundary file requirements](/docs/inputs/kmz-requirements).
+- **The latitude is known.** Latitude drives the automatic tilt angle and the
+  automatic row pitch, and the latitude and longitude are what the weather
+  service is queried with. Nothing has to be typed in for the energy estimate
+  to run.
+- **Several plots can be laid out in one run.** Put every plant boundary in the
+  one file and each becomes its own plant, with its own row in the summary
+  table. See [Multi-plot sites](/docs/layout/multi-plot).
+- **The result goes back where it came from.** The finished layout exports as a
+  Google Earth file you can open beside the input. See
+  [Google Earth export](/docs/exports/kmz).
+
+## What the other two inputs cost you
+
+- **The geographic position has to be typed in.** A CAD drawing and an image
+  carry no coordinates. The application asks for the site latitude and
+  longitude when you load one, and if you skip that question the layout is
+  still generated geometrically but **energy calculation is unavailable**.
+- **Nothing is identified by name.** Water bodies cannot be distinguished from
+  any other closed shape, so a pond is treated as a plain obstruction.
+- **Line features and setbacks are yours to add.** Transmission line and canal
+  corridors are drawn and buffered from line features in a Google Earth file.
+  With the other two inputs you draw the equivalent exclusions by hand in
+  Sketch Mode. See [Obstructions and exclusions](/docs/layout/obstructions).
+
+## Accepted file extensions
+
+The file chooser accepts:
+
+| Kind | Extensions |
+| --- | --- |
+| Google Earth | `.kmz` `.kml` |
+| CAD drawing | `.dxf` `.dwg` |
+| Raster image | `.jpg` `.jpeg` `.png` `.gif` `.bmp` `.tif` `.tiff` |
+
+## Loading the file
+
+The boundary file is the first group in the input panel, at the top of the
+left-hand side of the window.
+
+<Screenshot id="input-panel-full" />
+
+<Steps>
+<Step>
+### Click Browse…
+
+The field beside it is read-only — it reports the path of the file in use and
+cannot be typed into, so **Browse…** is the only way to choose a file. Pick any
+of the extensions above; the application works out which kind of file it is
+from the extension.
+</Step>
+
+<Step>
+### Answer the question the file type raises
+
+A CAD drawing opens the **DXF Site Coordinates** window asking for the site
+latitude and longitude. An image opens **Image Boundary — Scale & Coordinates**,
+asking how a real site distance maps to a distance on the drawing. A Google
+Earth file asks nothing, because it already carries its position.
+</Step>
+
+<Step>
+### Check the path field
+
+Once the file is read, the field shows the path of the file the layout will be
+built from. Load a different file at any time and the next
+**Generate Layout** uses it.
+</Step>
+</Steps>
+
+The group is labelled **Input KMZ File** even though it accepts CAD drawings
+and images as well.
+
+<Screenshot id="boundary-file-row" maxWidth={520} />
+
+### The ⓘ button
+
+The **ⓘ** button next to **Browse…** opens the application's own preparation
+guide: the rules for boundaries, water bodies, transmission lines and
+obstructions, ending in a quick-reference table of what must be a polygon, what
+must be a line, and how each must be named. It is the same material as
+[Boundary file requirements](/docs/inputs/kmz-requirements), available without
+leaving the application.
+
+## What happens when the file is read
+
+<Callout type="warn">
+Every feature in the file must lie **inside** a plant boundary. An obstruction
+drawn outside the boundary is not subtracted from anything, so tables are
+placed straight over the ground you meant to keep clear.
+</Callout>
+
+In order:
+
+1. The boundaries are read, along with the obstacles and line features
+   contained in each one.
+2. Latitude and longitude are converted to metres in the site's local UTM zone.
+   All internal geometry is in metres from that point on.
+3. The boundary is shrunk inward by the **Perimeter road width** to give the
+   usable area.
+4. Obstructions, water bodies and the buffered line corridors are subtracted
+   from it, followed by any excluded terrain.
+
+Module tables are then placed only where they fit entirely inside what is left.
+See [How placement works](/docs/layout/how-placement-works).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Boundary file requirements"
+    href="/docs/inputs/kmz-requirements"
+    description="How to prepare a Google Earth file so every feature is read correctly"
+  />
+  <Card
+    title="CAD drawing boundaries"
+    href="/docs/inputs/cad-boundary"
+    description="Using a DXF or DWG, and why the site coordinates matter"
+  />
+  <Card
+    title="Image boundaries"
+    href="/docs/inputs/image-boundary"
+    description="Tracing a boundary from a scan or an exported picture"
+  />
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="Boundary file in, finished layout out"
+  />
+</Cards>

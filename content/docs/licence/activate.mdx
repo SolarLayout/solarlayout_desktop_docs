@@ -1,0 +1,151 @@
+---
+title: Activate your licence
+description: Copy the Device ID from the licence window, send it with your email to the vendor, and load the licence file you receive.
+---
+
+Activation is four steps, done once per machine per subscription period. You
+copy a **Device ID** out of the application, send it with your email address to
+the vendor who supplies your licence, and load the `license.lic` file they send
+back. Nothing is entered by hand, and nothing needs an internet connection at
+the moment of activation.
+
+Until it is done, **Generate Layout** produces a message rather than a layout.
+Everything else in the application works — see
+[How licensing works](/docs/licence/overview) for what a licence does and does
+not control.
+
+## Before you start
+
+You need three things:
+
+| | |
+| --- | --- |
+| **The machine you will design on** | The Device ID identifies that specific computer. Activate on the PC you intend to use, not on a colleague's. |
+| **The email address the licence should be issued to** | The vendor uses it to know who is asking and where to send the file. |
+| **A way to reach the vendor who supplies your licence** | Whoever sold or provisioned the application to your organisation. |
+
+{/* VERIFY: support contact route — the address or route a reader sends a Device ID to */}
+
+## The four steps
+
+<Steps>
+
+<Step>
+### Open Help ▸ License / Subscription…
+
+The licence window opens with a status banner at the top. On a machine that has
+never been activated the banner reports that no licence was found; below it are
+the **Device ID** box with its **Copy** button, and the **Load License File…**
+button you will use in step 4.
+
+<Screenshot id="licence-no-licence" />
+</Step>
+
+<Step>
+### Copy the Device ID
+
+Use the **Copy** button beside the box. Do not read the value off the screen and
+retype it — it is long, and a single wrong character produces a licence that is
+valid but issued for a computer that does not exist. The result is *"License is
+issued for a different computer"*, and the file has to be reissued.
+</Step>
+
+<Step>
+### Send the Device ID and your email to the vendor
+
+Paste the Device ID into your message exactly as copied, together with the email
+address the licence should be issued to. Send both in the same message.
+
+If your mail client reformats or wraps long values, attach the Device ID as a
+plain text file instead of pasting it into the body.
+</Step>
+
+<Step>
+### Load the licence file
+
+You will receive a file named `license.lic`. Save it somewhere you can find
+again — a folder of your own, not the mail client's temporary preview area.
+
+In the licence window, click **Load License File…** and pick the file. The
+status banner changes to report a valid licence and shows the date it expires.
+
+<Screenshot id="licence-valid" />
+
+**Generate Layout** now works. Go to
+[Your first layout](/docs/first-layout).
+</Step>
+
+</Steps>
+
+<Callout type="warn">
+Load the file exactly as you received it. Do not open it in a text editor and
+save it, and do not edit any part of it — the licence carries a signature over
+its own contents, and any change at all invalidates it.
+</Callout>
+
+## The Device ID is the machine, not the person
+
+The Device ID identifies one computer. A licence issued against it is checked
+against that computer on every start, so:
+
+- **A licence for one PC will not work on another.** Not on a second machine in
+  the same office, not on a laptop belonging to the same person. Each needs its
+  own licence, issued against its own Device ID.
+- **Moving to a new PC means a new Device ID.** Install the application there,
+  open the licence window, copy the new Device ID, and ask the vendor to reissue.
+- **Keep the original `license.lic`.** It is what gets you running again after a
+  reinstall on the same machine, in one click.
+
+If the Device ID the window shows is not the one your licence was issued
+against, the licence fails with *"License is issued for a different computer"*.
+
+## After activation
+
+**The expiry date is in the licence window.** Reopen **Help ▸ License /
+Subscription…** at any time to see it. Note it before a project deadline —
+renewals take as long as the vendor takes to respond, and layout generation
+stops the day the licence expires.
+
+**A renewal is another file.** When the subscription period is extended you
+receive a new `license.lic` and load it exactly the way you loaded the first
+one, through **Load License File…**. There is nothing to uninstall or clear
+first.
+
+**Updates do not cost an activation.** The licence is stored outside the
+application, and a licence left by a previous installation is adopted
+automatically on first run. See
+[Updates and reinstalling](/docs/install/updates).
+
+**A second Windows user account on the same PC needs the file loaded again.**
+The licence is stored per user, so signing in as a different Windows user shows
+no licence even though the machine is the same. The same file works — load it
+once under that account.
+
+If the banner does not report a valid licence after step 4, the message it shows
+names the check that stopped it. Every message is listed in
+[Licence problems](/docs/licence/troubleshooting).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="How licensing works"
+    href="/docs/licence/overview"
+    description="Per-machine licensing, the eight checks, and where the file is stored"
+  />
+  <Card
+    title="Licence problems"
+    href="/docs/licence/troubleshooting"
+    description="Every message the licence check produces, and what to do"
+  />
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="Boundary file in, finished layout out"
+  />
+  <Card
+    title="Getting help"
+    href="/docs/support"
+    description="The in-app guide and what to send when you report a problem"
+  />
+</Cards>

@@ -1,0 +1,134 @@
+---
+title: Saving and reopening projects
+description: The .slp project file keeps a whole working session — inputs, layout, hand edits, diagram and materials list — and refuses to load if it has been altered.
+---
+
+A project file keeps an entire working session, so you can stop mid-design and
+come back to it. It uses the extension `.slp`, for Solar Layout Project, and it
+is written and read only by the application itself.
+
+This is separate from exporting. The PDF report, the Google Earth file, the CAD
+drawing and the Excel materials list are for the people who build the plant. The
+project file is for you: it is the only thing that lets you resume work rather
+than repeat it.
+
+## What a project file holds
+
+| Kept in the file | Meaning |
+| --- | --- |
+| The inputs | Every field in the panel as you left it, including the module, table or tracker, site, structure, topography, inverter and energy settings |
+| The layout | The placed tables or tracker units, control rooms, inverters or monitoring boxes, arresters, and the routed cables |
+| Your hand edits | Everything done in Sketch Mode — moved and added units, drawn obstructions, hand-drawn and deleted cable trenches, annotations, dimensions and text |
+| The single-line diagram | The symbols, wires and text on the drawing sheet |
+| The bill of materials | The materials list as it currently stands, including any edits or a loaded template you overlapped into it |
+| The terrain data | The elevation model and the ground it excluded |
+
+## The File menu
+
+<Screenshot id="file-menu" />
+
+| Item | What it does |
+| --- | --- |
+| **New Project** | Clears the session and starts from an empty window |
+| **Move to String / Central Window…** | Starts a fresh session in a different design mode |
+| **Save Project…** | Writes the current session to a `.slp` file |
+| **Open Project…** | Reads a `.slp` file back |
+| **Exit** | Closes the application |
+
+## Saving a project
+
+Use **File ▸ Save Project…**, or the toolbar's **💾 Save(Project)** button,
+which does the same thing without leaving the plot. Choose a folder and a name;
+the file type row shows the project extension.
+
+<Screenshot id="save-project" />
+
+Save after anything you would not want to redo — a run whose inputs took a
+while to settle, a set of hand edits, a diagram you have laid out, or a
+materials list you have corrected.
+
+## Reopening a project
+
+**File ▸ Open Project…**, then pick the `.slp` file. The session is restored
+from it, and you carry on from where you stopped.
+
+## Starting fresh
+
+**File ▸ New Project** clears the session. Save first if the current one is
+worth keeping — nothing is written to disk unless you write it.
+
+## Moving to a different design mode
+
+The mounting and inverter choices belong to the session and cannot be changed
+inside it. **File ▸ Move to String / Central Window…** — also on the toolbar as
+**⊕ Move to String / Central Window** — starts a new session in which the
+choice is made again. Save the current project before you do, or it goes with
+the old session. See [Choosing a design mode](/docs/design-modes).
+
+## The file checks itself when it opens
+
+A project file is a single binary container, not a text file. It carries a
+checksum computed over its own compressed contents, which is verified before
+anything is loaded. A file that has been altered, truncated by a failed copy,
+or is not a project file at all fails that check and is reported as an error
+instead of opening.
+
+<Callout type="warn">
+Do not edit a `.slp` file by hand, and do not try to produce one from another
+tool or a script. Any change to its bytes — including a well-intentioned one —
+makes the checksum disagree with the contents, and the application refuses the
+file rather than loading part of it.
+</Callout>
+
+Two practical consequences:
+
+- **Copy project files whole.** Move them with a normal file copy, and check
+  the copy opens before deleting the original. A transfer that stops partway
+  leaves a file that does not load.
+- **To get the design out of the application, export it.** The exports carry
+  the layout into formats other tools read: a Google Earth file, a layered CAD
+  drawing in UTM metres, an Excel materials list, and the PDF report. See
+  [Exports](/docs/exports/pdf-report).
+
+## Comparing several designs on one site
+
+There is one session at a time, so options are compared as separate project
+files rather than side by side in one window. A workable habit:
+
+1. Load the boundary file, set the inputs your design fixes, generate, and save
+   as one project per option — a portrait table against a landscape one, a
+   derived row pitch against a tighter one you override, arresters on against
+   off.
+2. Give each file a name that states the variable, not a version number, so the
+   comparison survives being read months later.
+3. Reopen each in turn and read the same summary columns — `DC(MWp)`,
+   `Full Tbl`, `ICR` and, once energy has been calculated, `CUF(%)` and the
+   probability columns.
+
+Changing the mounting or the inverter topology is the one comparison that also
+needs a new session, because those belong to the session rather than the inputs.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Exports"
+    href="/docs/exports/pdf-report"
+    description="The PDF report, the Google Earth file and the CAD drawing"
+  />
+  <Card
+    title="Editing by hand"
+    href="/docs/editing/sketch-mode"
+    description="The edits a project file preserves"
+  />
+  <Card
+    title="Choosing a design mode"
+    href="/docs/design-modes"
+    description="Why a mode change means a new session"
+  />
+  <Card
+    title="Troubleshooting"
+    href="/docs/troubleshooting"
+    description="What to do when a file does not open or a run does not finish"
+  />
+</Cards>

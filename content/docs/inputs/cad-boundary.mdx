@@ -1,0 +1,183 @@
+---
+title: CAD drawing boundaries
+description: Using a DXF or DWG as the plant boundary, and why the site latitude and longitude decide whether energy can be calculated.
+---
+
+A CAD drawing can be used as the boundary input: pick a `.dxf` or `.dwg` file
+with **Browse…** and the application reads the site outline from it, along with
+the closed shapes drawn inside that outline, which become obstacles.
+
+What a CAD drawing does not carry is a position on the earth. Its coordinates
+are drawing coordinates. That single gap is what this page is about, because it
+decides whether the design gets an energy estimate.
+
+## What is extracted
+
+**Only closed polylines are read** — `LWPOLYLINE` and `POLYLINE` entities, and
+only where the ring is closed. That is the whole of what the application looks
+for, for the boundary and for the shapes inside it alike:
+
+- **The boundary** — the site outline, as a closed polyline.
+- **Interior obstacles** — closed polylines inside that outline. Each is
+  subtracted from the usable area, exactly as an obstruction polygon from a
+  Google Earth file would be.
+
+<Callout type="error">
+A circle, a spline, an arc, a hatch or a plain line is **not read at all** —
+neither as the boundary nor as an obstacle. A site outline drawn as a spline or a
+chain of lines is not found, and the application asks you to draw the boundary as
+a closed `LWPOLYLINE` or `POLYLINE`. A pond drawn as a circle is not kept clear,
+and nothing warns you: the layout simply covers it.
+</Callout>
+
+Convert everything you need read into a closed polyline before exporting, and
+check closure while you are there. Anything else in the drawing is ignored rather
+than misread, so dimensions, text, title blocks, hatching and layers do no harm
+and a busy drawing does not need cleaning up first.
+
+<Callout type="warn">
+Feature classification by name is not available for a CAD drawing. Names and
+layer names are not inspected, so a pond and a building are the same thing to
+the application: ground to keep clear. Water bodies cannot be distinguished, and
+so are not labelled, coloured or exported as water anywhere.
+</Callout>
+
+Two consequences worth planning around:
+
+- Anything you want kept clear must be a **closed** polyline inside the
+  boundary. An open outline is not subtracted from anything.
+- Transmission line and canal corridors have to be added by hand after the
+  layout is generated, because there is no line-plus-setback rule to apply. See
+  [Obstructions and exclusions](/docs/layout/obstructions).
+
+If either of those matters on your site, trace the boundary into a Google Earth
+file instead — see
+[Boundary file requirements](/docs/inputs/kmz-requirements) for what that buys
+you.
+
+## The site coordinates
+
+Choosing a `.dxf` or `.dwg` file opens the **DXF Site Coordinates** window,
+which asks for the site latitude and longitude. They are optional: the window
+also lets you continue without them.
+
+<Screenshot id="dxf-latlon-dialog" />
+
+Enter them. The best source is the same one you would use for any site record —
+a coordinate off the survey, or a point read from Google Earth at the centre of
+the site. What depends on the value is the sun's position and the weather
+record, not the geometry, so a centre-of-site coordinate is what the field wants
+rather than a surveyed monument.
+
+### What is lost without them
+
+**Energy calculation is unavailable.** The layout is still generated — tables
+placed, control rooms sited, cables routed, quantities counted — and the whole
+plant appears in the summary table, the CAD export and the report. But there is
+no yield, no capacity factor and no exceedance probability, because two things
+that the estimate depends on come from latitude and longitude:
+
+| What needs the coordinates | Why |
+| --- | --- |
+| The automatic tilt angle | Tilt is derived from latitude. The application's rule of thumb is `tilt ≈ latitude × 0.76 + 3.1°`. |
+| The automatic row pitch | Pitch is the spacing at which rows do not shade each other at solar noon on the winter solstice, which depends on the sun's elevation at that latitude. |
+| The weather record | The irradiance and temperature series are fetched for a latitude and longitude. Without a point on the earth there is nothing to fetch. |
+
+You can still lay out a plant with the geometry you intend: tick both override
+boxes in [Spacing and tilt](/docs/inputs/spacing-and-tilt) and enter the tilt
+angle and row pitch yourself. That gives a correct table count and a correct
+capacity. It does not give an energy estimate — for that, supply the
+coordinates.
+
+## How the drawing is placed on the ground
+
+Geo-referencing a CAD drawing distorts nothing. The drawing's own shape and
+area are preserved exactly:
+
+1. The centroid of the drawing is taken as its origin.
+2. The latitude and longitude you entered are converted to metres in the site's
+   local UTM zone. That becomes the reference point.
+3. Every point in the drawing is treated as a **metre offset from the drawing
+   centroid**, and that offset is added to the reference point.
+
+So the drawing is translated onto the earth, not stretched onto it. A 400 m
+edge in the drawing is 400 m on the ground, an outline enclosing 120 acres still
+encloses 120 acres, and the site lands centred on the coordinate you gave.
+
+Two things follow:
+
+- **The drawing must already be in metres.** A drawing in millimetres or in feet
+  is read as though those numbers were metres, and the plant comes out the wrong
+  size. Check the area the application reports for the plant against the survey
+  before going further.
+- **The coordinate you enter is the centre of the site, not a corner.** Entering
+  a corner coordinate shifts the whole plant by half its own width — which
+  matters for the aerial imagery backdrop and for anything you compare against
+  the real site, though not for the layout itself.
+
+## Loading a drawing
+
+<Steps>
+<Step>
+### Pick the file with Browse…
+
+Choose the `.dxf` or `.dwg`. The **DXF Site Coordinates** window opens on its
+own straight afterwards.
+</Step>
+
+<Step>
+### Enter the site latitude and longitude
+
+Give the coordinate for the centre of the site. The window also allows
+continuing without it, at the cost of the energy estimate.
+</Step>
+
+<Step>
+### Generate, then check the reported area
+
+Read the plant area in acres from the summary table and compare it against the
+survey. A drawing in millimetres comes out a thousand times too large in each
+direction; a drawing in feet a little over three times too large. Fix the units
+in the CAD program and load the file again.
+</Step>
+
+<Step>
+### Add the exclusions the drawing could not carry
+
+Water bodies, transmission line corridors and anything else that needs keeping
+clear goes on by hand, in Sketch Mode.
+</Step>
+</Steps>
+
+## Contour files are a separate input
+
+A DXF can also be supplied as **contour data** in
+[Topography](/docs/inputs/topography), which is an entirely different input from
+the boundary. A contour file must already be in the project's UTM coordinates,
+whereas a boundary drawing is positioned by the latitude and longitude you
+type in. Do not use the same file for both purposes unless it genuinely is both.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Which boundary file to use"
+    href="/docs/inputs/boundary-files"
+    description="The three input types compared"
+  />
+  <Card
+    title="Boundary file requirements"
+    href="/docs/inputs/kmz-requirements"
+    description="What a Google Earth file carries that a CAD drawing cannot"
+  />
+  <Card
+    title="Spacing and tilt"
+    href="/docs/inputs/spacing-and-tilt"
+    description="Overriding tilt and row pitch when there is no latitude"
+  />
+  <Card
+    title="Obstructions and exclusions"
+    href="/docs/layout/obstructions"
+    description="Adding water, corridors and keep-clear areas by hand"
+  />
+</Cards>

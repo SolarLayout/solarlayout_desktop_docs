@@ -1,0 +1,345 @@
+---
+title: Boundary file requirements
+description: How to draw and name the features in a Google Earth file so the application reads the boundary, water bodies, obstructions and transmission lines correctly.
+---
+
+A Google Earth file is read literally. The application takes the closed polygon
+you drew as the plant boundary, treats every polygon inside it as ground to keep
+clear, buffers every line inside it into a corridor — and decides which kind of
+feature each one is from **the name you gave it**. Nothing is inferred from
+shape, size or imagery.
+
+That makes file preparation the highest-leverage half hour in the whole design.
+A correct file lays out in one run. A file with a pond named `P3` lays out with
+module tables in the water.
+
+The same rules are available inside the application, from the **ⓘ** button next
+to **Browse…**.
+
+<Screenshot id="kmz-help-dialog" />
+
+## The plant boundary
+
+| Requirement | Detail |
+| --- | --- |
+| Geometry | A **closed polygon**. Not a line, not a path, not an unclosed ring. |
+| Closure | The first and last coordinate of the ring must be identical. |
+| Name | Anything you can recognise. Each boundary becomes one plant, with its own row in the summary table. |
+| Position | Top level. A polygon that is not contained inside another polygon is a boundary. |
+| Count | One or many. Several boundaries in one file are laid out as a multi-plot site in a single run. |
+
+Everything else in the file — water, buildings, transmission lines — must lie
+**inside** one of those boundaries. A polygon fully contained within a boundary
+becomes an obstacle in that boundary. A polygon outside every boundary is not
+subtracted from anything, and the layout will happily cover the ground it sits
+on.
+
+<Screenshot id="kmz-in-google-earth" />
+
+### Preparing the file
+
+<Steps>
+<Step>
+### Draw the plant boundary as a polygon
+
+Trace the fence line. Close the ring back onto its first point. If your source
+is a survey with a coordinate schedule, enter the last coordinate as a repeat of
+the first rather than relying on the drawing tool to close it for you.
+</Step>
+
+<Step>
+### Draw every exclusion inside that boundary
+
+One polygon per water body, building, substation, borrow pit or graveyard. One
+line per transmission line, canal, drain or road.
+</Step>
+
+<Step>
+### Name each feature so its kind is recognisable
+
+The name is the only thing that tells the application what a feature is. Use a
+keyword from the lists below, plus whatever identifier you like around it —
+`Pond 3`, `Nala south`, `220kV line to substation`.
+</Step>
+
+<Step>
+### Save the file and load it
+
+Save as `.kmz` or `.kml`, then load it with **Browse…**. If a ring is not
+closed, the **Boundary Validation Issues** window opens — see
+[When a boundary fails validation](#when-a-boundary-fails-validation).
+</Step>
+</Steps>
+
+## How features are classified
+
+Classification is **by name keyword**, and the match is **case-insensitive**. If
+a name contains one of the keywords below, the feature is treated as that kind.
+If it contains none of them, a polygon is treated as a generic obstruction and a
+line is still buffered into a corridor — nothing in the file is ignored for want
+of a recognised name.
+
+| Class | Keywords that identify it |
+| --- | --- |
+| **Water body** | pond, lake, reservoir, water, wetland, swamp, marsh, waterbody, water body, water_body |
+| **Canal** | canal, channel, drain, drainage, nala, nallah, nullah, river, stream, creek, flood |
+| **Transmission line** | transmission, transmissionline, transmission line, powerline, power line, power_line, hv, hvl, ehv, 132kv, 220kv, 400kv |
+| **Road** | road, roads, street, highway, internal road, access road, service road, farm road, track |
+
+<Callout type="warn">
+A pond named `P3` is not recognised as water. Neither is a reservoir named
+`Excl-04`, nor a canal named `Feature 12`. The polygon is still kept clear of
+tables — it becomes a generic obstruction — but it is not identified, labelled
+or drawn as water anywhere, and it is not exported on the water layer of the CAD
+drawing. Rename it to include a keyword before you rely on the output.
+</Callout>
+
+Water bodies are recognised **only** from polygons you draw in the file. The
+application does not look for water in satellite imagery, so a pond you did not
+draw does not exist as far as the layout is concerned.
+
+### Names that work, and names that do not
+
+The keyword can sit anywhere in the name, in any case, with anything around it.
+Survey codes on their own never match.
+
+| Feature name | How it is read |
+| --- | --- |
+| `Pond 3` | Water body |
+| `pond` | Water body |
+| `WATER BODY - north` | Water body |
+| `Reservoir (monsoon extent)` | Water body |
+| `P3` | Generic obstruction |
+| `Excl-04` | Generic obstruction |
+| `Village school` | Generic obstruction |
+| `Nala south` | Canal |
+| `Storm drain` | Canal |
+| `220kV line to substation` | Transmission line |
+| `Existing EHV crossing` | Transmission line |
+| `Access road to plot 2` | Road |
+| `Feeder 2` | No list matches. A polygon becomes a generic obstruction; a line still becomes a corridor, at the transmission line setback |
+
+Because the match is on a fragment, a name can pick up a keyword you did not
+intend. `Drainage pond` carries a canal keyword and a water keyword at the same
+time; `Store near HV yard` carries a transmission line keyword. Read your own
+names against the three lists once before you save the file, and rename anything
+that touches two lists.
+
+## Water bodies
+
+- Draw a **closed polygon** around the water, inside the plant boundary.
+- Name it with a keyword from the water list.
+- The polygon is subtracted from the usable area, so no table is placed over it.
+- It is drawn in blue on the plot, and exported to the water layer of the CAD
+  drawing and to the exclusion zones of the Google Earth export.
+
+Draw the polygon at the water's maximum extent, not the extent on the day the
+imagery was taken. The application excludes exactly the shape you give it and
+adds no margin of its own — if you want a bund or a freeboard allowance around a
+pond, draw the polygon that much larger.
+
+## Obstructions and buildings
+
+Anything that occupies ground but is not water is a generic obstruction:
+existing buildings, a substation compound, a temple, a graveyard, a rock
+outcrop, a borrow pit.
+
+- Draw a **closed polygon**, inside the plant boundary.
+- Name it **without** a water keyword. That is the whole rule — the absence of a
+  water keyword is what makes a polygon a plain obstruction.
+- The polygon is subtracted from the usable area and drawn in red on the plot.
+
+If you discover an obstruction after the layout has been generated, you do not
+have to go back to the file: obstructions can be drawn directly on the plot. See
+[Obstructions and exclusions](/docs/layout/obstructions).
+
+## Transmission lines, canals and roads
+
+These are **line** features, not polygons. A line has no width in the file, so
+the width of the corridor kept clear around it comes from somewhere else — and
+which "somewhere else" depends on whether the name marks it as a road.
+
+- Draw the feature as a **line** through the site, inside the plant boundary.
+  Drawing it as a thin polygon instead means it is read as an obstruction
+  polygon and gets no corridor at all — only the strip you drew.
+- Name it with a keyword from the transmission line, canal or road list.
+- **Every line becomes a corridor.** A line whose name matches no list at all is
+  still buffered; it takes the transmission line setback, in the absence of
+  anything more specific. A line you forgot to name does not quietly lose its
+  keep-clear area.
+
+### Transmission lines and canals
+
+A transmission line or canal is buffered by the setback **on each side**, so the
+total corridor kept clear is **twice the setback**. The setback is the
+**Transmission line corridor** field in [Site Parameters](/docs/inputs/site):
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| Transmission line corridor | 15.0 m per side (30 m corridor) | 0.0–500.0 m | Half-width of the cleared corridor around every line feature that is not a road |
+
+| Setback per side | Corridor cleared |
+| --- | --- |
+| 15.0 m — the default | 30 m |
+| 30.0 m — the application's own suggestion for a 400 kV line | 60 m |
+
+Raise it for higher-voltage lines. Set it to match the right-of-way the utility
+imposes on your site, since that is a statutory figure rather than a design
+choice, and the one setback applies to every non-road line in the file — so a
+site with both a 220 kV line and a small drain gets the same corridor around
+both.
+
+Two drawing habits save trouble:
+
+- **Draw one continuous line across the site**, rather than several short
+  segments end to end. A single line gives one continuous corridor.
+- **Run the line right out through the boundary edge.** A line that stops short
+  of the fence leaves a wedge of usable ground at each end, and tables get placed
+  in it — directly under the conductor.
+
+### Roads carry their own width
+
+A line whose name matches a road keyword is not treated as a transmission line,
+and the corridor setback does not apply to it. A road is buffered by **half its
+own width on each side**, so the strip kept clear is **the road width** — not
+twice it.
+
+The width comes from the file, not from the input panel. Give the road placemark
+an extended-data attribute named `width`, `road_width`, `roadwidth` or
+`lane_width`, in metres, and that is the width used. A road with no recognised
+width attribute is laid out at **5.0 m**, and any value below 1 m is raised to
+1 m.
+
+**Two identically drawn lines therefore clear different ground.** On the shipped
+defaults a line named `Transmission line 1` clears a 30 m corridor — 15 m each
+side — where a line named `Access road 1` clears 5 m. Name every line
+deliberately: an access road that picks up a transmission line keyword takes the
+full corridor out of the layout, and a transmission line named as a road keeps
+almost none of the right-of-way the utility imposes.
+
+A road is assigned to whichever plant boundary contains the middle of the line,
+or to the nearest boundary if no boundary contains it. Draw internal roads well
+inside the plot they belong to on a multi-plot site.
+
+## Multiple boundaries in one file
+
+One file can carry as many plant boundaries as the site has plots, and all of
+them are laid out in a single run.
+
+- **Each boundary becomes its own plant.** It gets its own row in the summary
+  table, its own area and capacity, and its own folder in the Google Earth
+  export. A **TOTAL** row aggregates every plant.
+- **A feature belongs to the boundary that contains it.** Water bodies,
+  obstructions and lines are read per boundary, so a pond drawn inside plot 3 is
+  subtracted from plot 3.
+- **Boundaries must not overlap.** Touching along a shared edge is fine.
+- **Draw every plot, even the small ones.** Adding a plot later means editing the
+  file and loading it again, because the boundaries come from the file and
+  cannot be drawn on the plot.
+
+What follows from a multi-plot file — one main control room, a unit substation in
+each of the other plots, and medium-voltage cables between them — is covered in
+[Multi-plot sites](/docs/layout/multi-plot).
+
+## What each feature does to the layout
+
+Once the file is read, the features are used in a fixed order:
+
+1. The latitudes and longitudes are converted to metres in the site's local UTM
+   zone.
+2. Each boundary is shrunk inward by the **Perimeter road width** to give that
+   plant's usable area.
+3. Water bodies and obstruction polygons are subtracted from it.
+4. Every line feature is buffered into a corridor — by the setback on each side,
+   or by half the road width on each side for a road — and that corridor is
+   subtracted too.
+5. Excluded terrain is subtracted, when topography is enabled.
+
+Module tables are then placed only where they fit **entirely** inside what is
+left, which is why a polygon drawn slightly too small still leaves tables
+overhanging the real obstacle, and a polygon drawn generously does not. See
+[How placement works](/docs/layout/how-placement-works).
+
+## Quick reference
+
+| Feature | Geometry | Naming rule |
+| --- | --- | --- |
+| Plant boundary | Closed polygon, first coordinate = last, not inside another polygon | Any name; it becomes the plant name |
+| Water body | Closed polygon inside a boundary | Must contain a water keyword |
+| Building, substation, other obstruction | Closed polygon inside a boundary | Must **not** contain a water keyword |
+| Transmission line | Line inside a boundary | Should contain a transmission line keyword |
+| Canal, drain, nala | Line inside a boundary | Should contain a canal keyword |
+| Road | Line inside a boundary, with a width attribute in metres | Must contain a road keyword, or it is buffered at the transmission line setback instead |
+
+## Common mistakes
+
+| Mistake | What happens | Fix |
+| --- | --- | --- |
+| The boundary ring is not closed | The **Boundary Validation Issues** window opens and that boundary cannot be laid out | Repeat the first coordinate as the last, or redraw the polygon with the drawing tool's own close action |
+| An obstruction sits outside the boundary | It is silently ignored. Tables are placed over that ground | Move the polygon inside the boundary, or extend the boundary to contain it |
+| Two boundaries overlap | The overlapped ground is claimed by both plants, so area and capacity are counted twice | Edit the polygons so they touch at most along an edge |
+| A water body has no water keyword in its name | It is kept clear, but as a generic obstruction — not identified, labelled or exported as water | Rename it to include a water keyword |
+| The boundary is drawn as a line or path | There is no closed polygon at top level, so nothing is recognised as a plant boundary | Redraw it as a polygon |
+| A transmission line is drawn as a thin polygon | It is read as an obstruction and gets no setback, so the corridor is only as wide as you drew it | Redraw it as a single line and let the setback create the corridor |
+
+Two of these are worth expanding.
+
+**Overlapping boundaries** are the most expensive mistake in the list, because
+nothing fails. Each boundary is laid out as its own plant, the overlapped strip
+gets tables from both, and the total row of the summary table reports a capacity
+the site cannot physically hold. It is easiest to catch by area: check each
+plant's acreage in the summary against the survey before you trust the total.
+
+**A boundary drawn as a line** is the most common export mistake, because some
+drawing tools default to a path when you click around a shape and only close it
+if you use the polygon tool explicitly. Check in Google Earth that the shape has
+a fill, not only an outline, before saving.
+
+## When a boundary fails validation
+
+If a ring is not closed, or is otherwise not a usable polygon, loading the file
+opens the **Boundary Validation Issues** window. It lists every problem
+boundary with a description of what is wrong and a checkbox against each.
+
+<Screenshot id="boundary-validation-dialog" />
+
+You have two choices:
+
+- **Exclude the problem boundaries and proceed.** Tick the boundaries you want
+  to drop and continue. The remaining boundaries are laid out as usual. Useful
+  when one plot of a twelve-plot file is malformed and you want to see the other
+  eleven now.
+- **Cancel and fix the file.** Nothing is loaded. Correct the geometry in Google
+  Earth, save, and load again.
+
+<Callout type="warn">
+An excluded boundary is not a deferred boundary. It contributes no area, no
+capacity and no row to the summary table, and it does not appear in any export.
+If you exclude one and then read the total capacity, you are reading the total
+for a smaller plant than the one you intend to build.
+</Callout>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Which boundary file to use"
+    href="/docs/inputs/boundary-files"
+    description="The three input types compared, and how to load one"
+  />
+  <Card
+    title="Multi-plot sites"
+    href="/docs/layout/multi-plot"
+    description="What changes when one file carries several boundaries"
+  />
+  <Card
+    title="Obstructions and exclusions"
+    href="/docs/layout/obstructions"
+    description="Adding exclusions after the file is loaded"
+  />
+  <Card
+    title="Site Parameters"
+    href="/docs/inputs/site"
+    description="Perimeter road width, corridor setback and the capacity block"
+  />
+</Cards>

@@ -1,0 +1,171 @@
+---
+title: Install on Windows
+description: Install from the Microsoft Store, launch the application for the first time, and choose a design mode.
+---
+
+SolarLayout Desktop is a Windows application, installed from the Microsoft
+Store. There is one package and one installation route: search the Store for
+the application, install it, launch it. Everything after that happens on your
+own machine.
+
+Installation does not need a licence. The application opens, and every panel,
+field and menu is there to look at. Generating a layout is the one thing that
+needs a licence, so activation is the step that follows this page.
+
+## What the Store gives you
+
+The Store is not only a download page. It changes three things that matter on a
+managed or corporate PC:
+
+| | What it means for you |
+| --- | --- |
+| **Microsoft signs the package** | The copy you install is the one the publisher submitted, verified by Microsoft rather than by you. |
+| **Microsoft hosts and delivers it** | Nothing is fetched from a third-party download site, and there is no installer to run and answer questions in. |
+| **Store applications are exempt from SmartScreen warnings** | You will not see the "unrecognised app" prompt that Windows raises for downloaded installers, so there is nothing to click past. |
+
+Updates come the same way — Microsoft delivers them. See
+[Updates and reinstalling](/docs/install/updates).
+
+## The publisher
+
+The listing is published by **Rensaar**. Check the publisher name on the
+listing page before you install. It is the one thing on the page that tells you
+you are looking at the right application rather than a similarly named one.
+
+## System requirements
+
+{/* VERIFY: minimum Windows version and hardware requirements */}
+
+Stated qualitatively, because the exact minimums are not published:
+
+- A **64-bit Windows PC**.
+- A display **wide enough to show the input panel and the plot side by side**.
+  The window is built around that arrangement — the panel of settings on the
+  left, the plant drawing on the right — and a narrow screen makes both
+  cramped. A wide or high-resolution monitor is worth more here than a fast
+  processor.
+- An **internet connection only for weather data and elevation data**. Both are
+  optional, and both are used only when you ask for them. Layout generation,
+  drawing, editing and every export run without a connection.
+
+Large plants ask more of the machine than small ones, and enabling cable
+calculation is the slowest step on a large or complex layout. Nothing else in
+the application is sensitive to the hardware in the same way.
+
+## Find the listing
+
+There is no link to publish here, so open the Store and search:
+
+<Steps>
+
+<Step>
+### Open the Microsoft Store
+
+It is installed on every supported Windows PC. Press Start, type *Microsoft
+Store*, and open it.
+</Step>
+
+<Step>
+### Search for the application by name
+
+Type the application name into the Store's search box. Nothing else is needed
+— no product code, no redemption link.
+</Step>
+
+<Step>
+### Check the publisher reads Rensaar
+
+The publisher name sits under the application name on the listing page,
+alongside the install button.
+
+<Screenshot id="store-listing" />
+</Step>
+
+<Step>
+### Install it
+
+Click **Get** or **Install**. The Store downloads and installs the
+application; there are no options to choose and no components to select.
+
+When it finishes, the button on the listing changes to **Open**.
+
+<Screenshot id="store-installed" />
+</Step>
+
+<Step>
+### Launch it
+
+Use **Open** on the listing, or find the application in the Start menu — press
+Start and type the first few letters of its name.
+
+<Screenshot id="start-menu-entry" />
+</Step>
+
+</Steps>
+
+## The first launch
+
+The application does not open straight into the main window. A window appears
+first, offering four cards, and you pick one before anything else happens. It
+appears at **every** launch, not only the first.
+
+The four cards are the two mounting types crossed with the two electrical
+topologies:
+
+| Mounting | Electrical | Equipment chain on the card |
+| --- | --- | --- |
+| Fixed Tilt | String Inverter | Modules → MMS-Table → String Inverter → ICR |
+| Fixed Tilt | Central Inverter | Modules → MMS-Table → SMB → Central Inverter |
+| Single Axis Tracker | String Inverter | Modules → Tracker MMS → String Inverter → ICR |
+| Single Axis Tracker | Central Inverter | Modules → Tracker MMS → SMB → Central Inverter |
+
+MMS is the module mounting structure; SMB is a string monitoring box; ICR is an
+inverter control room. The choice decides which input groups you are shown and
+how the plant is put together, so it is a design decision rather than a
+preference — [Choosing a design mode](/docs/design-modes) covers which to pick.
+
+If you chose wrongly, you do not need to restart: **File ▸ Move to String /
+Central Window…** moves the session to the other electrical topology.
+
+Once you have picked a card, the main window opens: the input panel on the
+left, an empty plot area on the right, the toolbar above it and an empty
+summary table below. See [The main window](/docs/getting-started) for what each
+part of it is.
+
+## What to do next
+
+<Callout type="warn">
+**Generate Layout** does nothing until a valid, in-date licence for this
+machine is loaded. Everything else — loading a boundary file, reading and
+changing every input, opening the menus — works without one, but no layout is
+produced. Activate the licence before you plan to design anything.
+</Callout>
+
+Activation is four steps and happens once per machine per subscription period.
+You copy a Device ID out of the application, send it to the vendor who supplies
+your licence, and load the file they send back.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Activate your licence"
+    href="/docs/licence/activate"
+    description="Copy the Device ID, load the licence file"
+  />
+  <Card
+    title="Updates and reinstalling"
+    href="/docs/install/updates"
+    description="How Store updates arrive, and why your licence survives one"
+  />
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="Boundary file in, finished layout out"
+  />
+  <Card
+    title="What the application does"
+    href="/docs/intro"
+    description="What you give it and what it produces"
+  />
+</Cards>

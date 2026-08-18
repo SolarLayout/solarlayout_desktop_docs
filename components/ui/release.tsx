@@ -39,11 +39,20 @@ const BODY_STYLES = [
   "[&_code]:rounded [&_code]:border [&_code]:border-fd-border [&_code]:bg-fd-muted/60 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[12.5px] [&_code]:font-mono",
 ].join(" ")
 
-export function Release({ version, date, tag, children }: ReleaseProps) {
-  // Deep-linkable anchor — /docs/releases#v-1-1-0. scroll-mt offsets the
-  // sticky header so the anchored card isn't hidden beneath it.
-  const anchorId = `v-${version.replace(/\./g, "-")}`
-  const formattedDate = new Date(`${date}T00:00:00Z`)
+/**
+ * Format an ISO date for the header, falling back to the raw string when it
+ * is not a parseable date.
+ *
+ * The fallback is load-bearing, not defensive padding: the release page
+ * carries a structural placeholder entry until a real version and date exist,
+ * and `new Date("TBD…")` would otherwise render the header as "INVALID DATE" —
+ * a rendering bug on a shipped page caused purely by content that is honest
+ * about not knowing yet.
+ */
+function formatReleaseDate(date: string): string {
+  const parsed = new Date(`${date}T00:00:00Z`)
+  if (Number.isNaN(parsed.getTime())) return date
+  return parsed
     .toLocaleDateString("en-GB", {
       year: "numeric",
       month: "short",
@@ -51,6 +60,16 @@ export function Release({ version, date, tag, children }: ReleaseProps) {
       timeZone: "UTC",
     })
     .toUpperCase()
+}
+
+export function Release({ version, date, tag, children }: ReleaseProps) {
+  // Deep-linkable anchor — /docs/releases#v-1-1-0. scroll-mt offsets the
+  // sticky header so the anchored card isn't hidden beneath it.
+  const anchorId = `v-${version.replace(/\./g, "-")}`
+  const formattedDate = formatReleaseDate(date)
+  // `dateTime` must be a valid machine-readable date or the attribute is
+  // meaningless — omit it entirely rather than emit a bad one.
+  const isValidDate = !Number.isNaN(new Date(`${date}T00:00:00Z`).getTime())
 
   return (
     <section
@@ -68,7 +87,7 @@ export function Release({ version, date, tag, children }: ReleaseProps) {
         </h2>
         <time
           className="font-mono text-[10px] tracking-[0.12em] uppercase text-fd-muted-foreground"
-          dateTime={date}
+          dateTime={isValidDate ? date : undefined}
         >
           {formattedDate}
         </time>

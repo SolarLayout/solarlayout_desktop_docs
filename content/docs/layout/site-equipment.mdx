@@ -1,0 +1,273 @@
+---
+title: Main control room, substations and street lights
+description: Placing the main control room and other structures on a generated layout, and the perimeter street lights you enable before generating.
+---
+
+Some site equipment is not placed with the layout. The **MCR** — main control
+room — and any generic objects are placed by clicking a position on the plot
+after a layout exists. Unit substations appear on their own when a multi-plot
+site gets its main control room. Street lights are a setting you turn on before
+you generate.
+
+The inverter control rooms — ICRs — are different: they are counted from the
+plant capacity and sited automatically. See
+[Inverter control rooms](/docs/layout/icr).
+
+| Equipment | How it arrives | When | Footprint set in |
+| --- | --- | --- | --- |
+| **MCR** — main control room | You click **Place MCR**, then click the plot | After a layout exists | **Structures & Shadow**, the **MCR** row |
+| **Object** — anything else on the site | You click **Place Object**, then click the plot | After a layout exists | **Structures & Shadow**, the **Object** row |
+| **USS** — unit substation | Placed for you, one per plot, when the main control room is placed | Multi-plot sites only | **Structures & Shadow**, the **USS** row |
+| **Street lights** | Placed with the layout | Enabled **before** generating | **Structures & Shadow**, the street light rows |
+
+## Placing the main control room
+
+The placement buttons sit below the plot and become useful once a layout has
+been generated.
+
+<Steps>
+<Step>
+### Click Place MCR
+
+The button changes to **Cancel Placement** while it is armed, so you can always
+tell whether the next click on the plot will drop a building. Click
+**Cancel Placement** to disarm it without placing anything.
+</Step>
+
+<Step>
+### Click the position on the plot
+
+The main control room is placed at the point you click. One click places it and
+the button returns to **Place MCR**.
+</Step>
+
+<Step>
+### Keep it inside the boundary
+
+A click outside the plant boundary is refused with the message
+*"Please place inside the boundary."* Nothing is placed, and the button stays
+armed so you can click again in the right place.
+</Step>
+</Steps>
+
+<Screenshot id="layout-mcr-placed" />
+
+**Remove MCR** takes it away again. Place it once more wherever you want it —
+there is no need to regenerate the layout to move it.
+
+On a run with cable calculation on, a hint line below the placement buttons
+reports the total medium-voltage cable length as soon as the room is placed, so
+you can try two positions and compare them without regenerating.
+
+### The footprint
+
+The main control room's size comes from your own fields in the
+**Structures & Shadow** group, not from a fixed value:
+
+| Field | Default | Unit |
+| --- | --- | --- |
+| **MCR** length (east–west) | 15.0 | m |
+| **MCR** width (north–south) | 8.0 | m |
+| **MCR** height | 5.0 | m |
+
+Length is always the east–west dimension and width the north–south one, so a
+building entered as 15 by 8 is wide across the rows, not along them. The height
+drives the shadow footprint rather than the plan area. Set these before you
+place the building; see
+[Structures and shadow](/docs/inputs/structures-and-shadow) for the whole group,
+including the **Clear tables inside shadows** option, which is **on** by
+default and removes tables that fall inside the building's year-round shadow.
+
+## Why the main control room comes first
+
+Medium-voltage routing runs **from every inverter control room to the main
+control room**. Until the main control room exists there is no destination, so
+**no medium-voltage cable is routed at all** — the medium-voltage length and
+trench columns in the summary report a dash even on a run with cable calculation
+switched on.
+
+The order that works is therefore:
+
+1. Generate the layout, with **Calculate Cables for PV Power Plant** ticked.
+2. Place the main control room.
+3. Read the medium-voltage figures.
+
+Place it where the plant's export actually leaves the site — usually near the
+point of interconnection — because the trunk network is built to reach it and
+its position sets the whole medium-voltage cable length. Moving it changes that
+length. See [Cable routing and trenches](/docs/layout/cables) for how the trunk
+is formed and what the reported lengths mean.
+
+## Placing generic objects
+
+An object is anything on the site that keeps modules off the ground around it
+and that your boundary file does not carry: a tree, a pole, a tank, an existing
+shed, a structure the survey missed.
+
+- **Place Object** arms placement in the same way as **Place MCR** — the button
+  reads **Cancel Placement** while armed, and a click outside the boundary is
+  refused with the same message.
+- **Remove Objects** clears the objects you have placed.
+
+Their size and height come from the **Object** row of the
+**Structures & Shadow** group:
+
+| Field | Default | Unit |
+| --- | --- | --- |
+| **Object** length (east–west) | 0.0 | m |
+| **Object** width (north–south) | 0.0 | m |
+| **Object** height | 0.0 | m |
+
+<Callout type="warn">
+All three object fields ship at **0.0**, which means *not configured*. Fill in a
+length, a width and a height before you place an object, or you are placing
+something with no extent and no shadow.
+</Callout>
+
+The point of an object is the **shadow**, not the footprint. With
+**Clear tables inside shadows** on, the year-round shadow of each object across
+the shadow window clears the tables it falls on — which is exactly what you want
+for a tree that no boundary file will ever describe. The height is what makes
+that shadow long, so it is the field to get right.
+
+## Unit substations on a multi-plot site
+
+A **USS** — unit substation — is placed for you, and only on a site whose
+boundary file contains more than one plant boundary.
+
+When you click **Place MCR** on a multi-plot site, the application drops a unit
+substation in **every plot except the one that receives the main control room**.
+Each plot's inverter control rooms then route their medium-voltage cables to
+their own unit substation instead of running across country to the main control
+room.
+
+| Field | Default | Unit |
+| --- | --- | --- |
+| **USS** length (east–west) | 5.0 | m |
+| **USS** width (north–south) | 4.0 | m |
+| **USS** height | 5.0 | m |
+
+The link from a unit substation onward to the main control room is an overhead
+line or a buried cable, and it is **not** part of the automatic medium-voltage
+routing — plan and cost it outside the application. See
+[Multi-plot sites](/docs/layout/multi-plot) for the full behaviour, including
+how each plot gets its own summary row.
+
+## Street lights
+
+Street lights are perimeter lighting: a line of poles set close inside the
+fence, right around the plant.
+
+They are **off** by default and, unlike the main control room, they are **not**
+placed by clicking. Switch them on in the input panel **before** you click
+**Generate Layout**; a layout already on screen does not gain them.
+
+### What placement does
+
+- Poles are spaced along the plant perimeter at the pole-to-pole span.
+- Each pole sits inside the fence, inset by the street light setback.
+- Any module table the pole's shadow touches is cleared, so lighting costs a
+  little capacity around the edge of the plant.
+
+The number of poles is approximately the **perimeter divided by the span**, so a
+long, irregular boundary carries more lights than a compact one of the same
+area.
+
+<Screenshot id="layout-street-lights" />
+
+### The street light settings
+
+All of them are in the **Structures & Shadow** group:
+
+| Field | Default | Range | Unit |
+| --- | --- | --- | --- |
+| **Street light pile Ø** | 0.3 | 0.0–5.0 | m |
+| **Street light height** | 6.0 | 0.0–50.0 | m |
+| **Street light span (pole to pole)** | 40.0 | 1.0–500.0 | m |
+| **Street light setback (inset inside perimeter)** | 0.2 | 0.0–50.0 | m |
+| **Street lights** | off | — | — |
+
+What each one changes:
+
+- **Span** sets the pole count. Widen it for fewer poles and less cleared
+  ground; narrow it for more of both.
+- **Setback** decides how far inside the fence the poles stand. It is small by
+  default, which keeps the poles in the perimeter road band rather than out
+  among the tables.
+- **Height** sets how far the pole's shadow reaches, and therefore how many
+  tables it clears.
+- **Pile Ø** describes the foundation.
+
+### Reading the result
+
+The summary reports the pole count in the **St.Lt** column, one row per plant,
+aggregated in the **TOTAL** row. The module and capacity columns on the same row
+already account for the tables the lights cleared.
+
+## If a placement does not do what you expect
+
+<Accordions>
+<Accordion title="Clicking the plot places nothing">
+The tool is not armed. While placement is armed the button reads
+**Cancel Placement**; if it reads **Place MCR** or **Place Object**, the next
+click on the plot is an ordinary click. Arm it first.
+</Accordion>
+
+<Accordion title="Please place inside the boundary.">
+The point you clicked is outside the plant boundary. Nothing is placed and the
+tool stays armed — click again inside the boundary.
+</Accordion>
+
+<Accordion title="An object was placed but nothing changed">
+The **Object** length, width and height all ship at **0.0**, which means *not
+configured*. An object with no extent and no height has no footprint to clear and
+casts no shadow. Enter its dimensions in the **Structures & Shadow** group, then
+place it.
+</Accordion>
+
+<Accordion title="Street lights did not appear">
+They are not placed by clicking. Tick **Street lights** in the input panel and
+click **Generate Layout** again — an existing layout does not gain them.
+</Accordion>
+
+<Accordion title="The medium-voltage columns still read a dash">
+Two things are needed together: **Calculate Cables for PV Power Plant** must have
+been ticked for the run, and the main control room must be placed. Cable
+calculation is off by default.
+</Accordion>
+</Accordions>
+
+## Where the structures end up in the outputs
+
+- **On the plot.** The main control room, the unit substations, objects and
+  street light poles are drawn with the rest of the layout.
+- **In the CAD drawing.** The main control room is written to its own `MCR`
+  layer. See [CAD drawing export](/docs/exports/dxf).
+- **In the bill of materials.** The automated list is computed from the layout,
+  so use **⚙ Rebuild from Layout** after placing or removing equipment. See
+  [Bill of materials](/docs/bom/overview).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Cable routing and trenches"
+    href="/docs/layout/cables"
+    description="What medium-voltage routing does once the main control room exists"
+  />
+  <Card
+    title="Multi-plot sites"
+    href="/docs/layout/multi-plot"
+    description="Several boundaries in one file, one control room, a substation per plot"
+  />
+  <Card
+    title="Structures and shadow"
+    href="/docs/inputs/structures-and-shadow"
+    description="Every footprint, height and the shadow window that clears tables"
+  />
+  <Card
+    title="Lightning arresters"
+    href="/docs/layout/lightning-arresters"
+    description="The coverage grid, the footprint, and what it costs in capacity"
+  />
+</Cards>

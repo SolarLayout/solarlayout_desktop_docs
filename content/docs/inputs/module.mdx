@@ -1,0 +1,267 @@
+---
+title: Module specifications
+description: Module dimensions, wattage and bifacial settings, and what loading a manufacturer .PAN file fills in for you.
+---
+
+The **Module Specifications** group describes the single PV module every other
+dimension in the plant is built from. Table size follows from the module
+dimensions, row pitch follows from table size, string length follows from the
+module's electrical data, and plant DC capacity is the placed module count
+multiplied by the wattage entered here. Get this group wrong and every figure
+downstream is wrong with it.
+
+You can type the three numbers by hand from a datasheet, or load the
+manufacturer's `.PAN` file and have them filled in — along with the electrical
+data the energy model needs, which a datasheet reading would not give you.
+
+<Screenshot id="module-group" maxWidth={420} />
+
+## The fields
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Length (long side)** | 2.38 m | 0.5–5.0 m | The module's long edge. Becomes the north–south or the east–west dimension of the module depending on orientation. |
+| **Width (short side)** | 1.13 m | 0.5–3.0 m | The module's short edge, on the other axis. |
+| **Wattage** | 610 Wp | 100–1000 Wp | Nameplate power at standard test conditions (STC). Multiplies the placed module count into plant DC capacity. |
+| **Bifacial module** | off | — | Turns on the rear-side energy contribution and enables the bifaciality factor. |
+| **Bifaciality factor (φ)** | 0.70 | 0.50–0.95 | Rear-side efficiency as a fraction of front-side efficiency. Editable only when **Bifacial module** is ticked. |
+
+All internal geometry is held in metres, projected to the site's own UTM zone,
+so the two dimensions are metres regardless of what the manufacturer's
+datasheet uses.
+
+## Length is the long side, width the short side
+
+The two fields are named by the module itself, not by the compass. **Length**
+is always the long edge of the glass; **Width** is always the short edge.
+Neither field is tied to east–west or north–south on its own.
+
+Which edge ends up running east–west is decided by the mounting orientation,
+one group further down the panel:
+
+- On a fixed-tilt plant, **Portrait** puts the module's short side east–west
+  and its long side north–south. **Landscape** reverses that. See
+  [Table configuration](/docs/inputs/table).
+- On a tracker plant, **P config (Portrait)** puts the module's long side
+  east–west, across the torque tube. **L config (Landscape)** puts the long
+  edge north–south, along the tube. See
+  [Tracker configuration](/docs/inputs/tracker).
+
+The practical consequence: swapping orientation does not change the module, but
+it does change the table's east–west width and north–south height, and
+therefore the row pitch, the ground coverage ratio and how many tables fit on
+the site.
+
+<Callout type="warn">
+Enter the module's own dimensions here, never a table dimension or a
+pre-multiplied figure. The application multiplies the module out into the table
+for you, and doing it twice inflates capacity silently.
+</Callout>
+
+## Loading a manufacturer file
+
+**Load .PAN** reads a `.PAN` module file — the module data file published for
+PVsyst — and fills the group in from it. This is the reliable route: it brings
+in electrical parameters that have no field in the input panel but that the
+energy model uses.
+
+<Steps>
+<Step>
+### Click Load .PAN
+
+Pick the `.PAN` file for the module you are designing around. The file row
+then shows the module name it read, and **View** becomes available.
+</Step>
+
+<Step>
+### Check the filled-in values
+
+Wattage, long side and short side are overwritten with the file's values.
+Compare them against your datasheet before going further.
+</Step>
+
+<Step>
+### Answer the modules-in-series question
+
+The application asks whether to work out the string length for you. See
+[the string sizing question](#the-modules-in-series-question) below.
+</Step>
+</Steps>
+
+<Screenshot id="module-pan-loaded" maxWidth={420} />
+
+### What the file fills in
+
+| Filled in from the file | Where it lands |
+| --- | --- |
+| Wattage | **Wattage** in this group |
+| Long side and short side | **Length (long side)** and **Width (short side)** |
+| Bifacial declaration | Ticks **Bifacial module** and fills **Bifaciality factor (φ)** |
+| Temperature coefficient of maximum power | The temperature loss in the energy settings, recomputed |
+| Nominal operating cell temperature | The **NOCT** field in the string sizing window |
+| Voltage temperature coefficient | The voltage coefficient the string sizing window works from |
+
+A file that declares the module bifacial turns the checkbox on for you and
+fills the factor with the manufacturer's value, so you do not have to know
+whether a given part number is bifacial to get the rear-side gain modelled.
+
+Loading a file also recomputes **Temperature losses** in the energy settings
+and replaces the shipped default with a figure derived from this module. That
+calculation needs the module's temperature coefficient of maximum power, which
+is read from the file rather than typed anywhere. The module operating
+temperature it derives is displayed next to the loss row, with the working
+shown underneath it — see
+[Temperature losses](/docs/energy/temperature).
+
+### The nominal operating cell temperature comes from the file too
+
+The **nominal operating cell temperature** — NOCT, the cell temperature the
+module reaches under standard nominal conditions — is read from the module file
+as well, and it is the figure the hot case of automatic string sizing works
+from. A file that declares no NOCT falls back to **45 °C**, and the string
+sizing window will instead estimate one from the module's efficiency and say
+on screen that it has done so.
+
+So the electrical data behind string sizing is not only the voltages: the cell
+temperature the voltages are evaluated at travels with the file too. Typing the
+three dimensions by hand leaves that figure to be estimated.
+
+### Metres or millimetres
+
+Module files are published in both units. Dimension values are accepted either
+way and interpreted by magnitude: a value below 100 is read as metres, a value
+of 100 or more is read as millimetres. The same module described in metres and
+described in millimetres therefore lands as the same long side, and you do not
+have to convert anything before loading.
+
+### The modules-in-series question
+
+Straight after a successful load, the application asks *Calculate the number
+of modules in series automatically?* with two buttons:
+
+- **Auto** opens the string sizing window, which works the feasible number of
+  modules in series out from the module's voltage data and the inverter's
+  window.
+- **Manual** leaves the string length to you.
+
+The question appears because the module file is the first point at which
+automatic string sizing becomes possible. Full detail, including what the
+window needs from an inverter file, is on
+[String sizing](/docs/inputs/string-sizing).
+
+## Viewing what the file contains
+
+**View** opens a read-only window showing everything read from the module file.
+Nothing in it is editable — it exists so you can confirm you loaded the module
+you meant to, and check parameters the input panel has no field for.
+
+<Screenshot id="pan-viewer" />
+
+| Tab | What it shows |
+| --- | --- |
+| **Basic data** | Nameplate figures and the STC operating point |
+| **Sizes and Technology** | Physical dimensions and cell technology |
+| **Model parameters** | The one-diode model parameters and temperature coefficients |
+| **Additional Data** | Remaining declared values |
+| **Graphs** | Current–voltage and power–voltage curves, drawn from the STC points |
+
+The **Graphs** tab is the quickest sanity check on a file from an unfamiliar
+source: a curve with the expected knee near the maximum power point tells you
+the electrical data read cleanly.
+
+<Screenshot id="pan-viewer-graphs" />
+
+## Bifacial options
+
+A bifacial module generates from light reaching its rear face as well as its
+front. Two controls at the bottom of the group decide whether that is modelled.
+
+**Bifacial module** is off as shipped. With it off, the module is treated as
+monofacial and no rear-side energy is added, whatever the module actually is.
+Tick it — or load a file that declares bifaciality — and the rear-side gain
+enters the yield calculation.
+
+### What the bifaciality factor means
+
+**Bifaciality factor (φ)** is the rear-side efficiency of the module expressed
+as a fraction of its front-side efficiency. A factor of 0.70 means the rear
+face converts light to power at 70 % of the efficiency of the front face, so a
+given irradiance falling on the back is worth 70 % of the same irradiance
+falling on the front.
+
+- Typical published values sit between 0.65 and 0.80. The field accepts
+  0.50–0.95, and ships at 0.70.
+- The factor is a property of the module, not of the site. Take it from the
+  datasheet or let a `.PAN` file fill it in; do not tune it to reach a target
+  yield.
+- Typical bifacial energy gain over the same plant built with monofacial
+  modules is 5–15 %. Where a specific design lands in that band depends far
+  more on the ground under the array and on how densely the rows are packed
+  than on the factor itself.
+
+### Ground albedo lives with the energy settings
+
+The factor alone cannot produce a rear-side figure. The rear irradiance the
+model uses depends on the ground reflectance — the albedo — the tilt of the
+module, and the ground coverage ratio, because closely packed rows leave less
+lit ground between them to reflect anything. Only then is the result scaled by
+φ.
+
+**Ground albedo (ρ)** is therefore set in the energy settings, not here, and
+defaults to 0.25. The full rear-side model, and what to set albedo to for
+different ground cover, is on [Bifacial gain](/docs/energy/bifacial).
+
+## What moves when these fields move
+
+Nothing in this group is local to it. Before you change a value on a design you
+have already reviewed, know what else changes with it.
+
+| Change | What it moves |
+| --- | --- |
+| **Length** or **Width** | The table's east–west width and north–south height, and through them the automatic row pitch, the ground coverage ratio, and how many tables fit inside the usable area |
+| **Wattage** | Plant DC capacity, and therefore the number of inverter control rooms — one per capacity block — and the DC to AC ratio |
+| **Bifacial module**, **Bifaciality factor (φ)** | Energy yield only. Neither field moves a single table; the layout is identical with the checkbox on or off |
+
+A module dimension change is a layout change, so the layout has to be generated
+again before any figure in the summary is trustworthy. A bifacial change is an
+energy change, so the energy calculation has to be run again, but the placed
+layout stands.
+
+## If you have no module file
+
+Typing the three fields by hand is a complete input for layout purposes — the
+placement, the table geometry, the capacity and the summary all work from the
+dimensions and the wattage alone. What you lose is the electrical data behind
+two calculations:
+
+- Automatic string sizing has no voltage window to work from, so the number of
+  modules in series stays a value you enter.
+- The temperature loss stays at its default percentage instead of being
+  derived from this module's coefficient.
+
+Both are usable defaults, not blockers. Load a file when you have one.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Table configuration"
+    href="/docs/inputs/table"
+    description="Turn the module into an MMS table — orientation, module counts and gaps"
+  />
+  <Card
+    title="String sizing"
+    href="/docs/inputs/string-sizing"
+    description="The modules-in-series question and the window behind it"
+  />
+  <Card
+    title="Bifacial gain"
+    href="/docs/energy/bifacial"
+    description="Ground albedo and how rear-side irradiance is estimated"
+  />
+  <Card
+    title="Every parameter and its default"
+    href="/docs/reference/parameters"
+    description="The complete input reference in one table"
+  />
+</Cards>

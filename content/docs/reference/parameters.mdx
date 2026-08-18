@@ -1,0 +1,443 @@
+---
+title: Every parameter and its default
+description: The complete input reference — every field in the input panel, its shipped default, its accepted range, and what it changes.
+---
+
+Every field in the input panel ships with a working default, so a first run
+needs none of them changed. Load a boundary file, click **Generate Layout**,
+and the plant is built from the values on this page. The boundary file is the
+only input with no default — see
+[Boundary files](/docs/inputs/boundary-files).
+
+Two things change what you see: the mounting type decides which array group
+appears, and the electrical mode retitles the inverter group and relabels
+several rows. Both are chosen at launch — see
+[Choosing a design mode](/docs/design-modes).
+
+<Screenshot id="input-panel-full" maxWidth={420} />
+
+The groups below are in panel order, top to bottom, and the rows within each
+table are in the order the fields appear on screen.
+
+## Which groups you see
+
+| Group | Fixed Tilt | Single Axis Tracker |
+| --- | --- | --- |
+| **Module Specifications** | shown | shown |
+| **MMS-Table Configuration** | shown | replaced by the tracker group |
+| **Tracker Configuration** | not shown | shown |
+| **Spacing & Tilt** | shown | replaced by the tracker group |
+| **Site Parameters** | shown | shown |
+| **Structures & Shadow** | shown | shown |
+| **Topography** | shown | shown |
+| **String Inverter** / **SMB – String Monitoring Box** | shown, titled by the electrical mode | shown, titled by the electrical mode |
+| **Energy Yield** | shown | shown |
+
+Both choices are made at launch. To move to the other electrical mode
+afterwards, use **File ▸ Move to String / Central Window…**, also on the
+toolbar as **⊕ Move to String / Central Window**.
+
+## Module specifications
+
+Always shown. In depth: [Module specifications](/docs/inputs/module).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Length (long side)** | 2.38 m | 0.5–5.0 m | The module's long edge. On fixed tilt it runs north–south in Portrait and east–west in Landscape. |
+| **Width (short side)** | 1.13 m | 0.5–3.0 m | The module's short edge. On fixed tilt it runs east–west in Portrait and north–south in Landscape. |
+| **Wattage** | 610 Wp | 100–1000 Wp | Nameplate DC power of one module. Plant DC capacity is this multiplied by the placed module count. |
+| **Bifacial module** | off | — | Enables the rear-side gain model and unlocks the bifaciality factor. |
+| **Bifaciality factor (φ)** | 0.70 | 0.50–0.95 | Rear-side efficiency as a fraction of the front. Enabled only when **Bifacial module** is on. |
+
+Two buttons sit with this group:
+
+- **Load .PAN** reads a PVsyst module file and fills in the wattage, the long
+  side and the short side. When the file declares a bifacial module it also
+  ticks **Bifacial module** and fills φ, and it recomputes the temperature
+  loss. Dimensions are accepted in metres or in millimetres.
+- **View** opens a read-only viewer of the loaded module file, with tabs
+  *Basic data*, *Sizes and Technology*, *Model parameters*, *Additional Data*
+  and *Graphs*.
+
+After a module file is read the application asks **"Calculate the number of
+modules in series automatically?"**, with **Auto** and **Manual** buttons. See
+[String sizing](/docs/inputs/string-sizing).
+
+The bifaciality tooltip gives a typical φ of 0.65–0.80 and a typical bifacial
+energy gain of 5–15 % over a monofacial module.
+
+## MMS-Table configuration
+
+**Fixed Tilt only.** In a tracker design this group does not appear. In depth:
+[Table configuration](/docs/inputs/table).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Orientation** | Portrait | Portrait or Landscape | Decides which module edge runs east–west and which runs north–south. |
+| **Modules per row** | 28 | 1–100 | Modules side by side along one row of the table, east to west. |
+| **Rows per MMS-Table** | 2 | 1–10 | Rows of modules stacked up the tilted face. One row is one string. |
+| **Gap between modules E-W** | 0.020 m | 0.0–5.0 m | Clear space between neighbouring modules within a row. |
+| **Gap between modules N-S** | 0.020 m | 0.0–5.0 m | Clear space between the stacked rows on one table. |
+| **Gap between MMS-Tables** | 1.0 m | 0.0–20.0 m | Clear space left between one table and the next. Also taken as the span of a standard inter-table bridge when a cleaning fleet is sized. |
+| **Maximize placement** | off | — | Positions each row of tables independently to hug the exact boundary edge. Table columns are no longer aligned across rows, and generation takes longer on a large site. |
+| **Add half tables in leftover space** | off | — | Allows a half-width table, carrying half the strings, wherever a full table will not fit. |
+
+Table dimensions follow from the counts and the gaps:
+
+```
+table width  = modules per row × module E-W dimension
+             + (modules per row − 1) × gap between modules E-W
+
+table height = rows per table × module N-S dimension
+             + (rows per table − 1) × gap between modules N-S
+```
+
+Both options at the bottom of the group are covered together on
+[Maximize placement and half tables](/docs/layout/maximize-and-half-tables).
+
+## Tracker configuration
+
+**Single Axis Tracker only.** This one group replaces both the table group and
+the spacing group. In depth: [Tracker configuration](/docs/inputs/tracker).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **No. of strings per tracker** | 2 | 1–20 | Strings carried end to end along one tracker unit. |
+| **Modules across tracker (E–W)** | 1 | 1–8 | Modules side by side across the torque tube. Sets the aperture. |
+| **Module orientation** | P config (Portrait) | P or L config | P config puts the module long side east–west. L config (Landscape) puts the long edge north–south along the torque tube. |
+| **Modules per string (N–S)** | 28 | 4–120 | Modules in series along the tube per string. |
+| **Gap between modules E–W** | 0.020 m | 0.0–5.0 m | Clear space between modules across the tube. |
+| **Gap between modules N–S** | 0.020 m | 0.0–5.0 m | Clear space between modules along the tube. |
+| **Tracker E-W pitch** | 5.5 m | 1.0–30.0 m | Centre-to-centre spacing between tracker columns. Divides into the aperture to give GCR. |
+| **N–S service gap between units** | 2.0 m | 0.0–20.0 m | Clear space between one tracker unit and the next along the same column. |
+| **Max rotation angle (±)** | 55.0° | 5.0–75.0° | The rotation limit either side of horizontal. A reference and shading-analysis input. |
+| **Tracker height from ground** | 1.5 m | 0.5–10.0 m | Torque-tube height. A reference and shading-analysis input. |
+| **Maximize placement** | off | — | Positions each column independently to hug the boundary edge. |
+| **Add half trackers in leftover space** | off | — | Allows a half-length unit wherever a full one will not fit. |
+
+A live preview line under the group reports **Aperture (E-W)**,
+**Length (N-S)**, **GCR** and **Modules/tracker** as you type:
+
+```
+aperture   = modules across × module E-W dimension
+N-S length = strings × modules per string × module N-S dimension
+GCR        = aperture / tracker E-W pitch
+modules    = modules across × strings × modules per string
+```
+
+## Spacing and tilt
+
+**Fixed Tilt only.** Both values are derived from the site latitude unless you
+override them. In depth: [Spacing and tilt](/docs/inputs/spacing-and-tilt).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Override tilt angle** | off | — | Off, the tilt is derived from the site latitude. On, your value is used. |
+| **Tilt angle** | 20.0° | 0.0–90.0° | The fixed angle of the module plane. Enabled only when the override is on. |
+| **Override row pitch** | off | — | Off, the pitch is the no-shading pitch at winter-solstice solar noon. On, your value is used. |
+| **Row pitch** | 7.0 m | 1.0–50.0 m | Centre-to-centre spacing between rows of tables. Enabled only when the override is on. |
+
+The automatic rules, both shown in the group's own tooltips:
+
+```
+tilt  ≈ latitude × 0.76 + 3.1°
+pitch = L·cos(tilt) + L·sin(tilt) / tan(solar elevation)
+```
+
+`L` is the table height in the tilt plane. After a layout runs, the derived
+values are reported inline — "Auto → 12.3° (latitude-based)",
+"Auto → 7.42 m (no-shading, latitude-based)" — and pre-filled into the
+override boxes so you can start from them.
+
+Reported **GCR** is the table height divided by the row pitch.
+
+## Site parameters
+
+Always shown. These four settings decide how much ground is available before a
+single table is placed, and how much equipment goes on what remains. In depth:
+[Site parameters](/docs/inputs/site).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Perimeter road width** | 6.0 m | 0.0–50.0 m | Shrinks the plant boundary inward by this distance to give the usable area. Nothing is placed in the band left behind. |
+| **Place Lightning Arresters** | off | — | On, arresters are placed on a coverage grid and the tables they overlap are cleared. Off, tables fill the whole usable area. |
+| **LA protection radius** | 100.0 m | 10.0–500.0 m | The radius one arrester is taken to protect, and the spacing of the grid they sit on. Enabled only when arresters are on. |
+| **ICR Block** | 18.0 MWp | 0.1–500.0 MWp | The DC capacity one inverter control room serves. The room count is the plant capacity divided by this, rounded up. |
+| **Transmission line corridor** | 15.0 m per side | 0.0–500.0 m | The setback applied to each side of every line feature that is not a road, so the cleared strip is twice this figure — 30 m at the default. A road line takes half its own width each side instead. |
+
+The corridor tooltip recommends raising the setback for higher-voltage lines,
+for example 30 m per side for a 400 kV line.
+
+## Structures and shadow
+
+Always shown. Footprints are **Length (E-W) × Width (N-S)**, and each carries a
+**Height** that drives the shadow footprint. In depth:
+[Structures and shadow](/docs/inputs/structures-and-shadow).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **ICR** — Length / Width / Height | 10.0 / 4.0 / 5.0 m | 0.0–500.0 / 0.0–500.0 / 0.0–200.0 m | The inverter control room building. The layout clears every table overlapping this footprint. |
+| **MCR** — Length / Width / Height | 15.0 / 8.0 / 5.0 m | 0.0–500.0 / 0.0–500.0 / 0.0–200.0 m | The main control room, placed by hand once per site. |
+| **USS** — Length / Width / Height | 5.0 / 4.0 / 5.0 m | 0.0–500.0 / 0.0–500.0 / 0.0–200.0 m | The unit substation dropped in every plot that does not hold the MCR, on a multi-plot site. |
+| **Object** — Length / Width / Height | 0.0 / 0.0 / 0.0 m | 0.0–500.0 / 0.0–500.0 / 0.0–200.0 m | A generic structure you place yourself. A height of 0 means not configured. |
+| **LA height** | 9.0 m | 0.0–100.0 m | Nothing. A recorded figure only — it casts no shadow and reaches no output. |
+| **LA pile Ø** | 0.3 m | 0.0–5.0 m | Nothing. A recorded figure only — it reaches no quantity and no export. |
+| **Shadow Window** | 9.0 to 16.0 | 4–12 / 12–20 solar hours | The daily window over which the year-round shadow footprint of the structures is swept. |
+| **Clear tables inside shadows** | on | — | Removes tables and tracker units falling inside that year-round shadow footprint. |
+| **Street light pile Ø** | 0.3 m | 0.0–5.0 m | Diameter of a street light pole foundation. |
+| **Street light height** | 6.0 m | 0.0–50.0 m | Pole height, used for its shadow. |
+| **Street light span (pole to pole)** | 40.0 m | 1.0–500.0 m | Spacing along the perimeter. The pole count is roughly the perimeter divided by this. |
+| **Street light setback** | 0.2 m | 0.0–50.0 m | How far inside the perimeter the poles are inset. |
+| **Street lights** | off | — | On, poles are placed along the perimeter and the tables their shadow touches are cleared. |
+
+Every length and width above accepts 0.0–500.0 m and every height 0.0–200.0 m, to
+one decimal place, and the ranges are the same for all four structures. The two
+arrester fields are the exception in the group: they accept a value and then feed
+nothing at all, not even the project file, so both return to the figures above
+when a saved project is reopened.
+
+<Callout>
+On a multi-plot site, **Place MCR** drops a USS of the size above into every
+plot **except** the one holding the MCR, and each plot's control rooms route
+their medium-voltage cables to their own USS. The USS-to-MCR link itself is an
+overhead line or a buried cable handled outside the automatic routing.
+</Callout>
+
+## Topography
+
+Always shown, and does nothing until enabled. In depth:
+[Topography](/docs/inputs/topography).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Avoid steep / unsuitable ground** | off | — | Enables the whole group. Off, no terrain exclusion is applied. |
+| **Contour data** | Auto (satellite DEM) | — | Accepts a DXF contour file in the project's UTM coordinates, or a CSV of longitude, latitude and elevation. The file dialog accepts `.dxf`, `.dwg`, `.csv` and `.txt`. |
+| **Fetch from satellite if no file (SRTM 30 m)** | on | — | Builds the elevation model from public satellite elevation data when no contour file is supplied. Needs an internet connection. |
+| **Max N–S slope** | 10.0° | 0.0–45.0° | Ground steeper than this across the rows is excluded. |
+| **Max E–W slope** | 15.0 % | 0.0–100.0 % | Ground steeper than this along the rows is excluded. |
+| **Max height var / table** | 5.0 m | 0.0–30.0 m | The ground relief allowed within one table footprint — the pile-reveal differential. |
+| **Exclude depressions / water-pooling cells** | off | — | On, hollows where water would pool are excluded as well as steep ground. |
+
+Any terrain failure — no network, an unreadable file — is non-fatal. The layout
+proceeds without terrain exclusion. Contours draw green for low ground through
+blue to red for high, under the **Terrain** switch, and the excluded area is
+reported in acres.
+
+## String inverter or SMB
+
+Always shown, with the group title and the row labels following the electrical
+mode: **String Inverter** in string mode, **SMB – String Monitoring Box** in
+central mode. In depth:
+[Inverters and cable calculation](/docs/inputs/inverter).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Max strings per inverter** *(string mode)* / **Max strings per SMB** *(central mode)* | 20 | 1–500 | How many strings one inverter or one string monitoring box accepts. One string is one row of modules within an MMS-Table. |
+| **Max SMB per Central Inverter** *(central mode only)* | 10 | 1–200 | How many boxes feed one central inverter. The central inverter's capacity is the box capacity multiplied by this. |
+| **Calculate Cables for PV Power Plant** | off | — | Routes and measures the DC, AC and medium-voltage cables. Off, the inverter and box counts are still computed and every cable column reads `—`. |
+
+<Callout type="warn">
+Ticking **Calculate Cables for PV Power Plant** raises a notice that cable
+calculation can take a long time on a large or complex layout. The buttons are
+**Enable Now** and **Not Now (Recommended)**, and the recommendation is the
+default: generate the layout first without cables, review it, then enable them
+for the final run.
+</Callout>
+
+Two buttons sit with this group:
+
+- **Load .OND** reads a PVsyst inverter file. Its **PmaxOut** figure drives the
+  plant AC capacity, falling back to **Pnom** when **PmaxOut** is absent.
+- **View** opens a read-only viewer with tabs *Main parameters*, *Efficiency
+  curve*, *Additional parameters*, *Output parameters*, *Sizes and Technology*
+  and *Commercial data*.
+
+In central mode, a maximum of **4** central inverters are housed in one control
+room building.
+
+## Energy yield
+
+Always shown. Nothing here affects where a table goes — it decides what the
+placed plant is predicted to generate. In depth:
+[How yield is calculated](/docs/energy/overview).
+
+### Weather source
+
+Two mutually exclusive options. In depth:
+[Weather data](/docs/energy/weather).
+
+| Option | Default | What it does |
+| --- | --- | --- |
+| **PVGIS API (auto-fetch on Calculate)** | selected | Fetches irradiance for the site from the EU Joint Research Centre service when you click **Calculate Energy**. No key or account. Falls back to **NASA POWER** where PVGIS has no data. |
+| **Hourly GHI file (CSV)** | — | Reveals a **Browse…** row for your own hourly weather file. |
+
+Selecting the file option pops a format reminder: **exactly 3 columns in
+order** — an hourly timestamp, GHI in W/m², and ambient temperature in °C. A
+full year is 8 760 rows, and a header row is optional and detected
+automatically.
+
+The application accepts more than that reminder suggests. Column names are
+matched flexibly, and an in-plane irradiance column is accepted as well:
+
+| Quantity | Accepted column names |
+| --- | --- |
+| Time | `time`, `datetime`, `date`, `timestamp`, `time(utc)`, `time(local)`, `date/time` |
+| GHI | `ghi`, `g(h)`, `gh`, `global_horizontal`, `global horizontal irradiance`, `irradiance`, `solar irradiance`, `allsky_sfc_sw_dwn` |
+| GTI | `gti`, `g(i)`, `gi`, `in-plane irradiance` |
+
+When the file carries a temperature column, monthly average temperatures come
+from the file instead of from the seasonal model.
+
+### Irradiance and temperature inputs
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **GHI** | 0.0 kWh/m²/yr | 0–3000 kWh/m²/yr | Annual global horizontal irradiance. Filled automatically once weather data is fetched or read. |
+| **GTI (in-plane)** | 0.0 kWh/m²/yr | 0–3500 kWh/m²/yr | Annual irradiance on the tilted module plane. Filled automatically, and the figure the yield is built from. |
+| **Avg. ambient temp.** | 28.0 °C | −10–55 °C | Site air temperature used by the module temperature model. |
+| **Mounting type** | Open Rack – Ground Mount | 4 options | Selects the Sandia thermal coefficient pair below. |
+| **Avg. wind speed** | 3.0 m/s | 0.5–15.0 m/s | Site wind speed used by the module temperature model. |
+| **Ground albedo (ρ)** | 0.25 | 0.05–0.80 | Reflectance of the ground, used for the diffuse ground term and for rear-side gain on a bifacial module. See [Bifacial gain](/docs/energy/bifacial). |
+
+The four mounting configurations and their coefficient pairs:
+
+| Mounting type | a | b |
+| --- | --- | --- |
+| Open Rack – Ground Mount | −3.56 | −0.075 |
+| Roof Mount – Close | −2.81 | −0.0455 |
+| Stand-off Mount | −3.23 | −0.130 |
+| Insulated Back | −2.81 | −0.0455 |
+
+They feed the module temperature, and through it the temperature loss:
+
+```
+T_module = T_ambient + G × exp(a + b × W)
+Loss (%) = |μPmpp| × (T_module − 25)
+```
+
+`W` is the wind speed and μPmpp is the module's power temperature coefficient,
+read from the module file. `G` is the average operating irradiance derived from
+GTI as the smaller of 900 W/m² and `GTI × 1000 / (365 × 8)`, or 600 W/m² when
+GTI is still 0. The computed module temperature is displayed beside the
+temperature loss row, with a formula trace underneath. See
+[Temperature losses](/docs/energy/temperature).
+
+### Performance ratio breakdown
+
+Every loss below is a percentage, and together they give the performance ratio
+the yield is multiplied by. In depth:
+[Losses and performance ratio](/docs/energy/losses).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **String Inverter efficiency** *(string mode)* / **Central Inverter efficiency** *(central mode)* | 97.0 % | 50–100 % | Conversion efficiency of the inverter. The label follows the mode. |
+| **String DC cable losses** — relabelled MMS → SMB in central mode | 1.0 % | 0–20 % | Resistive loss on the DC run out of the tables. |
+| **AC cable losses (Str. Inv. → ICR)** — relabelled SMB → Central Inv. in central mode | 1.0 % | 0–20 % | Resistive loss on the second leg: AC to the control room in string mode, the DC trunk to the central inverter in central mode. |
+| **Soiling losses** | 2.0 % | 0–20 % | Dust, dirt and bird droppings on the glass. |
+| **Temperature losses** | 6.0 % | 0–20 % | Loss from the modules running above 25 °C. Computed automatically once a module file is loaded. |
+| **Module mismatch** | 1.0 % | 0–10 % | Loss from modules in a string not being electrically identical. |
+| **Shading losses** | 1.0 % | 0–20 % | Row-to-row shading. Editable only when auto-compute below is off. |
+| **Auto-compute (row-to-row from GCR)** | on | — | Derives the shading loss from the plant's GCR instead of taking the figure above. See [Shading](/docs/energy/shading). |
+| **Module ground clearance** | 0.5 m | 0.0–5.0 m | Height of the module's lower edge above the ground. |
+| **Availability** | 99.0 % | 50–100 % | Fraction of the year the plant is available to generate. |
+| **Transformer losses** | 1.0 % | 0–10 % | Loss in the step-up transformer. |
+| **Other losses** | 2.0 % | 0–10 % | Monitoring, auxiliary and miscellaneous consumption. |
+
+### Degradation
+
+In depth: [Lifetime and P-values](/docs/energy/lifetime-and-p-values).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **1st year degradation** | 1.0 % | 0–10 % | The initial drop in output over the first year of exposure, applied once. |
+| **Annual degradation** | 0.4 %/yr | 0–5 %/yr | Compounding output loss applied from year 2 onward. |
+| **Plant lifetime** | 30 years | 1–50 years | How many years the multi-year forecast runs for. |
+
+```
+Year 1 (actual) = capacity (kWp) × specific yield × (1 − 1st year degradation)
+Year n (n ≥ 2)  = Year 1 (actual) × (1 − annual degradation)^(n−1)
+```
+
+### Probabilistic yield
+
+The three probability columns in the summary table are named from these three
+fields, so a report reader has to read the header rather than assume P50, P75
+and P90.
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Combined uncertainty (1σ)** | 5.0 % | 0.1–30.0 % | One standard deviation of the combined yield uncertainty. Drives all three exceedance figures. |
+| **Exceedance prob. 1** | 50.0 % | 1.0–99.9 % | First probability column. |
+| **Exceedance prob. 2** | 75.0 % | 1.0–99.9 % | Second probability column. |
+| **Exceedance prob. 3** | 90.0 % | 1.0–99.9 % | Third probability column. |
+
+The tooltips give the two standard cases:
+
+```
+P75 = P50 × (1 − 0.674 × σ)
+P90 = P50 × (1 − 1.282 × σ)
+```
+
+## Parameters set outside the input panel
+
+Three tools carry their own inputs, and they have defaults of their own.
+
+**Pile pattern.** Each pile is a circle centred on a coordinate you enter
+against one reference table, and the pattern is stamped onto every table in the
+plant. The pile radius defaults to **0.15 m**. See
+[Piles](/docs/editing/piles).
+
+**Robotic module cleaning.** The robot's **battery range**, where 0 means no
+limit; whether the run must be **out and back on one charge**, which defaults
+to on; and the **span of a standard inter-table bridge**, which defaults to the
+gap already set between tables or trackers. Nothing is bridged unless you tick
+it. See [Robotic module cleaning](/docs/simulation/robotic-cleaning).
+
+**Simulation with AC capacity.** A target AC capacity and a target DC to AC
+ratio. The maximum practical ratio is user-adjustable and defaults to
+**1.5× for string inverters** and **1.4× for central inverters** — a design
+overload limit, not the inverter's nameplate DC input. See
+[Sizing from an AC capacity](/docs/simulation/ac-capacity).
+
+## Values the application derives rather than asks for
+
+| Value | How it is derived |
+| --- | --- |
+| Tilt angle, override off | Latitude × 0.76 + 3.1° |
+| Row pitch, override off | The no-shading pitch at winter-solstice solar noon |
+| GCR | Table height ÷ row pitch on fixed tilt; aperture ÷ east–west pitch on a tracker |
+| Number of control rooms | Plant MWp ÷ **ICR Block**, rounded up, then re-checked against the capacity left after tables under the footprints are cleared |
+| Arrester count | A square grid at the protection radius inside the usable area, plus one extra arrester for any table left beyond the radius of every placed one |
+| Street light count | Roughly the perimeter ÷ the pole-to-pole span |
+| Pile count | Tables × piles per table |
+| Cleaning fleet | One robot per row to start, growing where a line is broken by an unbridged gap and where the battery cannot finish a segment on one charge |
+| Plant AC capacity | The inverter file's **PmaxOut**, falling back to **Pnom** |
+| Temperature loss | The module temperature model, once a module file supplies the power coefficient |
+| Shading loss, auto-compute on | Row-to-row shading from the plant's GCR |
+| Specific yield | Annual GTI × performance ratio |
+| Capacity factor | Year-one energy ÷ (capacity in kWp × 8760 hours) |
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Summary table columns"
+    href="/docs/reference/summary-columns"
+    description="What every column of the results table reports"
+  />
+  <Card
+    title="Glossary"
+    href="/docs/reference/glossary"
+    description="Every term used across these pages, defined"
+  />
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="Boundary file in, finished layout out, on the defaults above"
+  />
+  <Card
+    title="How placement works"
+    href="/docs/layout/how-placement-works"
+    description="The order these values are applied in"
+  />
+</Cards>

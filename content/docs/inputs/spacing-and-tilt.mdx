@@ -1,0 +1,246 @@
+---
+title: Spacing and tilt
+description: Tilt angle and row pitch are derived from the site latitude and the winter solstice unless you override them, plus what ground coverage ratio reports.
+---
+
+The **Spacing & Tilt** group holds two numbers — the tilt angle of the module
+plane and the row pitch between rows of tables — and both are derived for you by
+default. The group contains nothing but two override checkboxes and the two
+value fields they unlock, because in the normal case you enter nothing here at
+all.
+
+It appears in Fixed Tilt mode only. A tracker has no fixed tilt and no derived
+pitch, so choosing a tracker mode at launch removes this group; see
+[Tracker configuration](/docs/inputs/tracker).
+
+<Screenshot id="spacing-tilt-group" maxWidth={420} />
+
+## The fields
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Override tilt angle** | off | — | Off, tilt is derived from the site latitude. On, enables the tilt field |
+| **Tilt angle** | 20.0° | 0.0–90.0° | The angle of the module plane from horizontal, used when the override is on |
+| **Override row pitch** | off | — | Off, pitch is derived from the no-shading condition. On, enables the pitch field |
+| **Row pitch** | 7.0 m | 1.0–50.0 m | The repeat distance from one row of tables to the next, used when the override is on |
+
+Two definitions before going further. **Tilt** is the angle between the module
+plane and the horizontal, measured toward the equator — south in the northern
+hemisphere, north in the southern. **Pitch** is the row-to-row repeat distance
+measured on the ground, perpendicular to the rows, and it is not the gap between
+rows: it includes the ground the tables themselves stand on.
+
+## The automatic behaviour
+
+With both boxes unticked, which is how the group ships, tilt is derived from
+where the site is and pitch is derived from that tilt.
+
+### Tilt from latitude
+
+The tilt angle follows a latitude rule of thumb:
+
+```
+tilt ≈ latitude × 0.76 + 3.1°
+```
+
+Latitude is the site latitude in degrees, taken from the geographic position of
+the boundary file. The rule tracks the well-established result that the
+best fixed tilt for annual yield sits somewhat below the site latitude, and
+flattens further as you approach the equator.
+
+A KMZ or KML boundary carries its position already. A CAD drawing or an image
+does not, which is why those two inputs offer a coordinates window when you load
+them. Supply the coordinates there and the derivation has what it needs.
+
+<Callout type="warn">
+Skip that window and the layout is still generated, but the site is positioned
+at a fallback latitude of 20° N — so the tilt and pitch you get suit central
+India rather than your site. Nothing on screen flags it, because the figures look
+entirely reasonable. Either reload the file with coordinates, or override both
+tilt and row pitch by hand.
+</Callout>
+
+Energy yield is a separate matter: with no coordinates, **Calculate Energy** is
+disabled outright, so no misleading generation figure is produced. See
+[CAD drawing boundaries](/docs/inputs/cad-boundary).
+
+### Pitch from the winter solstice
+
+The automatic pitch is the closest row spacing that produces **no inter-row
+shading at solar noon on the winter solstice**:
+
+```
+pitch = L × cos(tilt) + L × sin(tilt) ÷ tan(solar elevation)
+```
+
+Every term:
+
+| Term | What it is |
+| --- | --- |
+| `L` | The table height measured in the tilt plane — the length of the tilted face from its lower edge to its upper edge |
+| `tilt` | The tilt angle, derived or overridden |
+| `L × cos(tilt)` | The ground the tilted table itself covers: its footprint, north to south |
+| `L × sin(tilt)` | The vertical height of the table's upper edge above its lower edge |
+| `solar elevation` | The angle of the sun above the horizon, at solar noon on the winter solstice, for the site latitude |
+| `L × sin(tilt) ÷ tan(solar elevation)` | The shadow that height casts along the ground — the clear space that must be left behind each row |
+
+So the pitch is the table's own footprint plus the length of the shadow its top
+edge throws at the chosen moment.
+
+### What the winter solstice condition buys
+
+The winter solstice is the day of the year the midday sun sits lowest in the sky,
+so it casts the longest midday shadow. Sizing the pitch for solar noon on that
+day means:
+
+- **No inter-row shading at solar noon on any day of the year.** Every other
+  day's midday sun is higher, so its shadow is shorter than the spacing you have
+  already allowed for.
+- **Not "no shading ever".** Early in the morning and late in the afternoon the
+  sun is low on any day, and rows do shade one another. That residual loss is
+  what the shading figure in the energy settings accounts for; it is not
+  designed away by the pitch.
+
+This is the standard, defensible starting point for a fixed-tilt plant, and it is
+deliberately conservative. Sites where land is expensive routinely accept a
+tighter pitch and a small shading loss in exchange for capacity, which is what
+the override is for.
+
+## Ground coverage ratio
+
+Ground coverage ratio — GCR — is the collector area divided by the ground it is
+spread over:
+
+```
+GCR = table height ÷ row pitch
+```
+
+The table height here is the same `L` as above, the tilted face length, so GCR is
+a plain number between zero and one. It is not a field: you never enter it. It is
+reported from the geometry once tilt and pitch are settled, and it feeds two
+calculations — the row-to-row shading loss, which is computed from GCR
+automatically unless you switch that off, and the rear-side irradiance of a
+bifacial module, which falls as GCR rises because dense rows leave less lit
+ground to reflect.
+
+What a higher GCR trades:
+
+| Higher GCR means | Consequence |
+| --- | --- |
+| Rows packed closer together | More capacity on the same land, so a lower cost per watt of land, cabling and fencing |
+| Longer shadows falling on the row behind | More inter-row shading loss, concentrated in the early morning and late afternoon and worst in winter |
+| Less lit ground between rows | Less rear-side gain on a bifacial plant |
+
+Because GCR follows from pitch, the way to move it is to move the pitch. Read the
+resulting shading loss before accepting a tighter figure — see
+[Shading losses](/docs/energy/shading).
+
+## Overriding either value
+
+Tick **Override tilt angle** or **Override row pitch** and the matching field
+becomes editable; the derivation for that value stops being used. The two are
+independent — you can override one, the other, both or neither.
+
+Override tilt when the site is anything other than an unshaded flat field facing
+the equator: a fixed structural standard across a portfolio, a slope that makes a
+shallower angle sensible, a soiling regime that rewards a steeper one. Override
+pitch when land cost, a road grid, an existing pile layout or a specified GCR
+sets the spacing rather than a shading condition.
+
+<Callout type="warn">
+An overridden pitch is used exactly as entered. Nothing checks it against the
+no-shading condition, so a tight figure produces a denser plant and a larger
+shading loss without any warning — the loss appears in the energy result, not at
+the input.
+</Callout>
+
+## After a run, the derived values are shown and pre-filled
+
+Generate a layout with the overrides off and the group changes usefully. Each
+automatic label reports the value that was actually used — for example
+`Auto → 12.3° (latitude-based)` and
+`Auto → 7.42 m (no-shading, latitude-based)` — and those same values are
+pre-filled into the greyed-out override fields.
+
+<Screenshot id="spacing-tilt-auto-resolved" maxWidth={420} />
+
+This is the sequence worth using deliberately:
+
+<Steps>
+<Step>
+### Generate once with both overrides off
+
+Let the derivation supply tilt and pitch for the site as it stands.
+</Step>
+
+<Step>
+### Read the two values the run used
+
+They are on the labels, in the same units you would type.
+</Step>
+
+<Step>
+### Tick the override you want to move
+
+The field already holds the derived number, so you start from the real figure
+rather than from a guess or from the shipped default.
+</Step>
+
+<Step>
+### Adjust and generate again
+
+Change the value by a known amount from a known baseline, and compare the two
+runs.
+</Step>
+</Steps>
+
+In the summary table under the plot, a tilt or pitch that was derived rather than
+entered carries a trailing asterisk, so a printed summary always says which of
+the two figures you chose and which the application worked out. The marking
+appears for Fixed Tilt designs only.
+
+## Tilt and pitch are coupled
+
+Tilt appears twice in the pitch formula — once projecting the table onto the
+ground and once setting the height of its upper edge — so **a change of tilt is
+a change of automatic pitch**. A steeper array stands taller, throws a longer
+midday shadow in midwinter, and needs more room behind it.
+
+That makes the four combinations meaningfully different:
+
+| Overrides | What you get |
+| --- | --- |
+| Neither | Tilt from latitude, pitch derived for that tilt. Internally consistent |
+| Tilt only | Your tilt, and a pitch re-derived for it. Still meets the no-shading condition |
+| Pitch only | Your spacing, with tilt from latitude. The no-shading condition no longer holds |
+| Both | Both figures exactly as entered. Nothing is derived and nothing is checked |
+
+Overriding one and leaving the other automatic is a deliberate choice, not a
+half-finished one. Fixing the tilt and letting the pitch follow keeps the shading
+condition; fixing the pitch and letting the tilt follow keeps the land use. Fix
+both only when an external constraint gives you both numbers.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Table configuration"
+    href="/docs/inputs/table"
+    description="The table geometry the pitch calculation works from"
+  />
+  <Card
+    title="Shading losses"
+    href="/docs/energy/shading"
+    description="The row-to-row loss computed from ground coverage ratio"
+  />
+  <Card
+    title="Bifacial gain"
+    href="/docs/energy/bifacial"
+    description="Why rear-side yield falls as rows are packed closer"
+  />
+  <Card
+    title="Summary columns"
+    href="/docs/reference/summary-columns"
+    description="Where tilt and pitch are reported, and what the asterisk means"
+  />
+</Cards>

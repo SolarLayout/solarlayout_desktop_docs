@@ -1,0 +1,275 @@
+---
+title: Annotations, measuring and layers
+description: The drafting side of Sketch Mode — lines, shapes, text, measurements and dimensions, organised on layers and groups, plus the typed command line.
+---
+
+A layout is a set of positions. A drawing is a layout somebody can build from:
+it carries the dimensions that matter, the labels that name things, a north
+arrow, a scale, and the notes that explain the parts a plan view cannot show.
+The annotation tools in Sketch Mode are how you turn the first into the second
+without leaving the application.
+
+Annotations are drawing content. They do not clear ground, they are not
+counted in the plant totals, and they never change the capacity — that is the
+difference between them and the equipment tools on
+[Sketch Mode](/docs/editing/sketch-mode). What they do is travel: onto the
+screen, and into the exported CAD drawing on layers of their own.
+
+## Getting to the tools
+
+Switch **✏ Sketch Mode** on from the toolbar. Every tool on this page is in the
+same palette as the editing tools, and one tool is active at a time.
+
+Each element you draw is created on the **current layer**, in the current
+stroke colour, and can be put into a named group. The default stroke is an
+orange-red, 1.5 pt wide; **🎨 Colour** changes it for what you draw next.
+
+## Drawing shapes
+
+Eight tools draw geometry. Some are a single click-and-drag; the multi-point
+tools all end the same way — right-click.
+
+| Tool | What you do |
+| --- | --- |
+| **╱ Line** | Click and drag a straight line |
+| **⌒ Polyline** | Click each vertex; right-click or double-click to finish |
+| **□ Rect** | Click and drag a rectangle |
+| **○ Circle** | Click the centre, then drag the radius |
+| **◜ Arc** | Click the start, then the end, then a point on the arc |
+| **⬭ Ellipse** | Click and drag a bounding box |
+| **∿ Spline** | Click the fit points; right-click or double-click to finish |
+| **▨ Fill/Zone** | Click inside a closed polygon to fill it |
+
+Two of those deserve a note.
+
+**◜ Arc takes three clicks in a specific order** — start, end, then a point the
+arc must pass through. The arc is not drawn until the third click, so nothing
+appears to happen after the first two.
+
+**▨ Fill/Zone works on a closed shape that already exists.** Draw the boundary
+of the zone first — with **⌒ Polyline** or **□ Rect** — then click inside it to
+fill it. It is the tool for marking out a phase, a contractor's work area, or a
+land parcel that is not an exclusion.
+
+Switch **⊾ Ortho** on before drawing anything that has to run square, and
+**🧲 Snap** on before drawing anything that has to meet existing geometry
+exactly.
+
+## Text labels
+
+**🅣 Text** places a label. Click where the label goes, type it — it accepts
+more than one line, so a note does not have to be a single long string — and
+the label sits at that position on the plot.
+
+To reposition a label, switch to **↖ Move** and drag it. Labels select, move
+and delete like any other element.
+
+Text is the tool that carries the things the geometry cannot say: a plot name,
+a phase number, an access route, a caveat about a survey. Write them as they
+should read on the printed drawing, because that is where they end up.
+
+## Measuring
+
+**📏 Measure** answers a question; it does not add anything to the drawing.
+
+| Points you click | What you get |
+| --- | --- |
+| Two | The distance between them and the bearing from the first to the second |
+| Three or more | A running total along the whole chain of points |
+
+<Screenshot id="sketch-measure" />
+
+The bearing on a two-point measurement is what makes this useful for setting
+out — it is the number you hand to a surveyor along with the distance. The
+running total is for the cases where the answer is a path rather than a
+straight line: the length of an access track around three sides of a plot, or
+the run a cable would take if it followed the fence.
+
+All internal geometry is in metres, projected to the site's local UTM zone, so
+a measurement is a ground distance, not a screen distance. Zooming does not
+change it.
+
+## Dimensions
+
+**📐 Dimension** places a dimension that stays on the drawing. Click and drag
+between the two points, or click one point and then the second.
+
+<Screenshot id="sketch-dimension" />
+
+The distinction between the two tools is worth being deliberate about:
+
+| Aspect | **📏 Measure** | **📐 Dimension** |
+| --- | --- | --- |
+| Purpose | Check a distance now | Record a distance for someone else |
+| Stays on the drawing | No | Yes |
+| Goes into the exported drawing | No | Yes |
+
+Dimension the things a construction team would otherwise have to derive: row
+pitch, the gap between table runs, the setback from the fence to the first row,
+the clearance around a control room. Those are the numbers that get queried on
+site.
+
+## Layers
+
+Layers control what is visible. The palette carries two layer controls:
+
+| Control | What it does |
+| --- | --- |
+| **＋** | Creates a new layer and makes it current |
+| **👁** | Toggles the visibility of a layer |
+
+Everything you draw goes onto the current layer, so create the layer first and
+then draw. The habit that pays off is one layer per audience — dimensions on
+one, civil notes on another, a client's mark-ups on a third — because then you
+can show one and hide the rest instead of deleting anything.
+
+## Groups
+
+| Control | What it does |
+| --- | --- |
+| **⧉ Group** | Puts the selected elements into a named group |
+| **⿲ Ungroup** | Breaks the group apart again |
+
+A group moves as one. Select the elements that belong together — a dimension
+and the label that explains it, an outline and its fill — group them, and from
+then on **↖ Move** picks up the whole thing. Ungroup when you need to change
+one part.
+
+Groups are independent of layers. An element carries a layer and, optionally, a
+group name; grouping elements does not move them onto a layer of their own.
+
+## Why layers matter beyond the screen
+
+The exported CAD drawing separates the plant from the annotations. Boundaries,
+tables, control rooms, inverters, cables and trenches each land on their own
+layer; the Sketch Mode annotations land on `SKETCH`, and labels and text land on
+`ANNOTATIONS`.
+
+That separation is what makes the drawing usable by somebody else. A civil
+contractor opens the file, switches off `SKETCH` and `ANNOTATIONS`, and has a
+clean plan of the plant with none of your working on it. Switch them back on
+and your dimensions and notes are there again. Neither of you has to maintain
+two versions of the drawing. See [CAD export](/docs/exports/dxf).
+
+### Your own layers stay in the application
+
+The layer set in the exported drawing is fixed, and it does not include yours. **A
+layer you create with ＋ is not carried into the CAD drawing**: every annotation
+lands on the single `SKETCH` layer whatever in-application layer it was drawn on.
+Three layers of working come out as one.
+
+So layers are a tool for the screen — for hiding your own working to read the
+layout underneath, and for keeping a client's mark-ups apart from your
+dimensions. They are not a way to hand structured layers to somebody else. If the
+recipient needs that separation in CAD, it has to be rebuilt there.
+
+## Bringing an existing drawing in
+
+**📂 Import DXF** brings a CAD drawing onto the canvas so you can draw against
+it — an existing site plan, a survey, a road alignment, a neighbouring
+developer's drawing. It is a reference to work over, not an input to the layout:
+importing a drawing does not create obstructions and does not move any tables.
+
+{/* VERIFY: how is an imported DXF positioned on the canvas — is it read in the project's UTM coordinates, placed relative to the plant extent, or scaled to fit? */}
+
+To turn something in an imported drawing into ground the layout must avoid,
+draw it as an obstruction with the equipment tools. See
+[Obstructions and exclusions](/docs/layout/obstructions).
+
+## The scale bar and north arrow
+
+**🧭 Scale bar + North** adds both to the plot in one click. They belong on
+anything that leaves the application as a picture — a screen capture pasted
+into a report, a drawing handed to somebody who was not part of the design.
+
+<Screenshot id="sketch-annotations" />
+
+The exported PDF report draws its own north arrow and title block on the
+engineering drawing page, so you do not need this for the report itself. See
+[PDF report](/docs/exports/pdf-report).
+
+## Clearing annotations
+
+**🗑 Clear Annotations** removes the annotation elements in one action.
+
+<Callout type="warn">
+**🗑 Clear Annotations** clears the drawing content wholesale, not only the
+selection. If the aim is only to get annotations out of the way — to read the
+layout underneath, or to take a clean capture — switch a layer's visibility off
+with **👁** instead, and everything is still there when you switch it back on.
+</Callout>
+
+Plant objects are not annotations, so clearing annotations does not remove
+tables, arresters, obstructions or trenches. Those are deleted with **🗑 Delete**
+and **✂ Del Trench**.
+
+## Working from the keyboard
+
+The palette has a typed command line. If you draft in CAD every day, it is
+faster than finding a button: type the alias, press Enter, and the tool is
+armed.
+
+| Type | Tool |
+| --- | --- |
+| `L` or `LINE` | **╱ Line** |
+| `PL` or `POLY` | **⌒ Polyline** |
+| `REC`, `RECT` or `R` | **□ Rect** |
+| `C` or `CIR` | **○ Circle** |
+| `ARC` or `A` | **◜ Arc** |
+| `EL` or `ELL` | **⬭ Ellipse** |
+| `SPL` or `SP` | **∿ Spline** |
+| `H`, `HATCH` or `FILL` | **▨ Fill/Zone** |
+| `DIM` or `D` | **📐 Dimension** |
+| `T` or `TEXT` | **🅣 Text** |
+| `M` or `MEA` | **📏 Measure** |
+| `S` or `SEL` | **↖ Move**, for selecting |
+
+The aliases are the ones a CAD user already has in their fingers, so a drafting
+session runs at keyboard speed: `PL`, click the vertices,
+right-click, `DIM`, drag, `T`, type the note. The full keyboard reference is in
+[Keyboard and commands](/docs/reference/keyboard-and-commands).
+
+## What to put on a drawing you hand over
+
+The tools are general, so the useful question is which of them a recipient
+actually needs. This is the set that answers the questions a design drawing gets
+asked on site.
+
+| Add | With | So that |
+| --- | --- | --- |
+| Row pitch, and the gap between table runs | **📐 Dimension** | Nobody sets out spacing from a scaled print |
+| The setback from the fence to the first row | **📐 Dimension** | The perimeter road width is visible as a built dimension, not an assumption |
+| Clearance around each control room | **📐 Dimension** | The access the equipment needs is on the drawing |
+| Plot and phase names | **🅣 Text** | A multi-plot site can be discussed plot by plot |
+| Access routes and gates | **⌒ Polyline** plus **🅣 Text** | The route to each part of the plant is agreed before mobilisation |
+| Contractor or phase work areas | **⌒ Polyline** plus **▨ Fill/Zone** | Two teams on site know where their boundary is |
+| Scale and orientation | **🧭 Scale bar + North** | The drawing survives being printed, cropped or pasted |
+
+Keep each of those on a layer that says who it is for, and the same drawing
+serves the client, the civil contractor and the electrical contractor without
+being redrawn three times.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Sketch Mode"
+    href="/docs/editing/sketch-mode"
+    description="The editing tools — select, move, place equipment, draw trenches"
+  />
+  <Card
+    title="Pile layout"
+    href="/docs/editing/piles"
+    description="Define a pile pattern on one table and export the coordinate report"
+  />
+  <Card
+    title="CAD export"
+    href="/docs/exports/dxf"
+    description="Every layer in the exported drawing, and what is on it"
+  />
+  <Card
+    title="PDF report"
+    href="/docs/exports/pdf-report"
+    description="The multi-page report and what each page carries"
+  />
+</Cards>

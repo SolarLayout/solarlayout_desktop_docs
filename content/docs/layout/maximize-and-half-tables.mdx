@@ -1,0 +1,210 @@
+---
+title: Maximizing placement and half tables
+description: Two options that fit more capacity onto an awkward boundary, what each costs in regularity, and when a regular plant is worth more than the extra tables.
+---
+
+A regular grid on an irregular site leaves ground unused. A table is placed only
+where it fits entirely inside the usable area, so every diagonal fence, every
+curve and every row end rejects the last position and leaves a wedge of ground
+with nothing on it. Two options recover that ground, and both are off by
+default.
+
+They recover it in different ways. **Maximize placement** moves each row
+sideways until it touches the boundary. **Add half tables in leftover space**
+drops a smaller unit into the gap that is left. You can use either, or both, and
+in both cases what you buy is capacity and what you pay is regularity.
+
+| Option | Default | What it changes | What it costs |
+| --- | --- | --- | --- |
+| **Maximize placement** | Off | Each row is positioned independently, hugging the boundary edge | Table columns no longer line up across rows; longer to compute on a large site |
+| **Add half tables in leftover space** | Off | A half-size unit is dropped wherever a full one will not fit | A second unit type in the plant, counted separately |
+
+Both live at the bottom of the table group — or the tracker group in a Single
+Axis Tracker session — alongside the geometry they modify. See
+[Table configuration](/docs/inputs/table) and
+[Tracker configuration](/docs/inputs/tracker).
+
+## Maximize placement
+
+With the option off, the whole grid shares one origin. Every row starts from the
+same east–west position, so the tables form clean vertical columns from the top
+of the plant to the bottom — and every row is limited by the same starting
+offset, whether or not that offset suits the boundary at that latitude.
+
+With the option on, each row is positioned **independently**, pushed up against
+the exact boundary edge it meets. A row crossing a narrow part of the site
+starts further in; a row crossing a wide part starts further out. Where the
+fence runs diagonally, or curves, the row ends follow it instead of stopping
+short at a shared column line, and extra tables fit into the wedges the shared
+origin had wasted.
+
+The gain is largest where the boundary is least like a rectangle: an irregular
+parcel, a curved river frontage, a site with a long diagonal edge. On a
+rectangular site aligned east–west there is nothing for the option to recover,
+because the shared origin already reaches both edges.
+
+### What it costs
+
+**Table columns will not be vertically aligned across rows.** That is not a
+cosmetic detail, and it is the reason the option ships off:
+
+- **The drawing reads as untidy.** On the layout sheet of the report, and in the
+  CAD drawing, the north–south lines that a reviewer's eye follows are broken.
+  Rows step in and out relative to each other.
+- **Cable runs get longer and less repeatable.** DC and AC routing uses
+  horizontal and vertical segments only. When the rows do not share a column
+  line, the runs between a table and its inverter cannot be repeated block for
+  block, and the routed lengths grow. See
+  [Cable routing](/docs/layout/cables).
+- **Cleaning lines lose their alignment.** A cleaning robot drives along the
+  module frames of one line and crosses from table to table over a bridge of a
+  standard span. Rows that step sideways create gaps that are not the standard
+  span, and each one either needs a supported bridge or breaks the line. See
+  [Robotic module cleaning](/docs/simulation/robotic-cleaning).
+- **Generation takes longer on a large site.** Every row is fitted against the
+  boundary separately instead of being derived from a single grid.
+
+### When to use it
+
+Turn it on when capacity is the binding constraint and the boundary is
+genuinely irregular — a site where the target capacity does not fit, and where a
+few per cent more tables decides whether the project works. Leave it off when
+you are producing a drawing for a bid, or when the plant will be built and
+maintained on a repeating block pattern.
+
+The honest way to decide is to run the site both ways. Generate once with the
+option off, note the table count and capacity in the summary, turn it on,
+generate again, and compare. Nothing else in the design changes, so the
+difference is entirely the option.
+
+## Half tables
+
+A **half table** is half the east–west width of a full MMS-Table — the module
+mounting structure carrying the modules — and carries half the strings. It is
+dropped wherever a full table will not fit: the end of a row, and the narrow
+strips along an angled boundary.
+
+Everything else about it is the same as a full table. It sits on the same row
+pitch, at the same tilt, inside the same usable area, and it is placed only
+where it fits entirely inside it. A half table is not a partly-clipped full
+table — it is a shorter structure, which is why it can stand in ground a full
+one cannot.
+
+### On a tracker plant
+
+The tracker equivalent is a **half tracker**, and it is halved along the other
+axis. A tracker unit is long north to south, because the strings run along the
+torque tube, so halving the strings halves the **north–south length**. The
+option reads **Add half trackers in leftover space** and is off by default, like
+its fixed-tilt counterpart.
+
+The place a half tracker earns its keep is the north and south ends of a
+column, where a full-length unit runs out of ground before the boundary does.
+
+### How half units are counted
+
+Half units are never mixed into the full-unit count. The summary table reports
+them in their own column, and wherever a count feeds another calculation the
+half unit is weighted at **half**:
+
+| Where it appears | How half units are treated |
+| --- | --- |
+| The summary table | Two separate columns — full units and half units |
+| Plant capacity and module count | A half unit contributes its own modules, so it lifts capacity by less than a full one |
+| Sizing the plant to a target capacity | Counted as 0.5 of a unit throughout |
+| Cleaning fleet sizing | Counted as 0.5 when a line's length is judged too short to justify a robot |
+
+### When to use it
+
+Turn half tables on when the boundary has many short row ends — a long
+perimeter relative to the area, several angled edges, or a site broken up by
+obstructions and corridors. The more edge the plant has, the more infill
+positions there are.
+
+Leave them off when the plant is built from a repeating block that the
+procurement and construction schedule depends on. A second structure type means
+a second bill-of-materials line, a second set of piles, and a second erection
+method on site, for a capacity contribution that is by definition small.
+
+You can also place a half unit by hand. Sketch Mode's **➕ Half Table** tool
+drops one anywhere you click, which is the better route when you want two or
+three of them in specific places rather than every one the application can find.
+See [Editing by hand](/docs/editing/sketch-mode).
+
+## Reading the result
+
+The summary table reports full and half units in **separate columns** — labelled
+for tables in a fixed-tilt session and for trackers in a tracker session — so
+you can see at a glance how much of the plant came from infill. A plant with a
+large half count on a small full count is a plant whose capacity is leaning on
+the awkward edges of the site, which is worth knowing before you commit to it.
+
+Read them together with the plant area and the module count. The three figures
+tell you what the plant is: how much ground, how many structures of each kind,
+and how much capacity came out. Every column is listed in
+[Summary table columns](/docs/reference/summary-columns).
+
+<Callout type="warn">
+Both options make the plant less regular, and regularity has a value that does
+not appear in any column of the summary. A bid drawing, a construction sequence
+and a maintenance plan are all easier to defend on a plant whose rows line up.
+It is entirely reasonable to ship the regular version at lower capacity.
+</Callout>
+
+## What neither option changes
+
+Both options only decide **where a unit may stand**. Everything else about the
+plant is untouched, which is what makes a before-and-after comparison
+meaningful:
+
+- **The row pitch and the tilt angle** are unchanged. Rows stay on the same
+  spacing, so the ground coverage ratio of the plant is not quietly altered and
+  the shading loss behind it is still the shading loss you signed off.
+- **Rows still run east to west and panels still face the equator.** Neither
+  option rotates anything.
+- **The usable area is unchanged.** The perimeter road, the obstructions, the
+  corridors and the excluded terrain are all subtracted before either option is
+  consulted, and a unit is still placed only where it fits entirely inside what
+  is left. Neither option lets a table encroach on ground the site rules kept
+  clear.
+- **The equipment stages are unchanged.** More tables mean more capacity, which
+  can mean an extra control room and more arresters — and those clear tables in
+  turn. The extra capacity you read in the summary is the figure after all of
+  that, not before it.
+
+## Using both together
+
+The two options do not conflict, and used together they compound: the rows move
+out to the boundary first, then half units fill what the moved rows still leave
+behind. Expect the least regular plant the application can produce, and the
+highest table count.
+
+If you are going to run a site both ways in any case, run it three times — off,
+maximize only, and both — and compare the capacity against how the drawing
+looks. The decision is not which number is largest; it is which plant you are
+prepared to build.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="How placement works"
+    href="/docs/layout/how-placement-works"
+    description="Why a whole-table-only rule leaves ground unused in the first place"
+  />
+  <Card
+    title="Table configuration"
+    href="/docs/inputs/table"
+    description="Module counts, gaps and the dimensions of a full table"
+  />
+  <Card
+    title="Tracker configuration"
+    href="/docs/inputs/tracker"
+    description="Strings per tracker, pitch and the live dimension preview"
+  />
+  <Card
+    title="Sizing to a target capacity"
+    href="/docs/simulation/ac-capacity"
+    description="Where half units are weighted at 0.5"
+  />
+</Cards>
