@@ -942,3 +942,18 @@ only when arresters were placed.
 | Image scale example "1000 m = 10 mm" | `image_boundary_parser.py` docstring | Dialog default is 100 m / 10 mm |
 | A 15 m TL setback is fixed | `README.md`, `layout_engine.py:29` | Default 15 m per side, reader-editable 0–500 |
 | Flat `core/` `gui/` `models/` project layout, `main.py` | `README.md` | Restructured into `packages/` + `apps/` — irrelevant to readers either way |
+
+## 19. Facts we do not have
+
+These are genuinely unknown, not merely unverified. Write around them; do not
+invent a value.
+
+| Unknown | How to handle it |
+|---|---|
+| The Microsoft Store listing URL | Tell the reader to open the Microsoft Store and search for the application by name. Do not write a URL or a `ms-windows-store:` link. |
+| The current version number and release date | Do not state a version anywhere. On the release-notes page, leave a `{/* VERIFY: current version number and release date */}` and describe where the reader can see their installed version. |
+| Any release history | There is none to write. Do not invent changelog entries. |
+| Minimum Windows build, RAM, disk, or screen resolution | State the requirements qualitatively — a 64-bit Windows PC, a display wide enough for the panel and plot side by side, an internet connection only for weather and elevation data. Leave a `{/* VERIFY: minimum Windows version and hardware requirements */}`. |
+| Support email address or contact route | Say to contact the vendor who supplied the licence. Leave a `{/* VERIFY: support contact route */}`. |
+| Typical run times for Generate on a given plant size | Do not quote seconds or minutes. Say cable calculation is the slow step on large plants, which is what the application itself warns. |
+| Price, plans, licence duration options | Out of scope. The licence pages cover activation and error messages only. |
