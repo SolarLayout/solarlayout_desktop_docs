@@ -143,7 +143,12 @@ Hosted on **Vercel**. `vercel.json` sets
 always the explicit **Deploy** workflow
 (`.github/workflows/deployment.yml`, `workflow_dispatch`).
 
-Run it from the Actions tab, choosing `Preview` or `Production`.
+Run it from the Actions tab, choosing `Staging` or `Production`.
+
+`Staging` maps to a **custom Vercel environment** named `staging`, not Vercel's
+built-in preview — the same convention every app in solarlayout's
+`platform-deployment.yml` uses, so `vercel pull --environment=staging` resolves
+that environment's own variables.
 
 ### What the deployment needs
 
@@ -162,7 +167,9 @@ Configure these once, in the repository settings, before the first run.
 | `VERCEL_ORG_ID` | Vercel ▸ Team Settings ▸ General ▸ Team ID |
 | `VERCEL_PROJECT_ID` | Vercel ▸ the project ▸ Settings ▸ General ▸ Project ID |
 
-**Environments** — Settings ▸ Environments. Create `Preview` and `Production`.
+**Environments** — Settings ▸ Environments. Create `Staging` and `Production`.
+The dispatch input is `type: environment`, so the dropdown is populated from
+these and cannot drift from what exists.
 Add reviewers to `Production` if a production deploy should need approval.
 
 **On the Vercel project itself:**

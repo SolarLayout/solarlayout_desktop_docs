@@ -1,24 +1,25 @@
 name: Deploy
+run-name: Deploy → ${{ inputs.environment }}
 
 # Manual only. `vercel.json` sets `git.deploymentEnabled: false`, so a push
 # never deploys — this workflow is the single path to a deployed site.
 #
 # Required repository configuration (see README ▸ Deployment):
-#   Secrets   — VERCEL_TOKEN
-#   Variables — VERCEL_ORG_ID, VERCEL_PROJECT_ID
-#   Environments — Preview, Production
+#   Secrets      — VERCEL_TOKEN
+#   Variables    — VERCEL_ORG_ID, VERCEL_PROJECT_ID
+#   Environments — Staging, Production
+#
+# `type: environment` lists the repository's own environments rather than a
+# hard-coded list, so the dropdown cannot drift from what exists. Matches
+# solarlayout's platform-deployment.yml.
 
 on:
   workflow_dispatch:
     inputs:
       environment:
         description: Target environment
-        type: choice
         required: true
-        default: Preview
-        options:
-          - Preview
-          - Production
+        type: environment
 
 concurrency:
   # Never cancel a deployment in flight — a half-applied Vercel deploy is
@@ -34,9 +35,12 @@ jobs:
     environment: ${{ inputs.environment }}
 
     env:
-      # Vercel's own slugs are lowercase, and `preview` is what the CLI calls
-      # the non-production target.
-      VERCEL_TARGET: ${{ inputs.environment == 'Production' && 'production' || 'preview' }}
+      # Vercel target slugs are lowercase. `staging` is a CUSTOM Vercel
+      # environment on this team, not Vercel's built-in `preview` — the same
+      # convention every app in solarlayout's platform-deployment.yml uses, so
+      # `vercel pull --environment=staging` resolves that environment's own
+      # variables. Anything other than Production maps to it.
+      VERCEL_TARGET: ${{ inputs.environment == 'Production' && 'production' || 'staging' }}
       VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
 
@@ -59,8 +63,8 @@ jobs:
       # anything unexpected, rather than deploying to the wrong environment.
       - name: Validate inputs
         run: |
-          if [ "$VERCEL_TARGET" != "production" ] && [ "$VERCEL_TARGET" != "preview" ]; then
-            echo "::error::VERCEL_TARGET resolved to '$VERCEL_TARGET' — expected 'production' or 'preview'"
+          if [ "$VERCEL_TARGET" != "production" ] && [ "$VERCEL_TARGET" != "staging" ]; then
+            echo "::error::VERCEL_TARGET resolved to '$VERCEL_TARGET' — expected 'production' or 'staging'"
             exit 1
           fi
           if [ -z "$VERCEL_ORG_ID" ]; then
