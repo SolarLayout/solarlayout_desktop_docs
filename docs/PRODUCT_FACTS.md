@@ -852,10 +852,21 @@ Button **🤖 Robotic Module Cleaning** — `MW:1085`.
 
 - A robot drives along the module frames of one cleaning line. **Fixed tilt:
   lines run west–east. Tracker: lines run north–south.**
-- Inputs: the robot's **battery range** (0 = no limit), whether the run must
-  be **out and back on one charge** (default on), and the **span of a standard
-  inter-table bridge**, which defaults to the gap already set between
-  tables/trackers.
+- Inputs, in a **Robot** group — `robotic_cleaning_dialog.py:78-115`. The word
+  "table" becomes "tracker" throughout on a tracker plant:
+
+| Field | Default | Range | Notes |
+|---|---|---|---|
+| **Travel per charge** | 0 m | 0–100 000 | how far the robot goes on one charge; **0 = no battery limit**, giving one robot per cleaning segment |
+| **To-and-fro run** — *"Robot must clean out AND return on the same charge"* | **ticked** | — | when ticked the distance to cover is twice the segment length, so a shorter range is needed to finish a row |
+| **Standard bridge span (table gap)** | the gap already configured | 0–50 m | widest gap a standard bridge spans; gaps up to this are always crossable and need no confirmation |
+| **Skip robot if line has ≤** | 0 | 0–1000, in steps of 0.5 | a line or segment carrying this many tables or fewer is too short to warrant its own robot and is not counted; **0 = count every line** |
+
+- The bridge-span default is taken from the reader's own geometry —
+  `robotic_cleaning.py:63-70`: the **Gap between MMS-Tables** on a fixed-tilt
+  plant (default **1.0 m**), or the **N–S service gap between units** on a
+  tracker plant (default **2.0 m**). If that value is zero it falls back to
+  **2.0 m**.
 - Every gap too wide for a standard bridge is listed individually with its
   measured span and location, split into gaps blocked by equipment
   (arresters, buildings, obstructions) and gaps in open ground. Each has a
@@ -964,6 +975,20 @@ in this order:
 
 PDF metadata: Title "SolarLayout.Desktop Report", Subject "Automated PV
 layout summary".
+
+### 13.1a Export button labels — `MW:1112-1136`
+
+Quote these exactly:
+
+| Button | Produces |
+|---|---|
+| **Export KMZ** | the Google Earth file |
+| **Export DXF** | the CAD drawing |
+| **Export PDF  (Layout + Summary)** | the report |
+| **Export PDF  (with Piles)** | the report with the pile drawing |
+| **Export TMY data CSV** | the irradiance and energy time series |
+| **⬇ Export BOM to Excel** / **⬇ Export BOM to PDF** | the materials list |
+| **⬇ Export SLD to DWG** / **⬇ Export SLD to PDF** | the single-line diagram |
 
 ### 13.2 KMZ — `kmz_exporter.py:1-11`
 
