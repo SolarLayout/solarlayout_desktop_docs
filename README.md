@@ -191,10 +191,25 @@ Add reviewers to `Production` if a production deploy should need approval.
   defaults. The workflow runs `vercel build`, which reads them from the
   project.
 - **Node version:** 22 or later.
-- **Environment variables:** none. The site has no runtime configuration, no
-  API keys and no database.
+- **Environment variables:** one, per environment — `NEXT_PUBLIC_ASSET_PREFIX`,
+  set to that environment's own docs origin:
+
+  | Vercel environment | Value |
+  | --- | --- |
+  | Production | `https://docs.solarlayout.app` |
+  | staging | `https://docs.staging.solarlayout.app` |
+
+  It is not optional if the site is reachable through `solarlayout.app/docs`.
+  `solarlayout_web` rewrites that path here, and without an absolute prefix the
+  proxied HTML emits relative asset paths that resolve into *its* chunk
+  namespace and 404 — an unstyled, unhydrated page. Direct access to the docs
+  domain works either way, which is what makes a missing value easy to miss.
+  The deploy workflow prints the resolved prefix and warns when it is absent.
+
+  There are no other variables: no API keys, no database, no runtime config.
 - **Domain:** attach it in Vercel ▸ Settings ▸ Domains. Nothing in this
-  repository hard-codes a hostname, so no code change is needed.
+  repository hard-codes a hostname — the asset prefix above is the one place a
+  domain appears, and it lives in Vercel rather than in the repo.
 
 Every content page is prerendered at build time. The one exception is
 `/api/search`, which backs the search dialog and runs as a function — it builds

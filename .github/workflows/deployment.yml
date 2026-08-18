@@ -128,6 +128,20 @@ jobs:
             exit 1
           fi
 
+      # The asset prefix decides whether this site works when proxied through
+      # solarlayout.app/docs: without it the HTML emits relative asset paths
+      # that resolve into solarlayout_web's own chunk namespace and 404. It is
+      # a public URL, not a secret, and a wrong or missing one is invisible
+      # until someone loads the proxied page — so surface it here.
+      - name: Report the resolved asset prefix
+        run: |
+          PREFIX=$(grep -h '^NEXT_PUBLIC_ASSET_PREFIX=' .vercel/.env.*.local 2>/dev/null | tail -1 | cut -d= -f2- | tr -d '"')
+          if [ -z "$PREFIX" ]; then
+            echo "::warning::NEXT_PUBLIC_ASSET_PREFIX is not set for '$VERCEL_TARGET'. Assets will use relative paths, which 404 when the site is proxied through solarlayout.app/docs. Set it on the Vercel project for this environment."
+          else
+            echo "NEXT_PUBLIC_ASSET_PREFIX=$PREFIX"
+          fi
+
       - name: Build on Vercel
         run: vercel build --target=$VERCEL_TARGET --token=${{ secrets.VERCEL_TOKEN }}
 
