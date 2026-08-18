@@ -57,7 +57,15 @@ export default [
     },
   },
   {
-    files: ["scripts/**/*.mjs", "*.config.mjs", "*.config.js"],
+    // Node-side files: build scripts, config, and the browser-test harness
+    // (which reads the content tree off disk to enumerate pages).
+    files: [
+      "scripts/**/*.mjs",
+      "tests/**/*.ts",
+      "*.config.mjs",
+      "*.config.js",
+      "*.config.ts",
+    ],
     languageOptions: { globals: { ...globals.node } },
   },
 ]
