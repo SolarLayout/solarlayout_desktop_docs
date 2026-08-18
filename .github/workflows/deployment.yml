@@ -62,7 +62,20 @@ jobs:
       # Defensive: abort before touching Vercel if the target resolved to
       # anything unexpected, rather than deploying to the wrong environment.
       - name: Validate inputs
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
+          # An EMPTY secret is the failure mode worth catching first, because
+          # nothing upstream complains about it. `gh secret set NAME` with no
+          # piped value reads stdin, hits EOF, and stores an empty string
+          # silently — so the secret exists, the list command shows it, and the
+          # only symptom is Vercel reporting a missing --token value four steps
+          # later. Fail here, in two seconds, naming the cause.
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::error::VERCEL_TOKEN is empty. The secret exists but holds no value."
+            echo "::error::Set it from the GitHub UI (Settings > Secrets and variables > Actions), or pipe a value: printf %s 'TOKEN' | gh secret set VERCEL_TOKEN"
+            exit 1
+          fi
           if [ "$VERCEL_TARGET" != "production" ] && [ "$VERCEL_TARGET" != "staging" ]; then
             echo "::error::VERCEL_TARGET resolved to '$VERCEL_TARGET' — expected 'production' or 'staging'"
             exit 1
