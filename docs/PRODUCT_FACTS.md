@@ -27,6 +27,29 @@ Citations are relative to the product repo root. `IP` = `apps/solarlayout-deskto
 - Distribution documented: **Microsoft Store**, published by **Rensaar**.
   Store-distributed packages are signed and updated by Microsoft and are
   exempt from SmartScreen warnings — `docs/superpowers/specs/2026-08-03-msix-store-packaging-design.md §1`.
+### 1.1 System requirements — from the shipped package manifest
+
+Authoritative, because the Store enforces them —
+`apps/solarlayout-desktop/msix/AppxManifest.template.xml:7, 14`:
+
+| Requirement | Value |
+|---|---|
+| Architecture | **x64 only** (`ProcessorArchitecture="x64"`) |
+| Minimum OS | **Windows 10 version 1809** (build 10.0.17763) or later |
+| Tested up to | **Windows 11 22H2** (build 10.0.22621) |
+
+The Store will not offer the application to a machine below that floor, so a
+reader on an older or 32-bit Windows cannot install it at all.
+
+RAM, disk and screen size are **not specified anywhere** in the product. Do not
+invent figures. Describe what the work needs qualitatively — the panel and the
+plot sit side by side, so a wider screen helps — and note that the Store listing
+shows the requirements it enforces.
+
+Manifest display strings, if a page needs to quote them: display name
+**SolarLayout Desktop**, publisher **Rensaar**, description
+*"Automated solar PV plant layout"*.
+
 - **Never mention:** other operating systems, portable/zip builds, GitHub
   Releases, `.dmg`, source builds, PyInstaller, product tiers or editions,
   the cloud product, or the BESS product.
@@ -1270,6 +1293,48 @@ consequential and easy to get wrong, so state it precisely:
 `_refresh_layout_keep_edits` exists in the code but nothing calls it, so there
 is **no** "keep my layout, just refresh the numbers" path. Do not document one.
 
+**An imported CAD reference is placed at its own coordinates, unchanged.**
+`sketch_manager.py:1101-1104` takes the coordinates **as-is, in project metres** —
+no scaling, no re-centring, no fit-to-extent. The drawing must already be in the
+project's coordinate system, or it lands somewhere else entirely, possibly off
+the visible canvas. Supported entity types, from the message shown when nothing
+imports: **LINE, POLYLINE, CIRCLE, ARC, ELLIPSE, SPLINE, TEXT**. Imported
+elements land on the **currently selected sketch layer**, and the status line
+reports how many came in and onto which layer.
+
+**The computed bill of materials line items** — `bom_builder.py:98-223`. Rows
+appear in this order, and a row is **omitted entirely** when its quantity is
+zero, so a short list means the plant has none of that thing:
+
+| # | Description | Unit | Remark carried |
+|---|---|---|---|
+| 1 | Plant AC Capacity | MW | *"PmaxOut × no. of inverters (from OND)"*; shows `—` without an inverter file |
+| 2 | Plant DC Capacity | MWp | |
+| 3 | PV Module | Nos | wattage each |
+| 4 | String Inverter, **or** SMB (String Monitoring Box) + Central Inverter | Nos | capacity each / SMBs per central inverter |
+| 5 | MMS Table … — Full, **or** Tracker (Full) | Nos | |
+| 6 | Half MMS Table, **or** Half Tracker | Nos | *"half length; carries half the strings"* — only when present |
+| 7 | DC String Cable | m | *"incl. +ve / −ve conductors"* |
+| 8 | DC String Trench | m | names the destination, SMB or String Inverter |
+| 9 | DC Cable (SMB → Central Inverter) | m | Central mode only |
+| 10 | AC Cable (Inverter → ICR) | m | String mode |
+| 11 | AC Trench (Inverter → ICR), **or** DC Trench (SMB → Central Inverter) | m | |
+| 12 | ACCB (AC Combiner Box) | Nos | *"≤ 15 inverters each"* |
+| 13 | Inverter Duty Transformer (IDT) | Nos | *"33 kV / 800 V"* plus the units-per-transformer and winding progression |
+| 14 | ICR (Inverter Control Room) | Nos | |
+| 15 | MV Panel (Switchgear) | Lot | *"Inside MCR"* — only once an MCR is placed |
+| 16 | MV Cable (ICR → MCR) | m | MCR only |
+| 17 | MV Trench (ICR → MCR) | m | MCR only |
+| 18 | Power Transformer | MVA | *"ΣIDT × 1.2"* — MCR only |
+| 19 | MCR (Main Control Room) | Nos | MCR only |
+| 20 | Lightning Arrester | Nos | |
+| 21 | Street Light (perimeter) | Nos | pole height and spacing |
+| 22 | Robotic Module Cleaning Equipment | Nos | row count, plus any added for broken lines or battery range |
+| 23 | Cleaning Robot Bridge (table-to-table) | Nos | the standard span |
+| 24 | Cleaning Robot Bridge (supported span) | Nos | *"Over arresters / buildings / obstructions"* |
+
+Rows 22–24 appear only after the cleaning tool has been run.
+
 **A half table receives the full pile pattern and counts as a whole table.**
 The pattern is stamped onto every entry in the placed-table list without
 regard to `is_half` (`MW:4029, 8016`), and the summary's pile column is
@@ -1285,12 +1350,12 @@ invent a value.
 | Unknown | How to handle it |
 |---|---|
 | The Microsoft Store listing URL | Tell the reader to open the Microsoft Store and search for the application by name. Do not write a URL or a `ms-windows-store:` link. |
-| The current version number and release date | Do not state a version anywhere. On the release-notes page, leave a `{/* VERIFY: current version number and release date */}` and describe where the reader can see their installed version. |
+| ~~The current version number and release date~~ | **Resolved (Arun, 2026-08-18): v1.0.0, dated 2026-08-18**, published as the first documented release. It records the shipped capability set rather than a change list, because there is no earlier documented version to compare against. Later entries are real changelogs. |
 | Where the installed version number is displayed | Nothing in the interface shows it — there is no About window, and the Help menu has only the two items in §16. Point the reader at the Store listing instead. |
-| Whether uninstalling removes the licence file | Not determinable from the application's own code. Say the licence lives in a per-user location outside the application folder and that a licence file is worth keeping regardless. Leave a `{/* VERIFY: whether uninstalling removes %APPDATA%\SolarLayout.Desktop */}`. |
+| Whether uninstalling removes the licence file | Not determinable from the application's own code, and the product's own MSIX design spec records `%APPDATA%` redirection under MSIX as an open Windows verification item. **Do not answer it.** Write the advice that holds either way: keep the `license.lic` file somewhere outside the application, because a reinstall adopts a licence left by a previous installation only if the file still exists. |
 | What changes the Device ID | The fingerprint is derived per machine, but which hardware or OS changes alter it is not something to promise. Say a reinstall of Windows or a change of machine can change it, and that a changed ID needs a reissued licence. |
 | Any release history | There is none to write. Do not invent changelog entries. |
 | Minimum Windows build, RAM, disk, or screen resolution | State the requirements qualitatively — a 64-bit Windows PC, a display wide enough for the panel and plot side by side, an internet connection only for weather and elevation data. Leave a `{/* VERIFY: minimum Windows version and hardware requirements */}`. |
-| Support email address or contact route | Say to contact the vendor who supplied the licence. Leave a `{/* VERIFY: support contact route */}`. |
+| ~~Support email address or contact route~~ | **Resolved (Arun, 2026-08-18): `sales@solarlayout.app`.** It is the route for everything reader-facing — a new licence, a renewal, a reissue for a new machine, and any problem the pages do not resolve. |
 | Typical run times for Generate on a given plant size | Do not quote seconds or minutes. Say cable calculation is the slow step on large plants, which is what the application itself warns. |
 | Price, plans, licence duration options | Out of scope. The licence pages cover activation and error messages only. |

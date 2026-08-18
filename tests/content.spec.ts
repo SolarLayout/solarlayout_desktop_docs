@@ -1,3 +1,5 @@
+import fs from "node:fs"
+import path from "node:path"
 import { test, expect } from "@playwright/test"
 import {
   allDocsPaths,
@@ -98,6 +100,38 @@ test("every internal link in the content resolves to a real page", () => {
     .join("\n  ")
 
   expect(broken, `broken internal links:\n  ${detail}`).toEqual([])
+})
+
+test("no page carries an unresolved placeholder", () => {
+  // Customer-facing docs ship no open questions. A VERIFY comment is invisible
+  // in the rendered page, which is exactly why it rots quietly — and a "TBD"
+  // passed to a component renders as visible nonsense. Both are caught here so
+  // neither can reach a release, whichever way it would have leaked.
+  const offenders: string[] = []
+
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name)
+      if (entry.isDirectory()) {
+        walk(full)
+        continue
+      }
+      if (!entry.name.endsWith(".mdx")) continue
+      const src = fs.readFileSync(full, "utf8")
+      const rel = path.relative(process.cwd(), full)
+      src.split("\n").forEach((line, i) => {
+        if (/VERIFY|\bTBD\b|\bTODO\b|\bFIXME\b|\bXXX\b/.test(line)) {
+          offenders.push(`${rel}:${i + 1}  ${line.trim().slice(0, 90)}`)
+        }
+      })
+    }
+  }
+  walk(path.join(process.cwd(), "content", "docs"))
+
+  expect(
+    offenders,
+    `unresolved placeholders in customer-facing content:\n  ${offenders.join("\n  ")}`,
+  ).toEqual([])
 })
 
 test("every referenced screenshot id exists in the manifest", () => {

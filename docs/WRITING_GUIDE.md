@@ -222,6 +222,14 @@ Release-notes page only:
 
 Say these the same way everywhere:
 
+- **The supplier is "SolarLayout".** Never "the vendor" — it reads as a
+  placeholder to a customer who is looking for someone to write to. Reserve
+  "vendor" for equipment suppliers, where it is the correct industry word: *the
+  structure vendor*, *the tracker vendor*.
+- **The contact address is `sales@solarlayout.app`**, written as a mail link.
+  Give it once per page, on the pages where the reader must act — activation,
+  licence troubleshooting, support. Elsewhere just say SolarLayout.
+
 - The plant boundary is **shrunk inward by the perimeter road width** to give
   the **usable area**; obstructions and terrain exclusions are then subtracted.
 - A table or tracker unit is placed only where it fits **entirely** inside the

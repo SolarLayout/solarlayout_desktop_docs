@@ -170,7 +170,23 @@ it — an existing site plan, a survey, a road alignment, a neighbouring
 developer's drawing. It is a reference to work over, not an input to the layout:
 importing a drawing does not create obstructions and does not move any tables.
 
-{/* VERIFY: how is an imported DXF positioned on the canvas — is it read in the project's UTM coordinates, placed relative to the plant extent, or scaled to fit? */}
+The drawing's coordinates are read **as they are, in metres**. Nothing is
+scaled, re-centred, or fitted to the plant, so the drawing has to already be in
+the same coordinate system as the project.
+
+<Callout type="warn">
+Import a drawing that is not georeferenced to the site — one drawn around a
+local origin, say — and it will not appear over the plant. It lands wherever its
+own coordinates put it, usually far enough away to be off the visible canvas
+altogether. Press the plot toolbar's Home button to fit the view and you will see
+how far out it went.
+</Callout>
+
+Seven entity types come across: lines, polylines, circles, arcs, ellipses,
+splines and text. Anything else in the file is skipped. The status line reports
+how many elements were imported and which layer they landed on — they go onto
+whichever layer is currently selected, so pick or create that layer before
+importing.
 
 To turn something in an imported drawing into ground the layout must avoid,
 draw it as an obstruction with the equipment tools. See

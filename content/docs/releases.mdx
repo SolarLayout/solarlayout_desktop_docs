@@ -16,10 +16,10 @@ Store holds the record of what is on your PC. Open the Microsoft Store, go to
 your **Library**, and find the application's entry: it is the entry the Store
 installs from and updates, and it is where the installed version is shown.
 
-There is no version to quote here until the entry below is filled in, so if you
-are asked which version you are running, take it from the Store — not from
-documentation. It is worth including whenever you report a problem, because it
-says which build of the application produced the behaviour you are describing.
+Take it from the Store rather than from this page whenever you are asked, because
+the Store reports what is actually on your PC. It is worth including whenever you
+report a problem, since it says which build produced the behaviour you are
+describing.
 
 ## How you get a new version
 
@@ -44,19 +44,60 @@ Each entry names a version and its release date, and the newest carries a
 called out inside the entry it shipped in, because those are the changes that
 alter results between runs.
 
-{/* VERIFY: current version number and release date */}
+<Release version="1.0.0" date="2026-08-18" tag="current">
 
-<Release version="TBD" date="TBD" tag="current">
+### The first documented release
 
-### Notes in preparation
+This is the first release covered by this documentation. Rather than a list of
+changes — there is no earlier documented version to compare against — it records
+what the application does as it ships.
 
-Notes for the current release are being prepared and will be published here. This
-entry is a placeholder: it carries no version number and no date, because neither
-has been confirmed for publication yet.
+### Design
 
-Until it is filled in, take the installed version from the application's entry in
-the Microsoft Store, and take the behaviour of your copy from the rest of this
-documentation, which describes the application as it ships.
+- **Four design modes**, chosen at every launch: fixed tilt or single-axis
+  tracker, each with string inverters or central inverters and string monitoring
+  boxes.
+- **Three boundary inputs** — a Google Earth file, a CAD drawing, or a traced
+  image. The Google Earth file is the only one that carries water bodies,
+  obstructions and line corridors along with the boundary.
+- **Automatic tilt and row pitch** from the site latitude, with the no-shading
+  pitch at winter solstice, and an override for each.
+- **Placement options** for maximising table count against boundary edges, and
+  for filling leftover ground with half units.
+- **Terrain-aware placement** that keeps tables off ground too steep or too
+  uneven to build on, from satellite elevation data or your own contour file.
+- **Keep-clear shadows** around control rooms, placed objects and perimeter
+  street lights.
+
+### Equipment and cables
+
+- Inverter control rooms sized to a capacity block you set, placed by table
+  grouping and movable by hand.
+- Lightning arresters on an overlapping coverage grid.
+- A main control room and, on multi-plot sites, a unit substation per plot.
+- Routed DC, AC and medium-voltage cables with conductor and trench lengths
+  reported separately.
+
+### Analysis
+
+- **Energy yield** from an automatic weather service or your own hourly file,
+  with a loss-by-loss performance ratio, a computed thermal model, computed
+  row-to-row shading, bifacial gain, degradation over the plant lifetime, and
+  exceedance probabilities you choose.
+- **Sizing from a target AC capacity** and DC/AC ratio.
+- **Cleaning robot fleet sizing**, with per-gap bridging decisions.
+
+### Drawing and output
+
+- **Sketch Mode** for hand editing, with drawing, measuring and dimensioning
+  tools, layers, groups and a typed command line.
+- A **pile pattern** editor and construction pile report.
+- A **single-line diagram** builder with a full switchgear symbol set, automatic
+  build from the plant, and import of an existing diagram.
+- An editable **bill of materials**, computed from the layout, with four
+  built-in templates.
+- Exports to a multi-page A3 PDF report, Google Earth, a layered CAD drawing, a
+  spreadsheet, and an irradiance and energy time series.
 
 </Release>
 

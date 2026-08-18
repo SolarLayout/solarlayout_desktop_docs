@@ -128,13 +128,50 @@ transformers and transformers onto the medium-voltage panel by exactly the
 counts above — so the diagram and the materials list agree on how many of each
 there are. See [Automatic diagram build](/docs/sld/auto-build).
 
-Which lines a given plant produces, and the unit each one is counted in, is best
-read straight off the table the first time it is built: switch the mode on, rebuild
-once, and read down the **Material Description** and **Unit** columns. What appears
-depends on what your design contains — a tracker plant, a central-inverter plant
-and a plant run without cable calculation do not produce the same lines.
+### What the list contains
 
-{/* VERIFY: the exact set of line items the computed list produces, and the unit used for each */}
+The rows come out in a fixed order. A row whose quantity would be zero is **left
+out altogether**, so a short list is not a fault — it means the plant has none of
+that item.
+
+| Description | Unit | What the remark column adds |
+| --- | --- | --- |
+| Plant AC Capacity | MW | How it was derived from the inverter file. Shows a dash until one is loaded |
+| Plant DC Capacity | MWp | — |
+| PV Module | Nos | The wattage of each |
+| String Inverter | Nos | The capacity of each |
+| MMS Table — Full | Nos | — |
+| Half MMS Table | Nos | That it is half length and carries half the strings |
+| DC String Cable | m | That the figure includes both conductors |
+| DC String Trench | m | Where the trench runs to |
+| AC Cable (Inverter → ICR) | m | — |
+| AC Trench (Inverter → ICR) | m | — |
+| ACCB (AC Combiner Box) | Nos | The inverters-per-box limit |
+| Inverter Duty Transformer (IDT) | Nos | The voltage pair, the units per transformer, and the winding progression |
+| ICR (Inverter Control Room) | Nos | — |
+| MV Panel (Switchgear) | Lot | That it sits inside the main control room |
+| MV Cable (ICR → MCR) | m | — |
+| MV Trench (ICR → MCR) | m | — |
+| Power Transformer | MVA | How it was derived from the transformers feeding it |
+| MCR (Main Control Room) | Nos | — |
+| Lightning Arrester | Nos | — |
+| Street Light (perimeter) | Nos | Pole height and spacing |
+| Robotic Module Cleaning Equipment | Nos | The row count, and any robots added for broken lines or battery range |
+| Cleaning Robot Bridge (table-to-table) | Nos | The standard span |
+| Cleaning Robot Bridge (supported span) | Nos | That it crosses arresters, buildings or obstructions |
+
+Four things change that list:
+
+- **A tracker plant** replaces the two table rows with **Tracker (Full)** and
+  **Half Tracker**.
+- **A central-inverter plant** replaces **String Inverter** with
+  **SMB (String Monitoring Box)** and **Central Inverter**, adds
+  **DC Cable (SMB → Central Inverter)**, and renames the second trench row to
+  match — there is no AC leg. See
+  [Choosing a design mode](/docs/design-modes).
+- **Running without cable calculation** drops every cable and trench row.
+- **Not placing a main control room** drops the five rows from the switchgear
+  panel down to the room itself.
 
 ### The cleaning robot fleet
 
