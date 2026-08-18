@@ -175,6 +175,14 @@ widgets override them. Divergences are marked ⚠️.
   `pan_viewer_dialog.py:1-10`.
 - PAN dimension values are accepted in metres (< 100) or millimetres
   (≥ 100) — `pan_parser.py:9-11`.
+- The nominal operating cell temperature **is** read from the file, from any of
+  the `NOCT`, `NOCTemp` or `FAIMAN_c1` keys, falling back to **45 °C** when the
+  file carries none — `pan_parser.py:148-149`. It feeds the string-sizing hot
+  case (§4.8a).
+- ⛔ There is **no north–south table gap field**. `table_gap_ns` exists in the
+  model (`MP:121`) but has no widget, so the **Gap between MMS-Tables** field
+  is east–west only. Do not describe a north–south table gap; north–south
+  spacing is the row pitch (§4.3).
 - After a PAN load the app asks **"Calculate the number of modules in series
   automatically?"** with **Auto** / **Manual** buttons — `IP:1440-1460`.
 
@@ -187,7 +195,7 @@ widgets override them. Divergences are marked ⚠️.
 | Rows per MMS-Table | 2 | 1–10 | — |
 | Gap between modules E-W | **0.020** ⚠️ (`MP` says 0) | 0.0–5.0 | m |
 | Gap between modules N-S | **0.020** ⚠️ (`MP` says 0) | 0.0–5.0 | m |
-| Gap between MMS-Tables | 1.0 | 0.0–20.0 | m |
+| Gap between MMS-Tables | 1.0 | 0.0–20.0 | m — **east–west only**, between tables in the same row |
 | Maximize placement | off | — | — |
 | Add half tables in leftover space | **off** ⚠️ (`MP` says on) | — | — |
 
@@ -242,10 +250,26 @@ wherever a full table will not fit — `IP:260-268`.
 | Add half trackers in leftover space | off | — | — |
 
 - **L config (Landscape)** puts the module long edge N–S along the torque tube.
-- A live preview line under the group shows **Aperture (E-W)**, **Length (N-S)**,
-  **GCR**, and **Modules/tracker** — `IP:482-511`, computed as:
-  `aperture = modules_across × mod_ew`; `ns_length = strings × modules_per_string × mod_ns`;
-  `gcr = aperture / pitch_ew`; `modules = across × strings × per_string`.
+- Tracker unit dimensions **as actually placed** — `tracker_layout_engine.py:352-357`.
+  `n_ns` is the total module count along the tube:
+  - `n_ns = strings_per_tracker × modules_per_string`
+  - `aperture (E-W) = modules_across × mod_ew + (modules_across − 1) × gap_ew`
+  - `length (N-S)   = n_ns × mod_ns + (n_ns − 1) × gap_ns`
+  - `modules per tracker = modules_across × strings_per_tracker × modules_per_string`
+  - `N-S step between units in a column = length + N-S service gap`
+- ⚠️ **The live preview line under-reports.** It shows **Aperture (E-W)**,
+  **Length (N-S)**, **GCR** and **Modules/tracker**, but computes the first two
+  **without the module gaps** — `IP:499-501` uses plain `across × mod_ew` and
+  `strings × per_string × mod_ns`. On the shipped defaults that makes the
+  previewed north–south length **1.10 m short** of the placed length (56
+  modules leave 55 gaps of 0.020 m). Publish the relations above, and describe
+  the preview as indicative rather than exact.
+- ⚠️ **The east-west pitch has a silent floor** —
+  `tracker_layout_engine.py:365`: `pitch = max(aperture + 0.5, your pitch)`. A
+  pitch at or below the aperture is raised to aperture + 0.5 m without a
+  warning, and the reported ground coverage ratio uses the effective pitch:
+  `gcr = aperture / effective pitch`. So a very tight pitch will not produce
+  the ratio the reader asked for.
 - Tracker height and max angle are described in the tooltips as reference /
   shading-analysis inputs — `IP:427-438`.
 - Placement sweep is the mirror of fixed tilt: outer loop E-W across tracker
@@ -287,8 +311,8 @@ comes from the user's fields, passed through as `icr_w`/`icr_h` —
 
 | Other field | Default | Range | Unit |
 |---|---|---|---|
-| LA height | 9.0 | 0.0–100.0 | m |
-| LA pile Ø | 0.3 | 0.0–5.0 | m |
+| LA height ⚠️ inert | 9.0 | 0.0–100.0 | m |
+| LA pile Ø ⚠️ inert | 0.3 | 0.0–5.0 | m |
 | Shadow Window | 9.0 to 16.0 | 4–12 / 12–20 | solar hours |
 | Clear tables inside shadows | **on** | — | — |
 | Street light pile Ø | 0.3 | 0.0–5.0 | m |
@@ -304,7 +328,14 @@ comes from the user's fields, passed through as `icr_w`/`icr_h` —
   outside the automatic MV routing — `MP:271-276`.
 - **Clear tables inside shadows** removes tables/trackers falling inside the
   year-round shadow footprint of the ICR / MCR / objects during the shadow
-  window — `IP:626-628`.
+  window — `IP:626-628`. Note the arrester is **not** in that list.
+- ⚠️ **LA height and LA pile Ø are inert.** They are read from the panel into
+  the layout settings (`IP:737-738`) and then **nothing consumes them** — no
+  placement, no shadow clearing, no quantity, no export. They are also absent
+  from the project-file state (`IP:2007-2110`), so they do not even persist.
+  **Do not claim any effect for them.** Mention them only as recorded design
+  figures, or omit them; never imply the arrester height casts a clearing
+  shadow or reaches the bill of materials.
 - **Street lights** on: place poles along the perimeter spaced by the span,
   just inside the fence, and clear tables their shadow touches. Count ≈
   perimeter ÷ span — `IP:647, IP:652-655`.
@@ -396,9 +427,22 @@ Cell-temperature relations offered — `string_sizing_dialog.py:80-84`:
 - Sandia: `T_cell = T_amb + G × (0.0126 − 0.0029 × wind)`
 
 The window also displays, read-only, the module's STC Voc and Vmp and the
-inverter's MPPT window, then the feasible range of modules in series. The
-reader picks the final series count and the number of parallel strings; these
-land in **Modules per row** / **Rows per MMS-Table** (Fixed Tilt) or
+inverter's MPPT window. Results, recalculated live —
+`string_sizing_dialog.py:228-245`:
+
+- **Feasible:** a green line reading *"Feasible: <n_min>–<n_max> modules in
+  series (<n> option(s))."*
+- **Not feasible:** a red warning line carrying the reason. No range is
+  offered, and the reader enters the counts by hand.
+- **Always shown**, whichever the outcome, a detail line giving the cold cell
+  temperature with its resulting Voc and Vmp; the hot cell temperature —
+  stated as the site maximum plus a computed rise — with its Voc and Vmp; and
+  then **which constraint bounds each end**, labelled *"Upper limit — …"* and
+  *"Lower limit — …"*. This is the part worth telling a reader about: it names
+  the binding constraint rather than only the answer.
+
+The reader picks the final series count and the number of parallel strings;
+these land in **Modules per row** / **Rows per MMS-Table** (Fixed Tilt) or
 **Modules per string (N–S)** / **No. of strings per tracker** (SAT) —
 `IP:1478-1505`.
 

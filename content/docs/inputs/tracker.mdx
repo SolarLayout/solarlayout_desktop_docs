@@ -1,0 +1,283 @@
+---
+title: Tracker configuration
+description: The single-axis tracker unit — geometry, orientation, east–west pitch, rotation limit and the live aperture and ground coverage readout.
+---
+
+The **Tracker Configuration** group appears in Single Axis Tracker mode only.
+Choosing a tracker mode at launch replaces two fixed-tilt groups — the table
+configuration and the spacing and tilt group — with this single group, because a
+tracker has no fixed tilt to derive and no row pitch to calculate. You set the
+east–west pitch directly, and everything else follows from the tracker unit
+itself. For the fixed-tilt equivalent see
+[Table configuration](/docs/inputs/table).
+
+<Screenshot id="tracker-group" maxWidth={420} />
+
+## The geometry the fields describe
+
+The tracker modelled here is a horizontal single-axis tracker. Four facts about
+its geometry make every field in the group read straightforwardly:
+
+- **The rotation axis runs north to south**, along a torque tube. The tube is
+  horizontal; the tracker does not tilt toward the equator the way a fixed
+  table does.
+- **The panels sweep east to west** as the axis rotates through the day, facing
+  the morning sun in the east and the evening sun in the west.
+- **A tracker unit is a run of modules along that axis** — modules threaded
+  north to south down one torque tube, driven together.
+- **Units sit end to end north to south, forming columns spaced east to west.**
+  A gap is left between consecutive units in a column for access and for the
+  drive gear; the spacing between columns is the pitch.
+
+Placement follows the same shape: the application works east to west across
+tracker columns, and north to south along the units within each column.
+
+Two terms recur below. **Aperture** is the east–west width of the modules on one
+tracker, measured flat — the collector width that sweeps. **GCR** is the ground
+coverage ratio, the aperture divided by the east–west pitch.
+
+## The fields
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **No. of strings per tracker** | 2 | 1–20 | Strings threaded end to end along one torque tube |
+| **Modules across tracker (E–W)** | 1 | 1–8 | Modules side by side across the tube. More than one gives a wider aperture |
+| **Module orientation** | P config (Portrait) | P or L config | Which module edge runs east–west across the tube |
+| **Modules per string (N–S)** | 28 | 4–120 | Modules in series in one string, counted along the axis |
+| **Gap between modules E–W** | 0.020 m | 0.0–5.0 m | Clear space between modules sitting side by side across the tube |
+| **Gap between modules N–S** | 0.020 m | 0.0–5.0 m | Clear space between consecutive modules along the tube |
+| **Tracker E-W pitch** | 5.5 m | 1.0–30.0 m | Centre-to-centre spacing between tracker columns. Sets the GCR |
+| **N–S service gap between units** | 2.0 m | 0.0–20.0 m | Clear space between one tracker unit and the next in the same column |
+| **Max rotation angle (±)** | 55.0° | 5.0–75.0° | The rotation limit either side of horizontal |
+| **Tracker height from ground** | 1.5 m | 0.5–10.0 m | Height of the torque tube above ground |
+| **Maximize placement** | off | — | Positions each tracker column independently to hug the boundary |
+| **Add half trackers in leftover space** | off | — | Allows a shortened tracker where a full unit will not fit |
+
+## P and L configuration
+
+**Module orientation** decides which module edge runs east–west across the
+torque tube, and so how wide the aperture is for a given module count.
+
+| Configuration | Module edge running east–west | Effect on aperture |
+| --- | --- | --- |
+| **P config (Portrait)** | The long side, across the tube | Wide aperture per module across |
+| **L config (Landscape)** | The short side, across the tube — the long edge runs north–south along the tube | Narrower aperture, more modules along the same length of tube |
+
+P config is the default: one module deep across the tube, with its long edge
+sweeping east to west. L config puts the module's long edge along the tube
+instead, which shortens the aperture and lengthens the row for the same module
+count.
+
+Because the aperture is the numerator of the GCR, changing configuration without
+changing the pitch changes the ground coverage ratio — and therefore the
+shading, the capacity per hectare and the number of columns that fit. Check the
+preview line after changing it.
+
+## Gaps within and between units
+
+Three clearances are set here, two inside the unit and one between units.
+
+**Gap between modules E–W** is the space between modules sitting side by side
+across the tube, and applies only when **Modules across tracker (E–W)** is more
+than one. At the default of one module across, it has nothing to act on.
+
+**Gap between modules N–S** is the space between consecutive modules along the
+tube. It is applied between every pair of neighbouring modules down the whole
+run, so on a long unit it accumulates.
+
+**N–S service gap between units** is the clear ground left between one unit and
+the next in the same column — the access and drive-gear allowance. It ships at
+2.0 m and is the figure the cleaning-robot sizing takes as the span of a
+standard bridge between units, so a realistic value matters beyond the geometry.
+
+## The four relations
+
+Four figures come out of the group, each from one line of arithmetic:
+
+```
+modules along tube = strings per tracker × modules per string
+
+aperture (E-W)  = modules across × module E-W dimension
+                  + (modules across − 1) × E-W module gap
+
+length (N-S)    = modules along tube × module N-S dimension
+                  + (modules along tube − 1) × N-S module gap
+
+GCR             = aperture ÷ east-west pitch
+
+modules/tracker = modules across × strings per tracker
+                  × modules per string
+```
+
+The gap terms matter. Gaps sit *between* modules, so a run of `n` modules
+carries `n − 1` gaps — and with 56 modules along the tube, that is 55 of them.
+
+### A worked example on the defaults
+
+Take the shipped defaults throughout: a 2.38 m by 1.13 m module, both module
+gaps at 0.020 m, P config, 1 module across, 2 strings per tracker, 28 modules
+per string, and a 5.5 m east–west pitch.
+
+P config puts the long side east–west, so the module's east–west dimension is
+2.38 m and its north–south dimension is 1.13 m.
+
+```
+modules along tube = 2 × 28                    = 56
+
+aperture        = 1 × 2.38 + 0 × 0.020         = 2.38 m
+
+length (N-S)    = 56 × 1.13 + 55 × 0.020
+                = 63.28 + 1.10                 = 64.38 m
+
+GCR             = 2.38 ÷ 5.5                   ≈ 0.43
+
+modules/tracker = 1 × 2 × 28                   = 56
+```
+
+A default tracker unit is therefore one module wide with a 2.38 m aperture,
+64.38 m long north to south, carrying 56 modules in two strings, at a ground
+coverage ratio of 0.43. With one module across there is no east–west gap to
+add, which is why the aperture is a clean multiple; the north–south length is
+not. Add the service gap of 2.0 m to the 64.38 m length to get the north–south
+spacing each unit consumes in its column.
+
+## The live preview
+
+A preview line sits directly under the group and reports those same four
+figures — **Aperture (E-W)**, **Length (N-S)**, **GCR** and
+**Modules/tracker** — recalculated as you type. It updates before you generate
+anything, so it is the fastest way to converge on a unit you are happy with.
+
+Use it for three checks in particular:
+
+- **The GCR is in the range you intend.** Pitch is the only lever on it, and
+  raising the pitch lowers the GCR.
+- **The north–south length is credible against the site.** A unit longer than
+  the usable ground is available in that direction will not place at all, and
+  the layout will come back sparse or empty.
+- **Modules per tracker matches the electrical design.** This is the count the
+  string monitoring or inverter limits are applied to.
+
+## Setting the unit up in order
+
+The fields interact, so work down them in this order and let the preview line
+confirm each step before moving on.
+
+<Steps>
+<Step>
+### Fix the module orientation
+
+Choose P or L configuration first. It changes which module dimension is the
+east–west one, so every figure below it moves when you change it.
+</Step>
+
+<Step>
+### Set the width across the tube
+
+Enter **Modules across tracker (E–W)**. Together with orientation this fixes the
+aperture, and the aperture fixes the GCR for any given pitch.
+</Step>
+
+<Step>
+### Set the length along the tube
+
+Enter **Modules per string (N–S)** and **No. of strings per tracker**. Their
+product with the module's north–south dimension is the unit's length; check it
+against the site's usable north–south extent.
+</Step>
+
+<Step>
+### Set the pitch and read the GCR
+
+Enter **Tracker E-W pitch** and read the resulting GCR off the preview line.
+Adjust the pitch, not the aperture, to land on the ratio you want.
+</Step>
+
+<Step>
+### Record the mechanical figures
+
+Enter **Max rotation angle (±)** and **Tracker height from ground** from your
+supplier's data, so the drawings and schedules carry them.
+</Step>
+</Steps>
+
+## Rotation limit and tracker height
+
+Two fields describe the tracker's mechanics rather than its footprint, and it is
+worth being plain about how far they reach.
+
+**Max rotation angle (±)** is the rotation limit either side of horizontal,
+55.0° as shipped. It is a reference and shading-analysis figure. It does not
+move a tracker unit on the ground and does not change the pitch: on a tracker
+plant the summary reports this angle in place of the fixed-tilt tilt column, so
+the drawing and the schedule carry the mechanical limit you specified.
+
+**Tracker height from ground** is the height of the torque tube above ground,
+1.5 m as shipped, and is likewise a reference and shading-analysis figure rather
+than a placement input. It does not alter what is placed where.
+
+<Callout type="info">
+Neither field is a structural check. Height and rotation limit are the numbers
+your tracker supplier gives you, recorded so the design carries them; the
+application does not validate them against wind, terrain or stow requirements.
+</Callout>
+
+## No tilt, no row pitch
+
+A fixed-tilt design derives its tilt from the site latitude and its row pitch
+from the no-shading condition at winter solstice, and lets you override either.
+A tracker design has neither control, by construction:
+
+- There is no tilt to derive. The axis is horizontal and the panels rotate; the
+  angle that matters is the rotation limit, which you state directly.
+- There is no pitch to derive from a shading condition. You set
+  **Tracker E-W pitch** yourself, and the GCR is reported as the consequence
+  rather than as an input.
+
+That makes pitch the one number to think hardest about on a tracker plant. A
+tighter pitch raises the GCR and fits more capacity into the site; it also
+raises row-to-row shading in the early morning and late afternoon, which is
+exactly when a tracker earns its premium over a fixed plant. See
+[Shading losses](/docs/energy/shading) for how that loss is estimated.
+
+## Packing options
+
+Both packing options work as they do in Fixed Tilt mode, on tracker units
+instead of tables:
+
+- **Maximize placement**, off as shipped, positions each tracker column
+  independently against the exact edge of the usable area rather than starting
+  every column from a shared origin. It fits extra units against diagonal and
+  curved boundaries, at the cost of columns that no longer line up and a longer
+  run on a large site.
+- **Add half trackers in leftover space**, off as shipped, allows a shortened
+  unit where a full one will not fit. Half units are reported in their own
+  summary column and count as half a unit wherever units are weighted.
+
+Both are covered in detail on
+[Maximize placement and half tables](/docs/layout/maximize-and-half-tables).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Module specifications"
+    href="/docs/inputs/module"
+    description="The module dimensions the tracker unit is built from"
+  />
+  <Card
+    title="How placement works"
+    href="/docs/layout/how-placement-works"
+    description="Usable area, exclusions, and the placement sweep"
+  />
+  <Card
+    title="Lightning arresters"
+    href="/docs/layout/lightning-arresters"
+    description="On a tracker plant the poles sit in the inter-row gaps and clear no units"
+  />
+  <Card
+    title="Summary columns"
+    href="/docs/reference/summary-columns"
+    description="Where the tracker counts and the rotation angle are reported"
+  />
+</Cards>
