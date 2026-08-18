@@ -223,3 +223,19 @@ indexing step and nothing to configure.
 `.github/workflows/ci.yml` runs on pushes and pull requests: install, lint,
 typecheck, build. Build-only by design — it does not deploy, and it does not
 run the browser tests.
+
+### Verifying the proxied path
+
+The site is also reachable at `solarlayout.app/docs`, through a rewrite in
+`solarlayout_web`. That path has a failure mode no local test can reach — a
+relative asset prefix makes the proxied HTML resolve `/_next/static/*` against
+the apex, landing in `solarlayout_web`'s chunk namespace, so every asset 404s
+and the page renders unstyled and unhydrated. It shipped that way once.
+
+```bash
+E2E_PROXY_URL=https://solarlayout.app bun run test:e2e
+```
+
+Opt-in, because it depends on a live deployment of a different app. It asserts
+computed style and a hydrated sidebar rather than HTTP status — a stylesheet can
+return 200 and still not apply.
