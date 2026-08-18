@@ -55,6 +55,18 @@ you do not need a server running. First run only:
 bunx playwright install chromium
 ```
 
+To run the same suite against a **deployed** site instead of a local build:
+
+```bash
+E2E_BASE_URL=https://your-deployment.vercel.app bun run test:e2e
+```
+
+Worth doing after a deployment, because a deployment can fail in ways a local
+`next start` cannot — a missing function, a rewrite, a font or image that 404s
+from a different origin. Run it from the same commit that was deployed: the
+filesystem-backed checks (page enumeration, link validation, the screenshot
+manifest) read the local content tree and will otherwise disagree with the site.
+
 These tests are **not** in CI (CI is build-only, by design). Run them before a
 deployment.
 
