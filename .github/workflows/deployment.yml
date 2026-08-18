@@ -77,6 +77,27 @@ jobs:
           fi
           echo "OK VERCEL_TARGET=$VERCEL_TARGET"
 
+      # `vercel pull` fails with a single generic line — "Could not retrieve
+      # Project Settings" — whether the token is scoped to the wrong account,
+      # the project id belongs to another team, or the project does not exist.
+      # These two read-only calls separate those cases before the failure, so a
+      # bad setup names itself instead of needing a second debugging round.
+      # Neither can fail the job; the real gate is `vercel pull` below.
+      - name: Diagnose Vercel access
+        continue-on-error: true
+        run: |
+          echo "── Token scope ─────────────────────────────────────────────"
+          vercel whoami --token=${{ secrets.VERCEL_TOKEN }} || \
+            echo "::warning::vercel whoami failed — the token is invalid or revoked."
+          echo "── Teams this token can see ────────────────────────────────"
+          echo "Looking for VERCEL_ORG_ID=$VERCEL_ORG_ID"
+          vercel teams ls --token=${{ secrets.VERCEL_TOKEN }} || \
+            echo "::warning::vercel teams ls failed — the token may be scoped to a personal account rather than a team."
+          echo "── Projects visible in that scope ──────────────────────────"
+          echo "Looking for VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID"
+          vercel project ls --token=${{ secrets.VERCEL_TOKEN }} || \
+            echo "::warning::vercel project ls failed — the token cannot list projects in this scope."
+
       # Gate before acting: prove the site builds locally before asking Vercel
       # to build and publish it, so a broken build fails here rather than
       # halfway through a deploy.
@@ -84,7 +105,15 @@ jobs:
         run: bun run build
 
       - name: Pull Vercel environment
-        run: vercel pull --yes --environment=$VERCEL_TARGET --token=${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if ! vercel pull --yes --environment=$VERCEL_TARGET --token=${{ secrets.VERCEL_TOKEN }}; then
+            echo "::error::vercel pull failed. Check the 'Diagnose Vercel access' step above:"
+            echo "::error::(1) if whoami named a personal account, re-create the token scoped to the team that owns the project;"
+            echo "::error::(2) if the team list does not contain $VERCEL_ORG_ID, the token belongs to a different team;"
+            echo "::error::(3) if the project list does not contain the project for $VERCEL_PROJECT_ID, the id is wrong or the project sits in another scope;"
+            echo "::error::(4) if all three look right, confirm a custom environment named '$VERCEL_TARGET' exists on the project."
+            exit 1
+          fi
 
       - name: Build on Vercel
         run: vercel build --target=$VERCEL_TARGET --token=${{ secrets.VERCEL_TOKEN }}
