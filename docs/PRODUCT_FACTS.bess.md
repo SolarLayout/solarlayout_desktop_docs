@@ -658,3 +658,175 @@ Radio at `apps/bess-tool/bess_tool/seci_bess_gui.py:4425`–`apps/bess-tool/bess
 
 In-panel note: "Debt & Tax are OFF by default → results match the simple pre-tax project model"
 (`apps/bess-tool/bess_tool/seci_bess_gui.py:4441`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4445`) — consistent with the defaults above.
+
+## 5. Dispatch & analyses
+
+### 5.1 The dispatch model
+
+The engine that Run ▸ `Simulate` and Run ▸ `Optimise` both call is defined at module level
+directly inside `seci_bess_gui.py` — `simulate()` (`apps/bess-tool/bess_tool/seci_bess_gui.py:354`),
+`monthly_dfr()` (`apps/bess-tool/bess_tool/seci_bess_gui.py:769`), `financial_model()`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1297`). This is the shipped engine, confirmed two ways:
+the `bess-tool` console-script entry point resolves to `bess_tool.seci_bess_gui:main`, in this same
+file (§1); and `seci_bess_gui.py` contains **zero** references to `seci_bess_tool` — the older CLI
+variant `apps/bess-tool/bess_tool/seci_bess_tool.py`, which carries its own duplicate copy of
+`simulate`/`financial_model`, is never imported or called from the shipped GUI.
+
+`simulate()` runs a **15-minute annual dispatch**: `DT = 0.25` hours per step
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:107`) over `n = len(df)` steps, which is **35,040** for a
+full year at 15-min resolution — either the generation CSV the user loaded (auto-upsampled to
+15-min, §4.2) or, for a Standalone project, the internally-built calendar `_standalone_timebase()`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5098`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5112`),
+built from `TB_DAY = 96` intervals/day (`apps/bess-tool/bess_tool/seci_bess_gui.py:108`) × 365 days
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5105`).
+
+Generation always has first claim on the battery: solar + wind is computed once as
+`tot = sol + wnd` (`apps/bess-tool/bess_tool/seci_bess_gui.py:373`), and the grid may only supply
+what the remaining generation cannot
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:408`–`apps/bess-tool/bess_tool/seci_bess_gui.py:411`).
+`simulate()` picks one of five mutually-exclusive per-timestep dispatch branches, selected once per
+run from the collected inputs
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:381`–`apps/bess-tool/bess_tool/seci_bess_gui.py:433`):
+
+| Branch | Trigger | Behaviour |
+|---|---|---|
+| **Standalone (grid-charged)** | `project_type == "standalone_bess"` (`apps/bess-tool/bess_tool/seci_bess_gui.py:381`, dispatch `apps/bess-tool/bess_tool/seci_bess_gui.py:499`–`apps/bess-tool/bess_tool/seci_bess_gui.py:530`) | No generation. Peak hours: discharge to meet the Contracted Capacity. Off-Peak: recharge from the grid up to C-rate/headroom (grid import tracked separately as `gchrg` for costing) |
+| **CC-firming** | An explicitly empty peak-hour set (`pk["peak_set"]` empty) on a generation-backed project (`apps/bess-tool/bess_tool/seci_bess_gui.py:389`–`apps/bess-tool/bess_tool/seci_bess_gui.py:390`, dispatch `apps/bess-tool/bess_tool/seci_bess_gui.py:532`–`apps/bess-tool/bess_tool/seci_bess_gui.py:564`) | Firms the Contracted Capacity every hour: generation ≥ CC → serve CC, charge the surplus, export only what the (full) battery can't absorb; generation < CC → discharge to fill the gap, any remainder is a shortfall |
+| **Generation-charged Peak-Shift** | the Peak-Shift checkbox (§4.1) → `solar_shift` (`apps/bess-tool/bess_tool/seci_bess_gui.py:382`, dispatch `apps/bess-tool/bess_tool/seci_bess_gui.py:566`–`apps/bess-tool/bess_tool/seci_bess_gui.py:627`) | Peak window: battery (plus any generation) discharges to meet the Contracted Capacity, surplus exported. All other hours: generation charges the battery first, balance exported, **no** load obligation outside the window; an optional worst-case grid backup tops the battery up only with what remaining generation in that window can't cover (`apps/bess-tool/bess_tool/seci_bess_gui.py:606`–`apps/bess-tool/bess_tool/seci_bess_gui.py:624`) |
+| **Peak / Off-Peak** (default, "IRR-optimal") | none of the above; `is_peak` from the Peak-tab hour set (dispatch `apps/bess-tool/bess_tool/seci_bess_gui.py:629`–`apps/bess-tool/bess_tool/seci_bess_gui.py:699`) | Peak: battery is a deficit-filler only — idle if generation ≥ CC, else discharges exactly the gap; no charging on Peak. Off-Peak: battery is a surplus-absorber only — CC met from generation first, battery charges only from the surplus above CC; no discharging Off-Peak |
+| **Cycle-mode** (Battery EOL basis = "In Total Cycles", §4.5) | `eol_basis == "cycles"` (`apps/bess-tool/bess_tool/seci_bess_gui.py:433`, dispatch `apps/bess-tool/bess_tool/seci_bess_gui.py:440`–`apps/bess-tool/bess_tool/seci_bess_gui.py:497`) | Window-scheduled: fixed discharge / day-charge / night-charge(wind-only) / grid-charge hour windows from the **`⚙  Configure Cycles & Charge/Discharge Windows…`** dialog (§4.5), independent of the Peak tab's hour set |
+
+Round-trip efficiency (`eta_c`/`eta_d`, from √RTE, §4.5) and Depth-of-Discharge × State-of-Health
+(`cap_usable = bess_mwh * dod * soh`, `apps/bess-tool/bess_tool/seci_bess_gui.py:360`) are applied
+uniformly across every branch; the battery starts each `simulate()` call at 100% SOC
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:363`).
+
+`financial_model()` is not a scaled projection of one dispatch run — it **re-runs the full 15-min
+`simulate()`** once per project year, at that year's degraded SOH and generation factor, plus
+`monthly_dfr()` for that year
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1348`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1349`),
+then assembles the discounted annual cash-flow from the per-year results, calling
+`progress_cb(yr, yrs)` after each year when supplied
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1329`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1330`).
+
+### 5.2 Run ▸ `Simulate`
+
+`_on_simulate` (`apps/bess-tool/bess_tool/seci_bess_gui.py:5136`) is gated by
+`_require_license("Simulation")` (`apps/bess-tool/bess_tool/seci_bess_gui.py:5137`, §3) and requires
+data — `_ensure_data()` (`apps/bess-tool/bess_tool/seci_bess_gui.py:5139`) either confirms a loaded
+generation CSV or, for a Standalone project, silently builds the internal calendar (§5.1). Inputs
+(Peak hours + all tab parameters) are collected on the main thread; the run itself executes on a
+background thread, `_run_simulate`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5151`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5155`).
+
+`_run_simulate` calls, in order: `simulate()`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5169`), `monthly_dfr()`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5170`), then `financial_model()` with a progress callback
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5172`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5173`)
+— the status bar shows `Financial model: year <yr>/<total>…` while it runs
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5166`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5167`).
+
+On completion it fires the telemetry event **`bess_simulate`**
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5175`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5176`,
+metadata from `simulate_event_meta()` at `apps/bess-tool/bess_tool/seci_bess_gui.py:2284`) and pushes
+the run to `_update_all`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5178`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5179`,
+def at `apps/bess-tool/bess_tool/seci_bess_gui.py:6973`), which refreshes all **four** result tabs —
+`📈 Dashboard`, `📋 DFR Table`, `💹 Financials`, `📝 Summary`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:6984`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6987`)
+— sets the run-summary status line
+
+`Done │ IRR=<pct>%  NPV=Rs<value>Cr  CAPEX=Rs<value>Cr  Sol=<value>MW  Wnd=<value>MW  BESS=<value>MWh`
+
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:6991`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6994`),
+and switches the result notebook to the Dashboard tab
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:6996`).
+
+### 5.3 Run ▸ `Optimise`
+
+`_on_optimise` (`apps/bess-tool/bess_tool/seci_bess_gui.py:5191`) is gated by
+`_require_license("Optimisation")` (`apps/bess-tool/bess_tool/seci_bess_gui.py:5192`, §3), requires
+data the same way as Simulate, and reads `Project Target IRR` (§4.8), falling back to 15% if
+unparsable
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5204`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5206`).
+The run executes on a background thread, `_run_optimise`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5212`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5216`).
+
+The search uses **SciPy's `differential_evolution`** (imported
+`apps/bess-tool/bess_tool/seci_bess_gui.py:59`, invoked
+`apps/bess-tool/bess_tool/seci_bess_gui.py:5335`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5340`)
+over three free variables — **Solar MW × Wind MW × BESS MWh** — with bounds that respect the project
+topology: an excluded source (§4.1) is pinned to ≈0 MW so the optimiser never adds it
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5252`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5266`).
+It produces **three scenarios**:
+
+| Scenario | Displayed title | What it does |
+|---|---|---|
+| Scenario 1 | `Max IRR • Your Peak Hours` | Wide + narrow DE search on the user's own selected Peak hours (`apps/bess-tool/bess_tool/seci_bess_gui.py:5353`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5372`) |
+| Scenario 2 | `Max IRR • Suggested Peak Hours` | Scans all 24 contiguous N-hour blocks (N = the user's peak-hour count) for the highest-scoring block (`apps/bess-tool/bess_tool/seci_bess_gui.py:5393`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5426`), then re-runs the same wide + narrow DE search on that block (`apps/bess-tool/bess_tool/seci_bess_gui.py:5433`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5451`) |
+| Option 3 | `Hits Target IRR (±0.5%)` when reachable, else `Closest Achievable to Target` | Grid-sweeps Solar×Wind×BESS combinations — a coarse pass then local refinement (`apps/bess-tool/bess_tool/seci_bess_gui.py:5489`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5544`) — then scales/bisects that mix against the **full** `financial_model()` so the reported project IRR lands within ±0.5 pp of the Target IRR when possible (`apps/bess-tool/bess_tool/seci_bess_gui.py:5546`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5617`; the ±0.5 pp check is at `apps/bess-tool/bess_tool/seci_bess_gui.py:5617`) |
+
+(Exact title strings: `apps/bess-tool/bess_tool/seci_bess_gui.py:5630`,
+`apps/bess-tool/bess_tool/seci_bess_gui.py:5632`,
+`apps/bess-tool/bess_tool/seci_bess_gui.py:5634`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5636`.)
+
+Scenario 1 is pre-loaded into the main view (Dashboard/DFR/Financials/Summary) **before** the dialog
+opens
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5625`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5626`).
+The run then fires telemetry **`bess_optimise`**
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5648`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5649`,
+metadata from `optimise_event_meta()` at `apps/bess-tool/bess_tool/seci_bess_gui.py:2290`) and opens
+the **Scenario Comparison** dialog, `_show_comparison_dialog`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5663`), window title
+**`Optimisation — Scenario Comparison`**
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5682`).
+
+The dialog's table has one column per scenario and these rows, top to bottom
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5729`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5741`):
+Peak Hours Selected, Solar Capacity (MW), Wind Capacity (MW), BESS Energy (MWh), Total CAPEX (Cr),
+IRR (%), NPV @ 10% (Cr), Gross Rev Yr1 (Cr), Penalty Yr1 (Lac), Pen % of Revenue Yr1, Export MWh Yr1,
+NCF Yr1 (Cr). The column header of whichever scenario has the highest IRR is shaded green if that
+IRR also meets the Target IRR, red if it doesn't
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5709`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5713`);
+for each KPI row (CAPEX, IRR, NPV, Gross Rev, NCF) the winning cell is shaded light-green
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5773`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5786`);
+a bottom banner states `★  Highest IRR: <name> (<value>%)  |  Target <value>%  — met ✓` / `— not met`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5808`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5813`).
+Each column has a **`✓  Apply <Scenario>`** button that applies that scenario's peak hours, sizes and
+results to the main view and closes the dialog
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5819`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5837`),
+plus a single **`✕  Close`** button
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5839`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5842`).
+
+### 5.4 Run ▸ `Sensitivity Analysis…`
+
+`_open_sensitivity` (`apps/bess-tool/bess_tool/seci_bess_gui.py:5846`) — reachable from the Run menu
+(§2) or the **`📈 Sensitivity`** button on the `📝 Summary` tab's export toolbar
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:4646`) — **requires a base case**: if no Simulate/
+Optimise result exists yet (`self._last_fin is None or self._last_p is None`,
+`apps/bess-tool/bess_tool/seci_bess_gui.py:5848`), it warns "Please run Simulate or Optimise first to
+establish a base case." (`apps/bess-tool/bess_tool/seci_bess_gui.py:5849`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:5851`) and does not open. It is not licence-gated (§3).
+
+The window, titled **`Sensitivity Analysis`**
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5866`, 1200×760), has **5 tabs**, each pulling from a
+shared driver list — every input that moves NPV/IRR, filtered to the current project topology and to
+non-zero base values: source capacities, PPA & export tariffs, each CAPEX and O&M line, penalty
+multiplier, availability, discount rate, debt interest rate (only when debt financing is enabled),
+module and BESS degradation, and payment lag
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:5891`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5933`).
+
+| Tab (exact label) | Inputs | Run button(s) | Output |
+|---|---|---|---|
+| `Single Variable Sweep` (`apps/bess-tool/bess_tool/seci_bess_gui.py:5968`) | Variable, Min, Max, Steps (`apps/bess-tool/bess_tool/seci_bess_gui.py:5974`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5987`) | `▶  Run Sweep` (`apps/bess-tool/bess_tool/seci_bess_gui.py:5989`); `💾 Export CSV` (`apps/bess-tool/bess_tool/seci_bess_gui.py:5991`, licence-gated `"Export"` at `apps/bess-tool/bess_tool/seci_bess_gui.py:6132`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6133`) | Table — Value, IRR %, NPV Cr, GRev Cr Yr1, Pen Lac Yr1, Pen% Rev, Exp MWh Yr1, Exp Rev Lac Yr1, NCF Cr Yr1 (`apps/bess-tool/bess_tool/seci_bess_gui.py:6012`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6014`), base row and best-IRR row highlighted (`apps/bess-tool/bess_tool/seci_bess_gui.py:6020`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6021`), plus IRR-vs-variable and NPV-vs-variable plots (`apps/bess-tool/bess_tool/seci_bess_gui.py:6106`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6120`) |
+| `Tornado Chart` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6149`) | Variation ± % (default 20, `apps/bess-tool/bess_tool/seci_bess_gui.py:6156`); Metric — `IRR (%)` / `NPV (Cr)` / `NCF Yr1 (Cr)` / `Penalty Yr1 (Lac)` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6161`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6163`) | `▶  Run Tornado` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6167`) | Varies each driver ± the chosen % around base, one at a time, and draws a horizontal bar chart of Δmetric sorted by swing magnitude (`apps/bess-tool/bess_tool/seci_bess_gui.py:6213`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6242`) |
+| `2-Variable Heatmap` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6254`) | X-Axis, Y-Axis driver (`apps/bess-tool/bess_tool/seci_bess_gui.py:6259`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6268`); Grid N×N (default 8, `apps/bess-tool/bess_tool/seci_bess_gui.py:6270`); Range ±% (default 50, `apps/bess-tool/bess_tool/seci_bess_gui.py:6275`) | `▶  Run Heatmap` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6280`) | N×N grid of `financial_model()` evaluations rendered as an IRR colour map with contour lines and a base-case marker (`apps/bess-tool/bess_tool/seci_bess_gui.py:6348`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6376`) |
+| `Breakeven Solver` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6388`) | Solve for: lever, same driver universe (`apps/bess-tool/bess_tool/seci_bess_gui.py:6402`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6444`); Target metric — `IRR (%)` / `NPV (Cr)` / `Equity IRR (%)` / `Min DSCR (x)` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6455`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6459`) and its target value; editable search range Min/Max, auto-filled to 0.2×–5× the lever's base value (`apps/bess-tool/bess_tool/seci_bess_gui.py:6469`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6496`) | `🎯  Solve` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6466`) | Bisects the lever within the search range (`apps/bess-tool/bess_tool/seci_bess_gui.py:6591`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6606`); reports the solved value plus resulting IRR/NPV/Equity IRR/Min DSCR (`apps/bess-tool/bess_tool/seci_bess_gui.py:6608`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6624`), or "Target … not bracketed within [Min, Max]" if unreachable in that range (`apps/bess-tool/bess_tool/seci_bess_gui.py:6582`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6587`) |
+| `Monte Carlo` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6635`) | Per-driver ±1σ % with sensible per-driver defaults (`apps/bess-tool/bess_tool/seci_bess_gui.py:6648`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6691`); Iterations (default 500, `apps/bess-tool/bess_tool/seci_bess_gui.py:6715`); Seed (default 42, `apps/bess-tool/bess_tool/seci_bess_gui.py:6719`); Percentiles P (default 10/50/90, editable 0–100, `apps/bess-tool/bess_tool/seci_bess_gui.py:6730`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6734`) | `🎲  Run Monte Carlo` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6736`); `↻  Show P-values` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6738`, re-reports the chosen percentiles from the stored sample set without re-running, `apps/bess-tool/bess_tool/seci_bess_gui.py:6770`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6773`) | IRR distribution histogram + NPV CDF plot, both marked at the base case and the chosen percentiles; reports sample count and `P(NPV<0)=<pct>%` / `P(IRR≥target)=<pct>%` (`apps/bess-tool/bess_tool/seci_bess_gui.py:6786`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6787`, `apps/bess-tool/bess_tool/seci_bess_gui.py:6818`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6820`) |
+
+⚠️ **Note on the inventory map's Monte Carlo percentiles**: the topic map (
+`.superpowers/sdd/2026-08-24-two-app-docs-phase0-1/bess-inventory-map.md`) describes the reported
+percentiles as "P5/P50/P95" — the shipped default is **P10/P50/P90**
+(`self.v_p1... = "10"/"50"/"90"`, `apps/bess-tool/bess_tool/seci_bess_gui.py:6730`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:6732`), fully user-editable to any value 0–100. Publish
+P10/P50/P90 as the default.
