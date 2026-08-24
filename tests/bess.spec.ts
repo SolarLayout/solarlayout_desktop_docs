@@ -10,3 +10,17 @@ test("the BESS intro page renders with the docs chrome", async ({ page }) => {
 
   await expect(page.locator("#nd-sidebar")).toBeVisible()
 })
+
+test("the root shows a product picker linking to both apps", async ({ page }) => {
+  await page.goto("/")
+  await expect(page.getByRole("link", { name: /SolarLayout Desktop/i }).first()).toBeVisible()
+  await expect(page.getByRole("link", { name: /BESS Desktop/i }).first()).toBeVisible()
+  // The BESS card lands on the BESS tree.
+  await page.getByRole("link", { name: /BESS Desktop/i }).first().click()
+  await expect(page).toHaveURL(/\/bess(\/|$)/)
+})
+
+test("the /bess landing links into the BESS tree", async ({ page }) => {
+  await page.goto("/bess")
+  await expect(page.getByRole("link", { name: /What BESS Desktop does|Get started|Start reading/i }).first()).toBeVisible()
+})

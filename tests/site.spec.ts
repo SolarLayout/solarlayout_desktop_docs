@@ -1,34 +1,34 @@
 import { test, expect } from "@playwright/test"
 
 /**
- * The landing surface, rendered at both `/` and `/docs` from one component.
+ * The SolarLayout landing surface, rendered at `/docs` (DocsLanding). The
+ * root `/` is a separate product picker — see tests/bess.spec.ts for its
+ * assertions.
  */
-for (const url of ["/", "/docs"]) {
-  test(`landing renders at ${url}`, async ({ page }) => {
-    await page.goto(url)
+test("landing renders at /docs", async ({ page }) => {
+  await page.goto("/docs")
 
-    await expect(
-      page.getByRole("heading", { level: 1, name: /Design a plant with/i }),
-    ).toBeVisible()
+  await expect(
+    page.getByRole("heading", { level: 1, name: /Design a plant with/i }),
+  ).toBeVisible()
 
-    // The three sections that make the index useful, not just present.
-    await expect(page.getByText("Start here", { exact: true })).toBeVisible()
-    await expect(page.getByText("Browse by topic", { exact: true })).toBeVisible()
+  // The three sections that make the index useful, not just present.
+  await expect(page.getByText("Start here", { exact: true })).toBeVisible()
+  await expect(page.getByText("Browse by topic", { exact: true })).toBeVisible()
 
-    await expect(
-      page.getByRole("link", { name: /Start reading/i }).first(),
-    ).toBeVisible()
+  await expect(
+    page.getByRole("link", { name: /Start reading/i }).first(),
+  ).toBeVisible()
 
-    // The "Start here" row must offer three real destinations.
-    const startHere = page.getByRole("link", {
-      name: /Install SolarLayout Desktop|Prepare your boundary file|Your first layout/,
-    })
-    await expect(startHere).toHaveCount(3)
+  // The "Start here" row must offer three real destinations.
+  const startHere = page.getByRole("link", {
+    name: /Install SolarLayout Desktop|Prepare your boundary file|Your first layout/,
   })
-}
+  await expect(startHere).toHaveCount(3)
+})
 
 test("landing links to a page that actually resolves", async ({ page }) => {
-  await page.goto("/")
+  await page.goto("/docs")
   await page.getByRole("link", { name: /Start reading/i }).first().click()
   await expect(page).toHaveURL(/\/docs\/first-layout$/)
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
