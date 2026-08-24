@@ -1114,3 +1114,360 @@ model by `financial_model()` (`apps/bess-tool/bess_tool/seci_bess_gui.py:1297`) 
   total WC cost and its IRR/NPV impact versus the same case with no lag
   (`apps/bess-tool/bess_tool/seci_bess_gui.py:1418`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1432`).
 
+## 7. Plant layout & SLD
+
+Opened from Run ▸ **`BESS Plant Layout & SLD…`** (`apps/bess-tool/bess_tool/seci_bess_gui.py:2633`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:2634`) or the banner **`🏗  Plant Layout & SLD`** button
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:2662`–`apps/bess-tool/bess_tool/seci_bess_gui.py:2663`) —
+both call `_open_plant_designer` (`apps/bess-tool/bess_tool/seci_bess_gui.py:8137`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:8158`), which opens (or refocuses, if already open) a
+`plant_designer.PlantDesigner` `tk.Toplevel` titled **`BESS Plant Layout & Single Line Diagram`**
+(`apps/bess-tool/bess_tool/plant_designer.py:122`), geometry `1380x880`
+(`apps/bess-tool/bess_tool/plant_designer.py:123`). **Not** licence-gated (§3). **2 tabs** share one
+input form and the same auto-placement engine: **`  Plant Layout  `**
+(`apps/bess-tool/bess_tool/plant_designer.py:141`) and **`  Single Line Diagram  `**
+(`apps/bess-tool/bess_tool/plant_designer.py:142`).
+
+### 7.1 Shared inputs (`_FIELDS`)
+
+Both tabs read one spec dict built from a single `_FIELDS` list
+(`apps/bess-tool/bess_tool/plant_designer.py:148`–`apps/bess-tool/bess_tool/plant_designer.py:167`),
+rendered as the Plant Layout tab's left-hand form (`_build_layout_tab`,
+`apps/bess-tool/bess_tool/plant_designer.py:171`–`apps/bess-tool/bess_tool/plant_designer.py:217`);
+the SLD tab (`_build_sld_tab`, `apps/bess-tool/bess_tool/plant_designer.py:231`–
+`apps/bess-tool/bess_tool/plant_designer.py:272`) reuses the same `self._vars` and shows only the
+note "Uses the same inputs as the Plant Layout tab."
+(`apps/bess-tool/bess_tool/plant_designer.py:236`–`apps/bess-tool/bess_tool/plant_designer.py:238`).
+Two bold section-divider rows (`__sec__`/`__sec2__` keys — label only, no entry field,
+`apps/bess-tool/bess_tool/plant_designer.py:179`–`apps/bess-tool/bess_tool/plant_designer.py:182`)
+split the form into three groups:
+
+| Field (exact label) | Default | Unit |
+|---|---|---|
+| `BESS Plant Capacity` | 10 | MWh |
+| `BESS Container Capacity` | 5 | MWh |
+| `Container Size` | 20 | ft |
+| `C-rate` | 0.25 | — (no unit shown; a ratio) |
+| `PCS Capacity` | 1.25 | MVA |
+| `PCS per LV Panel` | 2 | nos |
+| `LV Panels per Transformer` | 1 | nos |
+| `MV Panels` | 1 | nos |
+
+(`apps/bess-tool/bess_tool/plant_designer.py:149`–`apps/bess-tool/bess_tool/plant_designer.py:156`.)
+
+**`Equipment size  (Length x Width, m)`** section
+(`apps/bess-tool/bess_tool/plant_designer.py:157`) — each row is a paired Length / Width entry (the
+width is a second `StringVar`, keyed via `_WID` / defaulted via `_WID_DEF`,
+`apps/bess-tool/bess_tool/plant_designer.py:168`–`apps/bess-tool/bess_tool/plant_designer.py:169`):
+
+| Field (exact label) | Default L | Default W |
+|---|---|---|
+| `PCS  L x W` | 2.5 | 1 |
+| `LV Panel  L x W` | 2 | 1 |
+| `Transformer  L x W` | 4 | 3 |
+| `MV Panel  L x W` | 3 | 2 |
+
+(`apps/bess-tool/bess_tool/plant_designer.py:158`–`apps/bess-tool/bess_tool/plant_designer.py:161`.)
+
+**`Spacing & geo-reference`** section (`apps/bess-tool/bess_tool/plant_designer.py:162`):
+
+| Field (exact label) | Default | Unit |
+|---|---|---|
+| `Container Side Gap` | 1.0 | m |
+| `Row Gap (N-S)` | 3.0 | m |
+| `Latitude` | 26.9124 | deg |
+| `Longitude` | 75.7873 | deg |
+
+(`apps/bess-tool/bess_tool/plant_designer.py:163`–`apps/bess-tool/bess_tool/plant_designer.py:166`.)
+An East-West gap between transformer "trains", `train_gap = Container Side Gap + 4.0`, has no UI
+field of its own (`apps/bess-tool/bess_tool/plant_model.py:135`).
+
+**`Transformer Type`** combobox — `2 winding` / `3 winding` / `5 winding`, default `2 winding`,
+read-only (`apps/bess-tool/bess_tool/plant_designer.py:194`–
+`apps/bess-tool/bess_tool/plant_designer.py:199`). It auto-syncs from **`LV Panels per
+Transformer`**: 1→`2 winding`, 2→`3 winding`, 4→`5 winding` (`_LV_TO_WINDING`,
+`apps/bess-tool/bess_tool/plant_designer.py:219`; wired via a `StringVar` trace,
+`apps/bess-tool/bess_tool/plant_designer.py:203`–`apps/bess-tool/bess_tool/plant_designer.py:204`,
+applied in `_sync_winding`, `apps/bess-tool/bess_tool/plant_designer.py:221`–
+`apps/bess-tool/bess_tool/plant_designer.py:229`); any other LV-per-transformer count leaves the
+previously-chosen winding type untouched, per the code's own comment
+(`apps/bess-tool/bess_tool/plant_designer.py:200`–`apps/bess-tool/bess_tool/plant_designer.py:202`).
+
+### 7.2 `⚙  Generate Layout` — equipment auto-placement
+
+Button (`apps/bess-tool/bess_tool/plant_designer.py:206`–
+`apps/bess-tool/bess_tool/plant_designer.py:208`), handler `_generate`
+(`apps/bess-tool/bess_tool/plant_designer.py:424`–`apps/bess-tool/bess_tool/plant_designer.py:436`),
+engine `plant_model.build_plant(spec)`
+(`apps/bess-tool/bess_tool/plant_model.py:113`–`apps/bess-tool/bess_tool/plant_model.py:239`) — pure
+logic, no tkinter, unit-testable headless (module docstring,
+`apps/bess-tool/bess_tool/plant_model.py:4`).
+
+**Counts** (`apps/bess-tool/bess_tool/plant_model.py:142`–
+`apps/bess-tool/bess_tool/plant_model.py:148`):
+- Containers = `ceil(BESS Plant Capacity / BESS Container Capacity)`.
+- PCS = one per container (1:1).
+- LV panels per "train" = `ceil(PCS in that train / PCS per LV Panel)`.
+- Transformers = `ceil(total PCS / (LV Panels per Transformer × PCS per LV Panel))`, one per train.
+- MV panels = the `MV Panels` input; fed by all transformers.
+
+**Placement**: a South→North stack — containers at the South, then PCS, LV panels, transformer, and
+an MV-panel row at the North (module docstring,
+`apps/bess-tool/bess_tool/plant_model.py:17`–`apps/bess-tool/bess_tool/plant_model.py:19`);
+container footprint comes from an ISO shipping-container table for 20/40/45 ft, else a linear
+fallback from the 20 ft ratio (`apps/bess-tool/bess_tool/plant_model.py:28`,
+`apps/bess-tool/bess_tool/plant_model.py:34`–`apps/bess-tool/bess_tool/plant_model.py:40`).
+Connections are routed as orthogonal "bus" links — a stub down from the parent, a horizontal bus,
+then a drop to each child, no diagonals (`_bus_down`,
+`apps/bess-tool/bess_tool/plant_model.py:97`–`apps/bess-tool/bess_tool/plant_model.py:110`).
+
+Loaded into the Plant Layout canvas as scaled rectangles per equipment + connection lines
+(`_model_to_objects`, `apps/bess-tool/bess_tool/plant_designer.py:61`–
+`apps/bess-tool/bess_tool/plant_designer.py:72`; `self.cad.load(..., fit=True)`,
+`apps/bess-tool/bess_tool/plant_designer.py:429`).
+
+**Count label**, exact text (`apps/bess-tool/bess_tool/plant_designer.py:431`–
+`apps/bess-tool/bess_tool/plant_designer.py:436`):
+```
+Containers: <n>   PCS: <n>
+LV Panels: <n>   Transformers: <n> (≈<mva>g MVA each, <n> LV side)
+MV Panels: <n>
+```
+The "≈…MVA each" figure is `pcs_per_tx × PCS Capacity`
+(`apps/bess-tool/bess_tool/plant_model.py:236`) — the per-transformer capacity when PCS divide
+evenly across transformers. A remainder train's own transformer can carry fewer PCS, in which case
+that transformer's on-canvas label (computed per-train as `k × PCS Capacity`,
+`apps/bess-tool/bess_tool/plant_model.py:202`–`apps/bess-tool/bess_tool/plant_model.py:205`) shows
+the true, lower figure, while the summary count label still shows the full-train maximum.
+
+### 7.3 `⚙  Generate SLD` — IEC schematic symbols
+
+Button (`apps/bess-tool/bess_tool/plant_designer.py:239`–
+`apps/bess-tool/bess_tool/plant_designer.py:241`), handler `_generate_sld`
+(`apps/bess-tool/bess_tool/plant_designer.py:438`–`apps/bess-tool/bess_tool/plant_designer.py:445`)
+re-runs the same `build_plant(spec)`, then draws it via `_model_to_sld_objects`
+(`apps/bess-tool/bess_tool/plant_designer.py:75`–`apps/bess-tool/bess_tool/plant_designer.py:116`):
+containers → `battery`, PCS → `pcs`, transformer → `transformer2w` / `transformer3w` /
+`transformer5w` (per the selected winding) — each drawn as a fixed 3 m × 3 m schematic symbol
+(`_SYM = 3.0`, `apps/bess-tool/bess_tool/plant_designer.py:58`,
+`apps/bess-tool/bess_tool/plant_designer.py:84`–`apps/bess-tool/bess_tool/plant_designer.py:85`); LV
+and MV panels stay rectangles at their real footprint size
+(`apps/bess-tool/bess_tool/plant_designer.py:106`–`apps/bess-tool/bess_tool/plant_designer.py:109`).
+Because a symbol is smaller than the rectangle its connections were routed to, connection endpoints
+landing on a symbol's rectangle North/South edge are re-snapped to the symbol's actual top/bottom
+terminal so wires don't stop short
+(`apps/bess-tool/bess_tool/plant_designer.py:79`–`apps/bess-tool/bess_tool/plant_designer.py:97`).
+
+### 7.4 Symbol tools (SLD tab)
+
+- **`🧩  Open Symbol Library…`** (`apps/bess-tool/bess_tool/plant_designer.py:245`–
+  `apps/bess-tool/bess_tool/plant_designer.py:247`) opens a Symbol Library `Toplevel`
+  (`apps/bess-tool/bess_tool/plant_designer.py:448`–`apps/bess-tool/bess_tool/plant_designer.py:481`,
+  `560x620`, `apps/bess-tool/bess_tool/plant_designer.py:453`) showing a scrollable 4-column grid of
+  thumbnails from `sld_symbols.full_palette()` (`_refresh_symbol_window`,
+  `apps/bess-tool/bess_tool/plant_designer.py:483`–`apps/bess-tool/bess_tool/plant_designer.py:533`).
+  Clicking a thumbnail arms it (`_pick_symbol`,
+  `apps/bess-tool/bess_tool/plant_designer.py:549`–`apps/bess-tool/bess_tool/plant_designer.py:561`)
+  — status line `✓ '<label>' armed — click the SLD canvas to place it.`
+  (`apps/bess-tool/bess_tool/plant_designer.py:560`–`apps/bess-tool/bess_tool/plant_designer.py:561`)
+  — then a click on the SLD canvas drops it (`set_pending_symbol` / `set_pending_image` /
+  `set_pending_custom_symbol`, `apps/bess-tool/bess_tool/plant_designer.py:551`–
+  `apps/bess-tool/bess_tool/plant_designer.py:557`).
+- **`➕  Make Symbol from Selection`** (`apps/bess-tool/bess_tool/plant_designer.py:256`–
+  `apps/bess-tool/bess_tool/plant_designer.py:259`; also inside the Symbol Library window,
+  `apps/bess-tool/bess_tool/plant_designer.py:460`–`apps/bess-tool/bess_tool/plant_designer.py:463`)
+  converts the currently-selected drawn objects (Line/Rect/Circle/Polygon/Text) into a new reusable
+  symbol: flattens them to world-space primitives (`_obj_world_prims`,
+  `apps/bess-tool/bess_tool/plant_designer.py:582`–`apps/bess-tool/bess_tool/plant_designer.py:619`),
+  normalizes into a unit box, centred and uniformly scaled (`_selection_to_prims`,
+  `apps/bess-tool/bess_tool/plant_designer.py:621`–`apps/bess-tool/bess_tool/plant_designer.py:662`),
+  prompts for a name, and persists it via `sld_symbols.save_custom_symbol`
+  (`_make_symbol_from_selection`, `apps/bess-tool/bess_tool/plant_designer.py:664`–
+  `apps/bess-tool/bess_tool/plant_designer.py:702`).
+- **`🗑  Delete Custom`** (Symbol Library window,
+  `apps/bess-tool/bess_tool/plant_designer.py:464`–`apps/bess-tool/bess_tool/plant_designer.py:466`)
+  deletes the currently-selected symbol via `sld_symbols.delete_custom_symbol`, but only if it is one
+  of the user's saved/imported symbols (`load_custom_symbols()`) — clicking it with a built-in symbol
+  selected shows "Click an imported symbol first, then Delete."  (`_delete_imported_symbol`,
+  `apps/bess-tool/bess_tool/plant_designer.py:563`–`apps/bess-tool/bess_tool/plant_designer.py:579`).
+
+### 7.5 CAD toolbar, canvas & sheets
+
+Both tabs get their own independent `cad_canvas.CadCanvas` instance and toolbar — `self.cad` (Plant
+Layout) and `self.sld_cad` (SLD) — built by `_make_pane`
+(`apps/bess-tool/bess_tool/plant_designer.py:275`–`apps/bess-tool/bess_tool/plant_designer.py:288`) /
+`_build_toolbar` (`apps/bess-tool/bess_tool/plant_designer.py:331`–
+`apps/bess-tool/bess_tool/plant_designer.py:398`), so tool state, undo history, snap/ortho and layer
+visibility are independent per canvas.
+
+**Tools** (mutually-exclusive, active one highlighted — `_hl_tool`,
+`apps/bess-tool/bess_tool/plant_designer.py:400`–`apps/bess-tool/bess_tool/plant_designer.py:404`),
+row 1 (`apps/bess-tool/bess_tool/plant_designer.py:352`–
+`apps/bess-tool/bess_tool/plant_designer.py:366`): `▷ Select`, `✥ Move`, `✋ Pan`, `╱ Line`,
+`▭ Rect`, `◯ Circle`, `⬡ Polygon`, `T Text`, `📏 Measure`, `⟺ Dimension`, `⟳ Rotate` (calls
+`rotate_selected(90)` directly — not a persistent tool), `✎ Edit Text` (calls
+`edit_selected_text()` — likewise not a persistent tool). Default active tool: `select`
+(`CadCanvas.__init__`, `apps/bess-tool/bess_tool/cad_canvas.py:71`).
+
+Row 2 (`apps/bess-tool/bess_tool/plant_designer.py:369`–
+`apps/bess-tool/bess_tool/plant_designer.py:377`): `⧉ Copy`, `⎘ Paste`, `🗑 Delete`, `↶ Undo`,
+`↷ Redo`, `⤢ Fit`, `⌗ Snap` (toggle, default **on** — `CadCanvas.snap = True`,
+`apps/bess-tool/bess_tool/cad_canvas.py:75`), `⊾ Ortho` (toggle, default **off** —
+`CadCanvas.ortho = False`, `apps/bess-tool/bess_tool/cad_canvas.py:77`), `📁 Import` (§7.6).
+
+**Sheet**: a size combobox `A0` / `A1` / `A2` / `A3` / `A4`, default `A3`
+(`apps/bess-tool/bess_tool/plant_designer.py:128`,
+`apps/bess-tool/bess_tool/plant_designer.py:381`–`apps/bess-tool/bess_tool/plant_designer.py:382`),
+plus **`🗏 Add Sheet`** (`apps/bess-tool/bess_tool/plant_designer.py:383`, handler `_add_sheet`
+`apps/bess-tool/bess_tool/plant_designer.py:741`–`apps/bess-tool/bess_tool/plant_designer.py:759`) —
+frames the current drawing's bounding box with an ISO A-series sheet border + a bottom-right title
+block (`sheet_template.build_sheet`, module purpose
+`apps/bess-tool/bess_tool/sheet_template.py:1`–`apps/bess-tool/bess_tool/sheet_template.py:14`, def
+`apps/bess-tool/bess_tool/sheet_template.py:75`), added on a dedicated `sheet` layer so it exports
+with the drawing (status text,
+`apps/bess-tool/bess_tool/plant_designer.py:758`–`apps/bess-tool/bess_tool/plant_designer.py:759`).
+
+**Layer toggles**, all default **on**
+(`apps/bess-tool/bess_tool/plant_designer.py:385`–`apps/bess-tool/bess_tool/plant_designer.py:391`;
+`CadCanvas.layers`, `apps/bess-tool/bess_tool/cad_canvas.py:80`–
+`apps/bess-tool/bess_tool/cad_canvas.py:87`): `equipment`, `connections`, `sketch`, `text`, `import`,
+`sheet`.
+
+### 7.6 Import DXF / KMZ background
+
+**`📁 Import`** (`apps/bess-tool/bess_tool/plant_designer.py:377`) → `_import_file`
+(`apps/bess-tool/bess_tool/plant_designer.py:762`–`apps/bess-tool/bess_tool/plant_designer.py:792`):
+a file picker filtered to `*.dxf *.kmz *.kml`
+(`apps/bess-tool/bess_tool/plant_designer.py:763`–`apps/bess-tool/bess_tool/plant_designer.py:766`),
+then `plant_import.import_file(path, lat, lon)`
+(`apps/bess-tool/bess_tool/plant_import.py:133`–`apps/bess-tool/bess_tool/plant_import.py:140`) using
+the form's `Latitude`/`Longitude` fields as the georeferencing anchor. Imported entities land on the
+`import` layer, which is force-shown, and the canvas zooms to fit
+(`apps/bess-tool/bess_tool/plant_designer.py:784`–`apps/bess-tool/bess_tool/plant_designer.py:791`).
+
+- **DXF** (`import_dxf`, `apps/bess-tool/bess_tool/plant_import.py:60`–
+  `apps/bess-tool/bess_tool/plant_import.py:99`): units auto-scaled to metres from the file's
+  `$INSUNITS` header code (`_DXF_UNIT` table, `apps/bess-tool/bess_tool/plant_import.py:21`–
+  `apps/bess-tool/bess_tool/plant_import.py:23`); entity types read: `LINE`, `LWPOLYLINE`,
+  `POLYLINE`, `CIRCLE`, `ARC` (tessellated to a polyline), `TEXT`/`MTEXT`
+  (`apps/bess-tool/bess_tool/plant_import.py:69`–`apps/bess-tool/bess_tool/plant_import.py:96`); the
+  drawing is shifted so its bounding-box min corner sits at the origin (`_shift_to_origin`,
+  `apps/bess-tool/bess_tool/plant_import.py:42`–`apps/bess-tool/bess_tool/plant_import.py:57`).
+- **KMZ/KML** (`import_kmz`, `apps/bess-tool/bess_tool/plant_import.py:102`–
+  `apps/bess-tool/bess_tool/plant_import.py:130`): every `<coordinates>` element in the first `.kml`
+  inside the archive is projected from WGS84 to local metres via an azimuthal-equidistant projection
+  centred at the given lat/lon (`apps/bess-tool/bess_tool/plant_import.py:112`–
+  `apps/bess-tool/bess_tool/plant_import.py:115`), then likewise shifted to the origin.
+
+### 7.7 Exports — `⤓ PDF` / `⤓ DXF` / `⤓ KMZ` (per canvas)
+
+Pinned, always-visible export buttons on each canvas's toolbar
+(`apps/bess-tool/bess_tool/plant_designer.py:334`–`apps/bess-tool/bess_tool/plant_designer.py:341`),
+handler `_export(cad, ext)` (`apps/bess-tool/bess_tool/plant_designer.py:795`–
+`apps/bess-tool/bess_tool/plant_designer.py:819`). The drawing title (and the save dialog's suggested
+filename) is **`BESS Single Line Diagram`** for the SLD canvas, else **`BESS Plant Layout`**
+(`apps/bess-tool/bess_tool/plant_designer.py:796`–`apps/bess-tool/bess_tool/plant_designer.py:797`,
+`apps/bess-tool/bess_tool/plant_designer.py:807`). A KMZ export requires a valid Latitude/Longitude
+first, else it warns (`apps/bess-tool/bess_tool/plant_designer.py:798`–
+`apps/bess-tool/bess_tool/plant_designer.py:803`). The save dialog
+(`apps/bess-tool/bess_tool/plant_designer.py:804`–`apps/bess-tool/bess_tool/plant_designer.py:809`)
+sets no explicit dialog `title=`, unlike the main window's export dialogs (§8) — it shows the OS's
+default Save-As caption.
+
+| Format | Produces | Exporter |
+|---|---|---|
+| `⤓ PDF` | A4-landscape matplotlib figure: colour-filled equipment rectangles/symbols by kind, connection lines, title text, optional SolarLayout logo | `plant_export.export_pdf`, `apps/bess-tool/bess_tool/plant_export.py:185`–`apps/bess-tool/bess_tool/plant_export.py:287` |
+| `⤓ DXF` | `ezdxf` R2010 drawing with 6 named layers (`equipment`, `connections`, `sketch`, `text`, `import`, `sheet`); rectangles/circles/polygons/lines plus text labels; symbols expanded to their line-work | `plant_export.export_dxf`, `apps/bess-tool/bess_tool/plant_export.py:43`–`apps/bess-tool/bess_tool/plant_export.py:103` (layer set-up `apps/bess-tool/bess_tool/plant_export.py:47`–`apps/bess-tool/bess_tool/plant_export.py:50`) |
+| `⤓ KMZ` | Georeferenced KMZ (rectangles/circles/polygons as outline polygons; connections/symbols as line strings) anchored at the form's Latitude/Longitude, via a local azimuthal-equidistant projection back to WGS84 | `plant_export.export_kmz`, `apps/bess-tool/bess_tool/plant_export.py:107`–`apps/bess-tool/bess_tool/plant_export.py:181` |
+
+### 7.8 Saved into the `.slb` project
+
+The designer's inputs and both drawings travel with the main **`Save Project (.slb)…`** /
+**`Open Project (.slb)…`** actions (§8), independent of any Simulate/Optimise results:
+
+- Closing the designer window (its `WM_DELETE_WINDOW` handler) calls `_snapshot_designer`
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:8151`–`apps/bess-tool/bess_tool/seci_bess_gui.py:8154`,
+  def `apps/bess-tool/bess_tool/seci_bess_gui.py:8162`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:8175`), which captures `_vars` (every `_FIELDS`
+  /Transformer-Type value), `cad.objects` (Plant Layout drawing) and `sld_cad.objects` (SLD drawing)
+  into `self._designer_state`.
+- **`Save Project (.slb)…`**'s `_collect_project` calls `_snapshot_designer()` again and, if a
+  designer state exists, stores it as `data["designer"]`
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:8223`–`apps/bess-tool/bess_tool/seci_bess_gui.py:8226`).
+- **`Open Project (.slb)…`**'s `_apply_project` restores it into `self._designer_state`
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:8315`); if the designer window is already open it is
+  applied immediately (`apps/bess-tool/bess_tool/seci_bess_gui.py:8321`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:8323`), otherwise it is applied the next time the
+  designer is opened (`_apply_designer_state`, called from `_open_plant_designer`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:8156`–`apps/bess-tool/bess_tool/seci_bess_gui.py:8157`;
+  def `apps/bess-tool/bess_tool/seci_bess_gui.py:8177`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:8188`).
+
+---
+
+## 8. Exports
+
+Every export/save action, with its exact visible label, where it lives, and the file it produces.
+Dialog titles and default filenames are cited alongside each handler; all File-menu exports except
+**`Save Project (.slb)…`**, **`Open Project (.slb)…`** and **`Load Generation CSV…`** are
+licence-gated `"Export"` (§3), and so are their five Summary-tab toolbar duplicates (§6.4). The
+Plant Designer's `⤓ PDF` / `⤓ DXF` / `⤓ KMZ` (§7.7) are **not** gated (§3, §7.8).
+
+| Action (exact label) | Where | Produces | Handler |
+|---|---|---|---|
+| `Save Project (.slb)…` / banner `Save` | File menu (`apps/bess-tool/bess_tool/seci_bess_gui.py:2608`) / banner icon button (`apps/bess-tool/bess_tool/seci_bess_gui.py:2668`–`apps/bess-tool/bess_tool/seci_bess_gui.py:2669`) | **`.slb`** — proprietary container: `SLBPROJ1` magic + zlib-compressed JSON (`apps/bess-tool/bess_tool/project_io.py:19`, `apps/bess-tool/bess_tool/project_io.py:22`–`apps/bess-tool/bess_tool/project_io.py:28`); holds inputs, generation data, last results, and the Plant Layout/SLD drawing (confirmation dialog text, `apps/bess-tool/bess_tool/seci_bess_gui.py:8246`–`apps/bess-tool/bess_tool/seci_bess_gui.py:8248`) | `_save_project`, `apps/bess-tool/bess_tool/seci_bess_gui.py:8229`–`apps/bess-tool/bess_tool/seci_bess_gui.py:8250` (dialog title `Save BESS.Desktop Project`, `apps/bess-tool/bess_tool/seci_bess_gui.py:8236`) |
+| `Open Project (.slb)…` / banner `Open` | File menu (`apps/bess-tool/bess_tool/seci_bess_gui.py:2610`) / banner icon button (`apps/bess-tool/bess_tool/seci_bess_gui.py:2674`–`apps/bess-tool/bess_tool/seci_bess_gui.py:2675`) | Restores all inputs + the Plant Layout/SLD drawing from a `.slb` file (`project_io.load_project`, `apps/bess-tool/bess_tool/project_io.py:31`–`apps/bess-tool/bess_tool/project_io.py:43`) | `_open_project`, `apps/bess-tool/bess_tool/seci_bess_gui.py:8252`–`apps/bess-tool/bess_tool/seci_bess_gui.py:8276` (dialog title `Open BESS.Desktop Project`, `apps/bess-tool/bess_tool/seci_bess_gui.py:8259`) |
+| `Load Generation CSV…` | File menu (`apps/bess-tool/bess_tool/seci_bess_gui.py:2613`) | Not an export — opens the CSV file picker and sets the Data-tab `CSV Path:` field; the actual parse/validate is the separate `Load & Preview CSV` button (§4.2) | `_browse_csv`, `apps/bess-tool/bess_tool/seci_bess_gui.py:4682`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4687` |
+| `Export PDF Report…` / Summary `📥 Export PDF` | File menu (`apps/bess-tool/bess_tool/seci_bess_gui.py:2615`) / Summary toolbar (`apps/bess-tool/bess_tool/seci_bess_gui.py:4641`) | Multi-page **PDF** report (headline, DFR, financials, charts) | `_export_pdf`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7444`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7461` (dialog title `Save PDF Report`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7458`; default name `BESS_Report_<date>.pdf`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7460`) |
+| `Export Plot (PNG)…` / Summary `💾 Save Plot` | File menu (`apps/bess-tool/bess_tool/seci_bess_gui.py:2617`) / Summary toolbar (`apps/bess-tool/bess_tool/seci_bess_gui.py:4642`) | Dashboard figure as **PNG** (or **PDF** — both extensions offered in the same dialog), 150 dpi | `_export_plot`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7273`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7290` (dialog title `Save Dashboard Plot`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7281`; dpi `apps/bess-tool/bess_tool/seci_bess_gui.py:7288`) |
+| `Save Project Report (Word)…` / Summary `📄 Save Report` | File menu (`apps/bess-tool/bess_tool/seci_bess_gui.py:2618`) / Summary toolbar (`apps/bess-tool/bess_tool/seci_bess_gui.py:4643`) | **Word `.docx`** "Detailed Project Report" — 8 sections (§8.1) | `_save_word_report` → `report_doc.build_word_report`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7315`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7368` (dialog title `Save Project Report (Word)`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7329`) |
+| `Export Report (TXT)…` | File menu (`apps/bess-tool/bess_tool/seci_bess_gui.py:2619`) | Plain-text **`.txt`** report — the same `build_report_text()` output as the Summary tab (§6.4) | `_export_report`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7292`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7313` (dialog title `Save Text Report`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7300`) |
+| `Export DFR CSV…` / Summary `📊 Save DFR CSV` | File menu (`apps/bess-tool/bess_tool/seci_bess_gui.py:2620`) / Summary toolbar (`apps/bess-tool/bess_tool/seci_bess_gui.py:4644`) | Monthly DFR **CSV**; plus a second `<name>_15min.csv` per-interval detail (≈35,040 rows) when a 15-min DFR target is set | `_export_csv`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7370`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7409` (dialog title `Save Monthly DFR CSV`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7380`; 15-min branch `apps/bess-tool/bess_tool/seci_bess_gui.py:7392`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7406`) |
+| `Export Time-Series CSV (Dashboard Data)…` / Summary `🕒 Time-Series CSV` | File menu (`apps/bess-tool/bess_tool/seci_bess_gui.py:2621`) / Summary toolbar (`apps/bess-tool/bess_tool/seci_bess_gui.py:4645`) | 15-min **CSV** of every dashboard series — solar/wind/total generation, contracted capacity, scheduled/delivered, exported energy, battery charge/discharge, SOC, SOH | `_export_timeseries_csv`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7411`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7442` (dialog title `Save Time-Series CSV (Dashboard Data)`, `apps/bess-tool/bess_tool/seci_bess_gui.py:7422`) |
+| Plant Designer `⤓ PDF` / `⤓ DXF` / `⤓ KMZ` | Plant Layout & SLD designer toolbar, per canvas (§7.7) | Layout/SLD drawing as **PDF** / **DXF** / **KMZ** | `_export` → `plant_export.export_pdf` / `export_dxf` / `export_kmz`, `apps/bess-tool/bess_tool/plant_designer.py:795`–`apps/bess-tool/bess_tool/plant_designer.py:819` |
+
+### 8.1 Word report (`Save Project Report (Word)…`) — 8 sections
+
+`report_doc.build_word_report(path, ctx)` (`apps/bess-tool/bess_tool/report_doc.py:293`–
+`apps/bess-tool/bess_tool/report_doc.py:320`) composes the document in this order
+(`apps/bess-tool/bess_tool/report_doc.py:312`–`apps/bess-tool/bess_tool/report_doc.py:318`),
+preceded by an unnumbered title page (`_title_page`,
+`apps/bess-tool/bess_tool/report_doc.py:94`–`apps/bess-tool/bess_tool/report_doc.py:117`: logo,
+title, subtitle, "Detailed Project Report (DPR)", generation date, "Prepared with SolarLayout —
+BESS Project Design Solution"):
+
+1. **`1.  Executive Summary`** (+ `Financial Highlights` sub-heading) — `_exec_summary`,
+   `apps/bess-tool/bess_tool/report_doc.py:120`–`apps/bess-tool/bess_tool/report_doc.py:159`
+   (heading `apps/bess-tool/bess_tool/report_doc.py:126`, sub-heading
+   `apps/bess-tool/bess_tool/report_doc.py:148`) — a narrative paragraph plus a headline table
+   (Project IRR, Equity IRR, NPV, Total CAPEX, LCOE, LCOS, Simple Payback, MoIC).
+2. **`2.  Project Configuration`** — `_inputs`,
+   `apps/bess-tool/bess_tool/report_doc.py:164`–`apps/bess-tool/bess_tool/report_doc.py:176`
+   (heading `apps/bess-tool/bess_tool/report_doc.py:164`) — project type, CC, project life, peak
+   hours, peak/off-peak DFR targets, peak-shift/grid-backup flags.
+3. **`3.  Technical Parameters`** — `_inputs`,
+   `apps/bess-tool/bess_tool/report_doc.py:178`–`apps/bess-tool/bess_tool/report_doc.py:194`
+   (heading `apps/bess-tool/bess_tool/report_doc.py:178`) — Solar/Wind/BESS sizes, RTE, DoD, initial
+   SOH, Battery EOL, C-rate, BESS degradation.
+4. **`4.  Financial Assumptions`** — `_inputs`,
+   `apps/bess-tool/bess_tool/report_doc.py:196`–`apps/bess-tool/bess_tool/report_doc.py:209`
+   (heading `apps/bess-tool/bess_tool/report_doc.py:196`) — CAPEX, tariff/export tariff, discount
+   rate, debt %/rate/tenor, grid-charging price.
+5. **`5.  Financial Results & Cash-flow`** — `_financials`,
+   `apps/bess-tool/bess_tool/report_doc.py:212`–`apps/bess-tool/bess_tool/report_doc.py:230`
+   (heading `apps/bess-tool/bess_tool/report_doc.py:214`) — a per-year table (Gross Rev, OPEX,
+   EBITDA, NCF, Equity CF, DSCR; plus Grid MWh / Grid %Exp columns when any year drew grid charging).
+6. **`6.  Dashboard & Charts`** — `_plots`,
+   `apps/bess-tool/bess_tool/report_doc.py:233`–`apps/bess-tool/bess_tool/report_doc.py:243`
+   (heading `apps/bess-tool/bess_tool/report_doc.py:237`) — the Dashboard figure embedded as an
+   image, when a plot exists.
+7. **`7.  Analysis & Business Recommendation`** — `_analysis`,
+   `apps/bess-tool/bess_tool/report_doc.py:246`–`apps/bess-tool/bess_tool/report_doc.py:279`
+   (heading `apps/bess-tool/bess_tool/report_doc.py:250`) — bulleted commentary (returns vs. hurdle,
+   LCOE/LCOS vs. tariff, dispatch/degradation note, optional working-capital note) plus a bolded
+   `Recommendation:` verdict, based on whether Project IRR ≥ the Project Target IRR (§4.8).
+8. **`Appendix A — Detailed Calculation Notes`** — `_appendix`,
+   `apps/bess-tool/bess_tool/report_doc.py:282`–`apps/bess-tool/bess_tool/report_doc.py:290`
+   (heading `apps/bess-tool/bess_tool/report_doc.py:287`) — the same plain-text report as the TXT
+   export / Summary tab, embedded verbatim in a monospace (`Consolas`) run.
+
