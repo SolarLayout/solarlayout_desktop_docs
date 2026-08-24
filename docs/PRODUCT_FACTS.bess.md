@@ -830,3 +830,287 @@ percentiles as "P5/P50/P95" — the shipped default is **P10/P50/P90**
 (`self.v_p1... = "10"/"50"/"90"`, `apps/bess-tool/bess_tool/seci_bess_gui.py:6730`–
 `apps/bess-tool/bess_tool/seci_bess_gui.py:6732`), fully user-editable to any value 0–100. Publish
 P10/P50/P90 as the default.
+
+## 6. Results & the financial model
+
+The right-hand result notebook (§2, `_build_right`,
+`apps/bess-tool/bess_tool/seci_bess_gui.py:2738`–`apps/bess-tool/bess_tool/seci_bess_gui.py:2771`)
+has **4 tabs**, populated by `_update_all` once Simulate/Optimise finishes (§5.2): `📈 Dashboard`,
+`📋 DFR Table`, `💹 Financials`, `📝 Summary`.
+
+### 6.1 `📈 Dashboard` tab
+
+Built by `make_plots()` (`apps/bess-tool/bess_tool/seci_bess_gui.py:1465`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:1823`), a single matplotlib figure embedded by
+`_embed_canvas` (`apps/bess-tool/bess_tool/seci_bess_gui.py:7035`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:7062`).
+
+**Header strip** — a navy bar (`HDR_BG = "#1a3a5c"`, `apps/bess-tool/bess_tool/seci_bess_gui.py:1492`)
+above the panels: left `  Solar = <val> MW      Wind = <val> MW      BESS = <val> MWh`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1515`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1517`);
+right `IRR = <val>      Contracted Capacity = <val> MW  `
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1518`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1519`).
+
+**Six panels**, each titled via the shared `_ptitle()` helper
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1501`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1505`)
+— exact `_ptitle` strings, verbatim (note the double em-spaces around "─" in the shipped code):
+
+1. `Total Generation vs Contracted Capacity  ─  7-day scrollable window`
+   (`apps/bess-tool/bess_tool/seci_bess_gui.py:1618`) — stacked solar/wind generation fill, a
+   total-generation line vs the Contracted-Capacity line, a Scheduled/Delivered line, and an
+   exported-surplus fill.
+2. `Battery Charge / Discharge & State of Charge  ─  7-day scrollable window`
+   (`apps/bess-tool/bess_tool/seci_bess_gui.py:1669`) — charge/discharge/grid-charge fills on the
+   left axis, SOC (MWh) on a twin right axis; days with any grid charging are shaded purple on both
+   panel 1 and panel 2 (`apps/bess-tool/bess_tool/seci_bess_gui.py:1626`–
+   `apps/bess-tool/bess_tool/seci_bess_gui.py:1633`).
+3. `Monthly DFR Performance` (`apps/bess-tool/bess_tool/seci_bess_gui.py:1698`) — grouped
+   Overall/Peak/Off-Peak DFR % bars per month against their target lines.
+4. `Monthly DFR Penalty  (Red = Target Missed)` (`apps/bess-tool/bess_tool/seci_bess_gui.py:1720`)
+   — monthly penalty (Rs Lakhs) bars, green when peak+off-peak+overall all pass that month, red
+   otherwise (`apps/bess-tool/bess_tool/seci_bess_gui.py:1702`–
+   `apps/bess-tool/bess_tool/seci_bess_gui.py:1703`).
+5. `Annual Revenue vs OPEX` (`apps/bess-tool/bess_tool/seci_bess_gui.py:1745`) — Gross
+   Revenue / OPEX / Penalty bars plus a Net CF line, one point per project year.
+6. `Cumulative Cashflow  ─  IRR = <irr>` (f-string,
+   `apps/bess-tool/bess_tool/seci_bess_gui.py:1772`) — annual + cumulative cashflow bars/line, a
+   payback-year marker, and an IRR badge coloured green when `irr_pct ≥ 15`, red otherwise (a fixed
+   15% benchmark, independent of the `Project Target IRR` input, §4.8) —
+   `apps/bess-tool/bess_tool/seci_bess_gui.py:1771`.
+
+**7-day scrollable window & slider**: panels 1–2 default to a 7-day window (`WINDOW = 7 * TB_DAY`,
+`apps/bess-tool/bess_tool/seci_bess_gui.py:1472`). A matplotlib `Slider` labelled `Day` scrolls both
+panels together (`apps/bess-tool/bess_tool/seci_bess_gui.py:1782`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:1793`), with instruction text
+`◀  Drag slider to scroll through all 365 days  ▶` beneath it
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1796`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1799`).
+
+**`⛶  Maximize`** — appended next to the matplotlib `NavigationToolbar2Tk` when the figure is embedded
+in the main Dashboard tab (`apps/bess-tool/bess_tool/seci_bess_gui.py:7042`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:7050`), calling `_maximize_dashboard`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:7064`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7084`):
+detaches the inline canvas and re-embeds the same figure into a maximised `Toplevel` titled
+`BESS Dashboard  —  Maximized   (close or press Esc to restore)`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:7075`), whose toolbar shows `🗗  Restore` instead
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:7051`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7057`).
+Esc or the window's close button both call `_restore_dashboard`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:7081`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7082`,
+def at `apps/bess-tool/bess_tool/seci_bess_gui.py:7086`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:7098`), which re-embeds the figure back into the tab and
+re-selects it (`apps/bess-tool/bess_tool/seci_bess_gui.py:7098`).
+
+### 6.2 `📋 DFR Table` tab
+
+Built by `_build_dfr_tree` (`apps/bess-tool/bess_tool/seci_bess_gui.py:4472`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:4493`); one row per calendar month of Year 1, populated by
+`_update_dfr_tree` (`apps/bess-tool/bess_tool/seci_bess_gui.py:7100`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:7125`).
+
+**Columns, in order** (`apps/bess-tool/bess_tool/seci_bess_gui.py:4473`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:4477`):
+`Month, 15min%, Total%, Peak%, Off-Pk%, 15m OK, Pk OK, OffPk OK, Mon OK, ShortPk MWh,
+ShortOpk MWh, Short15m MWh, Penalty Lac, Pen%Rev, Export MWh, Export Rev Lac`.
+
+**Row shading**: green background `#e8fde8` (tag `ok`) when that month's peak, off-peak, overall
+*and* 15-min DFR all meet target; red background `#fde8e8` (tag `miss`) otherwise
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:4484`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4485`,
+tag selection `apps/bess-tool/bess_tool/seci_bess_gui.py:7105`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:7107`). Column-heading hover tooltips are wired via
+`_attach_heading_tooltips` against `_DFR_TIPS`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:4493`, tips
+`apps/bess-tool/bess_tool/seci_bess_gui.py:4573`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4595`).
+
+### 6.3 `💹 Financials` tab
+
+Built by `_build_fin_tree` (`apps/bess-tool/bess_tool/seci_bess_gui.py:4597`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:4635`); headline text + per-year rows are populated by
+`_update_fin_tree` (`apps/bess-tool/bess_tool/seci_bess_gui.py:7127`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:7248`).
+
+**Headline summary lines** — a read-only `Text` widget so individual negative numbers can be painted
+red inline (`apps/bess-tool/bess_tool/seci_bess_gui.py:4603`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:4610`; painter `_set_fin_summary`
+`apps/bess-tool/bess_tool/seci_bess_gui.py:7250`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7261`).
+Each line is shown only when its underlying value is available:
+
+1. `Total CAPEX: Rs <val> Cr  │  Project IRR: <val>  │  NPV @<disc>%: Rs <val> Cr  │  Sol: <val>Cr
+   Wnd: <val>Cr  BESS: <val>Cr` (`apps/bess-tool/bess_tool/seci_bess_gui.py:7137`–
+   `apps/bess-tool/bess_tool/seci_bess_gui.py:7139`).
+2. `Post-tax IRR: <val>   │   Equity IRR: <val>   │   WACC: <val>   │   DSCR min/avg: <val>/<val>`
+   (`apps/bess-tool/bess_tool/seci_bess_gui.py:7145`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7153`).
+3. `LCOE(<basis>): <val> Rs/kWh   │   LCOS: <val> Rs/kWh   │   Payback: <val> yr   │
+   Disc.Payback: <val> yr   │   MoIC: <val>x   │   PI: <val>`
+   (`apps/bess-tool/bess_tool/seci_bess_gui.py:7155`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7170`).
+4. Grid-charging totals (only when any year drew grid energy): `Grid charging: Yr1 <val> MWh =
+   <val>% of export (<val> Cr)   │   life <val> MWh = <val>% of export, cost <val> Cr`
+   (`apps/bess-tool/bess_tool/seci_bess_gui.py:7172`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7184`).
+5. Payment-delay WC cost (only when Receivable Lag > 0): `Payment delay <val> d  →  WC carrying
+   cost <val> Cr total  │  IRR impact <val>  │  NPV impact <val> Cr`
+   (`apps/bess-tool/bess_tool/seci_bess_gui.py:7186`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7193`).
+
+**Per-year columns, in order** (`apps/bess-tool/bess_tool/seci_bess_gui.py:4612`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:4616`):
+`Yr, Deg%, SOH%, BESS MWh, Sched MWh, Export MWh, Export Rev Lac, Gross Rev Cr, Pen Lac, Pen%Rev,
+OPEX Lac, Grid MWh, Grid %Exp, Grid Chg Cr, WC/Delay Cr, Repl/Aug Cr, EBITDA Cr, Interest Cr,
+Tax Cr, NCF Cr, Equity CF Cr, DSCR`.
+
+**Row shading**: light-red `#fde8e8` (tag `neg`) for a negative-NCF year; yellow `#fff3cd` (tag
+`rep`) for a replacement/augmentation year — mutually exclusive, `neg` checked first
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:4624`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4625`,
+selection `apps/bess-tool/bess_tool/seci_bess_gui.py:7211`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:7214`). Independently, a row's text is painted red (tag
+`neg_red`, `#c0392b`) if *any* of Gross Rev / EBITDA / NCF / Equity CF / Interest / Tax / Penalty /
+OPEX / Export Rev / DSCR is negative for that year
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:4627`, check
+`apps/bess-tool/bess_tool/seci_bess_gui.py:7215`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7221`).
+Column-heading hover tooltips via `_FIN_TIPS`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:4521`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4572`).
+
+### 6.4 `📝 Summary` tab
+
+Built by `_build_summary_panel` (`apps/bess-tool/bess_tool/seci_bess_gui.py:4637`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:4654`): a dark console-style `ScrolledText`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:4650`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4654`)
+filled by `_update_summary`, which calls `build_report_text()`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:7263`–`apps/bess-tool/bess_tool/seci_bess_gui.py:7268`;
+report builder `apps/bess-tool/bess_tool/seci_bess_gui.py:1826`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:1977`). The plain-text report runs, in order: a project
+header + configuration block, a CAPEX/IRR/NPV headline
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1864`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1877`),
+a `FINANCIAL METRICS` block (`apps/bess-tool/bess_tool/seci_bess_gui.py:1878`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:1933`) — including an `[ABOVE 15%]` / `[BELOW 15%]` tag
+on the headline IRR line that, like the Dashboard IRR badge (§6.1), compares against the same fixed
+15% benchmark rather than the user's `Project Target IRR`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1875`) — a `MONTHLY DFR COMPLIANCE (Year 1)` table
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1934`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1963`),
+and a `YEAR-BY-YEAR CASHFLOW` table
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:1964`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1976`).
+
+**Export toolbar** (`apps/bess-tool/bess_tool/seci_bess_gui.py:4639`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:4648`), 6 buttons, exact labels in order:
+`📥 Export PDF` (→ `_export_pdf`), `💾 Save Plot` (→ `_export_plot`), `📄 Save Report`
+(→ `_save_word_report`), `📊 Save DFR CSV` (→ `_export_csv`), `🕒 Time-Series CSV`
+(→ `_export_timeseries_csv`), `📈 Sensitivity` (→ `_open_sensitivity`) — the first five are
+licence-gated `"Export"` calls (§3); Sensitivity is not gated.
+
+### 6.5 Financial metrics & their definitions
+
+Formulas as stated by Help ▸ `User Guide / Formulas…` (`_show_help`,
+`apps/bess-tool/bess_tool/seci_bess_gui.py:8328`), tab `  Financial Calculations  `
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:8364`), body text `_HELP_FINANCE`
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:117`–`apps/bess-tool/bess_tool/seci_bess_gui.py:263`).
+Every figure is derived from the 15-min `simulate()` dispatch (§5.1) rolled into an annual cash-flow
+model by `financial_model()` (`apps/bess-tool/bess_tool/seci_bess_gui.py:1297`) and
+`compute_project_finance()` (`apps/bess-tool/bess_tool/seci_bess_gui.py:1048`–
+`apps/bess-tool/bess_tool/seci_bess_gui.py:1270`).
+
+- **IRR** — the rate `r` that makes NPV(CF, r) = 0, via `numpy_financial.irr` with a
+  Newton-Raphson fallback (`_HELP_FINANCE`, `apps/bess-tool/bess_tool/seci_bess_gui.py:230`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:232`; code `calc_irr`
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:91`–`apps/bess-tool/bess_tool/seci_bess_gui.py:100`,
+  fallback `_irr_fallback` `apps/bess-tool/bess_tool/seci_bess_gui.py:69`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:89`). Two IRR figures are shown from two different
+  cash-flow streams: the headline **Project IRR** (Dashboard header/badge, status-bar summary,
+  Financials/report summary line 1) comes straight from `financial_model()`'s own `cashflows` —
+  `[-CAPEX]` then per-year `EBITDA − replacement/augmentation`, no debt/tax/salvage
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1314`, `apps/bess-tool/bess_tool/seci_bess_gui.py:1376`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1377`; IRR at
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1413`, exposed as `irr_pct`
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1437`); the report's `Project IRR (pre-tax)` /
+  Financials-line-2 `Post-tax IRR` instead come from `compute_project_finance()`'s salvage-inclusive
+  `pre_cf`/`post_cf` streams (`apps/bess-tool/bess_tool/seci_bess_gui.py:1143`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1149`, selected by
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1155`, IRR
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1157`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1158`,
+  exposed as `irr_pre_pct`/`post_tax_irr_pct`
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1242`, `apps/bess-tool/bess_tool/seci_bess_gui.py:1245`).
+- **Equity IRR** — IRR of the equity cash-flow stream: EBITDA − interest − principal −
+  tax(levered) − reinvestment (+ terminal value and DSRA release, net of remaining debt, in the
+  final year); only computed when Debt Financing is enabled (`_HELP_FINANCE:230`–`232`; code `eq_cf`
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1145`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1153`,
+  IRR `apps/bess-tool/bess_tool/seci_bess_gui.py:1159`, exposed
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1246`).
+- **NPV** — `SUM_t CF_t / (1 + d)^t` at the Discount Rate `d` (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:233`; code `_npv`
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1031`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1032`).
+  Mirrors the IRR split above: the headline `NPV @<disc>%` (Financials line 1) is `_npv(cashflows,
+  disc_rate)`, exposed as `npv_10_cr`
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1417`, `apps/bess-tool/bess_tool/seci_bess_gui.py:1438`);
+  the `NPV @ <disc>%` line inside the report's `FINANCIAL METRICS` block is the salvage/tax-aware
+  `_npv(proj_cf, disc)`, exposed as `npv_disc_cr`
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1160`, `apps/bess-tool/bess_tool/seci_bess_gui.py:1248`).
+- **Payback (simple / discounted)** — the year cumulative (or discounted-cumulative) project cash
+  flow first turns ≥ 0, linearly interpolated within the year (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:234`–`apps/bess-tool/bess_tool/seci_bess_gui.py:235`;
+  code `_payback` `apps/bess-tool/bess_tool/seci_bess_gui.py:1035`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1045`, called on `proj_cf` / its discounted form
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1207`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1210`).
+- **DSCR** — `(EBITDA − tax(levered) − reinvestment) / (interest + principal)` for the year, reported
+  as minimum and average across the debt tenor (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:236`–`apps/bess-tool/bess_tool/seci_bess_gui.py:237`;
+  code `apps/bess-tool/bess_tool/seci_bess_gui.py:1163`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1170`).
+- **DSRA** (Debt-Service Reserve Account) — `(DSRA_months / 12) × (first year's interest +
+  principal)` (`_HELP_FINANCE`, `apps/bess-tool/bess_tool/seci_bess_gui.py:207`; code
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1087`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1091`);
+  funded upfront alongside equity, released (net of remaining debt) in the final equity-cash-flow
+  year (`apps/bess-tool/bess_tool/seci_bess_gui.py:1145`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1151`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1152`).
+- **MoIC** (Multiple on Invested Capital) — sum of positive cash inflows ÷ initial outlay; outlay =
+  Equity + DSRA when levered, else Total CAPEX (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:238`–`apps/bess-tool/bess_tool/seci_bess_gui.py:239`;
+  code `apps/bess-tool/bess_tool/seci_bess_gui.py:1211`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1216`).
+- **PI** (Profitability Index) — `(NPV + CAPEX) / CAPEX`; PI > 1 is value-accretive (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:240`; code
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1217`).
+- **WACC** (after-tax, levered projects only) — `(E/V) × cost_equity + (D/V) × interest_rate ×
+  (1 − tax_rate)`, with `cost_equity` taken as the Discount Rate (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:241`–`apps/bess-tool/bess_tool/seci_bess_gui.py:242`;
+  code `apps/bess-tool/bess_tool/seci_bess_gui.py:1220`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1225`).
+- **LCOE** (Levelised Cost of Energy) — `(CAPEX_total + Σ_y discounted(OPEX_y + reinvest_y)) /
+  Σ_y discounted(Energy_y × 1000)`, Rs/kWh (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:244`–`apps/bess-tool/bess_tool/seci_bess_gui.py:251`;
+  code `apps/bess-tool/bess_tool/seci_bess_gui.py:1193`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1203`).
+  Three selectable energy bases (§4.9 LCOE Energy Basis combobox), falling back to `delivered` when
+  no export price is configured
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1180`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1191`):
+  `Energy delivered to load (default)` (energy scheduled against the CC), `Total generation
+  (solar+wind)` (all generation, incl. exported), `Delivered + exported energy` (all useful energy
+  sold).
+- **LCOS** (Levelised Cost of Storage) — the same shape as LCOE but over BESS CAPEX + BESS OPEX +
+  reinvestment, divided by discounted battery-discharge throughput (Rs/kWh) — "the cost of every kWh
+  that actually passes through the battery" (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:253`–`apps/bess-tool/bess_tool/seci_bess_gui.py:257`;
+  code `apps/bess-tool/bess_tool/seci_bess_gui.py:1195`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1204`).
+- **DFR-shortfall penalty** — per month, per peak / off-peak / overall / 15-min bucket:
+  `shortfall = max(target_DFR × required_MWh − delivered_MWh, 0)`; `penalty = penalty_mult ×
+  PPA_tariff × shortfall × 1000`; the month's penalty is `max(peak_penalty + off-peak_penalty,
+  overall_penalty, 15-min_penalty)` (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:157`–`apps/bess-tool/bess_tool/seci_bess_gui.py:165`;
+  code `monthly_dfr()` `apps/bess-tool/bess_tool/seci_bess_gui.py:769`, shortfalls
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:815`, `apps/bess-tool/bess_tool/seci_bess_gui.py:819`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:823`, `apps/bess-tool/bess_tool/seci_bess_gui.py:829`,
+  penalties `apps/bess-tool/bess_tool/seci_bess_gui.py:835`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:839`). Standalone / generation-charged Peak-Shift /
+  cycle-mode projects owe the load only in their discharge window, so off-window hours carry no
+  requirement and no penalty (`apps/bess-tool/bess_tool/seci_bess_gui.py:790`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:792`).
+- **Annual CUF cap** (optional, per-tender) — when enabled with a cap %: `cap_mwh = cap% × CC ×
+  8760`; energy up to the cap is paid at the PPA tariff, the excess at the export price
+  (`_HELP_FINANCE`, `apps/bess-tool/bess_tool/seci_bess_gui.py:143`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:148`; code `_cuf_cap_split()`
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:737`–`apps/bess-tool/bess_tool/seci_bess_gui.py:755`).
+- **Grid-charging cost** (Standalone BESS always; a generation-backed Peak-Shift plant only as
+  worst-case backup) — `SUM(grid_import_mwh × grid_charge_price × 1000) × esc_f` (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:167`–`apps/bess-tool/bess_tool/seci_bess_gui.py:169`;
+  code `_grid_charge_cost_rs()` `apps/bess-tool/bess_tool/seci_bess_gui.py:758`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:766`).
+- **Payment-delay / working-capital carrying cost** — models the gap between PPA billing and
+  offtaker payment as a recurring finance cost: `receivables = annual_revenue × (lag_days / 365)`;
+  `WC carry cost = receivables × (WC_rate + facility_fee − LPS_rate)`; deductible, so it reduces
+  EBITDA (and tax) each year; zero when Receivable Lag = 0 (`_HELP_FINANCE`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:171`–`apps/bess-tool/bess_tool/seci_bess_gui.py:182`;
+  code `_working_capital_cost()` `apps/bess-tool/bess_tool/seci_bess_gui.py:1273`–
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1294`). The Financials headline and report show the
+  total WC cost and its IRR/NPV impact versus the same case with no lag
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1418`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1432`).
+
