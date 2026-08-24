@@ -24,3 +24,16 @@ test("the /bess landing links into the BESS tree", async ({ page }) => {
   await page.goto("/bess")
   await expect(page.getByRole("link", { name: /What BESS Desktop does|Get started|Start reading/i }).first()).toBeVisible()
 })
+
+test("search finds a BESS page from the BESS tree", async ({ page }) => {
+  await page.goto("/bess/intro")
+  await page.keyboard.press("ControlOrMeta+k")
+  const input = page.getByRole("searchbox").or(page.getByPlaceholder(/search/i)).first()
+  await expect(input).toBeVisible()
+  await input.fill("battery")
+  const dialog = page.getByRole("dialog")
+  const result = dialog.getByRole("button", { name: /BESS Desktop|Getting started/i }).first()
+  await expect(result, "search returned no BESS result — check /api/search indexes bessSource").toBeVisible({ timeout: 15_000 })
+  await result.click()
+  await expect(page).toHaveURL(/\/bess\//)
+})
