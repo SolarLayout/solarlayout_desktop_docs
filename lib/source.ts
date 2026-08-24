@@ -1,5 +1,5 @@
 import { loader } from "fumadocs-core/source"
-import { docs } from "collections/server"
+import { docs, bess } from "collections/server"
 
 /**
  * Source loader for the Fumadocs MDX content tree under `content/docs/`.
@@ -8,4 +8,10 @@ import { docs } from "collections/server"
 export const source = loader({
   baseUrl: "/docs",
   source: docs.toFumadocsSource(),
+})
+
+/** Source loader for the BESS Desktop content tree under `content/bess/`. */
+export const bessSource = loader({
+  baseUrl: "/bess",
+  source: bess.toFumadocsSource(),
 })
