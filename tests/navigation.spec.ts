@@ -144,9 +144,11 @@ test("search returns a real result, not just an empty dialog", async ({
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
 })
 
-test("the top navigation offers the cross-surface links", async ({ page }) => {
+test("the top navigation offers the cross-surface and product-switch links", async ({ page }) => {
   await page.goto("/docs/intro")
   for (const label of ["Docs", "Install", "Release notes"]) {
     await expect(page.getByRole("link", { name: label, exact: true }).first()).toBeVisible()
   }
+  // The product switcher: a link to the BESS tree.
+  await expect(page.getByRole("link", { name: "BESS Desktop", exact: true }).first()).toBeVisible()
 })

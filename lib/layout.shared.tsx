@@ -7,7 +7,7 @@ import { BessLogo } from "@/components/BessLogo"
  * the top navbar on the landing page. One source of truth for the
  * brand mark + the cross-surface nav links.
  */
-export const baseOptions: BaseLayoutProps = {
+export const solarlayoutBaseOptions: BaseLayoutProps = {
   nav: {
     title: (
       <span className="inline-flex items-center gap-[8px] font-medium">
@@ -17,18 +17,10 @@ export const baseOptions: BaseLayoutProps = {
     ),
   },
   links: [
-    {
-      text: "Docs",
-      url: "/docs",
-    },
-    {
-      text: "Install",
-      url: "/docs/install/windows",
-    },
-    {
-      text: "Release notes",
-      url: "/docs/releases",
-    },
+    { text: "BESS Desktop", url: "/bess" },
+    { text: "Docs", url: "/docs" },
+    { text: "Install", url: "/docs/install/windows" },
+    { text: "Release notes", url: "/docs/releases" },
   ],
 }
 
