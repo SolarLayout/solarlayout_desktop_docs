@@ -36,7 +36,5 @@ export const bessBaseOptions: BaseLayoutProps = {
   links: [
     { text: "SolarLayout Desktop", url: "/docs" },
     { text: "Docs", url: "/bess" },
-    { text: "Install", url: "/bess/install/windows" },
-    { text: "Release notes", url: "/bess/releases" },
   ],
 }

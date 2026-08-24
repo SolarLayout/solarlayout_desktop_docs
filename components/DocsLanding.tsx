@@ -1,6 +1,6 @@
 /**
- * DocsLanding — shared landing surface rendered at BOTH `/` (root) and
- * `/docs`. The docs index lives in a Next.js route group `(landing)` so the
+ * DocsLanding — the SolarLayout docs landing surface, rendered at `/docs`.
+ * The docs index lives in a Next.js route group `(landing)` so the
  * Fumadocs `DocsLayout` (sidebar + table of contents) does NOT wrap it —
  * only `/docs/<slug>` gets that chrome.
  *
