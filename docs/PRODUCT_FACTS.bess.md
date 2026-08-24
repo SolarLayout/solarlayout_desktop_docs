@@ -1471,3 +1471,168 @@ BESS Project Design Solution"):
    (heading `apps/bess-tool/bess_tool/report_doc.py:287`) — the same plain-text report as the TXT
    export / Summary tab, embedded verbatim in a monospace (`Consolas`) run.
 
+## 9. Known-stale list
+
+Every place the app's **own** text — About box, in-panel help captions, the User Guide, or a code
+comment — disagrees with what the shipped code actually does. Publish the shipped value, not the
+stale one.
+
+| # | Stale source says | Shipped behaviour | Citations | Publish |
+|---|---|---|---|---|
+| 1 | Help ▸ `About` lists "25-year financial model (IRR / NPV)" among the feature bullets. | The default `Project / Contract Life` is **20** years (user-editable 1–50); nothing sets it to 25. | Stale: `apps/bess-tool/bess_tool/seci_bess_gui.py:8638`. Actual default: `apps/bess-tool/bess_tool/seci_bess_gui.py:2401` (`self.v_years = sv(value="20")`); range: `apps/bess-tool/bess_tool/seci_bess_gui.py:4881`. | **20 years** (§4.4) |
+| 2 | Help ▸ `About` lists exports as "PNG plot, TXT report, DFR CSV" only. | The shipped app has **6** export formats, not 3: PDF Report, Plot PNG/PDF, Word `.docx` Report, TXT Report, DFR CSV (+15-min detail), and Time-Series CSV. | Stale: `apps/bess-tool/bess_tool/seci_bess_gui.py:8641`. Actual handlers: `_export_pdf` `apps/bess-tool/bess_tool/seci_bess_gui.py:7444`, `_export_plot` `apps/bess-tool/bess_tool/seci_bess_gui.py:7273`, `_save_word_report` `apps/bess-tool/bess_tool/seci_bess_gui.py:7315`, `_export_report` `apps/bess-tool/bess_tool/seci_bess_gui.py:7292`, `_export_csv` `apps/bess-tool/bess_tool/seci_bess_gui.py:7370`, `_export_timeseries_csv` `apps/bess-tool/bess_tool/seci_bess_gui.py:7411`. | **All 6 formats** (§8) |
+| 3 | The CAPEX tab's own static help caption reads "Defaults: Solar 5 Cr/MW, Wind 7 Cr/MW, BESS 1 Cr/MWh". | The `BESS CAPEX` field's actual bound value on a fresh launch is **1.5**, not 1. | Stale: `apps/bess-tool/bess_tool/seci_bess_gui.py:4144`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4147`. Actual default: `apps/bess-tool/bess_tool/seci_bess_gui.py:2456` (`self.v_bss_capex = sv(value="1.5")`). | **1.5 Cr/MWh** (§4.7) |
+| 4 | The Peak tab's `Quick Preset:` combobox visually pre-selects `Evening  18:00–24:00  (6 hrs)` (`.current(0)`) on a fresh launch. | `.current(0)` only sets the visual selection — it is bound only to `<<ComboboxSelected>>`, so it never fires `_apply_peak_preset`. The real default peak set is the 4 individually-ticked hour checkboxes 18:00–21:00. | Stale: `apps/bess-tool/bess_tool/seci_bess_gui.py:2931`. Binding: `apps/bess-tool/bess_tool/seci_bess_gui.py:2934`. Actual default: `apps/bess-tool/bess_tool/seci_bess_gui.py:2388` (`self._pk_vars[h] = bv(value=(h in [18, 19, 20, 21]))`). | **18:00–21:00 (4 hrs)**, not the Evening preset (§4.3) |
+| 5 | The Dashboard's Cumulative-Cashflow IRR badge and the Summary report's `[ABOVE 15%]` / `[BELOW 15%]` tag both read as if they compare the result to the user's chosen hurdle rate. | Both are hardcoded against a fixed **15%** benchmark — never the `Project Target IRR` field the user can edit (default 15.0%, but changeable). They only agree with the user's target when it is left at its default. | Dashboard badge: `apps/bess-tool/bess_tool/seci_bess_gui.py:1771`. Summary tag: `apps/bess-tool/bess_tool/seci_bess_gui.py:1875`. `Project Target IRR` field: default `apps/bess-tool/bess_tool/seci_bess_gui.py:2483`, field `apps/bess-tool/bess_tool/seci_bess_gui.py:4315`; it *is* read elsewhere, e.g. by Optimise at `apps/bess-tool/bess_tool/seci_bess_gui.py:5204`–`5206`. | **Fixed 15% benchmark**, independent of `Project Target IRR` (§6.1, §6.4) |
+| 6 | `_solar_shift_changed`'s docstring calls itself a "no-op hook for now; the flag is read at simulate time" — implying the checkbox it manages does nothing yet. | The `Peak-Shift dispatch` checkbox it manages is fully wired: its value is collected into the simulation params and read by `simulate()` to select the Generation-charged Peak-Shift dispatch branch. It is not a no-op. | Stale docstring: `apps/bess-tool/bess_tool/seci_bess_gui.py:3081`–`apps/bess-tool/bess_tool/seci_bess_gui.py:3082`. Collected: `apps/bess-tool/bess_tool/seci_bess_gui.py:4904`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4905`. Read: `apps/bess-tool/bess_tool/seci_bess_gui.py:382`. Drives dispatch branch: `apps/bess-tool/bess_tool/seci_bess_gui.py:566`–`apps/bess-tool/bess_tool/seci_bess_gui.py:627`. Also read at `apps/bess-tool/bess_tool/seci_bess_gui.py:792` and `apps/bess-tool/bess_tool/seci_bess_gui.py:2078`. | **Functional, not a no-op** — the docstring is stale, the feature is not (§4.1, §5.1) |
+| 7 | Help ▸ `User Guide / Formulas…`, Sensitivity Analysis page, Monte Carlo section, says it reports "P5 / P50 / P95 of IRR (pessimistic / median / optimistic)". | The shipped Monte Carlo percentile fields default to **P10 / P50 / P90**, not P5/P50/P95 (fully user-editable to any value 0–100). | Stale help text: `apps/bess-tool/bess_tool/seci_bess_gui.py:317` (`_HELP_SENSITIVITY`). Code comment confirming the intended default: `apps/bess-tool/bess_tool/seci_bess_gui.py:6722`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6723`. Actual `StringVar` defaults: `apps/bess-tool/bess_tool/seci_bess_gui.py:6730`–`apps/bess-tool/bess_tool/seci_bess_gui.py:6732`. | **P10/P50/P90** (§5.4) |
+
+## 10. Glossary
+
+Plain-English definitions for the BESS domain terms used throughout this file. A definition itself
+needs no citation; any numeric default, range, or behavioural claim attached to a term does.
+
+### 10.1 Dispatch & sizing
+
+- **DFR (Delivery Fulfilment Ratio)** — the fraction of required/contracted energy actually
+  delivered in a given window, delivered ÷ required. The app tracks it at four granularities — 15-min,
+  Peak-hour, Off-Peak, Overall Monthly — plus an Annual figure; falling short of a window's target
+  triggers a shortfall penalty (§6.5). Default targets: `15-min DFR Target` 0% (off)
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2409`), `Peak-hour DFR Target` 90%
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2406`), `Off-Peak DFR Target` 80%
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2407`), `Overall Monthly DFR` 90%
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2408`), `Annual DFR Target` 0% (off)
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2410`).
+- **Contracted Capacity (CC)** — the firm load/capacity the plant is obligated to serve, either a
+  fixed MW value or a time-varying 15-min profile; DFR and the CUF cap are both measured against it.
+  Default `Fixed Value` is 1.6 MW (`apps/bess-tool/bess_tool/seci_bess_gui.py:2390`).
+- **Dispatch** — the per-15-min rule deciding whether the battery charges, discharges, or idles at
+  each simulation step. The shipped engine selects one of five mutually-exclusive dispatch branches
+  per run (§5.1: Standalone, CC-firming, Generation-charged Peak-Shift, Peak/Off-Peak, Cycle-mode).
+  - **Peak-shift** — the `Peak-Shift dispatch` checkbox's mode: generation charges the battery first,
+    and it discharges only inside the selected Peak window to meet CC, with no load obligation (and
+    no penalty) outside that window. Off by default
+    (`apps/bess-tool/bess_tool/seci_bess_gui.py:2395`).
+  - **CC-firming** — the special dispatch used when the Peak-hour set is left explicitly empty (all 24
+    checkboxes unticked): it firms the Contracted Capacity every hour of the day instead of only in a
+    peak window (`apps/bess-tool/bess_tool/seci_bess_gui.py:4838`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4846`).
+- **RTE (Round-Trip Efficiency)** — the fraction of energy recovered from one full charge/discharge
+  cycle, including auxiliary losses; the model applies √RTE separately to the charge leg and the
+  discharge leg. Default 78%, range 50–99%
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2412`, `apps/bess-tool/bess_tool/seci_bess_gui.py:4907`;
+  √RTE applied at `apps/bess-tool/bess_tool/seci_bess_gui.py:5088`–`apps/bess-tool/bess_tool/seci_bess_gui.py:5089`).
+- **DoD (Depth of Discharge)** — the fraction of nameplate energy usable per cycle. Default 90%,
+  range 50–100% (`apps/bess-tool/bess_tool/seci_bess_gui.py:2417`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:4931`).
+- **SOH (State of Health)** — the battery's remaining capacity relative to nameplate as it ages;
+  usable energy = nameplate × DoD × SOH (`apps/bess-tool/bess_tool/seci_bess_gui.py:360`). Starting
+  SOH default 100%, range 50–100% (`apps/bess-tool/bess_tool/seci_bess_gui.py:2418`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:4932`).
+- **C-rate** — the BESS power-to-energy sizing ratio, Power ÷ Energy (MW ÷ MWh). Default 0.25,
+  range 0.1–2.0 (`apps/bess-tool/bess_tool/seci_bess_gui.py:2436`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:4934`).
+
+### 10.2 Battery lifecycle
+
+- **Battery EOL (End-of-Life)** — the point at which the pack is considered exhausted and is
+  replaced or augmented. Selectable basis, default `"years"`
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2421`): in **years** (default 20, range 5–30,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:2419`, `apps/bess-tool/bess_tool/seci_bess_gui.py:4933`)
+  or in **total cycles** (`Rated Cycle Life` default 6000, range 100–20,000,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:2422`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:4938`–`apps/bess-tool/bess_tool/seci_bess_gui.py:4939`).
+- **EFC (Equivalent Full Cycle)** — one full nameplate-energy charge/discharge equivalent; annual
+  EFC throughput is computed as annual discharge energy ÷ rated usable energy
+  (`annual_efc()`, `apps/bess-tool/bess_tool/seci_bess_gui.py:902`–`apps/bess-tool/bess_tool/seci_bess_gui.py:909`)
+  and accumulated against the Rated Cycle Life to find the cycle-basis EOL year
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:960`–`apps/bess-tool/bess_tool/seci_bess_gui.py:975`).
+- **Replacement vs Augmentation** — the two EOL strategies. **Replacement** is a full pack swap at
+  the EOL year (default, `apps/bess-tool/bess_tool/seci_bess_gui.py:2444`). **Augmentation** tops the
+  pack up with additional MWh tranches instead — either automatically restoring nameplate every
+  EOL-interval year (default sub-mode, `apps/bess-tool/bess_tool/seci_bess_gui.py:2445`) or on a
+  manually-scheduled (Year, Capacity MWh) table; new tranches degrade from their own install year and
+  book their own CAPEX (§4.5).
+
+### 10.3 Tariffs, pricing & time-of-day
+
+- **PPA tariff** — the contracted price paid per kWh of delivered energy. Default 5.0 Rs/kWh, range
+  ≥0.1 (`apps/bess-tool/bess_tool/seci_bess_gui.py:2463`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:5034`); may escalate annually via `PPA Tariff Escalation`,
+  default 0%/yr (`apps/bess-tool/bess_tool/seci_bess_gui.py:2489`).
+- **Export price** — the price paid for surplus energy sold to a third party — a flat rate or a
+  15-min CSV series (e.g. an IEX DAM/RTM MCP feed) — distinct from the PPA tariff. Default `Fixed
+  Price` mode, 0.0 Rs/kWh (`apps/bess-tool/bess_tool/seci_bess_gui.py:2472`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:2470`).
+- **Grid-charging price** — the price paid for grid energy used to charge the battery (always, for a
+  Standalone plant; only as worst-case backup, for a generation-backed plant). Default 0.0 Rs/kWh
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2478`).
+- **CUF cap (Annual CUF Cap)** — an optional ceiling on how much delivered energy is paid at the PPA
+  tariff: `cap_mwh = cap% × CC × 8760`; energy above the cap is paid at the export price instead. Off
+  by default; cap % default 28.0 when enabled
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2468`, `apps/bess-tool/bess_tool/seci_bess_gui.py:2469`;
+  formula `_cuf_cap_split()` `apps/bess-tool/bess_tool/seci_bess_gui.py:737`–`apps/bess-tool/bess_tool/seci_bess_gui.py:755`).
+- **ToD (Time-of-Day) peak / off-peak** — the 24 hourly checkboxes on the Peak tab splitting the day
+  into Peak (battery discharges first, then charges from any excess) and Off-Peak (battery charges
+  first, remainder meets CC) hours. Default ticked: 18:00–21:00, 4 hours
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2388`).
+
+### 10.4 Financial terms
+
+- **IRR (Internal Rate of Return)** — the discount rate at which project NPV = 0, via
+  `numpy_financial.irr` with a Newton-Raphson fallback
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:91`–`apps/bess-tool/bess_tool/seci_bess_gui.py:100`);
+  the headline Project IRR excludes debt/tax/salvage
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1413`).
+- **Equity IRR** — IRR of the levered equity cash-flow stream (EBITDA minus interest, principal, and
+  levered tax); computed only when Debt Financing is enabled
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1159`).
+- **NPV (Net Present Value)** — the discounted sum of project cash flows at the Discount Rate,
+  default 10% (`apps/bess-tool/bess_tool/seci_bess_gui.py:2488`; formula `_npv()`
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1031`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1032`).
+- **Payback (simple / discounted)** — the year cumulative (or discounted-cumulative) project cash
+  flow first turns non-negative, linearly interpolated within the year
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1035`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1045`).
+- **DSCR (Debt-Service Coverage Ratio)** — (EBITDA − levered tax − reinvestment) ÷ (interest +
+  principal) for the year, reported as minimum and average across the debt tenor
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1163`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1170`);
+  only meaningful when Debt Financing is enabled.
+- **DSRA (Debt-Service Reserve Account)** — a reserve funded upfront alongside equity, sized as
+  (DSRA months ÷ 12) × the first year's interest + principal; default 0 months
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2504`; formula
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1087`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1091`).
+- **MoIC (Multiple on Invested Capital)** — sum of positive cash inflows ÷ initial outlay
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1211`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1216`).
+- **PI (Profitability Index)** — (NPV + CAPEX) ÷ CAPEX; PI > 1 is value-accretive
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1217`).
+- **WACC (Weighted Average Cost of Capital)** — after-tax blended cost of equity and debt, computed
+  only for levered projects (`apps/bess-tool/bess_tool/seci_bess_gui.py:1220`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1225`).
+- **LCOE (Levelised Cost of Energy)** — total lifecycle cost ÷ discounted energy, Rs/kWh; the energy
+  basis is selectable on the Finance tab, default `delivered`
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:2492`; formula
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:1193`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1203`).
+- **LCOS (Levelised Cost of Storage)** — the same shape as LCOE but over BESS-only CAPEX/OPEX/
+  reinvestment, divided by discounted battery-discharge throughput — "the cost of every kWh that
+  actually passes through the battery"
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:1195`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1204`).
+- **Terminal / Salvage value** — a residual value credited at the end of Project Life, as a % of
+  total CAPEX. Default 0.0%, range 0–100 (`apps/bess-tool/bess_tool/seci_bess_gui.py:2490`,
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:5062`).
+- **Working-capital carrying cost** — a recurring finance cost modelling the gap between PPA billing
+  and offtaker payment: receivables = annual revenue × (lag days ÷ 365); cost = receivables × (WC
+  rate + facility fee − late-payment surcharge), deductible against EBITDA/tax. Zero when
+  `Receivable Lag` = 0, the default (`apps/bess-tool/bess_tool/seci_bess_gui.py:2494`; formula
+  `_working_capital_cost()` `apps/bess-tool/bess_tool/seci_bess_gui.py:1273`–`apps/bess-tool/bess_tool/seci_bess_gui.py:1294`).
+
+### 10.5 Units
+
+- **Crore (Cr)** — Rs 1,00,00,000 (1e7 Rs); the unit CAPEX, NPV, and Financials-tab figures are
+  quoted in (`apps/bess-tool/bess_tool/seci_bess_gui.py:110`, in-panel note
+  `apps/bess-tool/bess_tool/seci_bess_gui.py:4145`).
+- **Lakh (Lac)** — Rs 1,00,000 (1e5 Rs); the unit O&M costs and DFR-shortfall penalties are quoted in
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:111`).
+- **MWh ↔ kWh** — ×1000; e.g. the DFR-shortfall penalty formula converts the MWh shortfall to kWh via
+  ×1000 before pricing it at the tariff
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:835`–`apps/bess-tool/bess_tool/seci_bess_gui.py:839`).
+- **15-min base** — the simulation's native time step: `DT = 0.25` hours per step
+  (`apps/bess-tool/bess_tool/seci_bess_gui.py:107`), 35,040 steps per full year (§5.1).
+
