@@ -31,6 +31,29 @@
 import type { ScreenshotSpec } from "@/content/screenshots"
 
 export const SCREENSHOTS: ScreenshotSpec[] = [
+  // ── Install and updates ────────────────────────────────────────────────
+  {
+    id: "bess-install-store-listing",
+    file: "bess/install/store-listing.png",
+    page: "/bess/install/windows",
+    title: "Microsoft Store listing",
+    alt: "The BESS Desktop listing in the Microsoft Store, showing the publisher and the Get button.",
+    what: "The Microsoft Store app open on the BESS Desktop listing, with the Rensaar publisher name and the Get / Install button visible.",
+    state: "Open the Microsoft Store and search for BESS Desktop. Capture before installing so the button reads Get or Install.",
+    annotations: "",
+    priority: 1,
+  },
+  {
+    id: "bess-install-store-updates",
+    file: "bess/install/store-updates.png",
+    page: "/bess/install/updates",
+    title: "Store Library and updates",
+    alt: "The Microsoft Store Library page listing installed applications and any updates waiting for them.",
+    what: "The Store's Library page, with BESS Desktop listed and the Get updates button visible.",
+    state: "Open the Microsoft Store, then the Library from the left-hand navigation.",
+    annotations: "",
+    priority: 2,
+  },
   // ── Onboarding ─────────────────────────────────────────────────────────
   {
     id: "bess-intro-window",
