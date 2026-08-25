@@ -14,21 +14,21 @@ and tax, and a handful of further tech-economic factors.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| `Discount Rate (NPV)` | 10.0% | 0.0–40% | Discount rate used for NPV |
-| `PPA Tariff Escalation` | 0.0%/yr | -5–20%/yr | Annual escalation applied to the PPA tariff |
-| `Terminal / Salvage Value` | 0.0% CAPEX | 0.0–100% CAPEX | Terminal/salvage value at the end of Project Life, as a % of total CAPEX |
+| **Discount Rate (NPV)** | 10.0% | 0.0–40% | Discount rate used for NPV |
+| **PPA Tariff Escalation** | 0.0%/yr | -5–20%/yr | Annual escalation applied to the PPA tariff |
+| **Terminal / Salvage Value** | 0.0% CAPEX | 0.0–100% CAPEX | Terminal/salvage value at the end of Project Life, as a % of total CAPEX |
 
 ## LCOE energy basis
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| `LCOE Energy Basis` | `Energy delivered to load (default)` | 3 options, below | Chooses the denominator the levelised cost of energy (LCOE) is measured against |
+| **LCOE Energy Basis** | **Energy delivered to load (default)** | 3 options, below | Chooses the denominator the levelised cost of energy (LCOE) is measured against |
 
 | Option (exact) | What it does |
 | --- | --- |
-| `Energy delivered to load (default)` | LCOE denominator is the energy served to the Contracted Capacity |
-| `Total generation (solar+wind)` | LCOE denominator is total generation, including exported energy |
-| `Delivered + exported energy` | LCOE denominator is all useful energy sold |
+| **Energy delivered to load (default)** | LCOE denominator is the energy served to the Contracted Capacity |
+| **Total generation (solar+wind)** | LCOE denominator is total generation, including exported energy |
+| **Delivered + exported energy** | LCOE denominator is all useful energy sold |
 
 The last two options need an Export Price configured on the **📊 OPEX** tab;
 without one, the model falls back to the delivered basis.
@@ -37,31 +37,31 @@ without one, the model falls back to the delivered basis.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| `Receivable Lag` | 0 days | 0.0–365.0 days | Days after billing before the offtaker pays; 0 disables the working-capital cost |
-| `Working-Capital Rate` | 11.0%/yr | 0.0–40%/yr | Interest rate on the working-capital loan carrying the receivables |
-| `Late-Payment Surcharge` | 0.0%/yr | 0.0–40%/yr | Interest the offtaker owes on overdue amounts, offsetting the working-capital cost |
-| `WC Facility Fee` | 0.0% recv. | 0.0–20% recv. | Facility fee on the working-capital line, as a % of receivables |
+| **Receivable Lag** | 0 days | 0.0–365.0 days | Days after billing before the offtaker pays; 0 disables the working-capital cost |
+| **Working-Capital Rate** | 11.0%/yr | 0.0–40%/yr | Interest rate on the working-capital loan carrying the receivables |
+| **Late-Payment Surcharge** | 0.0%/yr | 0.0–40%/yr | Interest the offtaker owes on overdue amounts, offsetting the working-capital cost |
+| **WC Facility Fee** | 0.0% recv. | 0.0–20% recv. | Facility fee on the working-capital line, as a % of receivables |
 
 ## Debt financing
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| `Enable debt (levered analysis)` (checkbox) | off | — | Turns on the 5 debt fields below; they are disabled while unchecked |
-| `Gearing (Debt)` | 70.0% CAPEX | 0.0–95% CAPEX | Debt as a % of total CAPEX |
-| `Interest Rate` | 9.0%/yr | 0.0–25%/yr | Loan interest rate |
-| `Repayment Tenor` | 15 years | 1–30 years | Equal-principal repayment period |
-| `Moratorium` | 0 years | 0–10 years | Years before repayment begins |
-| `DSRA` | 0 months | 0–24 months | Debt-Service Reserve Account, in months of debt service |
+| **Enable debt (levered analysis)** (checkbox) | off | — | Turns on the 5 debt fields below; they are disabled while unchecked |
+| **Gearing (Debt)** | 70.0% CAPEX | 0.0–95% CAPEX | Debt as a % of total CAPEX |
+| **Interest Rate** | 9.0%/yr | 0.0–25%/yr | Loan interest rate |
+| **Repayment Tenor** | 15 years | 1–30 years | Equal-principal repayment period |
+| **Moratorium** | 0 years | 0–10 years | Years before repayment begins |
+| **DSRA** | 0 months | 0–24 months | Debt-Service Reserve Account, in months of debt service |
 
 ## Tax and depreciation
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| `Enable tax (post-tax analysis)` (checkbox) | off | — | Turns on the tax fields below; they are disabled while unchecked |
-| `Corporate Tax Rate` | 25.17% | 0.0–50% | Normal corporate tax rate |
-| `MAT Rate` | 17.16% | 0.0–30% | Minimum Alternate Tax rate |
-| `Tax Depreciation` (`WDV` / `Straight-line`) | `WDV` | `WDV`, `Straight-line` | Depreciation method for the tax cash-flow |
-| `WDV Dep. Rate` | 40.0%/yr | 0.0–100%/yr | Written-Down-Value depreciation rate |
+| **Enable tax (post-tax analysis)** (checkbox) | off | — | Turns on the tax fields below; they are disabled while unchecked |
+| **Corporate Tax Rate** | 25.17% | 0.0–50% | Normal corporate tax rate |
+| **MAT Rate** | 17.16% | 0.0–30% | Minimum Alternate Tax rate |
+| **Tax Depreciation** (**WDV** / **Straight-line**) | **WDV** | **WDV**, **Straight-line** | Depreciation method for the tax cash-flow |
+| **WDV Dep. Rate** | 40.0%/yr | 0.0–100%/yr | Written-Down-Value depreciation rate |
 
 <Callout>
 Debt and Tax are both off by default, so results match the simple pre-tax
@@ -72,9 +72,9 @@ project model unless you turn them on.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| `Plant Availability` | 100.0% | 1–100% | Plant availability factor applied in the financial model |
-| `Insurance` | 0.0% CAPEX/yr | 0.0–5% CAPEX/yr | Annual insurance cost as a % of total CAPEX |
-| `BESS Cost Decline (augment.)` | 0.0%/yr | 0.0–20%/yr | Annual decline applied to the BESS unit cost used for augmentation tranches |
+| **Plant Availability** | 100.0% | 1–100% | Plant availability factor applied in the financial model |
+| **Insurance** | 0.0% CAPEX/yr | 0.0–5% CAPEX/yr | Annual insurance cost as a % of total CAPEX |
+| **BESS Cost Decline (augment.)** | 0.0%/yr | 0.0–20%/yr | Annual decline applied to the BESS unit cost used for augmentation tranches |
 
 ## Where to go next
 
