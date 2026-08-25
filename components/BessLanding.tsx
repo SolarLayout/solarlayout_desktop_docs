@@ -16,6 +16,7 @@ import {
   BarChart3,
   Boxes,
   Download,
+  FileDown,
   KeyRound,
   Landmark,
   Layers,
@@ -131,6 +132,15 @@ const TOPICS: TopicSection[] = [
       { label: "Generating the layout", href: "/bess/plant/generate-layout" },
       { label: "Generating the SLD", href: "/bess/plant/generate-sld" },
       { label: "Symbols and custom symbols", href: "/bess/plant/symbols" },
+    ],
+  },
+  {
+    icon: FileDown,
+    category: "Exports",
+    links: [
+      { label: "The PDF report", href: "/bess/exports/pdf-report" },
+      { label: "The Word report", href: "/bess/exports/word-report" },
+      { label: "Data exports", href: "/bess/exports/data-exports" },
     ],
   },
   {
