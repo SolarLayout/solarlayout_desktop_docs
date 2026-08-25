@@ -10,7 +10,7 @@ import { source, bessSource } from "@/lib/source"
  * real result rather than just that the dialog appears.
  *
  * The search dialog is global (one `RootProvider`), so a query typed from
- * either `/docs` or `/bess` must be able to find pages in both trees. One
+ * either `/docs` or `/docs/bess` must be able to find pages in both trees. One
  * `"advanced"` index spans both loaders' pages; each entry carries its own
  * absolute `url`, so a hit navigates to the right product regardless of
  * which tree it came from.

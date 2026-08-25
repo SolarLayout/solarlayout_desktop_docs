@@ -21,7 +21,7 @@ per cycle; not every kWh of a pack's rating is meant to be cycled. **SOH** —
 state of health — is the battery's remaining capacity relative to nameplate
 as it ages, starting from an initial value at commissioning and falling over
 the project life; see
-[Degradation, EOL and augmentation](/bess/concepts/degradation-and-eol) for
+[Degradation, EOL and augmentation](/docs/bess/concepts/degradation-and-eol) for
 how that curve is shaped. Nameplate energy itself doesn't change between the
 two — it's DoD and SOH together that decide how much of it the dispatch
 model can actually draw on at a given point in the project.
@@ -41,7 +41,7 @@ round-trip figure you entered, over one complete cycle.
 energy (MW ÷ MWh). It caps how fast the pack can move energy in a single
 step: in the Standalone dispatch rule, for instance, the Off-Peak grid
 recharge is capped by both the C-rate ceiling and however much headroom the
-pack has left. See [How dispatch works](/bess/concepts/how-dispatch-works)
+pack has left. See [How dispatch works](/docs/bess/concepts/how-dispatch-works)
 for where that applies.
 
 ## State of charge across a run
@@ -54,7 +54,7 @@ they describe the battery itself, not the rule deciding when it charges or
 discharges. C-rate sets a ceiling wherever a dispatch rule draws on it, as in
 the Standalone example above.
 
-See [Battery parameters](/bess/inputs/bess) for the Depth of Discharge,
+See [Battery parameters](/docs/bess/inputs/bess) for the Depth of Discharge,
 Initial State of Health, Round-Trip Efficiency and C-Rate fields, their
 defaults and their ranges.
 
@@ -63,17 +63,17 @@ defaults and their ranges.
 <Cards>
   <Card
     title="How dispatch works"
-    href="/bess/concepts/how-dispatch-works"
+    href="/docs/bess/concepts/how-dispatch-works"
     description="The rules that decide when the battery charges, discharges or idles"
   />
   <Card
     title="Degradation, EOL and augmentation"
-    href="/bess/concepts/degradation-and-eol"
+    href="/docs/bess/concepts/degradation-and-eol"
     description="How SOH declines over the project life, and what happens at end-of-life"
   />
   <Card
     title="Battery parameters"
-    href="/bess/inputs/bess"
+    href="/docs/bess/inputs/bess"
     description="Every RTE, DoD, SOH, EOL and augmentation field"
   />
 </Cards>

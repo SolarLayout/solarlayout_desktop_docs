@@ -29,7 +29,7 @@ formula.
 For a Standalone, generation-charged Peak-Shift, or Cycle-mode project, the
 plant owes the load only inside its own discharge window: off-window hours
 carry no requirement, so nothing there can ever fall short. See
-[How dispatch works](/bess/concepts/how-dispatch-works) for which hours count
+[How dispatch works](/docs/bess/concepts/how-dispatch-works) for which hours count
 as a discharge window under each of those.
 
 ## Setting the targets
@@ -38,7 +38,7 @@ Five independent targets, one per granularity above, live in the DFR Targets
 group on the **📐 Sizing** tab. The 15-minute and Annual targets ship
 switched off, so no floor is enforced at either granularity unless you set
 one; Peak-hour, Off-Peak and Overall Monthly ship with a floor already in
-place. See [Capacity and DFR targets](/bess/inputs/sizing) for the exact
+place. See [Capacity and DFR targets](/docs/bess/inputs/sizing) for the exact
 fields, defaults and ranges.
 
 ## Reading the monthly result
@@ -70,24 +70,24 @@ Peak penalty plus the Off-Peak penalty combined, the Overall (monthly)
 penalty on its own, and the 15-minute penalty on its own.
 
 **Penalty Multiplier** and **PPA Tariff** are both set on the **📊 OPEX**
-tab — see [OPEX, revenue and penalties](/bess/inputs/opex).
+tab — see [OPEX, revenue and penalties](/docs/bess/inputs/opex).
 
 ## Where to go next
 
 <Cards>
   <Card
     title="How dispatch works"
-    href="/bess/concepts/how-dispatch-works"
+    href="/docs/bess/concepts/how-dispatch-works"
     description="The dispatch rules DFR is measured against"
   />
   <Card
     title="Capacity and DFR targets"
-    href="/bess/inputs/sizing"
+    href="/docs/bess/inputs/sizing"
     description="The Contracted Capacity and the five DFR target fields"
   />
   <Card
     title="OPEX, revenue and penalties"
-    href="/bess/inputs/opex"
+    href="/docs/bess/inputs/opex"
     description="The PPA tariff and penalty multiplier the shortfall formula uses"
   />
 </Cards>

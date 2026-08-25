@@ -10,8 +10,8 @@ the grid to charge the battery is a cost rather than a revenue line; and a
 shortfall against the Delivery Fulfilment Ratio (DFR) becomes a penalty
 deducted from what the tariff would otherwise have paid. This page is how
 those pieces fit together — for the fields themselves, with their defaults
-and ranges, see [OPEX, revenue and penalties](/bess/inputs/opex) and
-[Financing and discounting](/bess/inputs/finance).
+and ranges, see [OPEX, revenue and penalties](/docs/bess/inputs/opex) and
+[Financing and discounting](/docs/bess/inputs/finance).
 
 ## PPA tariff and its escalation
 
@@ -30,7 +30,7 @@ cap (MWh) = cap % × Contracted Capacity × 8760
 
 Energy delivered up to that cap is paid at the PPA tariff; energy delivered
 above it is paid at the Export Price instead. The cap is off by default.
-See [Capacity and DFR targets](/bess/inputs/sizing) for Contracted Capacity.
+See [Capacity and DFR targets](/docs/bess/inputs/sizing) for Contracted Capacity.
 
 ## Third-party export pricing
 
@@ -40,7 +40,7 @@ priced independently of the PPA tariff — either a flat **Fixed Price**, or a
 clearing price).
 
 Export pricing also feeds two of
-[LCOE's three energy bases](/bess/financials/metrics#the-three-lcoe-energy-bases):
+[LCOE's three energy bases](/docs/bess/financials/metrics#the-three-lcoe-energy-bases):
 the **Total generation (solar+wind)** and **Delivered + exported energy**
 bases both need an Export Price configured, and the model falls back to the
 delivered basis without one.
@@ -61,7 +61,7 @@ DFR target is penalised: the shortfall is priced at a multiple of the PPA
 tariff and deducted from that month's revenue. The full shortfall-to-penalty
 formula, and which of the four buckets sets a given month's actual penalty,
 is on
-[Delivery Fulfilment Ratio (DFR)](/bess/concepts/dfr#how-a-shortfall-becomes-a-penalty).
+[Delivery Fulfilment Ratio (DFR)](/docs/bess/concepts/dfr#how-a-shortfall-becomes-a-penalty).
 
 The **📊 OPEX** tab's **Penalty Multiplier** sets the rate the shortfall is
 priced at, as a multiple of the PPA tariff.
@@ -71,22 +71,22 @@ priced at, as a multiple of the PPA tariff.
 <Cards>
   <Card
     title="OPEX, revenue and penalties"
-    href="/bess/inputs/opex"
+    href="/docs/bess/inputs/opex"
     description="The tariff, cap, export price and grid-charging fields, with defaults and ranges"
   />
   <Card
     title="Delivery Fulfilment Ratio (DFR)"
-    href="/bess/concepts/dfr"
+    href="/docs/bess/concepts/dfr"
     description="What DFR measures, and the full shortfall-to-penalty formula"
   />
   <Card
     title="Return metrics"
-    href="/bess/financials/metrics"
+    href="/docs/bess/financials/metrics"
     description="How this revenue becomes IRR, NPV and the rest"
   />
   <Card
     title="Financing and discounting"
-    href="/bess/inputs/finance"
+    href="/docs/bess/inputs/finance"
     description="PPA Tariff Escalation and the LCOE energy basis"
   />
 </Cards>

@@ -12,6 +12,6 @@ export const source = loader({
 
 /** Source loader for the BESS Desktop content tree under `content/bess/`. */
 export const bessSource = loader({
-  baseUrl: "/bess",
+  baseUrl: "/docs/bess",
   source: bess.toFumadocsSource(),
 })
