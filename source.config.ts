@@ -18,6 +18,19 @@ export const docs = defineDocs({
   },
 })
 
+export const bess = defineDocs({
+  dir: "content/bess",
+  docs: {
+    schema: pageSchema,
+    postprocess: {
+      includeProcessedMarkdown: true,
+    },
+  },
+  meta: {
+    schema: metaSchema,
+  },
+})
+
 export default defineConfig({
   mdxOptions: {
     // MDX options
