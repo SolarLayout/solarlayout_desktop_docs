@@ -1,0 +1,92 @@
+---
+title: Tariffs, export and penalties
+description: How the PPA tariff and escalation, the annual CUF cap, third-party export pricing, grid-charging cost and DFR shortfall penalties combine into a run's revenue.
+---
+
+A run's revenue is built from more than one price. The PPA tariff pays for
+delivered energy up to an optional annual ceiling; anything sold beyond
+that, or to a third party at all, is priced separately; energy drawn from
+the grid to charge the battery is a cost rather than a revenue line; and a
+shortfall against the Delivery Fulfilment Ratio (DFR) becomes a penalty
+deducted from what the tariff would otherwise have paid. This page is how
+those pieces fit together — for the fields themselves, with their defaults
+and ranges, see [OPEX, revenue and penalties](/bess/inputs/opex) and
+[Financing and discounting](/bess/inputs/finance).
+
+## PPA tariff and its escalation
+
+**PPA Tariff**, on the **📊 OPEX** tab, is the contracted price paid per kWh
+of delivered energy. **PPA Tariff Escalation**, on the **🏦 Finance** tab,
+applies an annual escalation to that tariff over the project's life.
+
+## The annual CUF cap
+
+**Apply Annual CUF Cap**, on the **📊 OPEX** tab, is an optional ceiling on
+how much delivered energy is paid at the PPA tariff in a year:
+
+```
+cap (MWh) = cap % × Contracted Capacity × 8760
+```
+
+Energy delivered up to that cap is paid at the PPA tariff; energy delivered
+above it is paid at the Export Price instead. The cap is off by default.
+See [Capacity and DFR targets](/bess/inputs/sizing) for Contracted Capacity.
+
+## Third-party export pricing
+
+Energy sold to a third party, rather than delivered against the PPA, is
+priced independently of the PPA tariff — either a flat **Fixed Price**, or a
+15-minute pricing series loaded from a CSV (for example an exchange
+clearing price).
+
+Export pricing also feeds two of
+[LCOE's three energy bases](/bess/financials/metrics#the-three-lcoe-energy-bases):
+the **Total generation (solar+wind)** and **Delivered + exported energy**
+bases both need an Export Price configured, and the model falls back to the
+delivered basis without one.
+
+## Grid-charging cost
+
+**Grid Charging Price**, on the **📊 OPEX** tab, is what the model charges
+for grid energy used to charge the battery. On a Standalone project this
+applies to every charge cycle, since the battery has no generation of its
+own to draw on; on a generation-backed project it applies only when
+**Grid charging backup when generation is short** is on, and then only as a
+worst-case top-up.
+
+## DFR shortfall penalties
+
+A month that misses its Peak-hour, Off-Peak, Overall Monthly or 15-minute
+DFR target is penalised: the shortfall is priced at a multiple of the PPA
+tariff and deducted from that month's revenue. The full shortfall-to-penalty
+formula, and which of the four buckets sets a given month's actual penalty,
+is on
+[Delivery Fulfilment Ratio (DFR)](/bess/concepts/dfr#how-a-shortfall-becomes-a-penalty).
+
+The **📊 OPEX** tab's **Penalty Multiplier** sets the rate the shortfall is
+priced at, as a multiple of the PPA tariff.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="OPEX, revenue and penalties"
+    href="/bess/inputs/opex"
+    description="The tariff, cap, export price and grid-charging fields, with defaults and ranges"
+  />
+  <Card
+    title="Delivery Fulfilment Ratio (DFR)"
+    href="/bess/concepts/dfr"
+    description="What DFR measures, and the full shortfall-to-penalty formula"
+  />
+  <Card
+    title="Return metrics"
+    href="/bess/financials/metrics"
+    description="How this revenue becomes IRR, NPV and the rest"
+  />
+  <Card
+    title="Financing and discounting"
+    href="/bess/inputs/finance"
+    description="PPA Tariff Escalation and the LCOE energy basis"
+  />
+</Cards>

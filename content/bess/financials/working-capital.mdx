@@ -1,0 +1,60 @@
+---
+title: Payment delay and working capital
+description: How Receivable Lag turns into a working-capital carrying cost, and where its impact on IRR and NPV is reported.
+---
+
+A PPA tariff payment isn't received the moment it's billed. **Receivable
+Lag**, on the **🏦 Finance** tab, models the gap in days between billing and
+payment as a recurring finance cost — the working-capital carrying cost —
+deducted from EBITDA, and so from tax, every year it applies.
+
+## How the cost is built
+
+```
+receivables    = annual revenue × (lag days ÷ 365)
+carrying cost  = receivables × (working-capital rate + facility fee − late-payment surcharge)
+```
+
+**Working-Capital Rate** is the interest rate on the loan carrying those
+receivables; **WC Facility Fee** adds a fee on top, as a percentage of
+receivables; **Late-Payment Surcharge** is interest the offtaker owes on
+the overdue amount, and offsets the cost rather than adding to it. All four
+fields, with their defaults and ranges, are on
+[Financing and discounting](/bess/inputs/finance#payment-delay-and-working-capital).
+
+**Receivable Lag** left at its own default disables the working-capital
+cost entirely — the formula above comes to zero exactly when the lag does.
+
+## Effect on IRR and NPV
+
+Where the model reports a working-capital cost, it reports it two ways: the
+total cost itself, and what it did to IRR and NPV, compared with the same
+run without that lag. Both appear on the
+**💹 Financials** tab's headline, and in the exported report, only when
+**Receivable Lag** is set above zero. See
+[The financials table](/bess/results/financials#headline-metrics).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Financing and discounting"
+    href="/bess/inputs/finance"
+    description="Receivable Lag, Working-Capital Rate and the other three fields"
+  />
+  <Card
+    title="The financials table"
+    href="/bess/results/financials"
+    description="Where the working-capital cost and its IRR/NPV impact are shown"
+  />
+  <Card
+    title="Debt and tax"
+    href="/bess/financials/debt-and-tax"
+    description="The other optional cash-flow layers, debt and tax"
+  />
+  <Card
+    title="Return metrics"
+    href="/bess/financials/metrics"
+    description="What IRR and NPV mean before this cost is applied"
+  />
+</Cards>

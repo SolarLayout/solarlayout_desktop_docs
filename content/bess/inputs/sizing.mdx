@@ -1,0 +1,64 @@
+---
+title: Capacity and DFR targets
+description: Setting the Contracted Capacity, the project horizon, the five DFR targets, and the starting sizes Simulate and Optimise begin from.
+---
+
+The **📐 Sizing** tab sets the firm load the plant must serve, how long the
+project runs for, the minimum delivery-fulfilment ratio (DFR) required over
+different windows, and the Solar, Wind and BESS sizes a run starts from.
+
+<Screenshot id="bess-inputs-sizing" />
+
+## Contracted capacity
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| Contracted Capacity mode (**Fixed Value** / **CSV Profile**) | **Fixed Value** | **Fixed Value**, **CSV Profile** | Chooses whether the Contracted Capacity is one fixed number or a time-varying profile read from a CSV |
+| **Fixed Value** (**Value** entry) | 1.6 MW | ≥ 0.001 MW | Firm contracted capacity the plant must serve |
+| **CSV Profile** (**📂 Browse CSV…**) | none loaded, status **No file loaded** | 35,040 or 8,760 rows, column `cc_mw` (case-insensitive) or the first column; hourly rows are auto-interpolated to 15-minute | Time-varying contracted capacity |
+
+## Project horizon
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Project / Contract Life** | 20 years | 1–50 years | Length of the financial model / simulation horizon |
+
+## DFR targets
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **15-min DFR Target** | 0% (off) | 0–100% | Minimum delivery-fulfilment ratio required at each 15-minute step |
+| **Peak-hour DFR Target** | 90% | 0–100% | Minimum DFR required during Peak hours |
+| **Off-Peak DFR Target** | 80% | 0–100% | Minimum DFR required during Off-Peak hours |
+| **Overall Monthly DFR** | 90% | 0–100% | Minimum overall DFR required per calendar month |
+| **Annual DFR Target** | 0% (off) | 0–100% | Minimum DFR required across the year |
+
+Peak and Off-Peak hours are set on [the Peak tab](/bess/inputs/peak-window).
+
+## Initial sizing
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Solar Installed** | 1.8 MW | ≥ 0 MW; pinned to 0 and disabled unless the project type includes Solar | Starting Solar capacity for **▶  Simulate**; the **⚙  Optimise** search variable when the project type includes Solar |
+| **Wind Installed** | 3 MW | ≥ 0 MW; pinned to 0 and disabled unless the project type includes Wind | Starting Wind capacity |
+| **BESS Energy** | 1 MWh | ≥ 0.1 MWh | Starting BESS nameplate energy |
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Battery parameters"
+    href="/bess/inputs/bess"
+    description="Round-trip efficiency, depth of discharge and end-of-life"
+  />
+  <Card
+    title="Peak and off-peak window"
+    href="/bess/inputs/peak-window"
+    description="Setting the Peak and Off-Peak hours the DFR targets above apply to"
+  />
+  <Card
+    title="Choosing a project type"
+    href="/bess/project-types"
+    description="The four topologies and what each one pins to 0 MW"
+  />
+</Cards>

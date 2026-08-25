@@ -26,6 +26,31 @@ Consequences:
   Plus"), the cloud product, the BESS product, this being a stopgap or a
   flagship, roadmaps, or internal team names.
 
+### Writing for the BESS tree
+
+Everything above — voice, structure, components, linking, the "before you
+finish" checklist — applies equally to pages under `content/bess/`. Nothing in
+this guide is SolarLayout-specific unless it names SolarLayout explicitly.
+Three things differ for a BESS page, and only these three:
+
+- **The fact source is [`PRODUCT_FACTS.bess.md`](./PRODUCT_FACTS.bess.md)**,
+  not `PRODUCT_FACTS.md`. The same rule applies: if a number, label, default,
+  range or behaviour is not in that file, do not state it.
+- **The reader is a battery-storage / hybrid-renewable-energy developer** —
+  someone sizing and financing solar-plus-storage or wind-plus-storage
+  projects — not a solar-only plant developer. Domain vocabulary follows the
+  same pattern as §1: define it on first use in a page (e.g. C-rate, DoD,
+  round-trip efficiency, PPA, curtailment), then use it freely.
+- **The "never mention" list inverts.** A BESS page never mentions the
+  SolarLayout product — not by name, not as "the other product", not as a
+  cross-sell. A SolarLayout page continues to never mention BESS, per the rule
+  above. The two product families cross-link only from the shared shell (the
+  landing page, the product picker, the top nav) — never from inside a content
+  page in either tree.
+
+Do not weaken any SolarLayout rule in this guide to accommodate BESS content;
+add a BESS-specific note instead, as above.
+
 ## 2. Voice
 
 **Define the noun, state the requirement, link the reference.** Nothing warm,

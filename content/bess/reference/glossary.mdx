@@ -1,0 +1,198 @@
+---
+title: Glossary
+description: Every BESS term the application's own glossary defines, grouped by dispatch and sizing, battery lifecycle, tariffs and pricing, financial terms, and units.
+---
+
+Grouped the way the application's own glossary groups them: dispatch and
+sizing, battery lifecycle, tariffs and time-of-day, financial terms, and
+units. Where a term ships with a default value or range, it is given here.
+
+## Dispatch and sizing
+
+**DFR (Delivery Fulfilment Ratio)** — The fraction of required or
+contracted energy actually delivered in a given window: delivered ÷
+required. Tracked at four granularities — 15-minute, Peak-hour, Off-Peak
+and Overall Monthly — plus an Annual figure. Falling short of a window's
+target triggers a shortfall penalty. Default targets: **15-min DFR
+Target** 0% (off), **Peak-hour DFR Target** 90%, **Off-Peak DFR Target**
+80%, **Overall Monthly DFR** 90%, **Annual DFR Target** 0% (off). See
+[Delivery Fulfilment Ratio (DFR)](/bess/concepts/dfr).
+
+**Contracted Capacity (CC)** — The firm load or capacity the plant is
+obligated to serve, either a fixed MW value or a time-varying 15-minute
+profile. DFR and the CUF cap are both measured against it. Default
+**Fixed Value** is 1.6 MW.
+
+**Dispatch** — The per-15-minute rule deciding whether the battery charges,
+discharges or idles at each simulation step. The application selects one of
+five mutually exclusive dispatch branches per run: Standalone, CC-firming,
+Generation-charged Peak-Shift, Peak/Off-Peak, and Cycle-mode. See
+[How dispatch works](/bess/concepts/how-dispatch-works).
+
+- **Peak-shift** — The **Peak-Shift dispatch** checkbox's mode: generation
+  charges the battery first, and it discharges only inside the selected
+  Peak window to meet the Contracted Capacity, with no obligation — and no
+  penalty — outside that window. Off by default.
+- **CC-firming** — The dispatch used when the Peak-hour set is left
+  explicitly empty, all 24 hour checkboxes unticked: it firms the
+  Contracted Capacity every hour of the day instead of only in a Peak
+  window.
+
+**RTE (Round-Trip Efficiency)** — The fraction of energy recovered from one
+full charge/discharge cycle, including auxiliary losses. The model applies
+the square root of RTE separately to the charge leg and the discharge leg.
+Default 78%, range 50–99%.
+
+**DoD (Depth of Discharge)** — The fraction of nameplate energy usable per
+cycle. Default 90%, range 50–100%.
+
+**SOH (State of Health)** — The battery's remaining capacity relative to
+nameplate as it ages; usable energy is nameplate × DoD × SOH. Starting SOH
+default 100%, range 50–100%. See
+[The battery model](/bess/concepts/battery-model).
+
+**C-rate** — The BESS power-to-energy sizing ratio, Power ÷ Energy (MW ÷
+MWh). Default 0.25, range 0.1–2.0.
+
+## Battery lifecycle
+
+**Battery EOL (End-of-Life)** — The point at which the pack is considered
+exhausted and is replaced or augmented. Selectable basis, default **In
+Years**: in years (default 20, range 5–30) or in total cycles (**Rated
+Cycle Life** default 6000, range 100–20,000). See
+[Degradation and end-of-life](/bess/concepts/degradation-and-eol).
+
+**EFC (Equivalent Full Cycle)** — One full nameplate-energy charge/discharge
+equivalent. Annual EFC throughput is annual discharge energy ÷ rated usable
+energy, and it accumulates against the Rated Cycle Life to find the
+cycle-basis end-of-life year.
+
+**Replacement vs Augmentation** — The two end-of-life strategies.
+**Replacement** is a full pack swap at the end-of-life year — the default.
+**Augmentation** tops the pack up with additional MWh tranches instead,
+either automatically restoring nameplate every end-of-life-interval year —
+the default sub-mode — or on a manually scheduled table of year and
+capacity. A new tranche degrades from its own install year and books its
+own CAPEX.
+
+## Tariffs, pricing and time-of-day
+
+**PPA tariff** — The contracted price paid per kWh of delivered energy.
+Default 5.0 Rs/kWh, range ≥ 0.1 Rs/kWh; may escalate annually via
+**PPA Tariff Escalation**, default 0%/yr. See
+[Tariffs, export and penalties](/bess/financials/tariffs-and-revenue).
+
+**Export price** — The price paid for surplus energy sold to a third
+party — a flat rate or a 15-minute CSV series, such as a power-exchange
+clearing-price feed — distinct from the PPA tariff. Default **Fixed
+Price** mode, 0.0 Rs/kWh.
+
+**Grid-charging price** — The price paid for grid energy used to charge the
+battery: always, on a Standalone project; only as worst-case backup, on a
+generation-backed one. Default 0.0 Rs/kWh.
+
+**CUF cap (Annual CUF Cap)** — An optional ceiling on how much delivered
+energy is paid at the PPA tariff: cap (MWh) = cap % × Contracted Capacity ×
+8760. Energy above the cap is paid at the export price instead. Off by
+default; cap % default 28.0 when enabled.
+
+**ToD (Time-of-Day) peak / off-peak** — The 24 hourly checkboxes on the
+**⏰ Peak** tab, splitting the day into Peak hours (the battery discharges
+first, then charges from any excess) and Off-Peak hours (the battery
+charges first, and the remainder meets the Contracted Capacity). Default
+ticked: 18:00 to 21:00, 4 hours.
+
+## Financial terms
+
+**IRR (Internal Rate of Return)** — The discount rate at which project NPV
+equals zero. The headline **Project IRR** excludes debt, tax and salvage
+value. See [Return metrics](/bess/financials/metrics).
+
+**Equity IRR** — IRR of the levered equity cash-flow stream: EBITDA minus
+interest, principal and levered tax. Computed only when **Enable debt
+(levered analysis)** is on. See
+[Debt and tax](/bess/financials/debt-and-tax).
+
+**NPV (Net Present Value)** — The discounted sum of project cash flows at
+the **Discount Rate (NPV)**, default 10%.
+
+**Payback (simple / discounted)** — The year cumulative — or
+discounted-cumulative — project cash flow first turns non-negative,
+linearly interpolated within the year.
+
+**DSCR (Debt-Service Coverage Ratio)** — (EBITDA minus levered tax minus
+reinvestment) ÷ (interest plus principal) for the year, reported as a
+minimum and an average across the debt tenor. Only meaningful when
+**Enable debt (levered analysis)** is on.
+
+**DSRA (Debt-Service Reserve Account)** — A reserve funded upfront
+alongside equity, sized as (DSRA months ÷ 12) × the first year's interest
+plus principal. Default 0 months.
+
+**MoIC (Multiple on Invested Capital)** — Sum of positive cash inflows ÷
+initial outlay.
+
+**PI (Profitability Index)** — (NPV + CAPEX) ÷ CAPEX. A PI above 1 is
+value-accretive.
+
+**WACC (Weighted Average Cost of Capital)** — The after-tax blended cost of
+equity and debt, computed only for levered projects.
+
+**LCOE (Levelised Cost of Energy)** — Total lifecycle cost ÷ discounted
+energy, in Rs/kWh. The energy basis is selectable on the **🏦 Finance**
+tab, default **Energy delivered to load (default)**.
+
+**LCOS (Levelised Cost of Storage)** — The same shape as LCOE, but over
+BESS-only CAPEX, OPEX and reinvestment, divided by discounted
+battery-discharge throughput — the cost of every kWh that actually passes
+through the battery.
+
+**Terminal / Salvage value** — A residual value credited at the end of
+Project Life, as a % of total CAPEX. Default 0.0%, range 0–100%.
+
+**Working-capital carrying cost** — A recurring finance cost modelling the
+gap between PPA billing and offtaker payment: receivables = annual revenue
+× (lag days ÷ 365); cost = receivables × (Working-Capital Rate + WC
+Facility Fee − Late-Payment Surcharge), deductible against EBITDA and tax.
+Zero when **Receivable Lag** is 0, the default. See
+[Working capital](/bess/financials/working-capital).
+
+## Units
+
+**Crore (Cr)** — Rs 1,00,00,000. The unit CAPEX, NPV and the Financials
+tab's figures are quoted in.
+
+**Lakh (Lac)** — Rs 1,00,000. The unit O&M costs and DFR-shortfall
+penalties are quoted in.
+
+**MWh ↔ kWh** — ×1000. The DFR-shortfall penalty formula, for example,
+converts an MWh shortfall to kWh by multiplying by 1000 before pricing it
+at the tariff.
+
+**15-min base** — The simulation's native time step: 0.25 hours per step,
+35,040 steps for a full year.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Every parameter and its default"
+    href="/bess/reference/parameters"
+    description="The complete input reference, with the values quoted above in context"
+  />
+  <Card
+    title="How dispatch works"
+    href="/bess/concepts/how-dispatch-works"
+    description="The dispatch and sizing terms above, in context"
+  />
+  <Card
+    title="Return metrics"
+    href="/bess/financials/metrics"
+    description="The financial terms above, and where each appears"
+  />
+  <Card
+    title="Formula reference"
+    href="/bess/reference/formulas"
+    description="The formulas behind the terms defined here"
+  />
+</Cards>

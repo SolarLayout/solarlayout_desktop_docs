@@ -1,0 +1,56 @@
+---
+title: Exporting the drawing
+description: PDF, DXF and KMZ export on each canvas, and how the designer's inputs and both drawings save into the .slb project.
+---
+
+Each canvas — **Plant Layout** and **Single Line Diagram** — carries its own
+set of export buttons, pinned and always visible on its toolbar: **⤓ PDF**,
+**⤓ DXF** and **⤓ KMZ**.
+
+## What each export produces
+
+| Export | Produces |
+| --- | --- |
+| **⤓ PDF** | An A4-landscape figure: colour-filled equipment rectangles or symbols by kind, the connection lines, title text, and optionally the SolarLayout logo |
+| **⤓ DXF** | A CAD drawing with 6 named layers — **equipment**, **connections**, **sketch**, **text**, **import**, **sheet** — carrying the rectangles, circles, polygons and lines plus their text labels; symbols are expanded into their own line-work |
+| **⤓ KMZ** | A georeferenced file — rectangles, circles and polygons as outline shapes, connections and symbols as lines — anchored at the form's **Latitude** and **Longitude**, projected back to WGS84 |
+
+A **⤓ KMZ** export needs a valid **Latitude** and **Longitude** first;
+without them it warns instead of exporting.
+
+The suggested file name — and the title printed on the PDF — is **BESS
+Single Line Diagram** for the **Single Line Diagram** canvas, or **BESS
+Plant Layout** for the **Plant Layout** canvas. The save dialog itself
+carries no caption of its own; it shows the operating system's own default
+Save-As caption.
+
+## Saved into the `.slb` project
+
+The designer's inputs and both drawings — **Plant Layout** and **Single Line
+Diagram** — travel with the main **Save Project (.slb)…** and **Open Project
+(.slb)…** actions, independent of any Simulate or Optimise result.
+
+- Closing the designer window captures the current input-form values and
+  both drawings.
+- **Save Project (.slb)…** captures that same snapshot again and stores it
+  in the project file.
+- **Open Project (.slb)…** restores it — into the designer immediately if
+  it's already open, or the next time the designer is opened otherwise.
+
+<Cards>
+  <Card
+    title="Your first analysis"
+    href="/bess/first-analysis"
+    description="A complete first run, including saving a project"
+  />
+  <Card
+    title="The drawing editor"
+    href="/bess/plant/cad-editor"
+    description="Tools, sheets and layer toggles on each canvas"
+  />
+  <Card
+    title="Plant layout and SLD"
+    href="/bess/plant/overview"
+    description="The two tabs, the shared input form and its fields"
+  />
+</Cards>

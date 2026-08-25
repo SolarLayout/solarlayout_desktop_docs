@@ -1,0 +1,93 @@
+---
+title: The drawing editor
+description: The toolbar, sheet sizes and layer toggles on each of the plant designer's two drawing canvases, plus importing a DXF or KMZ/KML background.
+---
+
+**Plant Layout** and **Single Line Diagram** each have their own drawing
+canvas and toolbar. Because the canvases are independent, the active tool,
+undo history, snap/ortho state and layer visibility on one do not affect the
+other.
+
+## Drawing tools
+
+The first toolbar row holds the drawing tools, mutually exclusive — one is
+active at a time, and the active one is highlighted. **▷ Select** is active
+by default.
+
+| Tool | What it does |
+| --- | --- |
+| **▷ Select** | Selects an element |
+| **✥ Move** | Moves the current selection |
+| **✋ Pan** | Pans the canvas |
+| **╱ Line** | Draws a line |
+| **▭ Rect** | Draws a rectangle |
+| **◯ Circle** | Draws a circle |
+| **⬡ Polygon** | Draws a polygon |
+| **T Text** | Places a text label |
+| **📏 Measure** | Measures a distance |
+| **⟺ Dimension** | Places a dimension |
+| **⟳ Rotate** | Rotates the current selection by 90° immediately, rather than staying armed as a persistent tool |
+| **✎ Edit Text** | Edits the current selection's text immediately, rather than staying armed as a persistent tool |
+
+## Copy, undo and canvas controls
+
+The second toolbar row:
+
+| Control | What it does |
+| --- | --- |
+| **⧉ Copy** | Copies the current selection |
+| **⎘ Paste** | Pastes the copied selection |
+| **🗑 Delete** | Deletes the current selection |
+| **↶ Undo** | Undoes the last action |
+| **↷ Redo** | Redoes the last undone action |
+| **⤢ Fit** | Fits the whole drawing into view |
+| **⌗ Snap** | Toggle, default **on** |
+| **⊾ Ortho** | Toggle, default **off** |
+| **📁 Import** | Imports a DXF or KMZ/KML background — see below |
+
+<Screenshot id="bess-plant-cad-editor-toolbar" />
+
+## Sheets
+
+A size combobox — **A0** / **A1** / **A2** / **A3** / **A4**, default **A3**
+— sets the drawing sheet's paper size. **🗏 Add Sheet** frames the current
+drawing's bounding box with an ISO A-series sheet border and a bottom-right
+title block, added on its own layer so it exports with the drawing.
+
+## Layer toggles
+
+Six layer toggles control what's visible on the canvas, all default **on**:
+**equipment**, **connections**, **sketch**, **text**, **import**, **sheet**.
+
+## Importing a DXF or KMZ/KML background
+
+**📁 Import** opens a file picker filtered to `.dxf`, `.kmz` and `.kml`
+files, then reads the chosen file using the form's **Latitude** and
+**Longitude** fields as the georeferencing anchor. Imported entities land on
+the **import** layer, which is force-shown, and the canvas zooms to fit.
+
+- **DXF** — units are auto-scaled to metres from the file's own unit
+  setting. Lines, polylines, circles, arcs (tessellated to a polyline) and
+  text entities are read; the drawing is shifted so its bounding-box corner
+  sits at the origin.
+- **KMZ/KML** — every coordinate list in the file's first KML document is
+  projected from WGS84 to local metres, centred at the form's **Latitude**
+  and **Longitude**, then shifted to the origin the same way as a DXF import.
+
+<Cards>
+  <Card
+    title="Symbols and custom symbols"
+    href="/bess/plant/symbols"
+    description="Opening the library, and saving your own symbol"
+  />
+  <Card
+    title="Exporting the drawing"
+    href="/bess/plant/export"
+    description="PDF, DXF and KMZ per canvas, and what saves into the project"
+  />
+  <Card
+    title="Plant layout and SLD"
+    href="/bess/plant/overview"
+    description="The two tabs, the shared input form and its fields"
+  />
+</Cards>

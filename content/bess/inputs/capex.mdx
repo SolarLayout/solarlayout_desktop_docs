@@ -1,0 +1,38 @@
+---
+title: CAPEX
+description: Capital cost per installed MW of Solar and Wind and per installed MWh of BESS.
+---
+
+The **💰 CAPEX** tab sets the capital cost the financial model charges for
+each source, in Crore per unit installed — 1 Crore is Rs 1,00,00,000.
+
+<Screenshot id="bess-inputs-capex" />
+
+## Fields
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Solar CAPEX** | 5.0 Cr/MW | ≥ 0.1 Cr/MW | Solar capital cost per installed MW |
+| **Wind CAPEX** | 7.0 Cr/MW | ≥ 0.1 Cr/MW | Wind capital cost per installed MW |
+| **BESS CAPEX** | 1.5 Cr/MWh | ≥ 0.1 Cr/MWh | BESS capital cost per installed MWh |
+
+<Callout type="warn">
+The tab's own caption reads "Defaults: Solar 5 Cr/MW, Wind 7 Cr/MW, BESS 1
+Cr/MWh" — but the **BESS CAPEX** field itself shows **1.5 Cr/MWh** on a fresh
+launch. Treat 1.5 Cr/MWh as the real default; the caption's "1" is stale.
+</Callout>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="OPEX, revenue and penalties"
+    href="/bess/inputs/opex"
+    description="Operating cost, tariffs, export pricing and grid charging"
+  />
+  <Card
+    title="Financing and discounting"
+    href="/bess/inputs/finance"
+    description="Discount rate, debt, tax and the rest of the financial model"
+  />
+</Cards>

@@ -1,0 +1,113 @@
+---
+title: Degradation, EOL and augmentation
+description: The battery's SOH curve, end-of-life by years or cycles, replacement vs augmentation, and how it differs from generation degradation.
+---
+
+A battery's usable energy shrinks over the life of a project in two ways
+that are easy to conflate: the pack's own health declines year on year, and —
+for a generation-backed project — the solar or wind feeding it declines too,
+for an entirely different reason. This page covers the battery side: its
+state-of-health (SOH) curve, the two ways to define when it reaches
+end-of-life (EOL), and what happens to the plant once it does.
+
+## SOH degradation curves
+
+State of health (SOH) — the battery's remaining capacity relative to
+nameplate as it ages — follows one of two curves, chosen on the **🔋 BESS**
+tab. **Linear (Year-1 + Annual)**, the default, applies one fixed loss in
+Year 1 and a separate fixed annual loss every year after — two independent
+fields, each with its own range. **Custom
+Year-by-Year** replaces that with a table you fill in yourself, one SOH
+value per project year — useful for a curve that doesn't follow a straight
+line, such as a manufacturer's own warranty curve. Switching to Custom
+starts from the values the Linear formula would have produced; a
+**↺  Fill from Linear** button re-applies that starting point at any time.
+
+<Screenshot id="bess-concepts-degradation-and-eol-soh-editor" />
+
+Whichever curve is active, SOH is one of the two factors — alongside depth
+of discharge — that scale nameplate energy down to what the dispatch model
+can actually draw on. See [The battery model](/bess/concepts/battery-model)
+for how the two combine.
+
+## End-of-life: years or cycles
+
+Battery EOL — end-of-life, the point at which the pack is considered
+exhausted and is replaced or augmented — is defined one of two ways, chosen
+on the same tab:
+
+- **In Years** (the default): EOL is simply the pack's age, in years.
+- **In Total Cycles**: EOL is set by cumulative usage instead, measured in
+  EFC — Equivalent Full Cycle, one full nameplate-energy charge/discharge
+  equivalent. Annual EFC throughput is worked out as that year's discharge
+  energy divided by the pack's rated usable energy, and accumulated year on
+  year against a **Rated Cycle Life** target, expressed in cycles, to find
+  the year EOL is reached. A separate **End-of-Warranty SOH @ N** field
+  records the SOH the pack is warrantied to still have at that rated cycle
+  count.
+
+Choosing the cycles basis also changes how the plant is dispatched day to
+day — see [Cycle-mode](/bess/concepts/how-dispatch-works#cycle-mode) in How
+dispatch works.
+
+## Replacement vs augmentation
+
+Reaching EOL triggers one of two strategies, also chosen on the **🔋 BESS**
+tab:
+
+- **Replacement (full swap)**, the default: the whole pack is swapped out
+  in the EOL year.
+- **Augmentation (top-up)**: instead of a full swap, additional MWh
+  tranches are added to the existing pack. **Automatic (restore to
+  nameplate)** tops it back up to nameplate every EOL-interval year;
+  **Manual** opens a schedule you fill in yourself, one row per tranche
+  giving the year and the capacity to add. Either way, each new tranche
+  degrades from its own install year rather than from commissioning, and
+  books its own capital cost in the year it's added, separate from the
+  original build.
+
+See [Battery parameters](/bess/inputs/bess) for the SOH degradation, Battery
+EOL and EOL Strategy fields together, with their defaults and ranges.
+
+## The declining cost of a later tranche
+
+A tranche added years into a project doesn't have to cost the same, per
+MWh, as the pack installed on day one. **BESS Cost Decline (augment.)**, on
+the **🏦 Finance** tab, applies an annual decline to the BESS unit cost used
+specifically for augmentation tranches, so a tranche added later in the
+project life can be costed lower than the figure entered on the **💰 CAPEX**
+tab for the original build, if you set a decline rate. See
+[Financing and discounting](/bess/inputs/finance#advanced-tech-economic).
+
+## Not the same as generation degradation
+
+The **📉 Degrad.** tab sets a separate figure entirely: how much the Solar
+or Wind generation feeding the plant declines over the project life,
+following the same Year-1-plus-annual shape but applied to generation
+rather than to the battery. The two are tracked, and set, independently. See
+[Generation degradation](/bess/inputs/degradation).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="The battery model"
+    href="/bess/concepts/battery-model"
+    description="Usable energy, round-trip efficiency, C-rate and state of charge"
+  />
+  <Card
+    title="How dispatch works"
+    href="/bess/concepts/how-dispatch-works"
+    description="The dispatch rule that applies once Battery EOL is set to cycles"
+  />
+  <Card
+    title="Battery parameters"
+    href="/bess/inputs/bess"
+    description="Every RTE, DoD, SOH, EOL and augmentation field"
+  />
+  <Card
+    title="Financing and discounting"
+    href="/bess/inputs/finance"
+    description="BESS Cost Decline and the rest of the financial assumptions"
+  />
+</Cards>

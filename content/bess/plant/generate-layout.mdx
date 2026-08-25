@@ -1,0 +1,75 @@
+---
+title: Generating the layout
+description: What Generate Layout auto-places from the shared input form, how it's arranged, and the equipment count label.
+---
+
+**⚙  Generate Layout**, on the **Plant Layout** tab, builds a scaled plant
+layout from the [shared input form](/bess/plant/overview): it auto-places
+containers, PCS, LV panels, transformers and MV panels to scale, wired
+together with power buses.
+
+<Screenshot id="bess-plant-generate-layout-result" />
+
+## What it counts
+
+The equipment counts come from the form's fields:
+
+```
+Containers    = ceil(BESS Plant Capacity / BESS Container Capacity)
+PCS           = 1 per container
+LV Panels     = ceil(PCS per group / PCS per LV Panel)
+Transformers  = ceil(total PCS / (LV Panels per Transformer × PCS per LV Panel)), one per group
+MV Panels     = the MV Panels field, fed by all transformers
+```
+
+Containers round up to cover the requested **BESS Plant Capacity**. Every
+container gets one PCS. PCS units are then grouped so each group's LV panels
+and transformer can be sized — the LV panel count and the transformer count
+both round up to the next whole panel or transformer needed to carry that
+group's PCS. **MV Panels** is not computed; it is fed directly from the
+field, and all transformers feed into it.
+
+## How it's arranged
+
+Equipment is placed as a stack running south to north: containers at the
+south end, then PCS, then LV panels, then the transformer, with a row of MV
+panels at the north end. A container's footprint is looked up in a standard
+container-size table for 20, 40 and 45 ft, or scaled from the 20 ft ratio for
+any other length.
+
+Connections are drawn as right-angled power buses rather than diagonal
+lines — a stub down from the parent, a horizontal bus, then a drop to each
+child. The result loads onto the **Plant Layout** canvas as scaled rectangles
+per piece of equipment, joined by these connection lines.
+
+## Reading the equipment count label
+
+After generating, a count label reports what was built: the
+**Containers**, **PCS**, **LV Panels**, **Transformers** and **MV Panels**
+counts, with the transformer count followed by its typical MVA rating and how
+many transformers are on the LV side.
+
+That per-transformer MVA figure is (**LV Panels per Transformer** × **PCS per
+LV Panel**) × **PCS Capacity** — the rating each transformer carries when PCS
+divide evenly across transformers. If the total PCS count doesn't divide
+evenly, one group's transformer ends up carrying fewer PCS than the others;
+the label drawn against that transformer on the canvas shows its true, lower
+MVA figure, while the summary label still shows the full-group maximum.
+
+<Cards>
+  <Card
+    title="Plant layout and SLD"
+    href="/bess/plant/overview"
+    description="The two tabs, the shared input form and its fields"
+  />
+  <Card
+    title="Generating the SLD"
+    href="/bess/plant/generate-sld"
+    description="The same topology, drawn as IEC schematic symbols"
+  />
+  <Card
+    title="The drawing editor"
+    href="/bess/plant/cad-editor"
+    description="Tools, sheets and layer toggles on each canvas"
+  />
+</Cards>

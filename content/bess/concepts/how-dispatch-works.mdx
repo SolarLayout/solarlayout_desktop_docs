@@ -1,0 +1,140 @@
+---
+title: How dispatch works
+description: The 15-minute annual simulation behind Simulate and Optimise, and the five rules that decide when the battery charges, discharges or idles.
+---
+
+Every run of **▶  Simulate** or **⚙  Optimise** works through a full year of
+the plant's operation, one 15-minute step at a time. This page is that model:
+the step it takes, the rule that decides what the battery does at each one,
+and how a single run becomes the year-by-year result on the **💹 Financials**
+tab.
+
+## One year, in 15-minute steps
+
+The dispatch model advances in fixed 15-minute steps through the whole year —
+0.25 hours each, 35,040 steps in total. Its input series comes from one of two
+places: the generation CSV loaded on the **📂 Data** tab, auto-upsampled to
+15 minutes if it was recorded coarser; or, for a **4.  Standalone BESS
+(grid-charged)** project, a full year's calendar the application builds
+internally, since there's no generation profile to read. See
+[Generation data](/bess/inputs/data).
+
+At every step, generation has first claim on the battery: solar and wind
+output are totalled first, and the grid may only supply what that combined
+total can't. That holds across every rule below — the grid is always the last
+resort, never the first source.
+
+Two things apply uniformly, whichever rule governs a given run: round-trip
+efficiency (RTE — the share of energy recovered over one full
+charge/discharge cycle, including auxiliary losses) and the pack's usable
+capacity — nameplate energy
+scaled by depth of discharge (DoD, the fraction usable per cycle) and state of
+health (SOH, the battery's remaining capacity relative to nameplate as it
+ages). A third property, C-rate — the battery's power-to-energy sizing ratio —
+caps how fast it can move that energy in or out. See
+[The battery model](/bess/concepts/battery-model) for how all three combine.
+The battery itself starts every run at 100% state of charge.
+
+## The five dispatch rules
+
+Exactly one rule governs a run, chosen from the project type, the Peak-Shift
+checkbox, the Peak tab's hour selection, and the Battery EOL basis.
+
+### Peak and off-peak (the default)
+
+This is the rule that applies when none of the other four conditions on this
+page are met.
+
+On **Peak** hours the battery is a deficit-filler only: it stays idle
+whenever generation already covers the Contracted Capacity (CC — the firm
+load the plant is obligated to serve), and discharges exactly the shortfall
+when it doesn't. It never charges on a Peak hour. On **Off-Peak** hours the
+roles flip: the battery is a surplus-absorber only. The CC is met from
+generation first, and the battery charges only from whatever generation is
+left over above that — it never discharges Off-Peak.
+
+### Generation-charged Peak-Shift
+
+Ticking the **Peak-Shift dispatch** checkbox — its exact label depends on the
+project type, see
+[Choosing a project type](/bess/project-types#generation-charged-peak-shift-dispatch)
+— changes the roles again. Inside the Peak window, the battery, together with
+any generation available at that moment, discharges to meet the CC, and
+anything beyond that is exported. Outside the window, generation charges the
+battery first and the balance is exported; there's no load obligation, and so
+no shortfall against the [Delivery Fulfilment Ratio](/bess/concepts/dfr) (DFR
+— the share of required energy actually delivered) outside the window at all.
+
+An optional grid backup — used only as a worst case — can additionally top
+the battery up inside the Peak window, but only with whatever the window's
+remaining generation can't cover on its own.
+
+### The empty peak set: CC-firming
+
+Untick every one of the 24 Peak-tab hours and the dispatch switches to
+**CC-firming**: instead of a discharge window, the CC is firmed every hour of
+the day. When generation meets or exceeds the CC, the CC is served from
+generation, the surplus charges the battery, and only what the — now full —
+battery can't absorb is exported. When generation falls short of the CC, the
+battery discharges to fill the gap, and whatever the battery itself can't
+cover becomes a shortfall. See
+[An empty peak set](/bess/inputs/peak-window#an-empty-peak-set) for the
+exception a Standalone project makes to this.
+
+### Standalone: grid charging only
+
+A **4.  Standalone BESS (grid-charged)** project has no generation to draw
+on, so the battery's energy comes entirely from the grid. On Peak hours it
+discharges to meet the CC; on Off-Peak hours it recharges from the grid,
+capped by both its C-rate ceiling and however much headroom the pack has
+left. That grid import is tracked separately from everything else, as the
+basis for the cost set on [Grid charging](/bess/inputs/opex#grid-charging).
+
+### Cycle-mode
+
+This is the rule that applies when **Battery EOL (End-of-Life)** is set to
+**In Total Cycles** on the **🔋 BESS** tab. Dispatch follows a fixed schedule
+instead: discharge, day-charge, night-charge (wind-only projects) and
+grid-charge hour windows, set in the **⚙  Configure Cycles &
+Charge/Discharge Windows…** dialog — independent of whatever the Peak tab's
+hours are set to. See [Battery end-of-life](/bess/inputs/bess#battery-end-of-life)
+and [Degradation, EOL and augmentation](/bess/concepts/degradation-and-eol).
+
+<Screenshot id="bess-concepts-how-dispatch-works-chart" />
+
+## From one run to a year-by-year result
+
+A single **▶  Simulate** click doesn't just run the dispatch model once. The
+financial model behind both **▶  Simulate** and **⚙  Optimise** re-runs the
+whole 15-minute year — dispatch and all — once per project year, each time at
+that year's own degraded battery health and generation output, together with
+that year's DFR result. Only once every project year has been run this way is
+the discounted cash flow assembled from the per-year results — which is why a
+run reports its progress year by year rather than finishing instantly. See
+[Your first analysis](/bess/first-analysis) for what that run looks like end
+to end.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Delivery Fulfilment Ratio (DFR)"
+    href="/bess/concepts/dfr"
+    description="What DFR measures, and how a shortfall becomes a penalty"
+  />
+  <Card
+    title="The battery model"
+    href="/bess/concepts/battery-model"
+    description="Usable energy, round-trip efficiency, C-rate and state of charge"
+  />
+  <Card
+    title="Peak and off-peak window"
+    href="/bess/inputs/peak-window"
+    description="Setting the hours the Peak/Off-Peak and CC-firming rules key off"
+  />
+  <Card
+    title="Choosing a project type"
+    href="/bess/project-types"
+    description="The four topologies, and where the Peak-Shift checkbox lives"
+  />
+</Cards>

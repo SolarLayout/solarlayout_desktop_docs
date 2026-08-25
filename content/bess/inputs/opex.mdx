@@ -1,0 +1,71 @@
+---
+title: OPEX, revenue and penalties
+description: Annual O&M and its escalation, the PPA tariff and shortfall penalty, the CUF cap, 3rd-party export pricing, grid charging, and the Optimise target IRR.
+---
+
+The **📊 OPEX** tab sets the plant's operating cost, the tariff and penalty
+that drive its revenue, the price paid for any 3rd-party export, the terms
+under which the battery may charge from the grid, and the target
+**⚙  Optimise** searches for.
+
+<Screenshot id="bess-inputs-opex" />
+
+## Operation and maintenance
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Solar O&M** | 3.0 Lac/MW/yr | ≥ 0 Lac/MW/yr | Solar annual O&M cost per MW |
+| **Wind O&M** | 5.0 Lac/MW/yr | ≥ 0 Lac/MW/yr | Wind annual O&M cost per MW |
+| **BESS O&M (fixed)** | 5.0 Lac/yr | ≥ 0 Lac/yr | Fixed annual BESS O&M cost |
+| **OPEX Escalation** | 2.0%/yr | 0–20%/yr | Annual escalation applied to all O&M |
+
+## Revenue, export and penalty
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **PPA Tariff** | 5.0 Rs/kWh | ≥ 0.1 Rs/kWh | Contracted tariff for delivered energy |
+| **Penalty Multiplier** | 1.5× tariff | 0.0–3.0× tariff | Penalty rate applied to DFR shortfall, as a multiple of the PPA tariff |
+| **Apply Annual CUF Cap** (checkbox) | off | — | Enables an annual offtake ceiling; energy above it is paid at the Export Price instead of the PPA tariff |
+| **% (of CC × 8760)** (with the CUF-cap checkbox) | 28.0% | 0.0–100.0% | The CUF ceiling itself, disabled unless the checkbox is ticked |
+
+## Export price (3rd party)
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| Export Price mode (**Fixed Price** / **CSV (15-min pricing)**) | **Fixed Price** | **Fixed Price**, **CSV (15-min pricing)** | Chooses whether the 3rd-party export price is one fixed number or a 15-minute pricing series |
+| **Value** (Fixed Price) | 0.0 Rs/kWh | ≥ 0.0 Rs/kWh | Flat 3rd-party export price |
+| **📂 Browse CSV…** (CSV pricing) | status **No file loaded**; unit combobox defaults **Rs/MWh** | 35,040 or 8,760 rows (hourly auto-interpolated), price column auto-detected (`mcp`/`price`/`clearing`/`tariff`/`rate`/`rs`, else the last numeric column) | 15-minute export-pricing time series (for example an exchange clearing price), converted to Rs/kWh internally when the unit is Rs/MWh |
+
+## Grid charging
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Grid Charging Price** | 0.0 Rs/kWh | ≥ 0.0 Rs/kWh | Price paid for grid energy used to charge the battery — always, on a Standalone project; as a backup only, on a generation-backed one |
+| **Grid charging backup when generation is short** (checkbox) | off; disabled and forced off for Standalone BESS | — | Lets a generation-backed plant top up from the grid on low-irradiance or low-wind days |
+| **Max Grid Charge Limit** | 100% | 0.0–100.0% | Caps how much of the battery's usable capacity the grid may supply per charge cycle — 100% is unrestricted |
+
+## Optimisation target
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Project Target IRR** | 15.0% | no explicit bound; falls back to 15% if the entry can't be parsed | Target project IRR the **⚙  Optimise** search — and its "Hits Target IRR" scenario — aims for |
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="CAPEX"
+    href="/bess/inputs/capex"
+    description="Capital cost per installed MW and MWh"
+  />
+  <Card
+    title="Financing and discounting"
+    href="/bess/inputs/finance"
+    description="Discount rate, debt, tax and the rest of the financial model"
+  />
+  <Card
+    title="Capacity and DFR targets"
+    href="/bess/inputs/sizing"
+    description="The Contracted Capacity the CUF cap and penalty are measured against"
+  />
+</Cards>

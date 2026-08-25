@@ -3,6 +3,7 @@ import path from "node:path"
 import Image from "next/image"
 import { Camera, ImageOff } from "lucide-react"
 import { SCREENSHOTS_BY_ID } from "@/content/screenshots"
+import { SCREENSHOTS_BY_ID as BESS_SCREENSHOTS_BY_ID } from "@/content/bess/screenshots"
 
 /**
  * `<Screenshot id="…" />` — the only way this site renders a product image.
@@ -51,7 +52,7 @@ function intrinsicSize(absPath: string): { width: number; height: number } | nul
 }
 
 export function Screenshot({ id, caption, maxWidth }: ScreenshotProps) {
-  const spec = SCREENSHOTS_BY_ID[id]
+  const spec = SCREENSHOTS_BY_ID[id] ?? BESS_SCREENSHOTS_BY_ID[id]
 
   if (!spec) {
     return (

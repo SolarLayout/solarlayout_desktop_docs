@@ -1,0 +1,101 @@
+---
+title: Return metrics
+description: One-line definitions of IRR, Equity IRR, NPV, payback, DSCR, DSRA, MoIC, PI, WACC, LCOE and LCOS, worded as the application's own Formulas guide states them.
+---
+
+The financial model turns a run's dispatch result into an annual cash-flow
+stream, and reduces that stream to the metrics below. This page defines each
+one, worded the same way Help ▸ **User Guide / Formulas…** states it inside
+the application itself. For where each figure is shown — the headline
+lines, the per-year columns, the exported report — see
+[The financials table](/bess/results/financials).
+
+## The metrics
+
+| Metric | Definition |
+| --- | --- |
+| **IRR** (Internal Rate of Return) | The discount rate at which project NPV equals zero. |
+| **Equity IRR** | IRR of the equity cash-flow stream — EBITDA minus interest, principal and (when levered) tax, minus reinvestment, plus terminal value and any DSRA release net of remaining debt in the final year. Computed only when **Enable debt (levered analysis)** is on. |
+| **NPV** (Net Present Value) | The discounted sum of project cash flows at the **Discount Rate (NPV)**. |
+| **Payback** | The year cumulative project cash flow first turns non-negative, linearly interpolated within the year. |
+| **Discounted Payback** | The same measure, applied to the discounted-cumulative cash flow instead. |
+| **DSCR** (Debt-Service Coverage Ratio) | (EBITDA minus tax minus reinvestment) divided by (interest plus principal), for the year — reported as a minimum and an average across the debt tenor. Only meaningful when **Enable debt (levered analysis)** is on. |
+| **DSRA** (Debt-Service Reserve Account) | A reserve funded upfront alongside equity, sized at (DSRA months ÷ 12) × the first year's interest and principal. |
+| **MoIC** (Multiple on Invested Capital) | The sum of positive cash inflows divided by the initial outlay — outlay is Equity plus DSRA on a levered project, Total CAPEX otherwise. |
+| **PI** (Profitability Index) | (NPV + CAPEX) ÷ CAPEX. A PI above 1 is value-accretive. |
+| **WACC** (Weighted Average Cost of Capital) | The after-tax blended cost of equity and debt — the equity share of funding at the cost of equity (taken as the **Discount Rate (NPV)**), plus the debt share at the interest rate net of tax. Computed only for levered projects. |
+| **LCOE** (Levelised Cost of Energy) | Total lifecycle cost divided by discounted energy, in Rs/kWh, on a selectable energy basis — see below. |
+| **LCOS** (Levelised Cost of Storage) | The same shape as LCOE, but over BESS-only CAPEX, OPEX and reinvestment, divided by discounted battery-discharge throughput — the cost of every kWh that actually passes through the battery. |
+
+Discount Rate, debt and tax are all set on the **🏦 Finance** tab — see
+[Financing and discounting](/bess/inputs/finance) for the fields and their
+defaults, and [Debt and tax](/bess/financials/debt-and-tax) for what turning
+debt or tax on changes.
+
+## The three LCOE energy bases
+
+**LCOE Energy Basis**, on the **🏦 Finance** tab, chooses what LCOE's
+denominator counts:
+
+| Basis | LCOE denominator |
+| --- | --- |
+| **Energy delivered to load (default)** | Energy served to the Contracted Capacity |
+| **Total generation (solar+wind)** | All generation, including exported energy |
+| **Delivered + exported energy** | All useful energy sold |
+
+The last two need an Export Price configured on the **📊 OPEX** tab —
+without one, the model falls back to the delivered basis. See
+[Tariffs, export and penalties](/bess/financials/tariffs-and-revenue) for
+export pricing.
+
+## Two figures for IRR and NPV
+
+The same run can show two different IRR figures, and two different NPV
+figures, depending on where you're reading them.
+
+The headline **Project IRR** — the Financials tab's first summary line, the
+Dashboard badge, and the exported report's own summary line — comes from
+the project cash flow alone: an initial outflow of Total CAPEX, then each
+year's EBITDA minus that year's replacement or augmentation cost. It
+carries no debt, tax or salvage value. A second figure — the report's
+**Project IRR (pre-tax)**, or the Financials tab's second summary line
+**Post-tax IRR** — instead comes from a cash flow that does include salvage
+value.
+
+The same split applies to NPV: the headline **NPV** figure, at the discount
+rate shown beside it, uses the same debt/tax/salvage-free cash flow as the
+headline IRR, while the exported report's own NPV line, inside its
+**FINANCIAL METRICS** block, uses the salvage-aware cash flow instead.
+
+<Callout type="info">
+The Dashboard's IRR badge and the Summary report's **[ABOVE 15%]** /
+**[BELOW 15%]** tag are both coloured against a fixed 15% benchmark, not
+against the **Project Target IRR** field on the **📊 OPEX** tab. The two
+only agree when that field is left at its own default. See
+[The dashboard](/bess/results/dashboard).
+</Callout>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="The financials table"
+    href="/bess/results/financials"
+    description="Where each metric appears, headline and per-year"
+  />
+  <Card
+    title="Financing and discounting"
+    href="/bess/inputs/finance"
+    description="Discount rate, LCOE basis, debt and tax fields"
+  />
+  <Card
+    title="Debt and tax"
+    href="/bess/financials/debt-and-tax"
+    description="Gearing, tenor, DSRA and post-tax analysis behind Equity IRR, DSCR and WACC"
+  />
+  <Card
+    title="Tariffs, export and penalties"
+    href="/bess/financials/tariffs-and-revenue"
+    description="The revenue and cost lines these metrics are computed from"
+  />
+</Cards>

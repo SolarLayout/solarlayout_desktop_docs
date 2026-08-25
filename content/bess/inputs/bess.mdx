@@ -1,0 +1,80 @@
+---
+title: Battery parameters
+description: Round-trip efficiency, depth of discharge, state of health, end-of-life definition, C-rate, end-of-life strategy and SOH degradation.
+---
+
+The **🔋 BESS** tab describes the battery itself: how efficiently it moves
+energy round trip, how much of its nameplate energy is usable, its starting
+health, when it reaches end-of-life and what happens then, its power-to-energy
+sizing ratio, and how its state of health (SOH) declines over the project
+life.
+
+<Screenshot id="bess-inputs-bess" />
+
+## Round-trip efficiency
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| RTE Mode (**Fixed** / **Custom Year-by-Year**) | **Fixed** | **Fixed**, **Custom Year-by-Year** | Chooses whether round-trip efficiency (RTE) is one fixed percentage or varies year by year |
+| **Round-Trip Efficiency including Auxiliary** (Fixed mode) | 78% | 50–99% | Round-trip efficiency; its square root is applied to both the charge and discharge legs |
+| **📋  Edit Year-by-Year RTE Profile…** (Custom mode) | status **No custom profile set** | per year 50–99%; must cover every year to Battery EOL | Opens an editor for an RTE that varies year by year to Battery EOL |
+
+## Depth of discharge and state of health
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Depth of Discharge (DoD)** | 90% | 50–100% | Fraction of nameplate energy usable per cycle |
+| **Initial State of Health (SOH)** | 100% | 50–100% | Starting battery health at Year 0 |
+
+## Battery end-of-life
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| Battery EOL basis (**In Years** / **In Total Cycles**) | **In Years** | **In Years**, **In Total Cycles** | Chooses whether the battery's end-of-life is defined by age or by cumulative cycles |
+| **Battery EOL (End-of-Life)** (Years basis) | 20 years | 5–30 years | Age at which the pack reaches end-of-life and is replaced or augmented |
+| **Rated Cycle Life** (Cycles basis) | 6000 cycles | 100–20,000 cycles | Rated Equivalent-Full-Cycle life; end-of-life hits when cumulative EFCs reach this |
+| **End-of-Warranty SOH @ N** (Cycles basis) | 70% | 40–100% | Warrantied SOH at the rated cycle count |
+| **⚙  Configure Cycles & Charge/Discharge Windows…** (Cycles basis) | 1 cycle/day; discharge and charge hour-windows default per project type | Hour ranges 0–24, half-open, overnight wrap allowed | Opens a project-type-aware dialog defining cycles per day and discharge/charge windows — for a Standalone project, the grid-charge method too |
+
+## C-rate
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **C-Rate  (Power ÷ Energy)** | 0.25 | 0.1–2.0 | Power/Energy sizing ratio for the BESS |
+
+## End-of-life strategy
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| EOL Strategy (**Replacement (full swap)** / **Augmentation (top-up)**) | **Replacement (full swap)** | **Replacement (full swap)**, **Augmentation (top-up)** | Chooses whether the pack is fully replaced at end-of-life or topped up instead |
+| Augmentation mode (**Automatic (restore to nameplate)** / **Manual**) | **Automatic (restore to nameplate)** | **Automatic (restore to nameplate)**, **Manual** | Automatic tops the pack up every EOL-interval year to restore nameplate; Manual opens the schedule editor below |
+| **📋  Edit Augmentation Schedule…** (Manual) | status **No augmentation schedule set** | Table of Year, Capacity (MWh) rows; Year must be within 1–Project Life | A schedule of augmentation tranches; each new tranche degrades from its own install year and books its own CAPEX |
+
+## SOH degradation
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| Battery SOH Degradation (**Linear (Year-1 + Annual)** / **Custom Year-by-Year**) | **Linear (Year-1 + Annual)** | **Linear (Year-1 + Annual)**, **Custom Year-by-Year** | Chooses whether SOH loss follows a fixed Year-1-plus-annual formula or a custom year-by-year curve |
+| **SOH Loss Year-1** (Linear) | 2.5%/yr | 0–20%/yr | Battery SOH loss in Year 1 |
+| **SOH Loss Year-2+** (Linear) | 2.0%/yr | 0–10%/yr | Annual SOH loss from Year 2 onward |
+| **📋  Edit Year-by-Year SOH Profile…** (Custom) | status **No custom profile set**, pre-filled from the Linear formula | per year 0–100%; must cover every project year | Custom year-by-year SOH curve; a **↺  Fill from Linear** button repopulates it from the Linear settings |
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Capacity and DFR targets"
+    href="/bess/inputs/sizing"
+    description="Contracted Capacity, project life and the starting BESS energy"
+  />
+  <Card
+    title="Generation degradation"
+    href="/bess/inputs/degradation"
+    description="How Solar and Wind generation itself declines over the project life"
+  />
+  <Card
+    title="CAPEX"
+    href="/bess/inputs/capex"
+    description="Capital cost per installed MW and MWh"
+  />
+</Cards>

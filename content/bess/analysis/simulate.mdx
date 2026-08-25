@@ -1,0 +1,67 @@
+---
+title: Simulate
+description: Run the dispatch model once against the current inputs, and read the result across the four result tabs.
+---
+
+**▶  Simulate** runs one case: the dispatch model, the monthly DFR
+(Delivery Fulfilment Ratio) check, and the full financial model, built from
+whatever Solar, Wind, BESS, Peak-hour and cost inputs are currently set
+across the input tabs. It answers what this exact configuration delivers —
+for a search across sizes instead, see [Optimise](/bess/analysis/optimise).
+
+## What it needs
+
+| Requirement | Why |
+| --- | --- |
+| A generation data file loaded, unless the project type is **4.  Standalone BESS (grid-charged)** | Solar and Wind sources need a profile to dispatch against; a Standalone project builds its own calendar internally, so this step doesn't apply to it |
+| This device activated | **▶  Simulate** needs active access, the same as **⚙  Optimise** and every export |
+
+See [Generation data](/bess/inputs/data) for the CSV a generation-backed
+project needs, and [How access works](/bess/access/overview) for what
+activating this device involves.
+
+## Running it
+
+Click **▶  Simulate**, above the input tabs. The inputs across every tab are
+collected first, then the run itself happens on a background thread, so the
+rest of the window stays usable while it works. The status bar reports which
+project year the financial model is on as it steps through them, alongside a
+progress bar.
+
+## The run summary
+
+When the run finishes, the status bar carries a single summary line: the
+result's IRR, NPV and CAPEX, and the Solar, Wind and BESS sizing the run
+used.
+
+## Results appear after a run
+
+A finished run fills all **four** result tabs — **📈 Dashboard**,
+**📋 DFR Table**, **💹 Financials**, **📝 Summary** — and the result
+notebook switches to the **📈 Dashboard** tab on its own, so the result is
+in front of you without an extra click.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Optimise"
+    href="/bess/analysis/optimise"
+    description="Search Solar, Wind and BESS size instead of running one fixed case"
+  />
+  <Card
+    title="Sensitivity analysis"
+    href="/bess/analysis/sensitivity"
+    description="Test how a Simulate or Optimise result responds to a changed input"
+  />
+  <Card
+    title="How dispatch works"
+    href="/bess/concepts/how-dispatch-works"
+    description="The 15-minute model Simulate and Optimise both run"
+  />
+  <Card
+    title="Generation data"
+    href="/bess/inputs/data"
+    description="Loading the CSV a generation-backed project dispatches against"
+  />
+</Cards>
