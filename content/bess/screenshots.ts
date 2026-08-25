@@ -380,6 +380,18 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
     annotations: "Bracket row 1 as drawing tools and row 2 as edit/canvas controls; circle the layer toggles.",
     priority: 2,
   },
+  // ── Exports ────────────────────────────────────────────────────────────
+  {
+    id: "bess-exports-pdf-report-file-menu",
+    file: "bess/exports/file-menu.png",
+    page: "/bess/exports/pdf-report",
+    title: "The File menu's report and data exports",
+    alt: "The File menu open, listing the project save/open actions above every report and data export action.",
+    what: "The File menu open, showing Save Project (.slb)…, Open Project (.slb)…, Load Generation CSV…, Export PDF Report…, Export Plot (PNG)…, Save Project Report (Word)…, Export Report (TXT)…, Export DFR CSV…, and Export Time-Series CSV (Dashboard Data)…, in that order.",
+    state: "Click File in the menu bar and capture it open, without clicking any item.",
+    annotations: "",
+    priority: 1,
+  },
 ]
 
 /** Lookup used by `<Screenshot id="…" />`. */

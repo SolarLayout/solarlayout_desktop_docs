@@ -1,0 +1,75 @@
+---
+title: Data exports
+description: Every CSV, plot and text export with its exact action label and file type, plus saving and opening a project as .slb.
+---
+
+Beyond the [PDF](/bess/exports/pdf-report) and [Word](/bess/exports/word-report)
+reports, the application exports the same run as CSV, plot and plain-text
+files, and saves the whole session as a project file you can reopen later.
+
+## The data and text exports
+
+| Action | Produces |
+| --- | --- |
+| **Export DFR CSV…** / **📊 Save DFR CSV** | Monthly DFR `.csv`; plus a second `<name>_15min.csv` per-interval detail file when a 15-minute DFR target is set |
+| **Export Time-Series CSV (Dashboard Data)…** / **🕒 Time-Series CSV** | A 15-minute `.csv` of every dashboard series — solar/wind/total generation, contracted capacity, scheduled/delivered, exported energy, battery charge/discharge, SOC, SOH |
+| **Export Plot (PNG)…** / **💾 Save Plot** | The Dashboard figure, saved as `.png` or `.pdf` — both extensions are offered in the same save dialog, at 150 dpi |
+| **Export Report (TXT)…** | The same plain-text report as the Summary tab, saved as `.txt` |
+
+<Screenshot id="bess-results-summary" caption="The Summary tab's export toolbar, carrying the buttons that duplicate these File-menu actions" />
+
+The first three each have a duplicate button on the Summary tab toolbar,
+listed beside the File-menu label above. **Export Report (TXT)…** lives only
+in the File menu. See [the summary report](/bess/results/summary) for the
+toolbar in context.
+
+<Callout type="info">
+Every export on this table needs this device activated — the same
+requirement as **▶  Simulate**, **⚙  Optimise**, and the PDF and Word
+reports. See [How access works](/bess/access/overview).
+</Callout>
+
+## Saving and opening a project
+
+**Save Project (.slb)…**, in the File menu, and the top banner's **Save**
+icon button write the whole session to a single `.slb` file — your inputs,
+the loaded generation data, the last run's results, and the Plant Layout/SLD
+drawing. **Open Project (.slb)…**, in the File menu, and the top banner's
+**Open** icon button restore all of that from a `.slb` file.
+
+Neither needs this device activated — saving and opening a project is free,
+along with loading a generation profile and the plant designer itself.
+
+<Callout type="info">
+A `.slb` file is not plain text. It carries a compressed payload behind its
+own file signature, so it opens only in the application — not in a text
+editor.
+</Callout>
+
+For what the plant designer's own inputs and drawings do when you save or
+open a project, see [Exporting the drawing](/bess/plant/export).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="The PDF report"
+    href="/bess/exports/pdf-report"
+    description="The multi-page PDF version of the same run"
+  />
+  <Card
+    title="The Word report"
+    href="/bess/exports/word-report"
+    description="The eight-section .docx report built from the same run"
+  />
+  <Card
+    title="The summary report"
+    href="/bess/results/summary"
+    description="The export toolbar these actions duplicate"
+  />
+  <Card
+    title="Exporting the drawing"
+    href="/bess/plant/export"
+    description="PDF, DXF and KMZ export from the plant designer, and what it saves into .slb"
+  />
+</Cards>
