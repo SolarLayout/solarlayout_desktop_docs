@@ -6,27 +6,27 @@ description: Search Solar, Wind and BESS size for the highest IRR, and compare t
 **⚙  Optimise** doesn't run one fixed case — it searches for a Solar, Wind
 and BESS mix instead, and hands back three scenarios to choose between
 rather than a single result. For a single fixed configuration, see
-[Simulate](/bess/analysis/simulate).
+[Simulate](/docs/bess/analysis/simulate).
 
 ## What it needs
 
 The same as Simulate: a loaded generation data file unless the project type
 is **4.  Standalone BESS (grid-charged)**, and this device activated —
 **⚙  Optimise** is gated the same way as **▶  Simulate** and every export.
-See [Generation data](/bess/inputs/data) and
-[How access works](/bess/access/overview).
+See [Generation data](/docs/bess/inputs/data) and
+[How access works](/docs/bess/access/overview).
 
 Optimise also reads **Project Target IRR**, on the **📊 OPEX** tab — see
-[OPEX, revenue and penalties](/bess/inputs/opex#optimisation-target) — and
+[OPEX, revenue and penalties](/docs/bess/inputs/opex#optimisation-target) — and
 falls back to 15% if that field can't be parsed.
 
 ## The size search
 
 The search runs over three free variables: Solar MW, Wind MW and BESS MWh —
 the same fields set as a starting point in
-[Initial sizing](/bess/inputs/sizing#initial-sizing). Its bounds respect the
+[Initial sizing](/docs/bess/inputs/sizing#initial-sizing). Its bounds respect the
 project's topology: a source excluded by the
-[project type](/bess/project-types) is pinned to approximately 0 MW, so the
+[project type](/docs/bess/project-types) is pinned to approximately 0 MW, so the
 search never adds it back in.
 
 ## Three scenarios
@@ -66,22 +66,22 @@ the window — alongside a single **✕  Close** button.
 <Cards>
   <Card
     title="Simulate"
-    href="/bess/analysis/simulate"
+    href="/docs/bess/analysis/simulate"
     description="Run a single fixed configuration instead of searching for one"
   />
   <Card
     title="Sensitivity analysis"
-    href="/bess/analysis/sensitivity"
+    href="/docs/bess/analysis/sensitivity"
     description="Test how a Simulate or Optimise result responds to a changed input"
   />
   <Card
     title="Capacity and DFR targets"
-    href="/bess/inputs/sizing"
+    href="/docs/bess/inputs/sizing"
     description="The starting Solar, Wind and BESS sizes the search begins from"
   />
   <Card
     title="OPEX, revenue and penalties"
-    href="/bess/inputs/opex"
+    href="/docs/bess/inputs/opex"
     description="Where Project Target IRR is set"
   />
 </Cards>

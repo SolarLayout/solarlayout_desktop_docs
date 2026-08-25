@@ -15,7 +15,7 @@ import {
  *
  * Mirrors `tests/content.spec.ts` for the `content/docs` tree — see that file
  * for the rationale. Kept as a parallel suite rather than a parameterised one
- * so the `/docs` and `/bess` trees can diverge independently.
+ * so the `/docs` and `/docs/bess` trees can diverge independently.
  *
  * The page list comes off disk, so this grows with the content on its own.
  */
@@ -63,21 +63,21 @@ test("every BESS page is reachable from the sidebar navigation", () => {
   const listed = new Set<string>()
   for (const { section, pages } of nav) {
     for (const p of pages) {
-      listed.add(section ? `/bess/${section}/${p}` : `/bess/${p}`)
+      listed.add(section ? `/docs/bess/${section}/${p}` : `/docs/bess/${p}`)
       // A root entry naming a directory stands for that whole section.
-      if (!section) listed.add(`/bess/${p}`)
+      if (!section) listed.add(`/docs/bess/${p}`)
     }
   }
 
   const sectionNames = new Set(nav.map((n) => n.section).filter(Boolean))
   const orphans = PAGES.filter((p) => {
     if (listed.has(p)) return false
-    // `/bess/<section>/<page>` is covered when the section itself is listed
-    // at the root AND the page is listed in that section's own meta.
-    const parts = p.split("/").filter(Boolean) // ["bess", section?, page]
-    if (parts.length === 3 && sectionNames.has(parts[1])) {
-      const sec = nav.find((n) => n.section === parts[1])
-      return !sec?.pages.includes(parts[2])
+    // `/docs/bess/<section>/<page>` is covered when the section itself is
+    // listed at the root AND the page is listed in that section's own meta.
+    const parts = p.split("/").filter(Boolean) // ["docs", "bess", section?, page]
+    if (parts.length === 4 && sectionNames.has(parts[2])) {
+      const sec = nav.find((n) => n.section === parts[2])
+      return !sec?.pages.includes(parts[3])
     }
     return true
   })
@@ -88,13 +88,13 @@ test("every BESS page is reachable from the sidebar navigation", () => {
   ).toEqual([])
 })
 
-test("every internal /bess link in the content resolves to a real page", () => {
+test("every internal /docs/bess link in the content resolves to a real page", () => {
   const valid = new Set(PAGES)
-  valid.add("/bess")
+  valid.add("/docs/bess")
 
   const broken = bessInternalLinks().filter(({ href }) => {
     const withoutHash = href.split("#")[0].replace(/\/$/, "")
-    if (withoutHash === "" || withoutHash === "/bess") return false
+    if (withoutHash === "" || withoutHash === "/docs/bess") return false
     return !valid.has(withoutHash)
   })
 

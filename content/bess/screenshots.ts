@@ -1,6 +1,6 @@
 /**
  * BESS screenshot manifest — the single source of truth for every image the
- * `/bess` docs tree references.
+ * `/docs/bess` docs tree references.
  *
  * A standalone twin of `content/screenshots.ts` (same `ScreenshotSpec` shape,
  * imported rather than redeclared to avoid drift), kept as its own file
@@ -35,7 +35,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-install-store-listing",
     file: "bess/install/store-listing.png",
-    page: "/bess/install/windows",
+    page: "/docs/bess/install/windows",
     title: "Microsoft Store listing",
     alt: "The BESS Desktop listing in the Microsoft Store, showing the publisher and the Get button.",
     what: "The Microsoft Store app open on the BESS Desktop listing, with the Rensaar publisher name and the Get / Install button visible.",
@@ -46,7 +46,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-install-store-updates",
     file: "bess/install/store-updates.png",
-    page: "/bess/install/updates",
+    page: "/docs/bess/install/updates",
     title: "Store Library and updates",
     alt: "The Microsoft Store Library page listing installed applications and any updates waiting for them.",
     what: "The Store's Library page, with BESS Desktop listed and the Get updates button visible.",
@@ -58,7 +58,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-intro-window",
     file: "bess/intro/window.png",
-    page: "/bess/intro",
+    page: "/docs/bess/intro",
     title: "The main window",
     alt: "The BESS Desktop main window, with the input notebook on the left and the result notebook on the right.",
     what: "The whole main window: the navy top banner with its title, the left input notebook with the Simulate and Optimise buttons above its tabs, and the right result notebook with its four tabs showing a completed run.",
@@ -69,7 +69,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-getting-started-window",
     file: "bess/getting-started/window.png",
-    page: "/bess/getting-started",
+    page: "/docs/bess/getting-started",
     title: "The main window before an analysis",
     alt: "The main window straight after launch, before a generation profile is loaded or a run has been made.",
     what: "The whole window at first launch: the top banner, the menu bar, the left input notebook on its first tab, and the empty right-hand result notebook.",
@@ -80,7 +80,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-getting-started-tabs",
     file: "bess/getting-started/tabs.png",
-    page: "/bess/getting-started",
+    page: "/docs/bess/getting-started",
     title: "The input and result tab strips",
     alt: "The eight input tabs on the left and the four result tabs on the right, side by side.",
     what: "A close view of both tab strips: Data, Peak, Sizing, BESS, Degrad., CAPEX, OPEX, Finance on the left; Dashboard, DFR Table, Financials, Summary on the right.",
@@ -91,7 +91,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-first-analysis-simulate",
     file: "bess/first-analysis/simulate.png",
-    page: "/bess/first-analysis",
+    page: "/docs/bess/first-analysis",
     title: "Running Simulate",
     alt: "The status bar reporting the financial model's year-by-year progress while Simulate runs.",
     what: "The Simulate button and, below it, the status bar reporting Financial model: year <n>/<total>… with the progress bar advancing.",
@@ -102,7 +102,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-first-analysis-dashboard",
     file: "bess/first-analysis/dashboard.png",
-    page: "/bess/first-analysis",
+    page: "/docs/bess/first-analysis",
     title: "The Dashboard after a run",
     alt: "The Dashboard tab after Simulate finishes, showing the header strip and all six panels.",
     what: "The whole Dashboard tab after a completed run: the header strip reporting Solar/Wind/BESS size and IRR/Contracted Capacity, all six panels, and the day slider beneath the first two.",
@@ -113,7 +113,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-project-types-radio",
     file: "bess/project-types/radio.png",
-    page: "/bess/project-types",
+    page: "/docs/bess/project-types",
     title: "The project type radio group",
     alt: "The four project type options on the Data tab, with Solar + Wind + BESS selected.",
     what: "The project type radio group with all four options readable, plus the Peak-Shift dispatch checkbox beneath it.",
@@ -125,7 +125,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-inputs-data",
     file: "bess/inputs/data.png",
-    page: "/bess/inputs/data",
+    page: "/docs/bess/inputs/data",
     title: "The Data tab",
     alt: "The Data tab's CSV Path field, Browse and Load & Preview CSV buttons, and the CSV format note.",
     what: "The Generation Data File group: the CSV Path entry, the Browse… button, the Load & Preview CSV button, the status line beneath, and the CSV Format Requirements note.",
@@ -136,7 +136,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-inputs-peak-window",
     file: "bess/inputs/peak-window.png",
-    page: "/bess/inputs/peak-window",
+    page: "/docs/bess/inputs/peak-window",
     title: "The Peak tab",
     alt: "The Peak tab's Quick Preset dropdown and the 24-hour checkbox grid, with 18:00 to 21:00 ticked.",
     what: "The Quick Preset combobox, the 4-column by 6-row grid of 24 hour checkboxes, and the selection counter beneath it.",
@@ -147,7 +147,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-inputs-sizing",
     file: "bess/inputs/sizing.png",
-    page: "/bess/inputs/sizing",
+    page: "/docs/bess/inputs/sizing",
     title: "The Sizing tab",
     alt: "The Sizing tab's Contracted Capacity radio, Project/Contract Life, DFR Targets and Initial Sizing groups.",
     what: "The whole Sizing tab: the Contracted Capacity Fixed Value/CSV Profile radio, the Project/Contract Life field, all five DFR Target fields, and the Initial Sizing group (Solar Installed, Wind Installed, BESS Energy).",
@@ -158,7 +158,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-inputs-bess",
     file: "bess/inputs/bess.png",
-    page: "/bess/inputs/bess",
+    page: "/docs/bess/inputs/bess",
     title: "The BESS tab",
     alt: "The BESS tab's RTE mode, DoD/SOH fields, EOL basis radio, C-Rate, EOL strategy and SOH degradation groups.",
     what: "The BESS tab groups in order: the RTE Mode radio and its Fixed-mode field, Depth of Discharge and Initial SOH, the Battery EOL basis radio with its Years-basis field, C-Rate, the EOL Strategy radio, and the SOH Degradation radio with its Linear fields.",
@@ -169,7 +169,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-inputs-degradation",
     file: "bess/inputs/degradation.png",
-    page: "/bess/inputs/degradation",
+    page: "/docs/bess/inputs/degradation",
     title: "The Degrad. tab",
     alt: "The Degrad. tab's Generation Loss Year-1 and Year-2+ fields.",
     what: "The whole Degrad. tab: the two generation-loss fields and the in-panel formula caption.",
@@ -180,7 +180,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-inputs-capex",
     file: "bess/inputs/capex.png",
-    page: "/bess/inputs/capex",
+    page: "/docs/bess/inputs/capex",
     title: "The CAPEX tab",
     alt: "The CAPEX tab's Solar, Wind and BESS capital cost fields.",
     what: "The whole CAPEX tab: the Solar CAPEX, Wind CAPEX and BESS CAPEX fields, and the in-panel Crore note.",
@@ -191,7 +191,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-inputs-opex",
     file: "bess/inputs/opex.png",
-    page: "/bess/inputs/opex",
+    page: "/docs/bess/inputs/opex",
     title: "The OPEX tab",
     alt: "The OPEX tab's O&M, Revenue & Penalty, Export Price and Grid Charging groups.",
     what: "The OPEX tab groups in order: Operation & Maintenance, Revenue/Export/Penalty including the Apply Annual CUF Cap checkbox, the Export Price Fixed Price/CSV radio, Grid Charging, and the Optimisation Target field.",
@@ -202,7 +202,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-inputs-finance",
     file: "bess/inputs/finance.png",
-    page: "/bess/inputs/finance",
+    page: "/docs/bess/inputs/finance",
     title: "The Finance tab",
     alt: "The Finance tab's discounting, LCOE basis, payment delay, debt and tax groups.",
     what: "The Finance tab groups in order: Discounting & Escalation, the LCOE Energy Basis combobox, Payment Delay/Working Capital, the Enable debt and Enable tax checkboxes with their sub-fields, and Advanced Tech-Economic.",
@@ -214,7 +214,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-concepts-how-dispatch-works-chart",
     file: "bess/concepts/how-dispatch-works/dispatch-chart.png",
-    page: "/bess/concepts/how-dispatch-works",
+    page: "/docs/bess/concepts/how-dispatch-works",
     title: "The dispatch chart",
     alt: "The Dashboard's Battery Charge / Discharge & State of Charge panel, showing charge, discharge and grid-charge fills against a state-of-charge line.",
     what: "The Battery Charge / Discharge & State of Charge panel from the Dashboard tab: the charge, discharge and grid-charge fills on the left axis, the state-of-charge line on the twin right axis, and the purple shading on any day with grid charging.",
@@ -225,7 +225,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-concepts-dfr-table",
     file: "bess/concepts/dfr/dfr-table.png",
-    page: "/bess/concepts/dfr",
+    page: "/docs/bess/concepts/dfr",
     title: "The DFR Table tab",
     alt: "The DFR Table tab listing one row per month, with green and red row shading marking months that met or missed their DFR targets.",
     what: "The DFR Table tab: the full column set for a few months, with at least one green-shaded row (all targets met) and one red-shaded row (a target missed) visible together.",
@@ -236,7 +236,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-concepts-degradation-and-eol-soh-editor",
     file: "bess/concepts/degradation-and-eol/soh-editor.png",
-    page: "/bess/concepts/degradation-and-eol",
+    page: "/docs/bess/concepts/degradation-and-eol",
     title: "The Year-by-Year SOH Profile editor",
     alt: "The Year-by-Year SOH Profile editor, a table of project year against SOH percentage, with a Fill from Linear button above it.",
     what: "The Edit Year-by-Year SOH Profile dialog: the Year/SOH% table pre-filled from the Linear formula, and the Fill from Linear button.",
@@ -248,7 +248,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-analysis-optimise-scenario-comparison",
     file: "bess/analysis/optimise/scenario-comparison.png",
-    page: "/bess/analysis/optimise",
+    page: "/docs/bess/analysis/optimise",
     title: "The Scenario Comparison window",
     alt: "The Optimisation — Scenario Comparison window, with one column per scenario and Apply buttons beneath each.",
     what: "The whole Scenario Comparison window: the three scenario columns with their row values, the shaded highest-IRR column and winning cells, the bottom banner, and each column's Apply button plus the Close button.",
@@ -259,7 +259,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-analysis-sensitivity-tornado",
     file: "bess/analysis/sensitivity/tornado.png",
-    page: "/bess/analysis/sensitivity",
+    page: "/docs/bess/analysis/sensitivity",
     title: "The Tornado Chart tab",
     alt: "The Sensitivity Analysis window's Tornado Chart tab, showing a horizontal bar chart of each driver's swing sorted by size.",
     what: "The Tornado Chart tab: the Variation ± % and Metric inputs, the Run Tornado button, and the resulting horizontal bar chart sorted by swing magnitude.",
@@ -271,7 +271,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-results-dashboard",
     file: "bess/results/dashboard-toolbar.png",
-    page: "/bess/results/dashboard",
+    page: "/docs/bess/results/dashboard",
     title: "The Dashboard toolbar and day slider",
     alt: "The toolbar above the Dashboard's six panels, ending in the Maximize button, with the day slider beneath the first two panels.",
     what: "The narrow toolbar strip above the six panels, ending in the ⛶ Maximize button, plus the Day slider and its scroll instruction beneath the first two panels.",
@@ -282,7 +282,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-results-dfr-table",
     file: "bess/results/dfr-table-columns.png",
-    page: "/bess/results/dfr-table",
+    page: "/docs/bess/results/dfr-table",
     title: "The DFR Table tab's column groups",
     alt: "The DFR Table tab listing one row per month, with its column groups and green/red row shading.",
     what: "The full DFR Table tab: the Month column, the delivery-percentage columns, the met/missed flag columns, the shortfall columns, the penalty columns and the export columns, with at least one green row and one red row visible.",
@@ -293,7 +293,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-results-financials",
     file: "bess/results/financials-table.png",
-    page: "/bess/results/financials",
+    page: "/docs/bess/results/financials",
     title: "The Financials tab",
     alt: "The Financials tab's headline summary lines above the per-year cash-flow table.",
     what: "The headline summary lines at the top of the Financials tab, and the per-year table beneath it with at least one negative-NCF row and one replacement/augmentation row visible.",
@@ -304,7 +304,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-results-summary",
     file: "bess/results/summary-report.png",
-    page: "/bess/results/summary",
+    page: "/docs/bess/results/summary",
     title: "The Summary tab",
     alt: "The Summary tab's plain-text project report above its row of export buttons.",
     what: "The dark console-style report text, and the full export toolbar: 📥 Export PDF, 💾 Save Plot, 📄 Save Report, 📊 Save DFR CSV, 🕒 Time-Series CSV, 📈 Sensitivity.",
@@ -316,7 +316,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-access-license-window",
     file: "bess/access/license-window.png",
-    page: "/bess/access/activate",
+    page: "/docs/bess/access/activate",
     title: "The License window",
     alt: "The License window on a device with no active access, showing the Device ID field, its Copy button, and the Get Free Access button.",
     what: "Help ▸ License… on a device with no active access: the ✗ No access status headline and message, the Your Device ID (identifies this computer to SolarLayout:) field with its Copy button, and the Get Free Access, Contact Us, Refresh and Close buttons.",
@@ -327,7 +327,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-access-web-activation",
     file: "bess/access/web-activation.png",
-    page: "/bess/access/activate",
+    page: "/docs/bess/access/activate",
     title: "The web activation page",
     alt: "The browser page opened by Get Free Access, addressed to this device's Device ID.",
     what: "The browser page that opens after clicking Get Free Access, addressed to this device's Device ID.",
@@ -339,7 +339,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-plant-overview-designer",
     file: "bess/plant/designer-window.png",
-    page: "/bess/plant/overview",
+    page: "/docs/bess/plant/overview",
     title: "The Plant Layout & SLD designer",
     alt: "The plant designer window, showing the Plant Layout tab's input form on the left, alongside its drawing canvas.",
     what: "The full designer window on the Plant Layout tab with default inputs: the three-group input form on the left (equipment counts, Equipment size, Spacing & geo-reference), the Transformer Type control, and the empty drawing canvas with its toolbar, before Generate Layout is clicked.",
@@ -350,7 +350,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-plant-generate-layout-result",
     file: "bess/plant/generated-layout.png",
-    page: "/bess/plant/generate-layout",
+    page: "/docs/bess/plant/generate-layout",
     title: "A generated plant layout",
     alt: "The Plant Layout canvas after Generate Layout, showing the south-to-north stack of containers, PCS, LV panels, transformers and MV panels joined by connection lines.",
     what: "The Plant Layout canvas after clicking Generate Layout with the default inputs, showing the south-to-north equipment stack, the routed connection lines, and the equipment count label.",
@@ -361,7 +361,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-plant-generate-sld-result",
     file: "bess/plant/generated-sld.png",
-    page: "/bess/plant/generate-sld",
+    page: "/docs/bess/plant/generate-sld",
     title: "A generated single-line diagram",
     alt: "The Single Line Diagram canvas after Generate SLD, showing the same plant topology drawn as IEC schematic symbols.",
     what: "The Single Line Diagram canvas after clicking ⚙  Generate SLD with the default inputs, showing battery, PCS and transformer symbols connected by wires, with LV and MV panels still drawn as rectangles.",
@@ -372,7 +372,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-plant-cad-editor-toolbar",
     file: "bess/plant/cad-toolbar.png",
-    page: "/bess/plant/cad-editor",
+    page: "/docs/bess/plant/cad-editor",
     title: "The CAD toolbar",
     alt: "The drawing editor's two toolbar rows, plus the sheet-size combobox and the layer toggles.",
     what: "Both toolbar rows in full: the drawing tools (Select, Move, Pan, Line, Rect, Circle, Polygon, Text, Measure, Dimension, Rotate, Edit Text) and the second row (Copy, Paste, Delete, Undo, Redo, Fit, Snap, Ortho, Import), plus the sheet-size combobox, Add Sheet, and the six layer toggles.",
@@ -384,7 +384,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "bess-exports-pdf-report-file-menu",
     file: "bess/exports/file-menu.png",
-    page: "/bess/exports/pdf-report",
+    page: "/docs/bess/exports/pdf-report",
     title: "The File menu's report and data exports",
     alt: "The File menu open, listing the project save/open actions above every report and data export action.",
     what: "The File menu open, showing Save Project (.slb)…, Open Project (.slb)…, Load Generation CSV…, Export PDF Report…, Export Plot (PNG)…, Save Project Report (Word)…, Export Report (TXT)…, Export DFR CSV…, and Export Time-Series CSV (Dashboard Data)…, in that order.",

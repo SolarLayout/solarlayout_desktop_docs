@@ -19,7 +19,7 @@ const PRODUCTS = [
     Logo: BessLogo,
     name: "BESS Desktop",
     blurb: "Design hybrid renewable-energy and battery-storage projects: dispatch simulation, optimisation, the financial model, and plant layout.",
-    href: "/bess",
+    href: "/docs/bess",
   },
 ] as const
 

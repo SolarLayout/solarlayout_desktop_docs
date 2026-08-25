@@ -113,7 +113,7 @@ export function internalLinks(): { href: string; file: string }[] {
 }
 
 /**
- * `/bess`-tree variants of the helpers above. Kept parallel rather than
+ * `/docs/bess`-tree variants of the helpers above. Kept parallel rather than
  * generalising the `/docs` helpers, since those are hard-coded to
  * `content/docs` and the `/docs/` prefix throughout.
  */
@@ -131,7 +131,7 @@ export function allBessDocsPaths(): string[] {
       if (entry.isDirectory()) {
         walk(full, `${prefix}${entry.name}/`)
       } else if (entry.name.endsWith(".mdx")) {
-        out.push(`/bess/${prefix}${entry.name.replace(/\.mdx$/, "")}`)
+        out.push(`/docs/bess/${prefix}${entry.name.replace(/\.mdx$/, "")}`)
       }
     }
   }
@@ -192,7 +192,7 @@ export function bessReferencedScreenshotIds(): { id: string; file: string }[] {
   return out
 }
 
-/** Internal `/bess/…` links written in the BESS content, with the file that wrote them. */
+/** Internal `/docs/bess/…` links written in the BESS content, with the file that wrote them. */
 export function bessInternalLinks(): { href: string; file: string }[] {
   const out: { href: string; file: string }[] = []
 
@@ -206,12 +206,12 @@ export function bessInternalLinks(): { href: string; file: string }[] {
       if (!entry.name.endsWith(".mdx")) continue
       const src = fs.readFileSync(full, "utf8")
       const rel = path.relative(process.cwd(), full)
-      // Markdown links: [text](/bess/…)
-      for (const m of src.matchAll(/\]\((\/bess\/[^)\s]*)\)/g)) {
+      // Markdown links: [text](/docs/bess/…)
+      for (const m of src.matchAll(/\]\((\/docs\/bess\/[^)\s]*)\)/g)) {
         out.push({ href: m[1], file: rel })
       }
-      // Card / component props: href="/bess/…"
-      for (const m of src.matchAll(/href="(\/bess\/[^"]*)"/g)) {
+      // Card / component props: href="/docs/bess/…"
+      for (const m of src.matchAll(/href="(\/docs\/bess\/[^"]*)"/g)) {
         out.push({ href: m[1], file: rel })
       }
     }

@@ -1,8 +1,8 @@
 /**
- * BessLanding — the BESS Desktop docs landing surface, rendered at `/bess`.
- * The BESS index lives in a Next.js route group `(landing)` so the
- * Fumadocs `DocsLayout` (sidebar + table of contents) does NOT wrap it —
- * only `/bess/<slug>` gets that chrome.
+ * BessLanding — the BESS Desktop docs landing surface, rendered at
+ * `/docs/bess`. The BESS index lives in a Next.js route group `(landing)`
+ * so the Fumadocs `DocsLayout` (sidebar + table of contents) does NOT wrap
+ * it — only `/docs/bess/<slug>` gets that chrome.
  *
  * Mirrors `DocsLanding`'s compositional language (hero + "Start here" row +
  * topic grid + footer), swapped to the BESS mark and BESS content tree.
@@ -41,19 +41,19 @@ const HIGHLIGHTS: HighlightCard[] = [
     icon: Download,
     title: "Install BESS Desktop",
     meta: "5 min",
-    href: "/bess/install/windows",
+    href: "/docs/bess/install/windows",
   },
   {
     icon: KeyRound,
     title: "Activate this device",
     meta: "2 min",
-    href: "/bess/access/activate",
+    href: "/docs/bess/access/activate",
   },
   {
     icon: Sparkles,
     title: "Your first analysis",
     meta: "30 min walkthrough",
-    href: "/bess/first-analysis",
+    href: "/docs/bess/first-analysis",
   },
 ]
 
@@ -68,99 +68,99 @@ const TOPICS: TopicSection[] = [
     icon: Rocket,
     category: "Onboarding",
     links: [
-      { label: "What BESS Desktop does", href: "/bess/intro" },
-      { label: "How access works", href: "/bess/access/overview" },
-      { label: "Getting started", href: "/bess/getting-started" },
-      { label: "Choosing a project type", href: "/bess/project-types" },
+      { label: "What BESS Desktop does", href: "/docs/bess/intro" },
+      { label: "How access works", href: "/docs/bess/access/overview" },
+      { label: "Getting started", href: "/docs/bess/getting-started" },
+      { label: "Choosing a project type", href: "/docs/bess/project-types" },
     ],
   },
   {
     icon: SlidersHorizontal,
     category: "Inputs",
     links: [
-      { label: "Capacity and DFR targets", href: "/bess/inputs/sizing" },
-      { label: "Battery parameters", href: "/bess/inputs/bess" },
-      { label: "CAPEX", href: "/bess/inputs/capex" },
-      { label: "Financing and discounting", href: "/bess/inputs/finance" },
+      { label: "Capacity and DFR targets", href: "/docs/bess/inputs/sizing" },
+      { label: "Battery parameters", href: "/docs/bess/inputs/bess" },
+      { label: "CAPEX", href: "/docs/bess/inputs/capex" },
+      { label: "Financing and discounting", href: "/docs/bess/inputs/finance" },
     ],
   },
   {
     icon: Layers,
     category: "Concepts",
     links: [
-      { label: "How dispatch works", href: "/bess/concepts/how-dispatch-works" },
-      { label: "The battery model", href: "/bess/concepts/battery-model" },
-      { label: "Degradation, EOL and augmentation", href: "/bess/concepts/degradation-and-eol" },
-      { label: "Delivery Fulfilment Ratio (DFR)", href: "/bess/concepts/dfr" },
+      { label: "How dispatch works", href: "/docs/bess/concepts/how-dispatch-works" },
+      { label: "The battery model", href: "/docs/bess/concepts/battery-model" },
+      { label: "Degradation, EOL and augmentation", href: "/docs/bess/concepts/degradation-and-eol" },
+      { label: "Delivery Fulfilment Ratio (DFR)", href: "/docs/bess/concepts/dfr" },
     ],
   },
   {
     icon: Activity,
     category: "Analysis",
     links: [
-      { label: "Your first analysis", href: "/bess/first-analysis" },
-      { label: "Simulate", href: "/bess/analysis/simulate" },
-      { label: "Optimise", href: "/bess/analysis/optimise" },
-      { label: "Sensitivity analysis", href: "/bess/analysis/sensitivity" },
+      { label: "Your first analysis", href: "/docs/bess/first-analysis" },
+      { label: "Simulate", href: "/docs/bess/analysis/simulate" },
+      { label: "Optimise", href: "/docs/bess/analysis/optimise" },
+      { label: "Sensitivity analysis", href: "/docs/bess/analysis/sensitivity" },
     ],
   },
   {
     icon: BarChart3,
     category: "Reading results",
     links: [
-      { label: "The dashboard", href: "/bess/results/dashboard" },
-      { label: "The summary report", href: "/bess/results/summary" },
-      { label: "The financials table", href: "/bess/results/financials" },
-      { label: "The DFR table", href: "/bess/results/dfr-table" },
+      { label: "The dashboard", href: "/docs/bess/results/dashboard" },
+      { label: "The summary report", href: "/docs/bess/results/summary" },
+      { label: "The financials table", href: "/docs/bess/results/financials" },
+      { label: "The DFR table", href: "/docs/bess/results/dfr-table" },
     ],
   },
   {
     icon: Landmark,
     category: "The financial model",
     links: [
-      { label: "Return metrics", href: "/bess/financials/metrics" },
-      { label: "Tariffs, export and penalties", href: "/bess/financials/tariffs-and-revenue" },
-      { label: "Debt and tax", href: "/bess/financials/debt-and-tax" },
-      { label: "Payment delay and working capital", href: "/bess/financials/working-capital" },
+      { label: "Return metrics", href: "/docs/bess/financials/metrics" },
+      { label: "Tariffs, export and penalties", href: "/docs/bess/financials/tariffs-and-revenue" },
+      { label: "Debt and tax", href: "/docs/bess/financials/debt-and-tax" },
+      { label: "Payment delay and working capital", href: "/docs/bess/financials/working-capital" },
     ],
   },
   {
     icon: Zap,
     category: "Plant layout & SLD",
     links: [
-      { label: "Plant layout and SLD", href: "/bess/plant/overview" },
-      { label: "Generating the layout", href: "/bess/plant/generate-layout" },
-      { label: "Generating the SLD", href: "/bess/plant/generate-sld" },
-      { label: "Symbols and custom symbols", href: "/bess/plant/symbols" },
+      { label: "Plant layout and SLD", href: "/docs/bess/plant/overview" },
+      { label: "Generating the layout", href: "/docs/bess/plant/generate-layout" },
+      { label: "Generating the SLD", href: "/docs/bess/plant/generate-sld" },
+      { label: "Symbols and custom symbols", href: "/docs/bess/plant/symbols" },
     ],
   },
   {
     icon: FileDown,
     category: "Exports",
     links: [
-      { label: "The PDF report", href: "/bess/exports/pdf-report" },
-      { label: "The Word report", href: "/bess/exports/word-report" },
-      { label: "Data exports", href: "/bess/exports/data-exports" },
+      { label: "The PDF report", href: "/docs/bess/exports/pdf-report" },
+      { label: "The Word report", href: "/docs/bess/exports/word-report" },
+      { label: "Data exports", href: "/docs/bess/exports/data-exports" },
     ],
   },
   {
     icon: Boxes,
     category: "Reference",
     links: [
-      { label: "Every parameter and its default", href: "/bess/reference/parameters" },
-      { label: "Formula reference", href: "/bess/reference/formulas" },
-      { label: "Result table columns", href: "/bess/reference/results-columns" },
-      { label: "Glossary", href: "/bess/reference/glossary" },
+      { label: "Every parameter and its default", href: "/docs/bess/reference/parameters" },
+      { label: "Formula reference", href: "/docs/bess/reference/formulas" },
+      { label: "Result table columns", href: "/docs/bess/reference/results-columns" },
+      { label: "Glossary", href: "/docs/bess/reference/glossary" },
     ],
   },
   {
     icon: LifeBuoy,
     category: "Help",
     links: [
-      { label: "Troubleshooting", href: "/bess/troubleshooting" },
-      { label: "Access problems", href: "/bess/access/troubleshooting" },
-      { label: "Release notes", href: "/bess/releases" },
-      { label: "Getting help", href: "/bess/support" },
+      { label: "Troubleshooting", href: "/docs/bess/troubleshooting" },
+      { label: "Access problems", href: "/docs/bess/access/troubleshooting" },
+      { label: "Release notes", href: "/docs/bess/releases" },
+      { label: "Getting help", href: "/docs/bess/support" },
     ],
   },
 ]
@@ -194,14 +194,14 @@ function HeroBanner() {
 
         <div className="mt-[24px] flex flex-wrap items-center gap-[16px]">
           <Link
-            href="/bess/first-analysis"
+            href="/docs/bess/first-analysis"
             className="inline-flex items-center gap-[6px] rounded-[8px] bg-fd-primary px-[16px] py-[8px] text-[13px] font-medium text-fd-primary-foreground transition-colors hover:opacity-90"
           >
             Start reading
             <ArrowUpRight className="size-[14px]" aria-hidden />
           </Link>
           <Link
-            href="/bess/install/windows"
+            href="/docs/bess/install/windows"
             className="inline-flex items-center gap-[6px] text-[13px] text-fd-muted-foreground transition-colors hover:text-fd-foreground"
           >
             <Download className="size-[14px]" aria-hidden />
@@ -300,7 +300,7 @@ function FooterRow() {
       <div className="text-[12px] text-fd-muted-foreground">
         Can&apos;t find what you need?{" "}
         <Link
-          href="/bess/support"
+          href="/docs/bess/support"
           className="text-fd-foreground underline-offset-2 transition-colors hover:underline"
         >
           Contact support
@@ -308,21 +308,21 @@ function FooterRow() {
       </div>
       <div className="flex items-center gap-[16px]">
         <Link
-          href="/bess/first-analysis"
+          href="/docs/bess/first-analysis"
           className="inline-flex items-center gap-[4px] text-[12px] text-fd-muted-foreground transition-colors hover:text-fd-foreground"
         >
           Start reading
           <ArrowUpRight className="size-[12px]" aria-hidden />
         </Link>
         <Link
-          href="/bess/releases"
+          href="/docs/bess/releases"
           className="inline-flex items-center gap-[4px] text-[12px] text-fd-muted-foreground transition-colors hover:text-fd-foreground"
         >
           Release notes
           <ArrowUpRight className="size-[12px]" aria-hidden />
         </Link>
         <Link
-          href="/bess/reference/parameters"
+          href="/docs/bess/reference/parameters"
           className="inline-flex items-center gap-[4px] text-[12px] text-fd-muted-foreground transition-colors hover:text-fd-foreground"
         >
           Parameter reference

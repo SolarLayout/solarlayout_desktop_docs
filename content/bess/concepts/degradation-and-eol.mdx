@@ -27,7 +27,7 @@ starts from the values the Linear formula would have produced; a
 
 Whichever curve is active, SOH is one of the two factors — alongside depth
 of discharge — that scale nameplate energy down to what the dispatch model
-can actually draw on. See [The battery model](/bess/concepts/battery-model)
+can actually draw on. See [The battery model](/docs/bess/concepts/battery-model)
 for how the two combine.
 
 ## End-of-life: years or cycles
@@ -47,7 +47,7 @@ on the same tab:
   count.
 
 Choosing the cycles basis also changes how the plant is dispatched day to
-day — see [Cycle-mode](/bess/concepts/how-dispatch-works#cycle-mode) in How
+day — see [Cycle-mode](/docs/bess/concepts/how-dispatch-works#cycle-mode) in How
 dispatch works.
 
 ## Replacement vs augmentation
@@ -66,7 +66,7 @@ tab:
   books its own capital cost in the year it's added, separate from the
   original build.
 
-See [Battery parameters](/bess/inputs/bess) for the SOH degradation, Battery
+See [Battery parameters](/docs/bess/inputs/bess) for the SOH degradation, Battery
 EOL and EOL Strategy fields together, with their defaults and ranges.
 
 ## The declining cost of a later tranche
@@ -77,7 +77,7 @@ the **🏦 Finance** tab, applies an annual decline to the BESS unit cost used
 specifically for augmentation tranches, so a tranche added later in the
 project life can be costed lower than the figure entered on the **💰 CAPEX**
 tab for the original build, if you set a decline rate. See
-[Financing and discounting](/bess/inputs/finance#advanced-tech-economic).
+[Financing and discounting](/docs/bess/inputs/finance#advanced-tech-economic).
 
 ## Not the same as generation degradation
 
@@ -85,29 +85,29 @@ The **📉 Degrad.** tab sets a separate figure entirely: how much the Solar
 or Wind generation feeding the plant declines over the project life,
 following the same Year-1-plus-annual shape but applied to generation
 rather than to the battery. The two are tracked, and set, independently. See
-[Generation degradation](/bess/inputs/degradation).
+[Generation degradation](/docs/bess/inputs/degradation).
 
 ## Where to go next
 
 <Cards>
   <Card
     title="The battery model"
-    href="/bess/concepts/battery-model"
+    href="/docs/bess/concepts/battery-model"
     description="Usable energy, round-trip efficiency, C-rate and state of charge"
   />
   <Card
     title="How dispatch works"
-    href="/bess/concepts/how-dispatch-works"
+    href="/docs/bess/concepts/how-dispatch-works"
     description="The dispatch rule that applies once Battery EOL is set to cycles"
   />
   <Card
     title="Battery parameters"
-    href="/bess/inputs/bess"
+    href="/docs/bess/inputs/bess"
     description="Every RTE, DoD, SOH, EOL and augmentation field"
   />
   <Card
     title="Financing and discounting"
-    href="/bess/inputs/finance"
+    href="/docs/bess/inputs/finance"
     description="BESS Cost Decline and the rest of the financial assumptions"
   />
 </Cards>

@@ -16,7 +16,7 @@ and Overall Monthly — plus an Annual figure. Falling short of a window's
 target triggers a shortfall penalty. Default targets: **15-min DFR
 Target** 0% (off), **Peak-hour DFR Target** 90%, **Off-Peak DFR Target**
 80%, **Overall Monthly DFR** 90%, **Annual DFR Target** 0% (off). See
-[Delivery Fulfilment Ratio (DFR)](/bess/concepts/dfr).
+[Delivery Fulfilment Ratio (DFR)](/docs/bess/concepts/dfr).
 
 **Contracted Capacity (CC)** — The firm load or capacity the plant is
 obligated to serve, either a fixed MW value or a time-varying 15-minute
@@ -27,7 +27,7 @@ profile. DFR and the CUF cap are both measured against it. Default
 discharges or idles at each simulation step. The application selects one of
 five mutually exclusive dispatch branches per run: Standalone, CC-firming,
 Generation-charged Peak-Shift, Peak/Off-Peak, and Cycle-mode. See
-[How dispatch works](/bess/concepts/how-dispatch-works).
+[How dispatch works](/docs/bess/concepts/how-dispatch-works).
 
 - **Peak-shift** — The **Peak-Shift dispatch** checkbox's mode: generation
   charges the battery first, and it discharges only inside the selected
@@ -49,7 +49,7 @@ cycle. Default 90%, range 50–100%.
 **SOH (State of Health)** — The battery's remaining capacity relative to
 nameplate as it ages; usable energy is nameplate × DoD × SOH. Starting SOH
 default 100%, range 50–100%. See
-[The battery model](/bess/concepts/battery-model).
+[The battery model](/docs/bess/concepts/battery-model).
 
 **C-rate** — The BESS power-to-energy sizing ratio, Power ÷ Energy (MW ÷
 MWh). Default 0.25, range 0.1–2.0.
@@ -60,7 +60,7 @@ MWh). Default 0.25, range 0.1–2.0.
 exhausted and is replaced or augmented. Selectable basis, default **In
 Years**: in years (default 20, range 5–30) or in total cycles (**Rated
 Cycle Life** default 6000, range 100–20,000). See
-[Degradation and end-of-life](/bess/concepts/degradation-and-eol).
+[Degradation and end-of-life](/docs/bess/concepts/degradation-and-eol).
 
 **EFC (Equivalent Full Cycle)** — One full nameplate-energy charge/discharge
 equivalent. Annual EFC throughput is annual discharge energy ÷ rated usable
@@ -80,7 +80,7 @@ own CAPEX.
 **PPA tariff** — The contracted price paid per kWh of delivered energy.
 Default 5.0 Rs/kWh, range ≥ 0.1 Rs/kWh; may escalate annually via
 **PPA Tariff Escalation**, default 0%/yr. See
-[Tariffs, export and penalties](/bess/financials/tariffs-and-revenue).
+[Tariffs, export and penalties](/docs/bess/financials/tariffs-and-revenue).
 
 **Export price** — The price paid for surplus energy sold to a third
 party — a flat rate or a 15-minute CSV series, such as a power-exchange
@@ -106,12 +106,12 @@ ticked: 18:00 to 21:00, 4 hours.
 
 **IRR (Internal Rate of Return)** — The discount rate at which project NPV
 equals zero. The headline **Project IRR** excludes debt, tax and salvage
-value. See [Return metrics](/bess/financials/metrics).
+value. See [Return metrics](/docs/bess/financials/metrics).
 
 **Equity IRR** — IRR of the levered equity cash-flow stream: EBITDA minus
 interest, principal and levered tax. Computed only when **Enable debt
 (levered analysis)** is on. See
-[Debt and tax](/bess/financials/debt-and-tax).
+[Debt and tax](/docs/bess/financials/debt-and-tax).
 
 **NPV (Net Present Value)** — The discounted sum of project cash flows at
 the **Discount Rate (NPV)**, default 10%.
@@ -155,7 +155,7 @@ gap between PPA billing and offtaker payment: receivables = annual revenue
 × (lag days ÷ 365); cost = receivables × (Working-Capital Rate + WC
 Facility Fee − Late-Payment Surcharge), deductible against EBITDA and tax.
 Zero when **Receivable Lag** is 0, the default. See
-[Working capital](/bess/financials/working-capital).
+[Working capital](/docs/bess/financials/working-capital).
 
 ## Units
 
@@ -177,22 +177,22 @@ at the tariff.
 <Cards>
   <Card
     title="Every parameter and its default"
-    href="/bess/reference/parameters"
+    href="/docs/bess/reference/parameters"
     description="The complete input reference, with the values quoted above in context"
   />
   <Card
     title="How dispatch works"
-    href="/bess/concepts/how-dispatch-works"
+    href="/docs/bess/concepts/how-dispatch-works"
     description="The dispatch and sizing terms above, in context"
   />
   <Card
     title="Return metrics"
-    href="/bess/financials/metrics"
+    href="/docs/bess/financials/metrics"
     description="The financial terms above, and where each appears"
   />
   <Card
     title="Formula reference"
-    href="/bess/reference/formulas"
+    href="/docs/bess/reference/formulas"
     description="The formulas behind the terms defined here"
   />
 </Cards>
