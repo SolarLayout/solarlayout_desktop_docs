@@ -6,7 +6,7 @@ description: The four ways a plant can be built around the battery, and what eac
 On the **📂 Data** tab, a radio group sets the plant's topology — which
 generation sources feed the battery, if any. The choice changes which
 inputs are active across the rest of the input notebook. The default,
-ticked at launch, is **3. Solar + Wind + BESS**.
+ticked at launch, is **3.  Solar + Wind + BESS**.
 
 <Screenshot id="bess-project-types-radio" />
 
@@ -14,14 +14,10 @@ ticked at launch, is **3. Solar + Wind + BESS**.
 
 | Project type | What it does |
 | --- | --- |
-| **1. Solar + BESS** | Wind is pinned to 0 MW; the Wind sizing, CAPEX and O&M inputs are disabled. |
-| **2. Wind + BESS** | Solar is pinned to 0 MW; the Solar sizing, CAPEX and O&M inputs are disabled. |
-| **3. Solar + Wind + BESS** (default) | Both sources are active. |
-| **4. Standalone BESS (grid-charged)** | Solar and Wind are both pinned to 0 MW, with their sizing, CAPEX and O&M inputs disabled; the generation-profile loader on the **📂 Data** tab is disabled too — the app builds a one-year, 15-minute calendar internally instead of reading a file; the **Peak-Shift dispatch** checkbox is disabled and forced off. |
-
-Changing the project type does not touch anything you have already set on
-the **⏰ Peak** or **📐 Sizing** tabs — only which of the Solar/Wind inputs
-are open to you.
+| **1.  Solar + BESS** | Wind is pinned to 0 MW; the Wind sizing, CAPEX and O&M inputs are disabled. |
+| **2.  Wind + BESS** | Solar is pinned to 0 MW; the Solar sizing, CAPEX and O&M inputs are disabled. |
+| **3.  Solar + Wind + BESS** (default) | Both sources are active. |
+| **4.  Standalone BESS (grid-charged)** | Solar and Wind are both pinned to 0 MW, with their sizing, CAPEX and O&M inputs disabled; the generation-profile loader on the **📂 Data** tab is disabled too — the app builds a one-year, 15-minute calendar internally instead of reading a file; the **Peak-Shift dispatch** checkbox is disabled and forced off. |
 
 ## Generation-charged Peak-Shift dispatch
 
@@ -31,9 +27,9 @@ topology you picked:
 
 | Project type | Checkbox label |
 | --- | --- |
-| **1. Solar + BESS** | Solar-charged Peak-Shift dispatch |
-| **2. Wind + BESS** | Wind-charged Peak-Shift dispatch |
-| **3. Solar + Wind + BESS** | Solar+Wind-charged Peak-Shift dispatch |
+| **1.  Solar + BESS** | Solar-charged Peak-Shift dispatch |
+| **2.  Wind + BESS** | Wind-charged Peak-Shift dispatch |
+| **3.  Solar + Wind + BESS** | Solar+Wind-charged Peak-Shift dispatch |
 
 With it ticked, generation charges the battery first, and any surplus beyond
 that is exported straight away. The battery only discharges inside the Peak

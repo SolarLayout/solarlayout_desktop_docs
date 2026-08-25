@@ -5,7 +5,7 @@ description: A complete first run — project type, generation profile, peak win
 
 This walkthrough runs one analysis from an empty window to an exported
 report, changing as little as possible along the way. It assumes the default
-project type, **3. Solar + Wind + BESS**, and a generation profile you
+project type, **3.  Solar + Wind + BESS**, and a generation profile you
 already have as a CSV.
 
 <Steps>
@@ -14,7 +14,7 @@ already have as a CSV.
 ### Pick a project type
 
 On the **📂 Data** tab, a radio group chooses the plant's topology. The
-default, ticked at launch, is **3. Solar + Wind + BESS**. Leave it there for
+default, ticked at launch, is **3.  Solar + Wind + BESS**. Leave it there for
 this run — see [Choosing a project type](/bess/project-types) for what the
 other three change.
 
@@ -36,10 +36,12 @@ column and one wind generation column, each value per‑1‑MW‑installed betwe
 common keywords in the name (solar/pv/sun for one, wind/wtg/turbine for the
 other) and falls back to the first and second numeric columns if none match;
 the datetime column is found the same way, or built for you if the file
-doesn't have one. Any resolution from 15 minutes up to hourly is read
-automatically and worked into 15-minute steps internally.
+doesn't have one. 15-minute, 30-minute and hourly rows are all accepted —
+the app detects which one your file uses automatically, then upsamples
+anything coarser than 15 minutes to that base by repeating each row across
+its sub-intervals.
 
-If you picked **4. Standalone BESS (grid-charged)** in the previous step,
+If you picked **4.  Standalone BESS (grid-charged)** in the previous step,
 skip this step entirely — its generation-profile loader is disabled, and a
 full year's 15-minute calendar is built for you instead.
 </Step>
@@ -78,20 +80,19 @@ change.
 <Step>
 ### Click Simulate
 
-**▶ Simulate** sits above the input tabs. It needs this device activated —
+**▶  Simulate** sits above the input tabs. It needs this device activated —
 see [Getting started](/bess/getting-started) — and either a loaded
 generation profile or the Standalone project type.
 
-The run happens in the background: the status bar reports
-`Financial model: year <n>/<total>…` with a progress bar, while the rest of
-the window stays usable.
+The run happens in the background: the status bar reports which project
+year the financial model is on as it works through them, alongside a
+progress bar, while the rest of the window stays usable.
 
 <Screenshot id="bess-first-analysis-simulate" />
 
-When it finishes, the status bar reads a summary line —
-`Done │ IRR=<pct>% NPV=Rs<value>Cr CAPEX=Rs<value>Cr Sol=<value>MW
-Wnd=<value>MW BESS=<value>MWh` — and the result notebook switches on its own
-to the **📈 Dashboard** tab.
+When it finishes, the status bar reads a single summary line giving the
+result's IRR, NPV and CAPEX, and the Solar, Wind and BESS sizing used, and
+the result notebook switches on its own to the **📈 Dashboard** tab.
 </Step>
 
 <Step>
@@ -124,8 +125,8 @@ all 365 days.
 <Callout type="info">
 The IRR badge on panel 6, and the equivalent tag on the **📝 Summary**
 report, are coloured against a fixed 15% benchmark — not against the
-**Project Target IRR** you set on the **🏦 Finance** tab. The two only agree
-when that field is left at its own default.
+**Project Target IRR** field, under Optimisation Target on the **📊 OPEX**
+tab. The two only agree when that field is left at its own default.
 </Callout>
 
 On the **💹 Financials** tab, a headline line reports Total CAPEX, Project
@@ -149,7 +150,8 @@ The same menu offers a Word document, a plain-text report, a monthly DFR
 CSV, and a 15-minute time-series CSV of every dashboard series. To keep the
 session itself, use **Save Project (.slb)…** — it saves your inputs, the
 loaded generation data, the last result, and any Plant Layout or SLD drawing
-together, so **Open Project (.slb)…** reopens exactly where you left off.
+together. **Open Project (.slb)…** restores the inputs and the Plant Layout
+or SLD drawing from that file.
 </Step>
 
 </Steps>
