@@ -121,6 +121,29 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
     annotations: "Outline the selected option.",
     priority: 1,
   },
+  // ── Access ─────────────────────────────────────────────────────────────
+  {
+    id: "bess-access-license-window",
+    file: "bess/access/license-window.png",
+    page: "/bess/access/activate",
+    title: "The License window",
+    alt: "The License window on a device with no active access, showing the Device ID field, its Copy button, and the Get Free Access button.",
+    what: "Help ▸ License… on a device with no active access: the ✗ No access status headline and message, the Your Device ID (identifies this computer to SolarLayout:) field with its Copy button, and the Get Free Access, Contact Us, Refresh and Close buttons.",
+    state: "Launch the app on a device with no active access, then open Help ▸ License…",
+    annotations: "Number the Device ID field 1, the Copy button 2, and Get Free Access 3. Blur the Device ID value.",
+    priority: 1,
+  },
+  {
+    id: "bess-access-web-activation",
+    file: "bess/access/web-activation.png",
+    page: "/bess/access/activate",
+    title: "The web activation page",
+    alt: "The browser page opened by Get Free Access, addressed to this device's Device ID.",
+    what: "The browser page that opens after clicking Get Free Access, addressed to this device's Device ID.",
+    state: "In the License window, click Get Free Access and capture the browser page it opens.",
+    annotations: "",
+    priority: 2,
+  },
 ]
 
 /** Lookup used by `<Screenshot id="…" />`. */
