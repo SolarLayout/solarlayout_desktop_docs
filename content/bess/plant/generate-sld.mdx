@@ -1,0 +1,54 @@
+---
+title: Generating the SLD
+description: What Generate SLD draws — the same plant topology as Generate Layout, redrawn as IEC schematic symbols.
+---
+
+**⚙  Generate SLD**, on the **Single Line Diagram** tab, re-runs the same
+[equipment auto-placement](/bess/plant/generate-layout) as **⚙  Generate
+Layout**, then draws the result again — not as scaled rectangles this time,
+but as IEC schematic symbols on the same connections.
+
+<Screenshot id="bess-plant-generate-sld-result" />
+
+## From rectangle to symbol
+
+Each equipment type is redrawn as its own symbol:
+
+| Equipment | Drawn as |
+| --- | --- |
+| Containers | A battery symbol |
+| PCS | A PCS symbol |
+| Transformer | A two-winding, three-winding or five-winding transformer symbol, matching the selected **Transformer Type** |
+| LV panels | A rectangle at its real footprint size |
+| MV panels | A rectangle at its real footprint size |
+
+Containers, PCS and the transformer are each drawn as a fixed 3 m × 3 m
+symbol, regardless of the equipment's real footprint on the **Plant Layout**
+tab. LV and MV panels are not converted to symbols — they stay rectangles at
+their actual length and width.
+
+## Why the wires still reach
+
+A symbol is smaller than the full-size rectangle its connections were
+originally routed to. To keep the wires from stopping short at the edge of
+that larger, no-longer-drawn rectangle, any connection that lands on a
+symbol's top or bottom edge is re-snapped to the symbol's own top or bottom
+terminal.
+
+<Cards>
+  <Card
+    title="Symbols and custom symbols"
+    href="/bess/plant/symbols"
+    description="Opening the library, and saving your own symbol"
+  />
+  <Card
+    title="The drawing editor"
+    href="/bess/plant/cad-editor"
+    description="Tools, sheets and layer toggles on each canvas"
+  />
+  <Card
+    title="Plant layout and SLD"
+    href="/bess/plant/overview"
+    description="The two tabs, the shared input form and its fields"
+  />
+</Cards>

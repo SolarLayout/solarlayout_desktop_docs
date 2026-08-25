@@ -1,0 +1,49 @@
+---
+title: Symbols and custom symbols
+description: Opening the symbol library on the Single Line Diagram tab, building your own symbol from a selection, and deleting one you've added.
+---
+
+Three controls on the **Single Line Diagram** tab manage the symbol palette
+used by [Generate SLD](/bess/plant/generate-sld) and by hand-drawing:
+opening the full library, turning a selection into a new reusable symbol,
+and deleting a symbol you've added.
+
+## Opening the symbol library
+
+**🧩  Open Symbol Library…** opens a window showing a scrollable, 4-column
+grid of symbol thumbnails. Clicking a thumbnail arms it — the status line
+confirms which symbol is armed and prompts a click on the canvas. A click on
+the **Single Line Diagram** canvas then places it there.
+
+## Making a symbol from a selection
+
+**➕  Make Symbol from Selection** — available both on the toolbar and inside
+the Symbol Library window — turns the currently selected drawn objects (line,
+rectangle, circle, polygon or text) into a new reusable symbol. The
+selection is flattened, centred and scaled uniformly into a standard-size
+box, then you're prompted for a name before it's saved into the library.
+
+## Deleting a custom symbol
+
+**🗑  Delete Custom**, inside the Symbol Library window, deletes the
+currently selected symbol — but only if it's one you saved or imported
+yourself. Selecting a built-in symbol and clicking **🗑  Delete Custom**
+instead shows **Click an imported symbol first, then Delete.**
+
+<Cards>
+  <Card
+    title="Generating the SLD"
+    href="/bess/plant/generate-sld"
+    description="The same topology, drawn as IEC schematic symbols"
+  />
+  <Card
+    title="The drawing editor"
+    href="/bess/plant/cad-editor"
+    description="Tools, sheets and layer toggles on each canvas"
+  />
+  <Card
+    title="Exporting the drawing"
+    href="/bess/plant/export"
+    description="PDF, DXF and KMZ per canvas, and what saves into the project"
+  />
+</Cards>
