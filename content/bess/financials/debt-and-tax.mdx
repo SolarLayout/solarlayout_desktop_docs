@@ -1,0 +1,69 @@
+---
+title: Debt and tax
+description: How gearing, interest, tenor, moratorium and DSRA build a levered analysis, and how corporate tax, MAT and depreciation build a post-tax one.
+---
+
+Debt Financing and Tax are two independent switches on the **🏦 Finance**
+tab. Both are off by default, so a fresh run is the simple pre-tax project
+model; turning either on adds a layer of cash flow on top of it, without
+requiring the other.
+
+## Levered analysis (debt financing)
+
+Turning on **Enable debt (levered analysis)** finances part of the Total
+CAPEX with a loan instead of equity, sized as **Gearing (Debt)** — a
+percentage of Total CAPEX — at the **Interest Rate** you set. The loan is
+repaid over the **Repayment Tenor**, in equal-principal instalments, after
+however many years of **Moratorium** you allow before repayment starts. See
+[Financing and discounting](/bess/inputs/finance#debt-financing) for all
+five fields, with their defaults and ranges.
+
+Turning debt on is also what brings three further figures into play:
+**Equity IRR** is computed only when debt is enabled; **WACC** is computed
+only for a levered project; and **DSCR** is meaningful only once there's
+debt to service. See [Return metrics](/bess/financials/metrics) for what
+each one means.
+
+### DSRA
+
+**DSRA**, in months of debt service, sizes a reserve funded upfront
+alongside equity — (DSRA months ÷ 12) × the first year's interest and
+principal — and released back, net of any remaining debt, in the project's
+final year. It defaults to no reserve at all.
+
+## Post-tax analysis (tax)
+
+Turning on **Enable tax (post-tax analysis)** adds a tax cash flow, built
+from two rates and a depreciation method: **Corporate Tax Rate**, the
+normal corporate rate; **MAT Rate**, the Minimum Alternate Tax rate; and
+**Tax Depreciation**, a choice between **WDV** (Written-Down-Value, at the
+**WDV Dep. Rate** you set) and **Straight-line**.
+
+Enabling tax is reflected in **Post-tax IRR**, on the Financials tab's
+second summary line, which differs from both the headline **Project IRR**
+and the exported report's salvage-aware **Project IRR (pre-tax)** figure.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Financing and discounting"
+    href="/bess/inputs/finance"
+    description="Every debt and tax field, with its default and range"
+  />
+  <Card
+    title="Return metrics"
+    href="/bess/financials/metrics"
+    description="What Equity IRR, DSCR, WACC and Post-tax IRR mean"
+  />
+  <Card
+    title="Payment delay and working capital"
+    href="/bess/financials/working-capital"
+    description="The other optional cash-flow layer, on top of debt and tax"
+  />
+  <Card
+    title="The financials table"
+    href="/bess/results/financials"
+    description="Where these figures appear in the results"
+  />
+</Cards>
