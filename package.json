@@ -13,6 +13,7 @@
     "typecheck": "fumadocs-mdx && next typegen && tsc --noEmit",
     "postinstall": "fumadocs-mdx",
     "screenshots:index": "node scripts/build-screenshot-index.mjs",
+    "screenshots:index:bess": "node scripts/build-bess-screenshot-index.mjs",
     "videos:index": "node scripts/build-video-index.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
