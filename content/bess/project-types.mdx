@@ -1,0 +1,63 @@
+---
+title: Choosing a project type
+description: The four ways a plant can be built around the battery, and what each one enables or disables in the input tabs.
+---
+
+On the **📂 Data** tab, a radio group sets the plant's topology — which
+generation sources feed the battery, if any. The choice changes which
+inputs are active across the rest of the input notebook. The default,
+ticked at launch, is **3. Solar + Wind + BESS**.
+
+<Screenshot id="bess-project-types-radio" />
+
+## The four project types
+
+| Project type | What it does |
+| --- | --- |
+| **1. Solar + BESS** | Wind is pinned to 0 MW; the Wind sizing, CAPEX and O&M inputs are disabled. |
+| **2. Wind + BESS** | Solar is pinned to 0 MW; the Solar sizing, CAPEX and O&M inputs are disabled. |
+| **3. Solar + Wind + BESS** (default) | Both sources are active. |
+| **4. Standalone BESS (grid-charged)** | Solar and Wind are both pinned to 0 MW, with their sizing, CAPEX and O&M inputs disabled; the generation-profile loader on the **📂 Data** tab is disabled too — the app builds a one-year, 15-minute calendar internally instead of reading a file; the **Peak-Shift dispatch** checkbox is disabled and forced off. |
+
+Changing the project type does not touch anything you have already set on
+the **⏰ Peak** or **📐 Sizing** tabs — only which of the Solar/Wind inputs
+are open to you.
+
+## Generation-charged Peak-Shift dispatch
+
+Beneath the radio group, a checkbox turns on Peak-Shift dispatch — off by
+default, and disabled for Standalone BESS. Its exact label follows the
+topology you picked:
+
+| Project type | Checkbox label |
+| --- | --- |
+| **1. Solar + BESS** | Solar-charged Peak-Shift dispatch |
+| **2. Wind + BESS** | Wind-charged Peak-Shift dispatch |
+| **3. Solar + Wind + BESS** | Solar+Wind-charged Peak-Shift dispatch |
+
+With it ticked, generation charges the battery first, and any surplus beyond
+that is exported straight away. The battery only discharges inside the Peak
+window you set on the **⏰ Peak** tab, to meet the Contracted Capacity (CC —
+the firm load the plant is obligated to serve) there — outside that window
+there is no delivery obligation, and so no shortfall penalty, whatever the
+battery is doing.
+
+Left off, the ordinary Peak/Off-Peak dispatch applies instead: on Peak hours
+the battery discharges first and any excess generation then charges it; on
+Off-Peak hours the battery charges first and the remainder of generation
+meets the CC.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Your first analysis"
+    href="/bess/first-analysis"
+    description="A complete first run, from a generation profile to a report"
+  />
+  <Card
+    title="Getting started"
+    href="/bess/getting-started"
+    description="Prerequisites and a tour of the main window"
+  />
+</Cards>

@@ -30,7 +30,75 @@
  */
 import type { ScreenshotSpec } from "@/content/screenshots"
 
-export const SCREENSHOTS: ScreenshotSpec[] = []
+export const SCREENSHOTS: ScreenshotSpec[] = [
+  // ── Onboarding ─────────────────────────────────────────────────────────
+  {
+    id: "bess-intro-window",
+    file: "bess/intro/window.png",
+    page: "/bess/intro",
+    title: "The main window",
+    alt: "The BESS Desktop main window, with the input notebook on the left and the result notebook on the right.",
+    what: "The whole main window: the navy top banner with its title, the left input notebook with the Simulate and Optimise buttons above its tabs, and the right result notebook with its four tabs showing a completed run.",
+    state: "Run Simulate to completion first, so the Dashboard tab has real charts in it rather than an empty panel. Maximise the window before capturing.",
+    annotations: "",
+    priority: 1,
+  },
+  {
+    id: "bess-getting-started-window",
+    file: "bess/getting-started/window.png",
+    page: "/bess/getting-started",
+    title: "The main window before an analysis",
+    alt: "The main window straight after launch, before a generation profile is loaded or a run has been made.",
+    what: "The whole window at first launch: the top banner, the menu bar, the left input notebook on its first tab, and the empty right-hand result notebook.",
+    state: "Launch the app fresh, before loading a generation profile or clicking Simulate. Maximise the window.",
+    annotations: "Bracket the left third and label it Input notebook; bracket the right and label it Result notebook.",
+    priority: 1,
+  },
+  {
+    id: "bess-getting-started-tabs",
+    file: "bess/getting-started/tabs.png",
+    page: "/bess/getting-started",
+    title: "The input and result tab strips",
+    alt: "The eight input tabs on the left and the four result tabs on the right, side by side.",
+    what: "A close view of both tab strips: Data, Peak, Sizing, BESS, Degrad., CAPEX, OPEX, Finance on the left; Dashboard, DFR Table, Financials, Summary on the right.",
+    state: "Straight after launch, with both notebooks showing their default first tab.",
+    annotations: "Number the input tabs 1 to 8 in order.",
+    priority: 2,
+  },
+  {
+    id: "bess-first-analysis-simulate",
+    file: "bess/first-analysis/simulate.png",
+    page: "/bess/first-analysis",
+    title: "Running Simulate",
+    alt: "The status bar reporting the financial model's year-by-year progress while Simulate runs.",
+    what: "The Simulate button and, below it, the status bar reporting Financial model: year <n>/<total>… with the progress bar advancing.",
+    state: "With a generation profile loaded (or Standalone BESS chosen) and the default peak window left as-is, click Simulate and capture while the status bar is still updating.",
+    annotations: "",
+    priority: 2,
+  },
+  {
+    id: "bess-first-analysis-dashboard",
+    file: "bess/first-analysis/dashboard.png",
+    page: "/bess/first-analysis",
+    title: "The Dashboard after a run",
+    alt: "The Dashboard tab after Simulate finishes, showing the header strip and all six panels.",
+    what: "The whole Dashboard tab after a completed run: the header strip reporting Solar/Wind/BESS size and IRR/Contracted Capacity, all six panels, and the day slider beneath the first two.",
+    state: "Run Simulate to completion. The result notebook switches to the Dashboard tab on its own.",
+    annotations: "Number the six panels 1 to 6 in reading order.",
+    priority: 1,
+  },
+  {
+    id: "bess-project-types-radio",
+    file: "bess/project-types/radio.png",
+    page: "/bess/project-types",
+    title: "The project type radio group",
+    alt: "The four project type options on the Data tab, with Solar + Wind + BESS selected.",
+    what: "The project type radio group with all four options readable, plus the Peak-Shift dispatch checkbox beneath it.",
+    state: "Open the Data tab. Nothing changed from the default selection.",
+    annotations: "Outline the selected option.",
+    priority: 1,
+  },
+]
 
 /** Lookup used by `<Screenshot id="…" />`. */
 export const SCREENSHOTS_BY_ID: Record<string, ScreenshotSpec> =
