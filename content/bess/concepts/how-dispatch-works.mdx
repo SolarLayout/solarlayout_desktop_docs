@@ -26,7 +26,8 @@ resort, never the first source.
 
 Two things apply uniformly, whichever rule governs a given run: round-trip
 efficiency (RTE — the share of energy recovered over one full
-charge/discharge cycle) and the pack's usable capacity — nameplate energy
+charge/discharge cycle, including auxiliary losses) and the pack's usable
+capacity — nameplate energy
 scaled by depth of discharge (DoD, the fraction usable per cycle) and state of
 health (SOH, the battery's remaining capacity relative to nameplate as it
 ages). A third property, C-rate — the battery's power-to-energy sizing ratio —
@@ -91,13 +92,13 @@ basis for the cost set on [Grid charging](/bess/inputs/opex#grid-charging).
 
 ### Cycle-mode
 
-Setting **Battery EOL (End-of-Life)** to **In Total Cycles** on the
-**🔋 BESS** tab replaces all four rules above with a fixed schedule instead:
-discharge, day-charge, night-charge (wind-only projects) and grid-charge hour
-windows, set in the **⚙  Configure Cycles & Charge/Discharge Windows…**
-dialog — independent of whatever the Peak tab's hours are set to. See
-[Battery end-of-life](/bess/inputs/bess#battery-end-of-life) and
-[Degradation, EOL and augmentation](/bess/concepts/degradation-and-eol).
+This is the rule that applies when **Battery EOL (End-of-Life)** is set to
+**In Total Cycles** on the **🔋 BESS** tab. Dispatch follows a fixed schedule
+instead: discharge, day-charge, night-charge (wind-only projects) and
+grid-charge hour windows, set in the **⚙  Configure Cycles &
+Charge/Discharge Windows…** dialog — independent of whatever the Peak tab's
+hours are set to. See [Battery end-of-life](/bess/inputs/bess#battery-end-of-life)
+and [Degradation, EOL and augmentation](/bess/concepts/degradation-and-eol).
 
 <Screenshot id="bess-concepts-how-dispatch-works-chart" />
 

@@ -48,10 +48,11 @@ for where that applies.
 
 Every run of the dispatch model starts the battery at 100% state of charge,
 and each step's charge or discharge — decided by whichever dispatch rule
-governs that run — moves it from there. Usable energy, round-trip efficiency
-and C-rate apply the same way regardless of which dispatch rule is active:
+governs that run — moves it from there. Usable energy and round-trip
+efficiency apply the same way regardless of which dispatch rule is active:
 they describe the battery itself, not the rule deciding when it charges or
-discharges.
+discharges. C-rate sets a ceiling wherever a dispatch rule draws on it, as in
+the Standalone example above.
 
 See [Battery parameters](/bess/inputs/bess) for the Depth of Discharge,
 Initial State of Health, Round-Trip Efficiency and C-Rate fields, their
