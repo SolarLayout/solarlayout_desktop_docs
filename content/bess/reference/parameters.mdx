@@ -1,0 +1,249 @@
+---
+title: Every parameter and its default
+description: The complete input reference — every field across the 8 input tabs, its shipped default, its accepted range, and what it does.
+---
+
+Every field across the eight input tabs ships with a working default, so a
+first run needs none of them changed — see
+[Your first analysis](/bess/first-analysis). The topology chosen on the
+**📂 Data** tab's Project Type radio decides which of the fields below are
+active; see [Choosing a project type](/bess/project-types) for the four
+options and what each one pins to 0.
+
+The tables below are in tab order, left to right, and the rows within each
+table are in the order the fields appear on screen.
+
+## Generation data
+
+The **📂 Data** tab. In depth: [Generation data](/bess/inputs/data).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **CSV Path:** | (empty) | — | The path to the generation CSV, filled in by **Browse…** |
+| **Browse…** | — | — | Opens a file picker and sets the CSV path |
+| **Load & Preview CSV** | — | — | Reads and validates the file at the CSV path |
+| Status line | **No file loaded.** | — | Reports the load result; replaced by a summary once a file reads successfully |
+
+The file needs three columns: a datetime column, `solar_pu` and `wind_pu`.
+Each is matched by a header keyword, with a fallback if none matches:
+
+| Column | Accepted header keywords | Fallback |
+| --- | --- | --- |
+| Datetime | `time`, `date`, `stamp`, `datetime` | A synthetic 2025-01-01 15-minute index |
+| Solar | `solar`, `pv`, `sun`, `photovoltaic` | The first numeric column |
+| Wind | `wind`, `wg`, `wtg`, `turbine` | The second numeric column |
+
+Values are per-1-MW-installed, between 0 and 1; anything below 0 is clipped
+to 0 on load. 35,040 rows is native 15-minute data, 8,760 rows is hourly,
+and 30-minute rows are also accepted — resolution is auto-detected from the
+median datetime step, or from the row count with no datetime column, and
+upsampled to 15-minute by repeating each row across its sub-intervals.
+
+Picking **4.  Standalone BESS (grid-charged)** on the Project Type radio
+disables this loader entirely; the application builds a full year's
+15-minute calendar internally instead.
+
+## Peak and off-peak window
+
+The **⏰ Peak** tab. In depth:
+[Peak and off-peak window](/bess/inputs/peak-window).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Quick Preset:** | **Evening  18:00–24:00  (6 hrs)** shown, index 0 | **Evening  18:00–24:00  (6 hrs)**, **Morning  06:00–12:00  (6 hrs)**, **Day      06:00–18:00  (12 hrs)**, **Night    18:00–06:00  (12 hrs)**, **All Hours  (24 hrs)**, **Custom** | Fills the 24 hour checkboxes with a standard pattern once you pick an option from the dropdown |
+| Hour checkboxes (24, one per hour) | 18:00, 19:00, 20:00, 21:00 ticked as Peak (4 hours); every other hour Off-Peak | Each hour ticked (Peak) or unticked (Off-Peak) | Sets which hours are Peak and which are Off-Peak; a live counter beneath the grid reflects the current tick state |
+
+<Callout type="warn">
+The **Quick Preset:** dropdown shows **Evening 18:00–24:00 (6 hrs)**
+pre-selected, but that preset is never actually applied on launch — it only
+takes effect once you pick an option from the dropdown yourself. The 4
+hours actually ticked in the grid above are the real starting point.
+</Callout>
+
+The six preset options and the hours each one applies:
+
+| Option (exact) | Hours applied |
+| --- | --- |
+| **Evening  18:00–24:00  (6 hrs)** | 18:00–23:00 |
+| **Morning  06:00–12:00  (6 hrs)** | 06:00–11:00 |
+| **Day      06:00–18:00  (12 hrs)** | 06:00–17:00 |
+| **Night    18:00–06:00  (12 hrs)** | 18:00–23:00, 00:00–05:00 |
+| **All Hours  (24 hrs)** | 00:00–23:00 |
+| **Custom** | No hours filled in automatically |
+
+Unticking every one of the 24 hours switches the dispatch to CC-firming,
+except for a Standalone (non-cycle) BESS, which requires at least 1 peak
+hour and warns instead of accepting an empty set.
+
+## Capacity and DFR targets
+
+The **📐 Sizing** tab. In depth:
+[Capacity and DFR targets](/bess/inputs/sizing).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| Contracted Capacity mode (**Fixed Value** / **CSV Profile**) | **Fixed Value** | **Fixed Value**, **CSV Profile** | Chooses whether the Contracted Capacity is one fixed number or a time-varying profile read from a CSV |
+| **Fixed Value** (**Value** entry) | 1.6 MW | ≥ 0.001 MW | Firm contracted capacity the plant must serve |
+| **CSV Profile** (**📂 Browse CSV…**) | none loaded, status **No file loaded** | 35,040 or 8,760 rows, column `cc_mw` (case-insensitive) or the first column; hourly rows are auto-interpolated to 15-minute | Time-varying contracted capacity |
+| **Project / Contract Life** | 20 years | 1–50 years | Length of the financial model / simulation horizon |
+| **15-min DFR Target** | 0% (off) | 0–100% | Minimum delivery-fulfilment ratio required at each 15-minute step |
+| **Peak-hour DFR Target** | 90% | 0–100% | Minimum DFR required during Peak hours |
+| **Off-Peak DFR Target** | 80% | 0–100% | Minimum DFR required during Off-Peak hours |
+| **Overall Monthly DFR** | 90% | 0–100% | Minimum overall DFR required per calendar month |
+| **Annual DFR Target** | 0% (off) | 0–100% | Minimum DFR required across the year |
+| **Solar Installed** | 1.8 MW | ≥ 0 MW; pinned to 0 and disabled unless the project type includes Solar | Starting Solar capacity for **▶  Simulate**; the **⚙  Optimise** search variable when the project type includes Solar |
+| **Wind Installed** | 3 MW | ≥ 0 MW; pinned to 0 and disabled unless the project type includes Wind | Starting Wind capacity |
+| **BESS Energy** | 1 MWh | ≥ 0.1 MWh | Starting BESS nameplate energy |
+
+## Battery parameters
+
+The **🔋 BESS** tab. In depth: [Battery parameters](/bess/inputs/bess).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| RTE Mode (**Fixed** / **Custom Year-by-Year**) | **Fixed** | **Fixed**, **Custom Year-by-Year** | Chooses whether round-trip efficiency (RTE) is one fixed percentage or varies year by year |
+| **Round-Trip Efficiency including Auxiliary** (Fixed mode) | 78% | 50–99% | Round-trip efficiency; its square root is applied to both the charge and discharge legs |
+| **📋  Edit Year-by-Year RTE Profile…** (Custom mode) | status **No custom profile set** | per year 50–99%; must cover every year to Battery EOL | Opens an editor for an RTE that varies year by year to Battery EOL |
+| **Depth of Discharge (DoD)** | 90% | 50–100% | Fraction of nameplate energy usable per cycle |
+| **Initial State of Health (SOH)** | 100% | 50–100% | Starting battery health at Year 0 |
+| Battery EOL basis (**In Years** / **In Total Cycles**) | **In Years** | **In Years**, **In Total Cycles** | Chooses whether the battery's end-of-life is defined by age or by cumulative cycles |
+| **Battery EOL (End-of-Life)** (Years basis) | 20 years | 5–30 years | Age at which the pack reaches end-of-life and is replaced or augmented |
+| **Rated Cycle Life** (Cycles basis) | 6000 cycles | 100–20,000 cycles | Rated Equivalent-Full-Cycle life; end-of-life hits when cumulative EFCs reach this |
+| **End-of-Warranty SOH @ N** (Cycles basis) | 70% | 40–100% | Warrantied SOH at the rated cycle count |
+| **⚙  Configure Cycles & Charge/Discharge Windows…** (Cycles basis) | 1 cycle/day; discharge and charge hour-windows default per project type | Hour ranges 0–24, half-open, overnight wrap allowed | Opens a project-type-aware dialog defining cycles per day and discharge/charge windows — for a Standalone project, the grid-charge method too |
+| **C-Rate  (Power ÷ Energy)** | 0.25 | 0.1–2.0 | Power/Energy sizing ratio for the BESS |
+| EOL Strategy (**Replacement (full swap)** / **Augmentation (top-up)**) | **Replacement (full swap)** | **Replacement (full swap)**, **Augmentation (top-up)** | Chooses whether the pack is fully replaced at end-of-life or topped up instead |
+| Augmentation mode (**Automatic (restore to nameplate)** / **Manual**) | **Automatic (restore to nameplate)** | **Automatic (restore to nameplate)**, **Manual** | Automatic tops the pack up every EOL-interval year to restore nameplate; Manual opens the schedule editor below |
+| **📋  Edit Augmentation Schedule…** (Manual) | status **No augmentation schedule set** | Table of Year, Capacity (MWh) rows; Year must be within 1–Project Life | A schedule of augmentation tranches; each new tranche degrades from its own install year and books its own CAPEX |
+| Battery SOH Degradation (**Linear (Year-1 + Annual)** / **Custom Year-by-Year**) | **Linear (Year-1 + Annual)** | **Linear (Year-1 + Annual)**, **Custom Year-by-Year** | Chooses whether SOH loss follows a fixed Year-1-plus-annual formula or a custom year-by-year curve |
+| **SOH Loss Year-1** (Linear) | 2.5%/yr | 0–20%/yr | Battery SOH loss in Year 1 |
+| **SOH Loss Year-2+** (Linear) | 2.0%/yr | 0–10%/yr | Annual SOH loss from Year 2 onward |
+| **📋  Edit Year-by-Year SOH Profile…** (Custom) | status **No custom profile set**, pre-filled from the Linear formula | per year 0–100%; must cover every project year | Custom year-by-year SOH curve; a **↺  Fill from Linear** button repopulates it from the Linear settings |
+
+## Generation degradation
+
+The **📉 Degrad.** tab. In depth:
+[Generation degradation](/bess/inputs/degradation).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Generation Loss Year-1** | 1.0% | 0–5% | Solar/Wind generation loss in Year 1 |
+| **Generation Loss Year-2+** | 0.4%/yr | 0–2%/yr | Annual generation loss from Year 2 onward |
+
+The tab's own caption gives the compounding formula as each year's
+generation factor equal to (1 minus the Year-1 loss) multiplied by (1 minus
+the Year-2+ loss) raised to the power of (year minus 1), captioned "Default:
+1% Year-1, 0.4%/yr thereafter (IEC 61215 standard module degradation)".
+
+## CAPEX
+
+The **💰 CAPEX** tab. In depth: [CAPEX](/bess/inputs/capex).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Solar CAPEX** | 5.0 Cr/MW | ≥ 0.1 Cr/MW | Solar capital cost per installed MW |
+| **Wind CAPEX** | 7.0 Cr/MW | ≥ 0.1 Cr/MW | Wind capital cost per installed MW |
+| **BESS CAPEX** | 1.5 Cr/MWh | ≥ 0.1 Cr/MWh | BESS capital cost per installed MWh |
+
+1 Crore is Rs 1,00,00,000.
+
+<Callout type="warn">
+The tab's own caption reads "Defaults: Solar 5 Cr/MW, Wind 7 Cr/MW, BESS 1
+Cr/MWh" — but the **BESS CAPEX** field itself shows **1.5 Cr/MWh** on a
+fresh launch. Treat 1.5 Cr/MWh as the real default; the caption's "1" is
+stale.
+</Callout>
+
+## OPEX, revenue and penalties
+
+The **📊 OPEX** tab. In depth:
+[OPEX, revenue and penalties](/bess/inputs/opex).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Solar O&M** | 3.0 Lac/MW/yr | ≥ 0 Lac/MW/yr | Solar annual O&M cost per MW |
+| **Wind O&M** | 5.0 Lac/MW/yr | ≥ 0 Lac/MW/yr | Wind annual O&M cost per MW |
+| **BESS O&M (fixed)** | 5.0 Lac/yr | ≥ 0 Lac/yr | Fixed annual BESS O&M cost |
+| **OPEX Escalation** | 2.0%/yr | 0–20%/yr | Annual escalation applied to all O&M |
+| **PPA Tariff** | 5.0 Rs/kWh | ≥ 0.1 Rs/kWh | Contracted tariff for delivered energy |
+| **Penalty Multiplier** | 1.5× tariff | 0.0–3.0× tariff | Penalty rate applied to DFR shortfall, as a multiple of the PPA tariff |
+| **Apply Annual CUF Cap** (checkbox) | off | — | Enables an annual offtake ceiling; energy above it is paid at the Export Price instead of the PPA tariff |
+| **% (of CC × 8760)** (with the CUF-cap checkbox) | 28.0% | 0.0–100.0% | The CUF ceiling itself, disabled unless the checkbox is ticked |
+| Export Price mode (**Fixed Price** / **CSV (15-min pricing)**) | **Fixed Price** | **Fixed Price**, **CSV (15-min pricing)** | Chooses whether the 3rd-party export price is one fixed number or a 15-minute pricing series |
+| **Value** (Fixed Price) | 0.0 Rs/kWh | ≥ 0.0 Rs/kWh | Flat 3rd-party export price |
+| **📂 Browse CSV…** (CSV pricing) | status **No file loaded**; unit combobox defaults **Rs/MWh** | 35,040 or 8,760 rows (hourly auto-interpolated), price column auto-detected (`mcp`/`price`/`clearing`/`tariff`/`rate`/`rs`, else the last numeric column) | 15-minute export-pricing time series (for example an exchange clearing price), converted to Rs/kWh internally when the unit is Rs/MWh |
+| **Grid Charging Price** | 0.0 Rs/kWh | ≥ 0.0 Rs/kWh | Price paid for grid energy used to charge the battery — always, on a Standalone project; as a backup only, on a generation-backed one |
+| **Grid charging backup when generation is short** (checkbox) | off; disabled and forced off for Standalone BESS | — | Lets a generation-backed plant top up from the grid on low-irradiance or low-wind days |
+| **Max Grid Charge Limit** | 100% | 0.0–100.0% | Caps how much of the battery's usable capacity the grid may supply per charge cycle — 100% is unrestricted |
+| **Project Target IRR** | 15.0% | no explicit bound; falls back to 15% if the entry can't be read as a number | Target project IRR the **⚙  Optimise** search — and its "Hits Target IRR" scenario — aims for |
+
+## Financing and discounting
+
+The **🏦 Finance** tab. In depth:
+[Financing and discounting](/bess/inputs/finance).
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Discount Rate (NPV)** | 10.0% | 0.0–40% | Discount rate used for NPV |
+| **PPA Tariff Escalation** | 0.0%/yr | -5–20%/yr | Annual escalation applied to the PPA tariff |
+| **Terminal / Salvage Value** | 0.0% CAPEX | 0.0–100% CAPEX | Terminal/salvage value at the end of Project Life, as a % of total CAPEX |
+| **LCOE Energy Basis** | **Energy delivered to load (default)** | 3 options, below | Chooses the denominator the levelised cost of energy (LCOE) is measured against |
+| **Receivable Lag** | 0 days | 0.0–365.0 days | Days after billing before the offtaker pays; 0 disables the working-capital cost |
+| **Working-Capital Rate** | 11.0%/yr | 0.0–40%/yr | Interest rate on the working-capital loan carrying the receivables |
+| **Late-Payment Surcharge** | 0.0%/yr | 0.0–40%/yr | Interest the offtaker owes on overdue amounts, offsetting the working-capital cost |
+| **WC Facility Fee** | 0.0% recv. | 0.0–20% recv. | Facility fee on the working-capital line, as a % of receivables |
+| **Enable debt (levered analysis)** (checkbox) | off | — | Turns on the 5 debt fields below; they are disabled while unchecked |
+| **Gearing (Debt)** | 70.0% CAPEX | 0.0–95% CAPEX | Debt as a % of total CAPEX |
+| **Interest Rate** | 9.0%/yr | 0.0–25%/yr | Loan interest rate |
+| **Repayment Tenor** | 15 years | 1–30 years | Equal-principal repayment period |
+| **Moratorium** | 0 years | 0–10 years | Years before repayment begins |
+| **DSRA** | 0 months | 0–24 months | Debt-Service Reserve Account, in months of debt service |
+| **Enable tax (post-tax analysis)** (checkbox) | off | — | Turns on the tax fields below; they are disabled while unchecked |
+| **Corporate Tax Rate** | 25.17% | 0.0–50% | Normal corporate tax rate |
+| **MAT Rate** | 17.16% | 0.0–30% | Minimum Alternate Tax rate |
+| **Tax Depreciation** (**WDV** / **Straight-line**) | **WDV** | **WDV**, **Straight-line** | Depreciation method for the tax cash-flow |
+| **WDV Dep. Rate** | 40.0%/yr | 0.0–100%/yr | Written-Down-Value depreciation rate |
+| **Plant Availability** | 100.0% | 1–100% | Plant availability factor applied in the financial model |
+| **Insurance** | 0.0% CAPEX/yr | 0.0–5% CAPEX/yr | Annual insurance cost as a % of total CAPEX |
+| **BESS Cost Decline (augment.)** | 0.0%/yr | 0.0–20%/yr | Annual decline applied to the BESS unit cost used for augmentation tranches |
+
+The three LCOE energy bases:
+
+| Option (exact) | LCOE denominator |
+| --- | --- |
+| **Energy delivered to load (default)** | Energy served to the Contracted Capacity |
+| **Total generation (solar+wind)** | All generation, including exported energy |
+| **Delivered + exported energy** | All useful energy sold |
+
+The last two need an Export Price configured on the **📊 OPEX** tab; without
+one, the model falls back to the delivered basis.
+
+<Callout>
+**Enable debt** and **Enable tax** are both off by default, so results match
+the simple pre-tax project model unless you turn them on.
+</Callout>
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Result table columns"
+    href="/bess/reference/results-columns"
+    description="The output side of the same reference"
+  />
+  <Card
+    title="Formula reference"
+    href="/bess/reference/formulas"
+    description="How the DFR penalty, LCOE, LCOS and the return metrics are calculated"
+  />
+  <Card
+    title="Glossary"
+    href="/bess/reference/glossary"
+    description="Every BESS term used across these pages, defined"
+  />
+  <Card
+    title="Choosing a project type"
+    href="/bess/project-types"
+    description="The four topologies and what each one pins to 0"
+  />
+</Cards>

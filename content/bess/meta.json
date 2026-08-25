@@ -1,4 +1,4 @@
 {
   "title": "Documentation",
-  "pages": ["intro", "getting-started", "first-analysis", "project-types", "install", "access", "inputs", "concepts", "analysis", "results", "financials", "plant", "exports"]
+  "pages": ["intro", "getting-started", "first-analysis", "project-types", "install", "access", "inputs", "concepts", "analysis", "results", "financials", "plant", "exports", "reference"]
 }

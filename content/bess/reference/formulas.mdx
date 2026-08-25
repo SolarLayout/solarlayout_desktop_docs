@@ -1,0 +1,175 @@
+---
+title: Formula reference
+description: The dispatch-driven cost formulas and the return metrics, worded and structured the way the application's own Formulas guide states them.
+---
+
+These are the formulas behind the DFR-shortfall penalty, the CUF cap, grid
+charging and working-capital costs, and the return metrics on the
+**💹 Financials** tab — worded the way Help ▸ **User Guide / Formulas…**
+states them inside the application itself. Every figure is derived from the
+15-minute dispatch simulation, rolled up into an annual cash-flow model. For
+a one-line definition of each return metric instead of its formula, see
+[Return metrics](/bess/financials/metrics).
+
+## Return and value metrics
+
+**IRR** (Internal Rate of Return) — the discount rate at which project NPV
+equals zero.
+
+**Equity IRR** — the IRR of the equity cash-flow stream:
+
+```
+equity cash flow = EBITDA − interest − principal − tax (when levered) − reinvestment
+```
+
+In the final year this also adds terminal value and any DSRA release, net
+of remaining debt. Computed only when **Enable debt (levered analysis)** is
+on.
+
+**NPV** (Net Present Value) —
+
+```
+NPV = sum, over every year, of (that year's cash flow ÷ (1 + discount rate) ^ year)
+```
+
+at the **Discount Rate (NPV)**.
+
+**Payback** — the year cumulative project cash flow first turns
+non-negative, linearly interpolated within that year. **Discounted
+Payback** applies the same rule to the discounted-cumulative cash flow
+instead.
+
+**DSCR** (Debt-Service Coverage Ratio) —
+
+```
+DSCR = (EBITDA − tax (when levered) − reinvestment) ÷ (interest + principal)
+```
+
+for the year, reported as a minimum and an average across the debt tenor.
+
+**DSRA** (Debt-Service Reserve Account) —
+
+```
+DSRA = (DSRA months ÷ 12) × (first year's interest + principal)
+```
+
+**MoIC** (Multiple on Invested Capital) —
+
+```
+MoIC = (sum of positive cash inflows) ÷ initial outlay
+```
+
+Initial outlay is Equity plus DSRA on a levered project, Total CAPEX
+otherwise.
+
+**PI** (Profitability Index) —
+
+```
+PI = (NPV + CAPEX) ÷ CAPEX
+```
+
+A PI above 1 is value-accretive.
+
+**WACC** (Weighted Average Cost of Capital) —
+
+```
+WACC = (equity share of funding × cost of equity) + (debt share of funding × interest rate × (1 − tax rate))
+```
+
+Cost of equity is taken as the **Discount Rate (NPV)**. Computed only for
+levered projects.
+
+<Callout type="info">
+The application shows two different IRR figures and two different NPV
+figures, from two different cash-flow streams — the headline figures carry
+no debt, tax or salvage value, while the report's own figures do. See
+[Return metrics](/bess/financials/metrics) for which figure appears where.
+</Callout>
+
+## Cost per unit of energy
+
+**LCOE** (Levelised Cost of Energy) —
+
+```
+LCOE = (Total CAPEX + sum of discounted (OPEX + reinvestment) across years) ÷ sum of discounted (energy × 1000) across years
+```
+
+in Rs/kWh, on the energy basis chosen by **LCOE Energy Basis** on the
+**🏦 Finance** tab:
+
+| Basis | Energy in the denominator |
+| --- | --- |
+| **Energy delivered to load (default)** | Energy served to the Contracted Capacity |
+| **Total generation (solar+wind)** | All generation, including exported energy |
+| **Delivered + exported energy** | All useful energy sold |
+
+**LCOS** (Levelised Cost of Storage) — the same shape as LCOE, but over
+BESS-only CAPEX, OPEX and reinvestment, divided by discounted
+battery-discharge throughput instead of delivered energy — the cost of
+every kWh that actually passes through the battery.
+
+## Revenue, penalty and cost formulas
+
+**DFR-shortfall penalty** — per month, for each of the Peak, Off-Peak,
+Overall and 15-minute buckets:
+
+```
+shortfall (MWh) = max(target DFR × required MWh − delivered MWh, 0)
+penalty = Penalty Multiplier × PPA Tariff × shortfall × 1000
+```
+
+That month's penalty is the greatest of (Peak penalty + Off-Peak penalty),
+the Overall penalty, or the 15-minute penalty.
+
+**Annual CUF cap** — when **Apply Annual CUF Cap** is on:
+
+```
+cap (MWh) = cap % × Contracted Capacity × 8760
+```
+
+Energy up to the cap is paid at the **PPA Tariff**; energy above it is paid
+at the Export Price instead.
+
+**Grid-charging cost** —
+
+```
+grid-charging cost = (sum, across the year, of grid-import MWh × Grid Charging Price × 1000) × an escalation factor
+```
+
+Applies always on a Standalone project; only as worst-case backup on a
+generation-backed one.
+
+**Payment-delay / working-capital carrying cost** —
+
+```
+receivables = annual revenue × (Receivable Lag ÷ 365)
+working-capital carrying cost = receivables × (Working-Capital Rate + WC Facility Fee − Late-Payment Surcharge)
+```
+
+Deductible, so it reduces EBITDA — and tax — each year. Zero when
+**Receivable Lag** is 0.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Return metrics"
+    href="/bess/financials/metrics"
+    description="One-line definitions of the same metrics, and where each appears"
+  />
+  <Card
+    title="Result table columns"
+    href="/bess/reference/results-columns"
+    description="Where the penalty, revenue and cash-flow figures land in the tables"
+  />
+  <Card
+    title="Financing and discounting"
+    href="/bess/inputs/finance"
+    description="The Discount Rate, LCOE basis, debt and tax fields these formulas use"
+  />
+  <Card
+    title="OPEX, revenue and penalties"
+    href="/bess/inputs/opex"
+    description="The PPA Tariff, Penalty Multiplier and CUF cap fields behind the penalty formula"
+  />
+</Cards>

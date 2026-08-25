@@ -1,0 +1,101 @@
+---
+title: Result table columns
+description: Every column of the DFR Table tab and the Financials tab's per-year table — the exact header, in order, and what each one reports.
+---
+
+Two result tables carry the application's per-period detail: the
+**📋 DFR Table** tab reports one row per calendar month of Year 1, and the
+**💹 Financials** tab's per-year table reports one row per project year.
+Both are fixed order, left to right — the order below matches the columns
+on screen.
+
+## DFR Table columns
+
+One row per calendar month of Year 1. In depth:
+[The DFR table](/bess/results/dfr-table).
+
+| Column | What it reports |
+| --- | --- |
+| **Month** | The calendar month, Year 1 |
+| **15min%** | That month's Delivery Fulfilment Ratio (DFR) at the 15-minute granularity |
+| **Total%** | That month's Overall DFR |
+| **Peak%** | That month's DFR during Peak hours |
+| **Off-Pk%** | That month's DFR during Off-Peak hours |
+| **15m OK** | Whether the 15-minute DFR met target that month |
+| **Pk OK** | Whether the Peak DFR met target that month |
+| **OffPk OK** | Whether the Off-Peak DFR met target that month |
+| **Mon OK** | Whether the Overall Monthly DFR met target that month |
+| **ShortPk MWh** | The MWh shortfall at Peak granularity, on a month that missed |
+| **ShortOpk MWh** | The MWh shortfall at Off-Peak granularity, on a month that missed |
+| **Short15m MWh** | The MWh shortfall at 15-minute granularity, on a month that missed |
+| **Penalty Lac** | That month's DFR-shortfall penalty, in Rs Lakhs |
+| **Pen%Rev** | That month's penalty as a share of revenue |
+| **Export MWh** | Exported energy for the month |
+| **Export Rev Lac** | Export revenue for the month, in Rs Lakhs |
+
+That's 16 columns, in a fixed order. A row is shaded green when Peak,
+Off-Peak, Overall and 15-minute DFR all met target that month, and red when
+any one of the four missed.
+
+## Financials per-year columns
+
+One row per project year. In depth:
+[The financials table](/bess/results/financials).
+
+| Column | What it reports |
+| --- | --- |
+| **Yr** | The project year |
+| **Deg%** | That year's Solar/Wind generation degradation |
+| **SOH%** | That year's battery state of health |
+| **BESS MWh** | Energy the battery handled that year |
+| **Sched MWh** | Energy scheduled — delivered against the Contracted Capacity — that year |
+| **Export MWh** | Energy exported that year |
+| **Export Rev Lac** | Export revenue for the year, in Rs Lakhs |
+| **Gross Rev Cr** | Gross revenue for the year, in Rs Crore |
+| **Pen Lac** | That year's DFR-shortfall penalty, in Rs Lakhs |
+| **Pen%Rev** | That year's penalty as a share of revenue |
+| **OPEX Lac** | That year's operating cost, in Rs Lakhs |
+| **Grid MWh** | Grid energy used to charge the battery that year |
+| **Grid %Exp** | That year's grid-charging energy as a share of export |
+| **Grid Chg Cr** | The cost of that year's grid charging, in Rs Crore |
+| **WC/Delay Cr** | That year's payment-delay working-capital cost, in Rs Crore |
+| **Repl/Aug Cr** | That year's battery replacement or augmentation cost, in Rs Crore |
+| **EBITDA Cr** | EBITDA for the year, in Rs Crore |
+| **Interest Cr** | Interest for the year, in Rs Crore |
+| **Tax Cr** | Tax for the year, in Rs Crore |
+| **NCF Cr** | Net cash flow for the year, in Rs Crore |
+| **Equity CF Cr** | Equity cash flow for the year, in Rs Crore |
+| **DSCR** | Debt-Service Coverage Ratio for the year |
+
+That's 22 columns, in a fixed order. A year's row is shaded light red when
+its net cash flow is negative, and yellow when it's a replacement or
+augmentation year — a negative-NCF year takes the red shading even when
+it's also a replacement/augmentation year. Independently, a row's own
+figures are painted red wherever any of Gross Revenue, EBITDA, NCF, Equity
+Cash Flow, Interest, Tax, Penalty, OPEX, Export Revenue or DSCR is negative
+that year.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="The DFR table"
+    href="/bess/results/dfr-table"
+    description="The monthly delivery result these columns come from"
+  />
+  <Card
+    title="The financials table"
+    href="/bess/results/financials"
+    description="The headline metrics above this per-year table"
+  />
+  <Card
+    title="Formula reference"
+    href="/bess/reference/formulas"
+    description="How the DFR-shortfall penalty and the per-year cash-flow figures are calculated"
+  />
+  <Card
+    title="Every parameter and its default"
+    href="/bess/reference/parameters"
+    description="The input side of the same reference"
+  />
+</Cards>
