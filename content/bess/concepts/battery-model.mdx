@@ -1,0 +1,78 @@
+---
+title: The battery model
+description: How usable energy, round-trip efficiency, C-rate and state of charge combine to decide how much energy the battery can move at each step.
+---
+
+At every step of the dispatch model, three battery properties decide how
+much energy can move and how much of it survives the round trip: how much of
+the pack's nameplate energy is usable right now, how much of a full
+charge/discharge cycle comes back out as delivered energy, and how fast the
+pack can move energy in or out. This page is those three, plus the
+state-of-charge tracking that ties them together across a run.
+
+## Usable energy
+
+```
+usable energy = nameplate energy × DoD × SOH
+```
+
+**DoD** — depth of discharge — is the fraction of nameplate energy usable
+per cycle; not every kWh of a pack's rating is meant to be cycled. **SOH** —
+state of health — is the battery's remaining capacity relative to nameplate
+as it ages, starting from an initial value at commissioning and falling over
+the project life; see
+[Degradation, EOL and augmentation](/bess/concepts/degradation-and-eol) for
+how that curve is shaped. Nameplate energy itself doesn't change between the
+two — it's DoD and SOH together that decide how much of it the dispatch
+model can actually draw on at a given point in the project.
+
+## Round-trip efficiency
+
+**RTE** — round-trip efficiency — is the share of energy recovered from one
+full charge/discharge cycle, including auxiliary losses. Because a full
+cycle has two legs, charging in and discharging out, the model applies the
+square root of the round-trip figure to each leg separately rather than the
+whole figure to just one — so the two legs' losses compound back to the full
+round-trip figure you entered, over one complete cycle.
+
+## C-rate
+
+**C-rate** is the battery's power-to-energy sizing ratio, power divided by
+energy (MW ÷ MWh). It caps how fast the pack can move energy in a single
+step: in the Standalone dispatch rule, for instance, the Off-Peak grid
+recharge is capped by both the C-rate ceiling and however much headroom the
+pack has left. See [How dispatch works](/bess/concepts/how-dispatch-works)
+for where that applies.
+
+## State of charge across a run
+
+Every run of the dispatch model starts the battery at 100% state of charge,
+and each step's charge or discharge — decided by whichever dispatch rule
+governs that run — moves it from there. Usable energy, round-trip efficiency
+and C-rate apply the same way regardless of which dispatch rule is active:
+they describe the battery itself, not the rule deciding when it charges or
+discharges.
+
+See [Battery parameters](/bess/inputs/bess) for the Depth of Discharge,
+Initial State of Health, Round-Trip Efficiency and C-Rate fields, their
+defaults and their ranges.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="How dispatch works"
+    href="/bess/concepts/how-dispatch-works"
+    description="The rules that decide when the battery charges, discharges or idles"
+  />
+  <Card
+    title="Degradation, EOL and augmentation"
+    href="/bess/concepts/degradation-and-eol"
+    description="How SOH declines over the project life, and what happens at end-of-life"
+  />
+  <Card
+    title="Battery parameters"
+    href="/bess/inputs/bess"
+    description="Every RTE, DoD, SOH, EOL and augmentation field"
+  />
+</Cards>
