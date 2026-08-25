@@ -244,6 +244,29 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
     annotations: "",
     priority: 2,
   },
+  // ── Analysis ───────────────────────────────────────────────────────────
+  {
+    id: "bess-analysis-optimise-scenario-comparison",
+    file: "bess/analysis/optimise/scenario-comparison.png",
+    page: "/bess/analysis/optimise",
+    title: "The Scenario Comparison window",
+    alt: "The Optimisation — Scenario Comparison window, with one column per scenario and Apply buttons beneath each.",
+    what: "The whole Scenario Comparison window: the three scenario columns with their row values, the shaded highest-IRR column and winning cells, the bottom banner, and each column's Apply button plus the Close button.",
+    state: "Run ⚙ Optimise to completion. The Scenario Comparison window opens on its own once the search finishes.",
+    annotations: "Circle the shaded highest-IRR column header and the bottom banner.",
+    priority: 1,
+  },
+  {
+    id: "bess-analysis-sensitivity-tornado",
+    file: "bess/analysis/sensitivity/tornado.png",
+    page: "/bess/analysis/sensitivity",
+    title: "The Tornado Chart tab",
+    alt: "The Sensitivity Analysis window's Tornado Chart tab, showing a horizontal bar chart of each driver's swing sorted by size.",
+    what: "The Tornado Chart tab: the Variation ± % and Metric inputs, the Run Tornado button, and the resulting horizontal bar chart sorted by swing magnitude.",
+    state: "Run Simulate or Optimise first to establish a base case, open Run ▸ Sensitivity Analysis…, switch to the Tornado Chart tab, and click ▶ Run Tornado.",
+    annotations: "",
+    priority: 2,
+  },
   // ── Access ─────────────────────────────────────────────────────────────
   {
     id: "bess-access-license-window",
