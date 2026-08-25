@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
-description: Symptoms you can search for — a run that won't start, a Sensitivity window that won't open, a penalty you didn't expect — with the input or state behind each one.
+description: Symptoms you can search for — a run that won't start, a Sensitivity window that won't open, a penalty you didn't expect — with the input or state behind each.
 ---
 
 Find the symptom below and read the entry under it. Each one says what the
@@ -9,11 +9,12 @@ application is doing, why, and which input or state to check.
 ## Running an analysis
 
 <Accordions>
-<Accordion title="Simulate or Optimise does nothing when clicked">
+<Accordion title="A run won't proceed without a generation profile and an activated device">
 
-Two things have to be in place before either button runs anything: this
-device activated, and — unless the project type is **4.  Standalone BESS
-(grid-charged)** — a generation profile loaded on the **📂 Data** tab.
+Two things have to be in place before either **▶  Simulate** or
+**⚙  Optimise** will run: this device activated, and — unless the project
+type is **4.  Standalone BESS (grid-charged)** — a generation profile
+loaded on the **📂 Data** tab.
 
 If access is the gap, open Help ▸ **License…**: the headline reads
 something other than **✓  Active**, and the app offers to open this same
@@ -21,10 +22,11 @@ window instead of running when either **▶  Simulate** or **⚙  Optimise** is
 clicked. See [How access works](/bess/access/overview) and
 [Activate this device](/bess/access/activate).
 
-If access is fine, check the **📂 Data** tab's status line. It still reads
-**No file loaded.** until a CSV is loaded and read successfully — a
-Standalone BESS project is the only one that doesn't need this step, since
-it builds its own calendar internally. See
+If access is fine, a run still needs a generation profile loaded first,
+unless the project type is Standalone BESS. Check the **📂 Data** tab's
+status line: it still reads **No file loaded.** until a CSV is loaded and
+read successfully, and a Standalone BESS project is the only one that
+doesn't need this step, since it builds its own calendar internally. See
 [Generation data](/bess/inputs/data).
 
 </Accordion>
@@ -39,9 +41,9 @@ offers to open the License window rather than completing the action.
 **Sensitivity Analysis…** itself, once a base case exists, the **🏗  Plant
 Layout & SLD** designer, saving or opening a project, and loading a
 generation profile are not checked this way — all of those run regardless of
-activation status. See [How access works](/bess/access/overview) for the
-full split, and [Access problems](/bess/access/troubleshooting) for what
-each License window state means and how to fix it.
+activation status. See How access works for the full split, and
+[Access problems](/bess/access/troubleshooting) for what each License
+window state means and how to fix it.
 
 </Accordion>
 </Accordions>
@@ -55,8 +57,7 @@ Expected on a **4.  Standalone BESS (grid-charged)** project: there is no
 solar or wind generation to read a profile for, so the loader is disabled
 and the application builds a full year's 15-minute calendar internally
 instead. Choose a different project type on the same tab if the plant is
-meant to charge from solar or wind. See
-[Generation data](/bess/inputs/data).
+meant to charge from solar or wind. See Generation data.
 
 </Accordion>
 <Accordion title="The wrong values were read from the generation CSV">
@@ -68,8 +69,7 @@ and wind needs `wind`, `wg`, `wtg` or `turbine`. A column that matches none
 of those falls back to a synthetic 15-minute index for the datetime column,
 or the first and second numeric column for solar and wind — which reads the
 wrong column if the file is laid out differently. Rename the headers to
-match a keyword and load the file again. See
-[Generation data](/bess/inputs/data).
+match a keyword and load the file again. See Generation data.
 
 </Accordion>
 </Accordions>
@@ -92,7 +92,7 @@ The message reads *"Target … not bracketed within [Min, Max]"* — the
 lever's search range doesn't reach far enough in either direction to hit
 the target metric's value. Widen **Min** or **Max**, which auto-fill to
 0.2×–5× the lever's base value and are editable, then solve again. See
-[Sensitivity analysis](/bess/analysis/sensitivity).
+Sensitivity analysis.
 
 </Accordion>
 </Accordions>
@@ -120,7 +120,7 @@ and PPA Tariff the formula uses.
 The Annual DFR target is tracked and compared the same way as the other
 four, but on its own it doesn't feed into the penalty formula — only the
 Peak-hour, Off-Peak, Overall monthly and 15-minute targets do. See
-[Delivery Fulfilment Ratio (DFR)](/bess/concepts/dfr).
+Delivery Fulfilment Ratio (DFR).
 
 </Accordion>
 </Accordions>
