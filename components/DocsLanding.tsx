@@ -33,6 +33,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { SolarLayoutLogo } from "@/components/SolarLayoutLogo"
+import { BessLogo } from "@/components/BessLogo"
 
 interface HighlightCard {
   icon: LucideIcon
@@ -172,9 +173,22 @@ function HeroBanner() {
       />
 
       <div className="relative flex flex-col">
-        <div className="inline-flex items-center gap-[8px] font-mono text-[10px] tracking-[0.16em] uppercase text-fd-muted-foreground">
-          <SolarLayoutLogo aria-hidden="true" className="size-[12px]" />
-          <span>SolarLayout Desktop · Documentation</span>
+        <div className="flex items-center justify-between gap-[16px]">
+          <div className="inline-flex items-center gap-[8px] font-mono text-[10px] tracking-[0.16em] uppercase text-fd-muted-foreground">
+            <SolarLayoutLogo aria-hidden="true" className="size-[12px]" />
+            <span>SolarLayout Desktop · Documentation</span>
+          </div>
+          {/* Cross-product link — the landing surfaces carry no top navbar,
+              so this is how a reader reaches the sibling app's docs from the
+              index. Reciprocated on the BESS landing. */}
+          <Link
+            href="/docs/bess"
+            className="inline-flex shrink-0 items-center gap-[6px] rounded-[8px] border border-fd-border px-[10px] py-[5px] text-[12px] text-fd-muted-foreground transition-colors hover:border-fd-foreground/30 hover:text-fd-foreground"
+          >
+            <BessLogo aria-hidden="true" className="size-[13px]" />
+            <span>BESS Desktop docs</span>
+            <ArrowUpRight className="size-[12px]" aria-hidden />
+          </Link>
         </div>
 
         <h1 className="mt-[14px] text-[28px] leading-[1.15] font-normal tracking-[-0.02em] text-fd-foreground">

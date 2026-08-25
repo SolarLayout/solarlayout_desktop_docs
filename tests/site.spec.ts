@@ -34,6 +34,14 @@ test("landing links to a page that actually resolves", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
 })
 
+test("the /docs landing offers a link across to the BESS docs", async ({ page }) => {
+  await page.goto("/docs")
+  const crossLink = page.getByRole("link", { name: /BESS Desktop docs/i }).first()
+  await expect(crossLink).toBeVisible()
+  await crossLink.click()
+  await expect(page).toHaveURL(/\/docs\/bess$/)
+})
+
 test("brand fonts are actually served, not silently falling back", async ({
   page,
 }) => {

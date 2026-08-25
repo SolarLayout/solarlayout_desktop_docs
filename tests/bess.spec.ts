@@ -25,6 +25,25 @@ test("the /docs/bess landing links into the BESS tree", async ({ page }) => {
   await expect(page.getByRole("link", { name: /What BESS Desktop does|Get started|Start reading/i }).first()).toBeVisible()
 })
 
+test("the /docs/bess landing carries a BESS-branded document title", async ({ page }) => {
+  await page.goto("/docs/bess")
+  await expect(page).toHaveTitle("BESS Desktop Docs")
+})
+
+test("a BESS article page is title-branded BESS, not SolarLayout", async ({ page }) => {
+  await page.goto("/docs/bess/intro")
+  await expect(page).toHaveTitle(/· BESS Desktop Docs$/)
+  await expect(page).not.toHaveTitle(/SolarLayout Desktop Docs$/)
+})
+
+test("the /docs/bess landing offers a link across to the SolarLayout docs", async ({ page }) => {
+  await page.goto("/docs/bess")
+  const crossLink = page.getByRole("link", { name: /SolarLayout Desktop docs/i }).first()
+  await expect(crossLink).toBeVisible()
+  await crossLink.click()
+  await expect(page).toHaveURL(/\/docs$/)
+})
+
 test("search finds a BESS page from the BESS tree", async ({ page }) => {
   await page.goto("/docs/bess/intro")
   await page.keyboard.press("ControlOrMeta+k")
