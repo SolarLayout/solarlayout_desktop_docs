@@ -1,0 +1,38 @@
+---
+title: Generation degradation
+description: The Year-1 and Year-2-onward loss applied to Solar and Wind generation over the project life.
+---
+
+The **📉 Degrad.** tab sets how much Solar and Wind generation itself
+declines over the project life — separate from the battery's own state-of-health
+degradation on the **🔋 BESS** tab.
+
+<Screenshot id="bess-inputs-degradation" />
+
+## Fields
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| `Generation Loss Year-1` | 1.0% | 0–5% | Solar/Wind generation loss in Year 1 |
+| `Generation Loss Year-2+` | 0.4%/yr | 0–2%/yr | Annual generation loss from Year 2 onward |
+
+The tab's own caption describes the two figures as compounding — each
+year's generation factor is (1 minus the Year-1 loss) multiplied by (1 minus
+the Year-2+ loss) raised to the power of (year minus 1) — and captions the
+shipped defaults as "1% Year-1, 0.4%/yr thereafter (IEC 61215 standard module
+degradation)".
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Battery parameters"
+    href="/bess/inputs/bess"
+    description="Round-trip efficiency, depth of discharge, and the battery's own SOH degradation"
+  />
+  <Card
+    title="Capacity and DFR targets"
+    href="/bess/inputs/sizing"
+    description="Contracted Capacity, project life and the starting Solar/Wind size"
+  />
+</Cards>
