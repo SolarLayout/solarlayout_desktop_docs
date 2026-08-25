@@ -15,6 +15,7 @@
     "screenshots:index": "node scripts/build-screenshot-index.mjs",
     "screenshots:index:bess": "node scripts/build-bess-screenshot-index.mjs",
     "videos:index": "node scripts/build-video-index.mjs",
+    "videos:index:bess": "node scripts/build-bess-video-index.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },
