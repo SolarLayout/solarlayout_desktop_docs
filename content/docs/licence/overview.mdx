@@ -1,151 +1,127 @@
 ---
-title: How licensing works
-description: The application is licensed per machine for a subscription period. What a licence unlocks, why it cannot be edited, and the checks it must pass.
+title: How access works
+description: Access to SolarLayout Desktop is tied to this device, checked online — what Get Free Access unlocks, the status chip, and the offline grace period.
 ---
 
-SolarLayout Desktop is licensed **per machine for a subscription period**. One
-licence covers one computer, and it carries a start date and an expiry date.
+Access to SolarLayout Desktop is tied to **this device**, not to a licence
+file. Help ▸ **License / Subscription…** opens the window that shows this
+device's status and requests access for it — there is no file to install,
+copy, back up, or keep safe. The Device ID is the key, and status is checked
+online with the server.
 
-The licence controls one thing: whether a layout can be generated. It does not
-decide which features you have — every button, every input group and every
-export exists in the application whether or not a licence is present.
+You don't need to open that window just to check status, though — a small
+access-status chip is always visible in the top toolbar: **● Active — until
+&lt;date&gt;**, **● No active access** with a **Get Free Access** button
+beside it, **● Access expired** or **● Access revoked** with a **Contact Us**
+button, or **● Access status unavailable** if the last check failed. The app
+version is shown in the status bar at the bottom of the window.
 
-## What works without a licence
+The application opens fully usable regardless of that status. Access only
+matters once you ask it to generate a layout or hand you a result.
 
-The application opens, and the interface is complete. You can:
+## What needs this device active
 
-- read and change every input in the panel, and see every default;
-- load a boundary file and have it read;
-- open every menu, the in-app guide, and the licence window itself.
+| Action | Needs active access |
+| --- | --- |
+| **Generate Layout** | Yes |
+| Every export (PDF, KMZ, DXF, and the rest) | Yes |
+| The SLD tool | Yes |
+| The BOM tool | Yes |
 
-What you cannot do is **Generate Layout**. Clicking it without a valid, in-date
-licence for this machine produces a message instead of a layout.
+Because almost everything downstream is computed *from* a generated layout,
+a device without active access is in practice limited to exploring the
+inputs — reading and changing every field in the panel, loading a boundary
+file, and opening every menu, the in-app guide, and the **License /
+Subscription…** window itself.
+
+Clicking **Generate Layout** without active access opens a **Subscription
+Required** dialog instead of a layout: *"Layout generation is locked."*,
+followed by the reason for this device, then *"Open Help ▸ License /
+Subscription… to view your Device ID and start your free trial."* The
+**License / Subscription** window then opens itself.
 
 <Screenshot id="licence-blocked-generate" />
 
-Because almost everything downstream is computed *from* a generated layout —
-energy yield, the bill of materials, the diagram, every export, the satellite
-and pile views — a machine without a licence is in practice limited to
-exploring the inputs. That is deliberate: you can install the application,
-walk through the settings and see what the design will ask of you before a
-licence exists.
+## The License / Subscription window
 
-## One licence, one machine
+The window's status headline reports one of three states:
 
-The licence window shows a **Device ID** — a value that identifies the computer
-you are sitting at. A licence is issued against that Device ID, and the
-application checks the two match on every start.
+- **✓ Active** (green), with *"You have access until &lt;Month DD, YYYY&gt;."*
+  underneath.
+- **✗ No access** (red), with the reason for this device followed by
+  *"Layout generation is disabled until your access is active."*
+- **⏳ Waiting for activation** (amber), shown right after you click **Get
+  Free Access**, until the app confirms it.
 
-The practical consequences:
+<Screenshot id="licence-no-licence" />
 
-- A licence file that works on one computer will **not** work on another. It
-  fails with *"License is issued for a different computer"*.
-- Copying `license.lic` to a colleague's PC achieves nothing.
-- A new or rebuilt machine needs its own licence, issued against its own
-  Device ID.
+Below the status is **Your Device ID** — a read-only field labelled *"This
+Device ID identifies this computer to SolarLayout (it matches Settings ▸
+System ▸ About ▸ Device ID):"*, with a **Copy** button beside it. The Device
+ID is the Windows registry `MachineGuid` — the same value Windows itself
+shows under Settings ▸ System ▸ About ▸ Device ID.
 
-[Activate your licence](/docs/licence/activate) covers the four steps.
+The buttons on offer depend on the state:
 
-## Why editing the licence file cannot work
+- While active: **Access Details**, which opens the same web page as
+  activation, for this device.
+- While not active: **Get Free Access** and **Contact Us**.
+- Always: **Refresh** and **Close**.
 
-A licence is a small file carrying two things: the details of the licence — the
-machine it is for, when it starts, when it ends — and a **signature** over those
-details.
+<Screenshot id="licence-valid" />
 
-Signatures here work on a key pair: two matching halves, one that can create a
-signature and one that can only check it. **Your copy of the application carries
-only the checking half.** It can confirm that a signature belongs to the details
-beside it. It cannot produce a signature, and it cannot alter one.
+## Getting access
 
-So changing a single character of the file — a later expiry date, a different
-Device ID, even a stray space added by a text editor — leaves a signature that
-no longer matches the details. The application does not silently repair it or
-ignore it. It refuses the file with *"License signature invalid (tampered or
-wrong key)"*.
+Click **Get Free Access** and the application opens your browser at the
+activation page for this device. Complete activation there, then switch back
+to the **License / Subscription** window — it re-checks automatically and
+the headline flips to **✓ Active**.
 
-This is in your interest as much as SolarLayout's:
+**Contact Us** opens the SolarLayout contact page in your browser, for
+questions or to arrange paid access. [Activate this device](/docs/licence/activate)
+walks through the full flow.
 
-- **Nobody can forge a licence for your machine either.** The half of the key
-  pair that creates signatures is not on any customer's PC, so a licence
-  cannot be manufactured on one.
-- **The check is local.** It runs on your own machine and needs no internet
-  connection, so a plant design is never blocked by a licence server being
-  unreachable or by a site with no connectivity.
-- **A silent failure is impossible.** Either the file verifies and works, or you
-  get a named message telling you which check stopped it.
+## Access states
 
-<Callout type="warn">
-Never open `license.lic` in a text editor and save it. Some editors add a
-line ending or change the character encoding on save, and that alone is enough
-to invalidate the signature. Keep the file exactly as you received it.
-</Callout>
+The server reports one of four states for this device: `active`, `expired`,
+`revoked`, or `none`. Each shows its own reason in the **License /
+Subscription** window:
 
-## The eight checks
-
-Every start applies the same checks, in this order. All eight must pass. They
-run in sequence, so if more than one thing is wrong, the message you see names
-whichever comes first in the list.
-
-1. **A licence file is present and readable.** Otherwise: *"No license found"*.
-2. **The file is a complete licence.** It must carry both the licence details
-   and the signature over them, intact.
-3. **The signature matches the details.** This is the check that fails when a
-   file has been edited or damaged in transit.
-4. **The machine matches.** The Device ID in the licence must be this
-   computer's.
-5. **The system clock has not been set backwards.** The application records the
-   latest date it has seen and compares the current clock against it.
-6. **A usable expiry date exists.** A licence with no readable end date is
-   refused rather than treated as unlimited.
-7. **Today is not before the start date.** A licence issued ahead of its
-   subscription period does not work early.
-8. **Today is not after the expiry date.**
-
-Each failure has its own message. [Licence problems](/docs/licence/troubleshooting)
-lists all seven of them, with the likely causes and what to do about each.
-
-## Where the licence is stored
-
-| Path | What it holds |
+| State | Reason shown |
 | --- | --- |
-| `%APPDATA%\SolarLayout.Desktop\license.lic` | The licence itself — the location the application reads on every start. |
-| `%APPDATA%\SolarLayout.Desktop\.lastseen` | The clock record — the latest date the application has seen — used by check 5. |
+| Expired | *"Your access has ended. Contact SolarLayout to purchase a licence."* |
+| Revoked | *"Access has been revoked. Contact SolarLayout."* |
+| None | *"No active access for this device. Click 'Get Free Access' to get started."* |
 
-`%APPDATA%` is **per Windows user account**. A second user account on the same
-PC has its own folder and does not see the first account's licence, even though
-the machine's Device ID is the same.
+## Working offline
 
-A licence file placed beside the application itself is also read, as a
-read-only fallback. Loading the file through the licence window is the
-supported route and the one to use.
+When this device can't reach the server, a good check it already made is
+cached, and the application keeps working under that cached status for up to
+3 days before it needs to check in again. If it can't reach the server and
+has no usable cached check, it reports *"Could not verify access — connect
+to the internet and try again."*
 
-Because the licence sits outside the application, replacing the application
-leaves it in place — and on first run the application adopts a licence left by
-a previous installation. Updating does not cost you an activation. See
-[Updates and reinstalling](/docs/install/updates).
+## Updates, reinstalls, and other accounts
 
-## What a licence is not
+Access is server-side and tied to the device, not stored in a file, so it
+survives reinstalls and application updates automatically — there is nothing
+to re-load. See [Updates and reinstalling](/docs/install/updates).
 
-- It is **not** tied to a person or an email address. The email is how
-  SolarLayout knows who to issue to and where to send the file; the machine is what
-  the licence is checked against.
-- It is **not** a feature switch. There is no part of the interface that appears
-  or disappears with a licence.
-- It does **not** need to be renewed inside the application. A renewal is a new
-  file, loaded exactly the way the first one was.
+A second Windows user account on the same PC has the same Device ID, so
+access carries over to it too — unlike a per-user file would.
 
 ## Where to go next
 
 <Cards>
   <Card
-    title="Activate your licence"
+    title="Activate this device"
     href="/docs/licence/activate"
-    description="Copy the Device ID, send it, load the file you get back"
+    description="Copy the Device ID and request access for this device"
   />
   <Card
-    title="Licence problems"
+    title="Access problems"
     href="/docs/licence/troubleshooting"
-    description="Every message the licence check produces, and what to do"
+    description="Every access state, what it means, and the fix"
   />
   <Card
     title="Your first layout"

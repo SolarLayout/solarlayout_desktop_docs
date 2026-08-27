@@ -8,21 +8,25 @@ module table: the application installed on a Windows PC, a valid licence for
 that machine, and one file describing where the plant goes. Every other input
 ships with a working default, so a first run needs almost none of them.
 
-The work happens on your own machine. The only steps that reach the internet
-are fetching weather data for the energy estimate and fetching elevation data
-for the terrain check, and both are optional.
+The work happens on your own machine. The steps that reach the internet are
+verifying this device's access, fetching weather data for the energy
+estimate, and fetching elevation data for the terrain check — the latter two
+are optional.
 
 ## Before you start
 
 | What you need | Why | Where |
 | --- | --- | --- |
 | The application | A Windows PC, installed from the Microsoft Store | [Install on Windows](/docs/install/windows) |
-| A valid licence for that machine | The application opens without one, but layout generation is blocked until a valid, in-date licence is loaded | [Activate your licence](/docs/licence/activate) |
+| This device activated | The application opens without it, but **Generate Layout** — and every export, plus the SLD and BOM tools — is blocked until access is active | [Activate your licence](/docs/licence/activate) |
 | A boundary file | The plant boundary, and any water bodies, obstructions and transmission lines inside it | [Boundary files](/docs/inputs/boundary-files) |
 
-A licence is issued per machine for a subscription period. Copy the **Device
-ID** from **Help ▸ License / Subscription…**, send it to SolarLayout, and load the
-`license.lic` file you receive back.
+Access is tied to this computer by a **Device ID** — the same value shown at
+Settings ▸ System ▸ About ▸ Device ID. There is no licence file to install,
+copy, back up or keep safe: the Device ID is the key, and status is verified
+online with the server. Open **Help ▸ License / Subscription…**, copy your
+Device ID, and click **Get Free Access** to activate this device — see
+[Activate your licence](/docs/licence/activate).
 
 The boundary file can be a Google Earth file (`.kmz` or `.kml`), a CAD drawing
 (`.dxf` or `.dwg`), or a raster image with a scale you supply. A Google Earth
@@ -52,6 +56,8 @@ a session already in progress. See
 | Plot area | The plan drawing of the plant. Standard pan and zoom controls, except that **Home (⌂)** fits the view to the plant. |
 | View switches | On/off switches for cables, terrain contours, the layout itself, the legend, lightning arresters and the summary. |
 | Summary table, below the plot | **Layout & Energy Summary** — one row per plant boundary and a **TOTAL** row, with a **⛶ Maximize** button that opens it in its own window. |
+| Access-status chip, in the top toolbar | A coloured dot and short status text — **Active — until \<date>**, **No active access**, **Access expired**, **Access revoked**, or **Access status unavailable** — always visible, with a **Get Free Access** or **Contact Us** button beside it when action is needed. |
+| Status bar, at the bottom | The application version you are running (for example **v1.1.0**). |
 
 ### The input panel
 
@@ -77,7 +83,9 @@ them. Two of them depend on the design mode you chose at launch.
 and **📍 Piles: OFF** stay disabled until a layout exists. **▢ Wireframe**
 draws tables as outlines only. **✏ Sketch Mode**, **📋 BOM** and **⚡ SLD**
 switch the panel over to hand editing, the bill of materials, and the
-single-line diagram.
+single-line diagram. A **Docs** button opens this documentation site in your
+browser, and a **Support** button opens the contact page — both reachable
+without leaving the plot.
 
 ### The view switches
 

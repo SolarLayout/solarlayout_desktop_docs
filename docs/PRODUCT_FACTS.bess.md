@@ -65,9 +65,14 @@ chip carrying the SolarLayout wordmark
 (`apps/bess-tool/bess_tool/seci_bess_gui.py:2662`), `"  Save"` icon button
 (`apps/bess-tool/bess_tool/seci_bess_gui.py:2668`), `"  Open"` icon button
 (`apps/bess-tool/bess_tool/seci_bess_gui.py:2674`), `"Support"` button
-(`apps/bess-tool/bess_tool/seci_bess_gui.py:2680`), and the amber subtitle
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:2680`), a `"Docs"` button
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:2708`) that opens the online docs at
+`{web}/docs/bess` (`_open_docs` → `trial_client.open_docs`,
+`apps/bess-tool/bess_tool/seci_bess_gui.py:2749`;
+`apps/bess-tool/bess_tool/trial_client.py:86`), and the amber subtitle
 `"Hybrid RE + Battery Energy Storage System Analyser"`
-(`apps/bess-tool/bess_tool/seci_bess_gui.py:2685`).
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:2685`). An always-visible
+**access-status chip** also sits in this banner — see §3.
 
 **Left — input notebook** (`_build_left`,
 `apps/bess-tool/bess_tool/seci_bess_gui.py:2706` – `apps/bess-tool/bess_tool/seci_bess_gui.py:2736`),
@@ -92,8 +97,11 @@ Then an **8-tab** input notebook: `📂 Data`, `⏰ Peak`, `📐 Sizing`, `🔋 
 `apps/bess-tool/bess_tool/seci_bess_gui.py:4656` – `apps/bess-tool/bess_tool/seci_bess_gui.py:4677`):
 status text left (`apps/bess-tool/bess_tool/seci_bess_gui.py:4674`), a thin
 separator (`apps/bess-tool/bess_tool/seci_bess_gui.py:4672`), an amber
-elapsed-time label (`apps/bess-tool/bess_tool/seci_bess_gui.py:4666`), and a
-progress bar, right-most (`apps/bess-tool/bess_tool/seci_bess_gui.py:4661`).
+elapsed-time label (`apps/bess-tool/bess_tool/seci_bess_gui.py:4666`), a
+progress bar (`apps/bess-tool/bess_tool/seci_bess_gui.py:4661`), and the installed
+**app version** at the far right (`apps/bess-tool/bess_tool/seci_bess_gui.py:4744`)
+— `app_version.display_version()` (`apps/bess-tool/bess_tool/app_version.py:18`),
+e.g. `v1.1.0` (`dev` when run from source).
 
 ### Menu items (exact labels)
 **File** (cascade built at `apps/bess-tool/bess_tool/seci_bess_gui.py:2606` –
@@ -243,6 +251,21 @@ access to file a support ticket. Start a free trial, or contact us directly."
 **`Contact Us`**, **`Cancel`** buttons
 (`apps/bess-tool/bess_tool/seci_bess_gui.py:8564` –
 `apps/bess-tool/bess_tool/seci_bess_gui.py:8569`).
+
+**Always-visible access-status chip** — the header banner shows a coloured dot +
+text so this device's status is visible without opening the License window
+(`_refresh_access_chip`, `apps/bess-tool/bess_tool/seci_bess_gui.py:2772`; label
+`apps/bess-tool/bess_tool/seci_bess_gui.py:2723`; state→view mapping
+`apps/bess-tool/bess_tool/access_view.py:31` –
+`apps/bess-tool/bess_tool/access_view.py:46`). By state: **● Active — until
+&lt;date&gt;** (`C["accent2"]`, date via `format_valid_till`,
+`apps/bess-tool/bess_tool/access_view.py:13`); **● No active access**
+(`C["yellow"]`) with a **Get Free Access** button
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:2774`); **● Access expired** /
+**● Access revoked** (`C["danger"]`) with a **Contact Us** button
+(`apps/bess-tool/bess_tool/seci_bess_gui.py:2776`); **● Access status
+unavailable** (`C["text_lt"]`). Refreshes on startup, on the main window's
+`<FocusIn>`, and on a 30-minute `after()` backstop.
 
 
 ## 4. Inputs
