@@ -1106,41 +1106,77 @@ export, but not in the Google Earth file. Do not imply otherwise.
   loaded.
 - **File ▸ New Project** starts fresh — `MW:964`.
 
-## 15. Licence — `licensing.py`, `license_dialog.py`
+## 15. Access & licensing — `license_dialog.py`, `trial_client.py`, `licensing.py`
 
-- **Help ▸ License / Subscription…** — `MW:1020`.
-- The app is licensed **per machine for a subscription period**. It opens
-  without a licence, but **Generate Layout is blocked** until a valid,
-  in-date licence for that machine is loaded.
-- Flow: copy the **Device ID** from the dialog → send it with the reader's
-  email to the vendor → receive a `license.lic` → **Load License File…**.
-- The app carries only the public half of the key pair, so a licence can be
-  checked but never created or edited on the reader's machine. Changing one
-  character invalidates the signature.
-- Checks applied in order, all of which must pass: file present and
-  readable → valid JSON with `payload` and `sig` → signature matches →
-  machine ID matches this computer → system clock has not been set backwards
-  → a usable expiry date exists → not before the start date → not expired.
-- Stored at `%APPDATA%\SolarLayout.Desktop\license.lic`; a file beside the
-  executable also works as a read-only fallback. Clock tracking lives in
-  `%APPDATA%\SolarLayout.Desktop\.lastseen`.
-- **Clock tolerance: more than two days backwards** triggers the check —
-  `licensing.py:_clock_rolled_back` compares today against the latest date
-  seen minus two days, so minor drift and time-zone travel are allowed.
-- When generation is blocked the message is titled **Subscription Required**
-  and reads: *"Layout generation is locked."*, then the specific reason from
-  the list below, then *"Open Help ▸ License / Subscription… to view your
-  Machine ID and load a license file."* The licence window then opens by
-  itself — `MW:2713-2729`. Note the message says **Machine ID** where the
-  licence window's own label says **Device ID**; they are the same value.
-- On first run the app looks for a licence left by a previous installation and
-  adopts it automatically, so upgrading does not lose the licence.
-- Reader-facing messages, verbatim: *"No license found"*, *"License signature
-  invalid (tampered or wrong key)"*, *"License is issued for a different
-  computer"*, *"System clock appears to have been set backwards"*,
-  *"License is not active until …"*, *"License expired on …"*,
-  *"License has no valid expiry date"*.
-- ⛔ Never document how licences are issued, the private key, or any vendor
+**Online, device-bound access — no licence file.** The old offline `license.lic`
+scheme was removed; `licensing.py` now provides only `machine_id()`, and
+entitlement is checked server-side via `solar_core.trial_client`. There is **no
+`.lic` file** to install, copy, back up, or load — the **Device ID** is the key.
+The app opens without access, but **Generate Layout** — and every export, plus
+the SLD and BOM tools — is blocked until access is active (`_require_license`,
+`MW:2748`, called from the generate/export/SLD/BOM handlers, e.g. `MW:3017`).
+
+**Device ID** — `licensing.machine_id()`: on Windows the registry **MachineGuid**,
+the value shown under Settings ▸ System ▸ About ▸ Device ID.
+
+**Help ▸ License / Subscription…** (`MW:1020`) opens the **License / Subscription**
+window (`license_dialog.py`):
+- Status headline, set by `_refresh` from `trial_client.check_status(force=True)`
+  (`license_dialog.py:105-124`): **✓  Active** (green) with *"You have access
+  until <date>."*; **✗  No access** (red) with the reason and *"Layout generation
+  is disabled until your access is active."*; **⏳  Waiting for activation**
+  (amber) shown immediately after **Get Free Access** (`license_dialog.py:142`).
+- **Your Device ID** — a read-only field labelled *"This Device ID identifies this
+  computer to SolarLayout (it matches Settings ▸ System ▸ About ▸ Device ID):"*
+  with a **Copy** button (`license_dialog.py:53-66`).
+- State-dependent buttons (`license_dialog.py:122-124`): active → **Access
+  Details** (opens the web page); not active → **Get Free Access** + **Contact
+  Us**; always → **Refresh** + **Close**.
+- The window re-checks on focus (`changeEvent`, `license_dialog.py:92-98`), so
+  returning from the browser after activating flips it to Active by itself.
+
+**Getting access.** **Get Free Access** opens the browser at
+`{web}/desktop/solarlayout?device=<DeviceID>` (`trial_client.activation_url`,
+`trial_client.py:54-55`; `_WEB_BASE` default `https://solarlayout.app`).
+**Contact Us** opens `{web}/contact`; **Access Details** (when active) opens the
+same `/desktop` page.
+
+**Status model** (`trial_client.check_status`): the server returns
+`active | expired | revoked | none` plus a `valid_till` date. Reader-facing
+reasons, verbatim: expired → *"Your access has ended. Contact SolarLayout to
+purchase a licence."*; revoked → *"Access has been revoked. Contact
+SolarLayout."*; none → *"No active access for this device. Click 'Get Free
+Access' to get started."*; can't verify with no usable cache → *"Could not verify
+access — connect to the internet and try again."* A good check is cached; the app
+keeps working through a **3-day offline grace** window, and an active result is
+treated fresh (no network call) for 5 minutes.
+
+**Gate message.** When blocked, the **Subscription Required** dialog reads
+*"Layout generation is locked."*, then the reason, then *"Open Help ▸ License /
+Subscription… to view your Device ID and start your free trial."*, then opens the
+License window itself (`MW:2758-2762`).
+
+**Updates & second users.** Access is server-side and device-bound, so it
+survives reinstalls and updates with nothing to re-load, and a second Windows
+user account on the same PC shares the same Device ID.
+
+**Always-visible chrome (added 2026-08):**
+- **Access-status chip** — always shown in the top app toolbar (`_access_label`,
+  `MW:1037`; rendered by `_refresh_access_chip`, `MW:2785-2801`, from
+  `access_chip.access_view`). Text by state: **● Active — until <date>** (green,
+  `tokens.GREEN_ON`); **● No active access** (gold, `tokens.GOLD`) with a **Get
+  Free Access** button; **● Access expired** / **● Access revoked** (red,
+  `tokens.RED_ON`) with a **Contact Us** button; **● Access status unavailable**
+  (muted). Refreshes on startup, on window focus, after the License window closes,
+  and on a 30-minute timer.
+- **Docs** button — top app toolbar, beside **Support** (`MW:1055`); opens
+  `trial_client.docs_url()` = `{web}/docs` = https://solarlayout.app/docs
+  (`trial_client.py:76`).
+- **App version** — always shown in the bottom status bar
+  (`status_bar.addPermanentWidget`, `MW:2467-2469`), text
+  `app_version.display_version()` (e.g. `v1.1.0`; `dev` when run from source).
+
+- ⛔ Never document how access is granted server-side, keys, or any vendor
   operation. Reader-side only.
 
 ## 16. Menus — `MW:962-1020`
@@ -1351,9 +1387,9 @@ invent a value.
 |---|---|
 | The Microsoft Store listing URL | Tell the reader to open the Microsoft Store and search for the application by name. Do not write a URL or a `ms-windows-store:` link. |
 | ~~The current version number and release date~~ | **Resolved (Arun, 2026-08-18): v1.0.0, dated 2026-08-18**, published as the first documented release. It records the shipped capability set rather than a change list, because there is no earlier documented version to compare against. Later entries are real changelogs. |
-| Where the installed version number is displayed | Nothing in the interface shows it — there is no About window, and the Help menu has only the two items in §16. Point the reader at the Store listing instead. |
-| Whether uninstalling removes the licence file | Not determinable from the application's own code, and the product's own MSIX design spec records `%APPDATA%` redirection under MSIX as an open Windows verification item. **Do not answer it.** Write the advice that holds either way: keep the `license.lic` file somewhere outside the application, because a reinstall adopts a licence left by a previous installation only if the file still exists. |
-| What changes the Device ID | The fingerprint is derived per machine, but which hardware or OS changes alter it is not something to promise. Say a reinstall of Windows or a change of machine can change it, and that a changed ID needs a reissued licence. |
+| ~~Where the installed version number is displayed~~ | **Resolved (2026-08): the app version is always shown in the bottom status bar** — `app_version.display_version()`, e.g. `v1.1.0` (`dev` when run from source); see §15. |
+| ~~Whether uninstalling removes the licence file~~ | **Moot under the online model:** there is no licence file (§15). Access is server-side and device-bound, so it survives an uninstall/reinstall on the same machine automatically — nothing to keep or restore. |
+| What changes the Device ID | The fingerprint is derived per machine, but which hardware or OS changes alter it is not something to promise. Say a reinstall of Windows or a change of machine can change it, and that a changed ID needs access re-activated (**Get Free Access** again). |
 | Any release history | There is none to write. Do not invent changelog entries. |
 | Minimum Windows build, RAM, disk, or screen resolution | State the requirements qualitatively — a 64-bit Windows PC, a display wide enough for the panel and plot side by side, an internet connection only for weather and elevation data. Leave a `{/* VERIFY: minimum Windows version and hardware requirements */}`. |
 | ~~Support email address or contact route~~ | **Resolved (Arun, 2026-08-18): `sales@solarlayout.app`.** It is the route for everything reader-facing — a new licence, a renewal, a reissue for a new machine, and any problem the pages do not resolve. |

@@ -25,15 +25,20 @@ own entry in [Licence problems](/docs/licence/troubleshooting).
 <Accordions>
 <Accordion title="Generate Layout does nothing when I click it">
 
-Layout generation is blocked until a valid, in-date licence for this machine is
-loaded. The application opens and every other control works, which is why the
-button appears to do nothing rather than reporting a problem. Open
-**Help ▸ License / Subscription…** and read the banner: if it does not report a
-valid licence with an expiry date, that is your answer — see
+Layout generation is blocked until this device's access is active. The
+application opens and every other control works, which is why the button
+appears to do nothing rather than reporting a problem. Check the
+access-status chip in the toolbar first — it reads "● Active — until \<date>"
+when you are covered, or "● No active access" / "● Access expired" /
+"● Access revoked" with a button beside it otherwise. Open
+**Help ▸ License / Subscription…** for the Device ID and full status if you
+need it: if it does not read "✓  Active" with an until-date, that is
+your answer — see
 [How licensing works](/docs/licence/overview) for what is checked, and
-[Activate your licence](/docs/licence/activate) if you have never loaded one. If it
-does report a valid licence, check that a boundary file is loaded in the
-**Input KMZ File** row and was read without a validation complaint.
+[Activate your licence](/docs/licence/activate) if you have never got access
+for this device. If it does read "✓  Active", check that a boundary file is
+loaded in the **Input KMZ File** row and was read without a validation
+complaint.
 
 </Accordion>
 <Accordion title="An unexpected error occurred, but the application will keep running">

@@ -1,41 +1,38 @@
 ---
-title: Activate your licence
-description: Copy the Device ID from the licence window, send it with your email to SolarLayout, and load the licence file you receive.
+title: Activate this device
+description: Get free access for this device from the License / Subscription window, complete it in your browser, and confirm it automatically.
 ---
 
-Activation is four steps, done once per machine per subscription period. You
-copy a **Device ID** out of the application, send it with your email address to
-SolarLayout, and load the `license.lic` file they send
-back. Nothing is entered by hand, and nothing needs an internet connection at
-the moment of activation.
+Activation ties access to **this device** — there is no file to send, receive,
+copy or keep safe. Open the **License / Subscription** window, copy this
+device's Device ID, request access, and complete it in your browser. Switching
+back to the window confirms it automatically.
 
-Until it is done, **Generate Layout** produces a message rather than a layout.
-Everything else in the application works — see
-[How licensing works](/docs/licence/overview) for what a licence does and does
-not control.
+You can also see this at a glance without opening the window: the top toolbar
+always shows an access-status chip. On a device that has never been activated
+it reads **●  No active access**, with a **Get Free Access** button right
+beside it that does exactly what the window's button does.
 
-## Before you start
-
-You need two things:
-
-| | |
-| --- | --- |
-| **The machine you will design on** | The Device ID identifies that specific computer. Activate on the PC you intend to use, not on a colleague's. |
-| **The email address the licence should be issued to** | It identifies who is asking, and it is where the licence file comes back to. |
-
-Licences are issued by **[sales@solarlayout.app](mailto:sales@solarlayout.app)**.
-
-## The four steps
+Until access is active, **Generate Layout** — and every export, plus the SLD
+and BOM tools — won't run. Everything else in the application works. See
+[How access works](/docs/licence/overview) for the full list of what stays
+free.
 
 <Steps>
 
 <Step>
 ### Open Help ▸ License / Subscription…
 
-The licence window opens with a status banner at the top. On a machine that has
-never been activated the banner reports that no licence was found; below it are
-the **Device ID** box with its **Copy** button, and the **Load License File…**
-button you will use in step 4.
+The **License / Subscription** window opens. On a device with no active
+access, the status headline reads **✗  No access**, with the message *"No
+active access for this device. Click 'Get Free Access' to get started."*
+beneath it, followed by *"Layout generation is disabled until your access is
+active."*
+
+Below that: the read-only **Your Device ID** field, labelled *"This Device ID
+identifies this computer to SolarLayout (it matches Settings ▸ System ▸ About
+▸ Device ID):"*, with its **Copy** button, then **Get Free Access**,
+**Contact Us**, **Refresh** and **Close**.
 
 <Screenshot id="licence-no-licence" />
 </Step>
@@ -43,30 +40,35 @@ button you will use in step 4.
 <Step>
 ### Copy the Device ID
 
-Use the **Copy** button beside the box. Do not read the value off the screen and
-retype it — it is long, and a single wrong character produces a licence that is
-valid but issued for a computer that does not exist. The result is *"License is
-issued for a different computer"*, and the file has to be reissued.
+Click **Copy** beside the Device ID field rather than reading the value off
+the screen. It goes straight to the clipboard. The Device ID is the key —
+there is nothing else to install, load or back up.
 </Step>
 
 <Step>
-### Send the Device ID and your email to SolarLayout
+### Click Get Free Access
 
-Paste the Device ID into your message exactly as copied, together with the email
-address the licence should be issued to. Send both in the same message.
-
-If your mail client reformats or wraps long values, attach the Device ID as a
-plain text file instead of pasting it into the body.
+The status headline changes at once to **⏳  Waiting for activation**, and
+your browser opens to the activation page for this device
+(`https://solarlayout.app/desktop/solarlayout?device=<DeviceID>`).
 </Step>
 
 <Step>
-### Load the licence file
+### Complete activation in your browser
 
-You will receive a file named `license.lic`. Save it somewhere you can find
-again — a folder of your own, not the mail client's temporary preview area.
+Finish activation for this Device ID on the page that opened.
+</Step>
 
-In the licence window, click **Load License File…** and pick the file. The
-status banner changes to report a valid licence and shows the date it expires.
+<Step>
+### Return and confirm
+
+Switch back to the **License / Subscription** window. It re-checks
+automatically whenever it regains focus — no need to click anything. You can
+also click **Refresh** to check immediately.
+
+A device with active access shows **✓  Active**, with the sub-text *"You have
+access until &lt;Month DD, YYYY&gt;."*, and **Access Details**, **Refresh** and
+**Close** in place of the earlier buttons.
 
 <Screenshot id="licence-valid" />
 
@@ -76,53 +78,46 @@ status banner changes to report a valid licence and shows the date it expires.
 
 </Steps>
 
-<Callout type="warn">
-Load the file exactly as you received it. Do not open it in a text editor and
-save it, and do not edit any part of it — the licence carries a signature over
-its own contents, and any change at all invalidates it.
+<Callout type="info">
+If the status reads **✗  No access** with a message about access having
+ended or been revoked, **Get Free Access** will not help:
+
+- *"Your access has ended. Contact SolarLayout to purchase a licence."*
+  (expired)
+- *"Access has been revoked. Contact SolarLayout."* (revoked)
+
+See [Licence problems](/docs/licence/troubleshooting) or contact SolarLayout
+at [sales@solarlayout.app](mailto:sales@solarlayout.app). **Contact Us** in
+the window opens the same page
+([solarlayout.app/contact](https://solarlayout.app/contact)).
 </Callout>
 
-## The Device ID is the machine, not the person
+## If you try before activating
 
-The Device ID identifies one computer. A licence issued against it is checked
-against that computer on every start, so:
+Clicking **Generate Layout** (or an export, or the SLD or BOM tools) before
+access is active shows a **Subscription Required** dialog: *"Layout
+generation is locked."*, then the reason, then *"Open Help ▸ License /
+Subscription… to view your Device ID and start your free trial."* The
+**License / Subscription** window then opens itself so you can act on it.
 
-- **A licence for one PC will not work on another.** Not on a second machine in
-  the same office, not on a laptop belonging to the same person. Each needs its
-  own licence, issued against its own Device ID.
-- **Moving to a new PC means a new Device ID.** Install the application there,
-  open the licence window, copy the new Device ID, and ask SolarLayout to reissue.
-- **Keep the original `license.lic`.** It is what gets you running again after a
-  reinstall on the same machine, in one click.
+<Screenshot id="licence-blocked-generate" />
 
-If the Device ID the window shows is not the one your licence was issued
-against, the licence fails with *"License is issued for a different computer"*.
+## Working offline
 
-## After activation
+A successful check is cached, so the application keeps working for up to
+three days without an internet connection. If it cannot reach the server and
+has no usable cached result, it reports *"Could not verify access — connect to
+the internet and try again."*
 
-**The expiry date is in the licence window.** Reopen **Help ▸ License /
-Subscription…** at any time to see it. Note it before a project deadline —
-renewals take as long as SolarLayout takes to respond, and layout generation
-stops the day the licence expires.
+## Updates, reinstalls and other accounts
 
-**A renewal is another file.** When the subscription period is extended you
-receive a new `license.lic` and load it exactly the way you loaded the first
-one, through **Load License File…**. There is nothing to uninstall or clear
-first.
-
-**Updates do not cost an activation.** The licence is stored outside the
-application, and a licence left by a previous installation is adopted
-automatically on first run. See
+**Updates and reinstalls do not require reactivating.** Access is checked
+against the server and tied to the device, not to a file on disk, so it
+survives reinstalls and updates automatically. See
 [Updates and reinstalling](/docs/install/updates).
 
-**A second Windows user account on the same PC needs the file loaded again.**
-The licence is stored per user, so signing in as a different Windows user shows
-no licence even though the machine is the same. The same file works — load it
-once under that account.
-
-If the banner does not report a valid licence after step 4, the message it shows
-names the check that stopped it. Every message is listed in
-[Licence problems](/docs/licence/troubleshooting).
+**A second Windows user account on the same PC has the same Device ID.**
+Access carries over to that account without doing anything further.
 
 ## Where to go next
 
@@ -130,12 +125,12 @@ names the check that stopped it. Every message is listed in
   <Card
     title="How licensing works"
     href="/docs/licence/overview"
-    description="Per-machine licensing, the eight checks, and where the file is stored"
+    description="Device-bound access, what it controls, and the offline grace"
   />
   <Card
     title="Licence problems"
     href="/docs/licence/troubleshooting"
-    description="Every message the licence check produces, and what to do"
+    description="Every access state, what it means, and the fix"
   />
   <Card
     title="Your first layout"

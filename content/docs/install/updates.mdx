@@ -1,15 +1,16 @@
 ---
 title: Updates and reinstalling
-description: How Microsoft Store updates arrive, how to check for one by hand, why your licence survives, and how to reinstall or remove the application.
+description: How Microsoft Store updates arrive, how to check for one by hand, why your access survives them, and how to reinstall or remove the application.
 ---
 
 Updates arrive through the Microsoft Store. Microsoft delivers them, so there
 is nothing to download, no installer to run, and no patch to apply by hand. In
 normal use an update installs itself and the next launch is the new version.
 
-Your licence is not part of the package. It lives in a per-user location on
-your machine, so replacing the application does not touch it, and an update
-never asks you to activate again.
+Access to generate a layout is not stored as a file the application keeps. It
+is tied to this device via a Device ID, checked against SolarLayout's server,
+so replacing the application — an update or a full reinstall — does not
+disturb it and an update never asks you to activate again.
 
 ## How updates arrive
 
@@ -62,43 +63,54 @@ first — an update does not preserve an unsaved session.
 
 ## Which version you have
 
-**The application does not show its own version.** There is no About window, and
-the **Help** menu carries two items only — **How to Use This Tool** and
-**License / Subscription…**. Nothing in the interface names a version number, so
-there is nothing to read on the plot, in a title bar or in a menu.
+**The application shows its version in the status bar at the bottom of the
+main window** (for example **v1.1.0**) — that is the quickest place to check.
+The **Help** menu still carries only two items — **How to Use This Tool** and
+**License / Subscription…** — and there is no About window, so the status bar
+is the one place the version is named.
 
-The Store listing is where to look instead. Open the Microsoft Store, find the
-application in your **Library**, and read the version from its listing page. That
-is also the page that tells you whether an update is waiting.
+The Store's **Library** listing also shows it, and is the place to check
+whether an update is waiting.
 
 [Release notes](/docs/releases) lists what changed between versions.
 
-## Your licence survives an update
+## Access is tied to this device, not a file
 
-The licence is stored per user, at:
+There is no local licence file to lose, back up or move. Access is tied to a
+Device ID — the Windows registry MachineGuid, the same value shown under
+**Settings ▸ System ▸ About ▸ Device ID** — and checked online against
+SolarLayout's server. Updating or reinstalling the application changes
+neither that identifier nor the server-side record it is checked against, so
+a launch after either one shows the same status as before.
 
-```
-%APPDATA%\SolarLayout.Desktop\license.lic
-```
+An access-status chip in the top toolbar always shows this at a glance —
+**● Active — until \<date>** when active, **● No active access** with a
+**Get Free Access** button when not, **● Access expired** or **● Access
+revoked** with a **Contact Us** button otherwise, or **● Access status
+unavailable** — so checking status no longer requires opening a window.
 
-That path is outside the application itself, so an update — which replaces the
-application — leaves it alone. Two behaviours together make this reliable:
+Help ▸ **License / Subscription…** opens the window that shows it in full: a
+large status headline reading **✓ Active** with the date you have access
+until, **✗ No access** with the reason and a note that layout generation is
+disabled, or — right after clicking **Get Free Access** — **⏳ Waiting for
+activation** — plus a read-only **Your Device ID** field with a **Copy**
+button.
 
-1. **The licence is not inside the package.** Nothing an update writes goes
-   near `%APPDATA%`.
-2. **A licence left by a previous installation is adopted automatically.** On
-   first run the application looks for one and picks it up, so upgrading does
-   not lose the licence and there is no re-activation step after an update.
+<Screenshot id="licence-valid" />
 
-If a launch after an update reports no licence, the cause is almost always that
-you are signed into a **different Windows user account** than the one the
-licence was loaded under — that location is per user. See
+If the application cannot reach the server, a good check made earlier is
+cached and it keeps working for a three-day offline grace window. Only once
+that window has passed does it report *"Could not verify access — connect to
+the internet and try again."*
+
+If a launch after an update or reinstall shows no access, the Device ID has
+not changed and neither has the server record — see
 [Licence problems](/docs/licence/troubleshooting).
 
-<Callout type="warn">
-Keep the `license.lic` file you were sent, somewhere outside this machine — a
-mailbox folder or a network share. It is the only thing you need to get running
-again on a rebuilt PC, and re-loading it takes one click.
+<Callout type="info">
+Only **Generate Layout**, every export, and the SLD and BOM tools need this
+device's access to be active. Reading and changing inputs, and opening a
+project, work regardless of status.
 </Callout>
 
 ## Reinstalling
@@ -124,12 +136,12 @@ the application, check the publisher reads **Rensaar**, and install.
 </Step>
 
 <Step>
-### Launch it and check the licence
+### Launch it and check access
 
-The design-mode window appears as usual. Once the main window is open, check
-**Help ▸ License / Subscription…** — the licence left by the previous
-installation should already have been adopted. If it has not, load your saved
-`license.lic` through **Load License File…**.
+The main window opens directly, the same as any launch. Check **Help ▸
+License / Subscription…** to confirm the status still reads **✓ Active** —
+it is checked against the server by Device ID, not restored from anything
+the previous installation left behind.
 </Step>
 
 </Steps>
@@ -144,17 +156,17 @@ work you have done with it:
   and are untouched.
 
 <Callout type="warn">
-Keep the `license.lic` file you were sent, somewhere outside the application —
-with your project files, or in your email. The licence is stored in your own
-Windows user profile rather than in the application's folder, and a reinstall
-adopts it automatically, but that only helps if the file still exists somewhere.
-A customer who has deleted it needs a new one issued.
+A different machine has its own Device ID, so it needs its own activation —
+moving to a new PC is not covered by this device's access. Open Help ▸
+**License / Subscription…** on the new machine and use **Get Free Access**
+there. If access has expired or been revoked instead, contact SolarLayout at
+[sales@solarlayout.app](mailto:sales@solarlayout.app).
 </Callout>
 
 If you are moving to a different machine rather than leaving the product, copy
-your project files and your `license.lic` across first, then ask whoever supplied
-the licence to reissue it for the new machine's Device ID — a licence is tied to
-one computer. See [How licensing works](/docs/licence/overview).
+your project files across first, then activate the new machine as above —
+access is tied to one computer, not to a file that travels with your data.
+See [How licensing works](/docs/licence/overview).
 
 ## Where to go next
 
