@@ -187,11 +187,11 @@ function HeroBanner() {
               index. Reciprocated on the SolarLayout landing. */}
           <Link
             href="/docs"
-            className="inline-flex shrink-0 items-center gap-[6px] rounded-[8px] border border-fd-border px-[10px] py-[5px] text-[12px] text-fd-muted-foreground transition-colors hover:border-fd-foreground/30 hover:text-fd-foreground"
+            className="inline-flex shrink-0 items-center gap-[7px] rounded-[9px] border border-fd-border bg-fd-card px-[14px] py-[8px] text-[13px] font-medium text-fd-foreground shadow-sm transition-colors hover:border-fd-primary/40 hover:bg-fd-muted"
           >
-            <SolarLayoutLogo aria-hidden="true" className="size-[13px]" />
+            <SolarLayoutLogo aria-hidden="true" className="size-[16px]" />
             <span>SolarLayout Desktop docs</span>
-            <ArrowUpRight className="size-[12px]" aria-hidden />
+            <ArrowUpRight className="size-[14px]" aria-hidden />
           </Link>
         </div>
 
