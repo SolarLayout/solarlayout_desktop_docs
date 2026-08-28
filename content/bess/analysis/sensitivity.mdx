@@ -38,6 +38,8 @@ module and BESS degradation, and payment lag.
 
 Sweeps one driver across a range and reports the result at each step.
 
+<Screenshot id="bess-analysis-sensitivity-single-variable" />
+
 - **Inputs**: Variable, Min, Max, Steps.
 - **Buttons**: **▶  Run Sweep**; **💾 Export CSV**, which needs this device
   activated.
@@ -64,6 +66,8 @@ percentage either side of its base value, and ranks the swings.
 Evaluates the financial model across a grid of two drivers at once, rather
 than one.
 
+<Screenshot id="bess-analysis-sensitivity-heatmap" />
+
 - **Inputs**: X-Axis driver, Y-Axis driver; Grid N×N (default 8); Range
   ±% (default 50).
 - **Buttons**: **▶  Run Heatmap**.
@@ -73,6 +77,8 @@ than one.
 ## The Breakeven Solver tab
 
 Solves for the value one driver needs, to hit a target on a chosen metric.
+
+<Screenshot id="bess-analysis-sensitivity-breakeven" />
 
 - **Inputs**: Solve for (the lever, drawn from the same driver list);
   Target metric — **IRR (%)**, **NPV (Cr)**, **Equity IRR (%)** or **Min
@@ -87,6 +93,8 @@ Solves for the value one driver needs, to hit a target on a chosen metric.
 
 Draws random variations across every driver at once and reports the spread
 of outcomes.
+
+<Screenshot id="bess-analysis-sensitivity-monte-carlo" />
 
 - **Inputs**: a ± 1σ % for each driver, pre-filled with a sensible default
   per driver; Iterations (default 500); Seed (default 42); Percentiles P
