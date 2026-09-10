@@ -27,6 +27,14 @@ Citations are relative to the product repo root. `IP` = `apps/solarlayout-deskto
 - Distribution documented: **Microsoft Store**, published by **Rensaar**.
   Store-distributed packages are signed and updated by Microsoft and are
   exempt from SmartScreen warnings — `docs/superpowers/specs/2026-08-03-msix-store-packaging-design.md §1`.
+- The one link pages may publish for getting the application is the
+  first-party download page, **https://solarlayout.app/downloads/solarlayout**
+  (SolarLayout/solarlayout#1239, live 2026-09-10). Its Store button opens the
+  Store on the listing; the page itself decides between the Store and the
+  alternative for PCs without one. Pages link there and do **not** describe
+  the alternative. The one consequence pages may state: a copy that did not
+  come from the Store receives no Store updates, and the download page always
+  carries the current version.
 ### 1.1 System requirements — from the shipped package manifest
 
 Authoritative, because the Store enforces them —
