@@ -25,6 +25,10 @@ Consequences:
   builds, GitHub, source builds, product tiers or editions ("Pro", "Pro
   Plus"), the cloud product, the BESS product, this being a stopgap or a
   flagship, roadmaps, or internal team names.
+- **The download page is the one install link.** Where a page needs to send
+  the reader to get the application, link `solarlayout.app/downloads/<app>`
+  and nothing else. That page owns the choice of install route; the docs
+  describe only the Store. See the fact sheet's Install section.
 
 ### Writing for the BESS tree
 

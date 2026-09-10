@@ -14,6 +14,15 @@ Standalone tkinter app; entry point `bess-tool` (`apps/bess-tool/bess_tool/seci_
 
 ## 2. Install & launch
 
+The one link pages may publish for getting the application is the first-party
+download page, **https://solarlayout.app/downloads/bess**
+(SolarLayout/solarlayout#1239, live 2026-09-10). Its Store button opens the
+Store on the listing; the page itself decides between the Store and the
+alternative for PCs without one. Pages link there and do **not** describe the
+alternative. The one consequence pages may state: a copy that did not come
+from the Store receives no Store updates, and the download page always
+carries the current version.
+
 ### Packaging (Windows is the ship target)
 PyInstaller **one-dir** build via `apps/bess-tool/specs/BESS.Desktop.spec`: a
 separate `EXE(...)` with `exclude_binaries=True` (`apps/bess-tool/specs/BESS.Desktop.spec:60`,
