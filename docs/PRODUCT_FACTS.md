@@ -1164,8 +1164,35 @@ treated fresh (no network call) for 5 minutes.
 Subscription… to view your Device ID and start your free trial."*, then opens the
 License window itself (`MW:2758-2762`).
 
-**Updates & second users.** Access is server-side and device-bound, so it
-survives reinstalls and updates with nothing to re-load, and a second Windows
+**Account-level access, up to 3 devices (server side, 2026-09 — `solarlayout`
+repo, GH #1249).** Access belongs to the signed-in account (email) per app, not
+to a device: one access record per account holds the kind, status and end date
+(`apps/mvp_api/src/modules/desktop/desktop.service.ts:53` `DEVICE_LIMIT = 3`;
+`:48` `TRIAL_DAYS = 7`). A device row is only a registration against that
+account, so every device shows the **same** end date and status, an extension
+reaches all of them, and revoke ends all of them. Rules, in the order the server
+applies them (`desktop.service.ts:106-115`): a device already on the account is
+a no-op; a device registered under **another** account is refused
+(`DEVICE_ALREADY_ACTIVATED`); a **fourth** device is refused
+(`DEVICE_LIMIT_REACHED`); an expired or revoked account may still add a device,
+which simply shows that status. **Nothing frees a slot** — a used device counts
+for the life of the account; support only. The activation page
+(`apps/solarlayout_web/src/app/desktop/[app]/_components/DesktopAccessClient.tsx`)
+reads, verbatim: helper *"This will be device N of 3 on your account."* (`:382`);
+button **Add this device** when the account already has a device, else
+**Activate free access for this device** (`:438-439`); at the cap the heading
+**You have used all 3 devices** (`:513`) with *"Your account already uses
+<App> on 3 devices, so this one cannot be added."* (`:759`); a device on
+another account → heading **This device is already in use** (`:515`), *"Another
+account is already using <App> on this device…"* (`:790`); subtext *"Free
+access is for up to 3 devices per account."* (`:557`); the details card lists
+every device with a **This device** badge on the current one and *"N of 3
+devices"* (`:635-639`). The desktop License window itself is unchanged: it
+still reports this device's status, which is now derived from the account.
+
+**Updates & second users.** Access is server-side and belongs to the account,
+so it survives reinstalls and updates with nothing to re-load (a reinstalled
+computer keeps its place among the account's devices), and a second Windows
 user account on the same PC shares the same Device ID.
 
 **Always-visible chrome (added 2026-08):**
