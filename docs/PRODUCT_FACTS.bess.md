@@ -200,6 +200,31 @@ the License window, `_show_license_dialog`
   (`apps/bess-tool/bess_tool/trial_client.py:86` –
   `apps/bess-tool/bess_tool/trial_client.py:94`).
 
+**Account-level access, up to 3 devices (server side, 2026-09 — `solarlayout`
+repo, GH #1249; the BESS app itself is unchanged).** Access belongs to the
+signed-in account (email) per app, not to a device: one access record per
+account holds the kind, status and end date (solarlayout repo,
+`mvp_api/src/modules/desktop/desktop.service.ts:53` `DEVICE_LIMIT = 3`; `:48`
+`TRIAL_DAYS = 7`). A device row is only a registration against that account,
+so every device shows the **same** end date and status, an extension reaches
+all of them, and revoke ends all of them. Server rules, in order
+(`desktop.service.ts:106-115`): a device already on the account is a no-op; a
+device registered under **another** account is refused; a **fourth** device is
+refused; an expired or revoked account may still add a device, which simply
+shows that status. **Nothing frees a slot** — a used device counts for the life
+of the account; support only. The activation page
+(`solarlayout_web/src/app/desktop/[app]/_components/DesktopAccessClient.tsx`)
+reads, verbatim: helper *"This will be device N of 3 on your account."*
+(`:382`); button **Add this device** when the account already has a device,
+else **Activate free access for this device** (`:438-439`); at the cap the
+heading **You have used all 3 devices** (`:513`) with *"Your account already
+uses BESS Desktop on 3 devices, so this one cannot be added."* (`:759`); a
+device on another account → heading **This device is already in use**
+(`:515`), *"Another account is already using BESS Desktop on this device…"*
+(`:790`); subtext *"Free access is for up to 3 devices per account."*
+(`:557`); the details card lists every device with a **This device** badge on
+the current one and *"N of 3 devices"* (`:635-639`).
+
 **Status model** (`check_status`,
 `apps/bess-tool/bess_tool/trial_client.py:86` –
 `apps/bess-tool/bess_tool/trial_client.py:114`): the server's `/desktop/status`
