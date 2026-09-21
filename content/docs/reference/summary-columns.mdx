@@ -1,260 +1,207 @@
 ---
-title: Summary table columns
-description: Every column of the Layout & Energy Summary — what it reports, which ones rename with the design mode, and the three conventions for reading it.
+title: Summary view
+description: Every row of the Summary view — how the per-plant sheet is laid out, what each row reports, which rows rename with the design, and when a row reads — or 0.
 ---
 
-The **Layout & Energy Summary** is the results table under the plot. It carries
-**one row per plant** — one per plant boundary in your file — plus a **TOTAL**
-row that aggregates every plant. A **⛶ Maximize** button on its header opens the
-table in its own window, which is the only comfortable way to read the
-right-hand half of it.
+The **Summary** view is the per-plant sheet turned on its side: a **Metric**
+column on the left, **one column per plant** — one per plant boundary in your
+file — and a **Total** column when there are two or more plants. The rows are
+grouped under **SITE · ARRAY · ELECTRICAL · CABLES · ENERGY**. It is the second
+of the five view tabs across the top of the right side (**Ctrl+2**), and before
+a layout exists it reads *"Generate a layout to see the per-plant summary
+here."* See [Views](/docs/workspace/views).
 
-The table is shown by default. The **Summary** switch hides it, and both the
-diagram and bill-of-materials modes offer **Hide Layout & Energy Summary** to
-enlarge the working area.
+<Screenshot id="summary-with-energy" />
 
-<Screenshot id="summary-table" />
+## How the view is laid out
 
-## How the columns are grouped
+- **Plant column headers** carry the plant's name followed by **›**. Clicking
+  one shows that plant on the Layout view.
+- **Total** appears only with two or more plants and sums every plant. See
+  [Multi-plot sites](/docs/layout/multi-plot).
+- Two tools sit right of the view tabs. **Copy** puts the whole sheet on the
+  clipboard as tab-separated text (*"Copied. Paste into Excel or a
+  document."*). **Open in window** opens **SolarLayout — Summary**, a separate
+  window that follows the layout as it changes, with two tabs: **Summary** and
+  **Monthly energy (Year 1)**, the second enabled once energy exists.
+- The **Plant totals** row of the **Layers ▾** popover governs the row of
+  plant chips under every view, not this sheet. Clicking any chip opens the
+  Summary view; the energy chip opens the Energy view.
 
-The order is fixed and it is not arbitrary — the table reads left to right from
-the ground, through what was placed on it, to what it will generate. Knowing the
-blocks is faster than counting columns when you scroll right.
+<Screenshot id="summary-window" />
 
-| Columns | What the block tells you |
-| --- | --- |
-| `Plant` to `Plant Boundary (in meter)` | Which plant this row is, and how much ground it has |
-| `Full Tbl` to `Pitch(m)` | What was placed, and the capacity it makes |
-| `ICR` and the inverter block after it | How the plant is divided up electrically |
-| `StrDC(m)` and the second cable column | Conductor to procure on the array side |
-| `LA` to `Piles` | Everything else standing on the ground |
-| `MV(m)` to `MV-Tr(m)` | The medium-voltage run, and all three trench totals |
-| `AC(MWac)` to `DC/AC` | Inverter sizing against the DC field |
-| `P50Yr1(MWh)` to `25yrP50(MWh)` | What the plant is predicted to generate |
+## Reading the sheet
 
-## Column reference
+**A trailing asterisk means the value was calculated, not entered.** **Tilt**
+and **Pitch** carry a `*` when the layout derived them from the site latitude
+rather than taking an override from you. It appears on fixed tilt only. No
+asterisk on those two rows means you supplied the number yourself — the fastest
+way to check that an override you ticked took effect. See
+[Spacing and tilt](/docs/inputs/spacing-and-tilt).
 
-Fixed order, left to right. Rows marked with a mode are the conditional ones —
-each has its own section below.
+**A dash means not computed.** A `—` is not a zero and not an error. The
+commonest case is the whole CABLES group when **Calculate cables** was left off:
+the inverter and box counts are still computed, and every cable row reads `—`.
+The ENERGY rows read `—` until energy has been calculated.
 
-| Column | What it means | Notes |
+**Whole numbers of four or more digits get thousands separators** on screen.
+
+## SITE
+
+| Row | What it means | Reads — or 0 when |
 | --- | --- | --- |
-| `Plant` | The plant this row reports | One row per plant boundary in the file |
-| `Plant Area (Acres)` | The plant's **gross** boundary area in acres | Taken before the perimeter road setback — not the usable area. The **TOTAL** row carries the sum across all plants |
-| `Plant Boundary (in meter)` | The length of the plant boundary, in metres | The perimeter. The street light pole count is roughly this divided by the pole-to-pole span |
-| `Full Tbl` | Full MMS tables placed | Reads `Full Trk` in a tracker design |
-| `Half Tbl` | Half tables placed | Reads `Half Trk` in a tracker design. Zero unless **Add half tables in leftover space** was on. Counts as 0.5 wherever tables are weighted |
-| `Modules` | Modules placed across the whole plant | Full units plus half units. Multiplied by the module wattage this gives the DC capacity |
-| `DC(MWp)` | Plant DC capacity in MWp | The figure the control-room count is divided out of, and the denominator of the DC to AC ratio |
-| `Tilt(°)` | The fixed tilt angle the layout used | Reads `MaxAng(°)` in a tracker design, reporting the maximum rotation angle instead. May carry a trailing `*` |
-| `Pitch(m)` | The row spacing the layout used | May carry a trailing `*` |
-| `ICR` | Inverter control rooms placed | The plant capacity divided by **ICR Block**, rounded up, then re-checked after tables under the footprints are cleared |
-| `Str.Inv` | String inverters placed | **String Inverter mode only** |
-| `Inv kWp` | DC capacity one string inverter carries | **String Inverter mode only** |
-| `SMBs` | String monitoring boxes placed | **Central Inverter mode only** |
-| `SMB kWp` | DC capacity one box carries | **Central Inverter mode only** |
-| `C.Inv` | Central inverters | **Central Inverter mode only.** A maximum of 4 are housed in one control room building |
-| `CInv kWp` | DC capacity one central inverter carries | **Central Inverter mode only.** The box capacity multiplied by **Max SMB per Central Inverter** |
-| `StrDC(m)` | String DC conductor length | Table to inverter in string mode, table to box in central mode. Counted twice, for the positive and the negative conductor |
-| `AC-ICR(m)` | AC conductor length, inverter to the nearest control room | **String Inverter mode only.** Counted once, as a three-phase run |
-| `DC-CInv(m)` | DC trunk conductor length, box to the control room | **Central Inverter mode only.** Counted twice. There is no AC leg, because the central inverter sits inside the building |
-| `LA` | Lightning arresters placed | Zero unless **Place Lightning Arresters** was on, or you added arresters by hand |
-| `St.Lt` | Street light poles placed | Zero unless **Street lights** was on |
-| `Robots` | Cleaning robots the fleet needs | Filled in by the robotic cleaning tool. The bill of materials never carries a fleet you did not ask for |
-| `Piles` | Piles across the plant | Tables multiplied by the piles in the pattern you defined. Needs a pile pattern to exist |
-| `MV(m)` | Medium-voltage conductor length, control rooms to the main control room | Needs the main control room placed and cable calculation on |
-| `DC-Tr(m)` | DC trench length | A trench length, not a conductor length — see below |
-| `AC-Tr(m)` | AC trench length | A trench length, not a conductor length |
-| `MV-Tr(m)` | Medium-voltage trench length | A trench length, not a conductor length |
-| `AC(MWac)` | The AC capacity the plant was sized against, in MW | The figure fed into the capacity simulation. With no simulation run it falls back to the installed inverter capacity, so it matches the next column |
-| `InvCap(MW)` | Installed inverter capacity in MW | The nameplate actually installed: one inverter's nominal AC power multiplied by the inverter count |
-| `DC/AC` | The DC to AC ratio | DC capacity divided by AC capacity. The design overload limit is 1.5× for string inverters and 1.4× for central inverters |
-| `P50Yr1(MWh)` | Year-one energy at the first exceedance probability | **Header is built from your settings** — see below |
-| `P75Yr1(MWh)` | Year-one energy at the second exceedance probability | **Header is built from your settings** |
-| `P90Yr1(MWh)` | Year-one energy at the third exceedance probability | **Header is built from your settings** |
-| `CUF(%)` | Capacity utilisation factor | Year-one energy divided by capacity in kWp × 8760 hours, as a percentage |
-| `25yrP50(MWh)` | Cumulative energy over the plant lifetime at the first exceedance probability, after degradation | The last column. Present only once energy has been calculated. **The header text is fixed and does not follow the lifetime setting** — see below |
+| **Plant area (acres)** | The plant's **gross** boundary area, taken before the perimeter road setback | Never — filled by the layout run |
+| **Boundary length (m)** | The perimeter of the plant boundary | Never |
+| **ICR blocks** | Inverter control rooms placed: the plant capacity divided by **ICR Block**, rounded up, then re-checked after tables under the footprints are cleared | Never |
+| **Lightning arresters** | Arresters placed | 0 unless **Place Lightning Arresters** was on, or you added arresters in Sketch Mode |
+| **Street lights** | Street light poles placed along the perimeter | 0 unless **Place street lights** was on |
+| **Cleaning robots** | The fleet the cleaning study sized | Empty until **Robotic Module Cleaning** has been run |
+| **Piles** | Tables multiplied by the piles in the pattern you defined | Empty until a pile pattern exists |
 
-## Three columns that are misread more often than the rest
-
-**`Plant Area (Acres)` is the gross boundary area.** It is the area enclosed by the
-whole boundary polygon, taken **before** the perimeter road setback — not the
-usable area the tables are placed in. So it does not fall as exclusions grow: add
+**Plant area is the site's area, not the array's.** It is the area enclosed by
+the whole boundary polygon, before the perimeter road setback and before any
+obstruction or terrain exclusion — so it does not fall as exclusions grow. Add
 an obstruction, tighten the slope limits or widen the perimeter road and the
-capacity drops while this column stays exactly where it was. It is the site's
-area, not the array's.
+capacity drops while this row stays exactly where it was.
 
-**`AC(MWac)` and `InvCap(MW)` are two different capacities.** `InvCap(MW)` is the
-installed nameplate — one inverter's nominal AC power multiplied by the number of
-inverters the layout placed. `AC(MWac)` is the AC capacity fed into the capacity
-simulation, and with no simulation run it falls back to the installed figure, so
-the two columns read the same. They diverge only once a target AC capacity has
-been set, which makes the pair a quick read on whether the plant came out at the
-capacity it was sized for. See
-[Simulation with AC capacity](/docs/simulation/ac-capacity).
+**Piles counts half tables at full weight.** The pattern is stamped onto every
+table regardless of width, so on a plant with half-table infill the count is
+optimistic. See [Piles](/docs/editing/piles).
 
-**`25yrP50(MWh)` does not report 25 years.** The header text is fixed, whatever
-you set. The figure under it is the cumulative energy over years 1 to **Plant
-lifetime**, at the **first** exceedance probability. Plant lifetime ships at 30
-years, so on shipped settings a column headed "25yr" carries a 30-year total, and
-raising or lowering the lifetime moves the figure while the header stands still.
-The `P50` in the header is fixed in the same way, even though the probability
-itself is yours to set.
+## ARRAY
 
-<Callout type="warn">
-Do not quote the lifetime column by its header. Read **Plant lifetime** and the
-first exceedance probability off the energy settings and state both alongside the
-figure, or the number will be attributed to a period and a probability it was
-never computed at.
-</Callout>
-
-## Columns renamed by the mounting type
-
-Three headers carry a different word in a tracker design. The position in the
-table does not move, so a column count is the same either way.
-
-| Fixed Tilt | Single Axis Tracker | What changes |
+| Row | What it means | Reads — or 0 when |
 | --- | --- | --- |
-| `Full Tbl` | `Full Trk` | Counts full tracker units instead of full MMS tables |
-| `Half Tbl` | `Half Trk` | Counts half tracker units instead of half tables |
-| `Tilt(°)` | `MaxAng(°)` | Reports the maximum rotation angle instead of a fixed tilt, because a tracker has no single tilt |
+| **Full tables** / **Full trackers** | Full MMS tables, or full tracker units, placed | Never |
+| **Half tables** / **Half trackers** | Half units placed | 0 unless **Add half tables** / **Add half trackers** was on, or you placed them in Sketch Mode |
+| **Modules** | Modules placed across the plant, full units plus half units | Never |
+| **Tilt (°)** / **Max tracking angle (°)** | The fixed tilt the layout used, or the tracker's rotation limit — a tracker has no single tilt. May carry a `*` | Never |
+| **Pitch (m)** | The row spacing the layout used. May carry a `*` | Never |
 
-## Inverter columns by electrical mode
+The first word of each row follows the mounting type; the position in the
+sheet does not move.
 
-The block after `ICR` is a different set of columns in each electrical mode, not
-the same columns relabelled. String mode has two; central mode has four,
-because the boxes and the inverters they feed are counted separately.
+## ELECTRICAL
 
-<Tabs items={["String Inverter", "Central Inverter"]}>
-<Tab value="String Inverter">
+The inverter rows are a different set in each design, not the same rows
+relabelled. The last three rows are common to both.
 
-| Column | What it means |
+<Tabs items={["String inverter", "Central inverter"]}>
+<Tab value="String inverter">
+
+| Row | What it means |
 | --- | --- |
-| `Str.Inv` | String inverters placed across the plant |
-| `Inv kWp` | The DC capacity one string inverter carries |
+| **DC capacity (MWp)** | Plant DC capacity: the placed modules multiplied by the wattage |
+| **String inverters** | String inverters placed |
+| **Inverter rating (kWp)** | The DC capacity one string inverter carries |
 
 </Tab>
-<Tab value="Central Inverter">
+<Tab value="Central inverter">
 
-| Column | What it means |
+| Row | What it means |
 | --- | --- |
-| `SMBs` | String monitoring boxes placed across the plant |
-| `SMB kWp` | The DC capacity one box carries |
-| `C.Inv` | Central inverters |
-| `CInv kWp` | The DC capacity one central inverter carries — the box capacity multiplied by **Max SMB per Central Inverter** |
+| **DC capacity (MWp)** | Plant DC capacity: the placed modules multiplied by the wattage |
+| **SMBs** | String monitoring boxes placed |
+| **SMB rating (kWp)** | The DC capacity one box carries |
+| **Central inverters** | Central inverters — at most 4 are housed in one control room building |
+| **Central inverter rating (kWp)** | The box capacity multiplied by **Max SMB per Central Inverter** |
 
 </Tab>
 </Tabs>
 
-Comparing a string design against a central design therefore means comparing
-different columns, not the same column twice. Read `DC(MWp)`, `ICR` and the
-cable columns instead — those are common to both.
-
-## The second cable column
-
-The first cable column is `StrDC(m)` in both modes: the string DC run out of the
-tables. The second one differs, because the two topologies do a different thing
-next.
-
-| Mode | Second column | The run it measures |
+| Row | What it means | Reads — when |
 | --- | --- | --- |
-| String Inverter | `AC-ICR(m)` | AC from each inverter to its nearest control room, counted once as a three-phase run |
-| Central Inverter | `DC-CInv(m)` | A DC trunk from each box to the control room, counted twice. There is no AC leg at all, because the central inverter is inside the building |
+| **AC capacity (MWac)** | The AC capacity the plant is sized against, from the inverter file's **PmaxOut** (or **Pnom**) | No inverter file has been loaded |
+| **Inverter capacity (MW)** | The installed inverter capacity | No inverter file has been loaded |
+| **DC / AC ratio** | DC capacity divided by AC capacity. The design overload limit is 1.5 for string inverters and 1.4 for central inverters | No inverter file has been loaded |
 
-Because one is counted once and the other twice, the two figures are not
-comparable as a cable quantity even on the same plant.
+Comparing a string design against a central design therefore means comparing
+different rows. Read **DC capacity**, **ICR blocks** and the CABLES group
+instead — those are common to both.
 
-## The three probability columns
+<Screenshot id="summary-tracker-central" />
 
-The three headers are **built from the exceedance probabilities you set**, not
-fixed. On the shipped defaults of 50 %, 75 % and 90 % they read `P50Yr1(MWh)`,
-`P75Yr1(MWh)` and `P90Yr1(MWh)`. Change any of the three fields and the header
-changes with it.
+## CABLES
+
+Six rows in metres, answering two different questions. The first three are
+**conductor** to procure; the last three are **trench** to dig. Mixing them up
+over-orders cable or under-digs trench.
+
+| Row | What it means | Reads — when |
+| --- | --- | --- |
+| **String DC cable (m)** | Conductor from the tables to the string inverter or the SMB, counted twice for the positive and negative conductors | **Calculate cables** was off |
+| **AC cable to ICR (m)** *(string)* / **DC cable to central inverter (m)** *(central)* | AC from each inverter to its nearest control room, counted once as a three-phase run — or the DC trunk from each box to the control room, counted twice. There is no AC leg in a central design, because the central inverter sits inside the building | **Calculate cables** was off |
+| **MV cable (m)** | Medium-voltage conductor from the control rooms to the main control room | No MCR placed, or the layout not generated again with cables on since placing it |
+| **DC trench (m)** | Trench length for the string DC cables | **Calculate cables** was off |
+| **AC trench (m)** | Trench length for the second leg | **Calculate cables** was off |
+| **MV trench (m)** | Trench length for the medium-voltage run | As **MV cable (m)** |
+
+A trench total is the de-duplicated path length per cable type, so a stretch
+several cables share is counted once. The trench figures are therefore the
+smaller ones, and the gap widens as the plant grows, because more cables share
+each corridor near the control rooms; medium-voltage routes in particular merge
+nearby control rooms into one trunk. How each route is chosen is on
+[Cable routing](/docs/layout/cables).
+
+Because one second-leg figure is counted once and the other twice, the two are
+not comparable as a cable quantity even on the same plant.
 
 <Callout type="warn">
-Reading a report someone else produced, check the three headers before quoting a
-number. A column headed `P75Yr1(MWh)` in one report and `P80Yr1(MWh)` in the
-next are both "the second probability column", and they are not the same
-figure.
+Drawing an obstruction on the Tools tab re-places the inverters without
+re-measuring the cables: the two trench rows keep their figures but **String DC
+cable (m)** and the second-leg row read **0** until you generate again. Generate
+again before quoting cable lengths.
 </Callout>
 
-All three are year-one energy in MWh. The lifetime column at the far right is the
-exception in both respects: its header is fixed rather than built from your
-settings, and its figure is a cumulative total at the **first** probability
-rather than a year-one figure. How the figures are derived, and what combined
-uncertainty does to them, is on
-[Lifetime and P-values](/docs/energy/lifetime-and-p-values).
+## ENERGY
 
-## Reading the table
+All five rows are empty until energy has been calculated. See
+[How yield is calculated](/docs/energy/overview).
 
-Three conventions, and they apply everywhere in the table.
-
-**A trailing asterisk means the value was calculated, not entered.** `Tilt(°)`
-and `Pitch(m)` carry a `*` when the layout derived them from the site latitude
-rather than taking an override from you. It appears in **Fixed Tilt only**. No
-asterisk on those two columns means you supplied the number yourself — which is
-the fastest way to check that an override you ticked actually took effect. See
-[Spacing and tilt](/docs/inputs/spacing-and-tilt).
-
-**A dash means not computed.** A `—` is not a zero and not an error. The
-commonest case is the whole set of cable columns when **Calculate Cables for PV
-Power Plant** was left off: the inverter and box counts are still computed and
-reported, and every cable column reads `—`. The same applies to `MV(m)` with no
-main control room placed, to `Piles` with no pile pattern defined, and to the
-energy columns before **Calculate Energy** has been run.
-
-**The TOTAL row aggregates every plant.** On a single-plot site it repeats the
-one row above it. On a multi-plot site it is the figure to quote for the site as
-a whole — capacity, area, table counts, cable lengths and energy summed across
-every plant. See [Multi-plot sites](/docs/layout/multi-plot).
-
-<Screenshot id="summary-table-maximized" />
-
-## What each column needs before it reports anything
-
-A column reads `—` until the thing it counts has been asked for. If a column is
-empty and you expected a figure, this is the list to check.
-
-| Column | Reported only when |
+| Row | What it means |
 | --- | --- |
-| `StrDC(m)`, `AC-ICR(m)`, `DC-CInv(m)`, `DC-Tr(m)`, `AC-Tr(m)` | **Calculate Cables for PV Power Plant** was on for the run |
-| `MV(m)`, `MV-Tr(m)` | Cable calculation was on **and** the main control room has been placed |
-| `LA` | **Place Lightning Arresters** was on, or you placed arresters by hand |
-| `St.Lt` | **Street lights** was on for the run |
-| `Piles` | A pile pattern has been defined |
-| `Robots` | The robotic cleaning tool has been run |
-| `AC(MWac)`, `InvCap(MW)`, `DC/AC` | An inverter file has been loaded to supply the AC rating |
-| The three probability columns, `CUF(%)`, `25yrP50(MWh)` | **Calculate Energy** has been run |
+| **P50 energy, year 1 (MWh)** | Year-one energy at the first exceedance probability |
+| **P75 energy, year 1 (MWh)** | Year-one energy at the second exceedance probability |
+| **P90 energy, year 1 (MWh)** | Year-one energy at the third exceedance probability |
+| **CUF (%)** | Capacity utilisation factor: year-one energy divided by capacity in kWp × 8760 hours, as a percentage |
+| **P50 energy, 25 years (MWh)** | The lifetime total — see below |
 
-Everything else — areas, counts, capacity, tilt and pitch — is filled in by the
-layout run itself and needs nothing further.
+**The three P rows are named from the exceedance probabilities you set**, not
+fixed. On the shipped defaults of 50 %, 75 % and 90 % they read as above; change
+any of the three fields under **Uncertainty & exceedance** and the row name
+changes with it. Reading a sheet someone else produced, check the row names
+before quoting a number.
+
+**"P50 energy, 25 years" does not report 25 years.** The figure is the
+cumulative energy over years 1 to **Plant lifetime**, after degradation, at the
+**first** exceedance probability — and the row name does not follow the
+lifetime setting. Plant lifetime ships at 30 years, so on shipped settings a row
+named "25 years" carries a 30-year total, and raising or lowering the lifetime
+moves the figure while the name stands still. Document it as the lifetime
+total.
+
+<Callout type="warn">
+Do not quote the lifetime row by its name. Read **Plant lifetime** and the
+first exceedance probability off the Yield tab and state both alongside the
+figure, or the number will be attributed to a period it was never computed
+over. How the figures are derived is on
+[Lifetime and P-values](/docs/energy/lifetime-and-p-values).
+</Callout>
 
 ## Where the same figures appear elsewhere
 
-The summary is not the only place these numbers surface, and the other places
+The sheet is not the only place these numbers surface, and the other places
 carry a subset rather than a different calculation.
 
 | Destination | What it carries |
 | --- | --- |
-| The report's summary page | The layout summary, the design parameters, and the inverter and cable summary including a per-control-room cable breakdown |
-| The report's first page | A plant-details table alongside the drawing, with editable form fields |
-| The mapping file | A summary placemark per plant carrying capacity in MWp, area in acres, pitch and table count, plus an **Overall Summary** folder aggregating every boundary |
-| The bill of materials | Quantities computed from the same placed counts, including the cleaning fleet once you have asked for one |
-
-## Conductor length and trench length are not the same
-
-Six columns report a length in metres, and they answer two different questions.
-Mixing them up over-orders cable or under-digs trench.
-
-| Kind | Columns | What it counts |
-| --- | --- | --- |
-| Conductor | `StrDC(m)`, `AC-ICR(m)` or `DC-CInv(m)`, `MV(m)` | Cable to be procured. DC runs are counted twice for the positive and negative conductors; AC runs once as a three-phase circuit |
-| Trench | `DC-Tr(m)`, `AC-Tr(m)`, `MV-Tr(m)` | Ground to be excavated. The de-duplicated path length per cable type, so a stretch several cables share is counted once |
-
-The trench figures are the smaller ones, and the gap between the two widens as
-the plant grows, because more cables share each corridor near the control rooms. Medium-voltage routes in particular are laid out so nearby
-control rooms merge into one trunk rather than running parallel lines. How each
-route is chosen is on [Cable routing](/docs/layout/cables).
+| The plant chips under every view | DC capacity, site area, plants (multi-plot only), tables or trackers, modules, ICR blocks, lightning arresters (when placed) and year-one P50 energy. Water-body results are left out of the totals |
+| The Yield tab's status line | After a run: PR, year-one energy, CUF and the lifetime total |
+| The Word report | The **Results & Analysis — Output** section and the **Design Summary** annexure; the energy sections only when energy was calculated. See [Project report](/docs/exports/project-report) |
+| The cable schedule (Excel) | One sheet per ICR block: the DC strings and the AC or DC-trunk feeders, with recommended conductor sizes |
+| The TMY data CSV | The GHI, in-plane irradiance and energy time series the ENERGY rows are built from, at the interval you choose. See [Time series](/docs/energy/timeseries) |
+| The Google Earth file | A summary placemark per plant carrying capacity in MWp, area in acres, pitch and table count, plus an **Overall Summary** folder aggregating every boundary. See [KMZ export](/docs/exports/kmz) |
+| The bill of materials | Quantities computed from the same placed counts, including the cleaning fleet once you have asked for one. See [Bill of materials](/docs/bom/overview) |
 
 ## Where to go next
 
@@ -265,14 +212,14 @@ route is chosen is on [Cable routing](/docs/layout/cables).
     description="The input side of the same reference"
   />
   <Card
-    title="How yield is calculated"
-    href="/docs/energy/overview"
-    description="Where the energy columns come from"
+    title="Views"
+    href="/docs/workspace/views"
+    description="The five view tabs, the tools row, the Layers popover and the plant chips"
   />
   <Card
-    title="PDF report"
-    href="/docs/exports/pdf-report"
-    description="The report page that carries the same summary"
+    title="Project report"
+    href="/docs/exports/project-report"
+    description="The Word document that carries the same summary"
   />
   <Card
     title="Glossary"

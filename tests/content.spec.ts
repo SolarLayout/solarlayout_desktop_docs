@@ -134,6 +134,34 @@ test("no page carries an unresolved placeholder", () => {
   ).toEqual([])
 })
 
+test("every manifest entry and every referenced screenshot has its file on disk", () => {
+  // The site never ships a "Screenshot pending" placeholder: an entry without
+  // its image, or a page referencing one, fails here before it can be merged.
+  const src = fs.readFileSync(
+    path.join(process.cwd(), "content", "screenshots.ts"),
+    "utf8",
+  )
+  const fileById = new Map<string, string>()
+  for (const block of src.split(/\n {2}\{\n/).slice(1)) {
+    const id = block.match(/^\s*id: "([^"]+)"/m)?.[1]
+    const file = block.match(/^\s*file: "([^"]+)"/m)?.[1]
+    if (id && file) fileById.set(id, file)
+  }
+  const shotDir = path.join(process.cwd(), "public", "screenshots")
+  const missing = [...fileById.entries()]
+    .filter(([, file]) => !fs.existsSync(path.join(shotDir, file)))
+    .map(([id, file]) => `${id} -> ${file}`)
+  expect(missing, `manifest entries without an image:\n  ${missing.join("\n  ")}`).toEqual([])
+
+  const unfiled = referencedScreenshotIds()
+    .filter(({ id }) => {
+      const file = fileById.get(id)
+      return !file || !fs.existsSync(path.join(shotDir, file))
+    })
+    .map(({ id, file }) => `${id}  (in ${file})`)
+  expect(unfiled, `referenced screenshots without an image:\n  ${unfiled.join("\n  ")}`).toEqual([])
+})
+
 test("every referenced screenshot id exists in the manifest", () => {
   const known = new Set(manifestIds())
   const unknown = referencedScreenshotIds().filter(({ id }) => !known.has(id))

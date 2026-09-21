@@ -1,6 +1,6 @@
 ---
 title: Pile layout
-description: Define a pile pattern on one reference table, stamp it onto every table in the plant, and export the coordinate report a setting-out team works from.
+description: Define a pile pattern on one reference table in the Pile layout window, stamp it onto every table in the plant, and export the coordinates a setting-out team works from.
 ---
 
 The pile layout feature produces a construction document: the position of every
@@ -15,13 +15,14 @@ supplier's drawing.
 
 ## One pattern, every table
 
-The editor works on **one reference table**. That is the whole idea, and it is
+The window works on **one reference table**. That is the whole idea, and it is
 what makes the feature quick: a plant repeats one table design across the whole
 site, so the pattern only has to be described once.
 
 ### The coordinate frame
 
-The reference table has its own local frame, independent of the site:
+The reference table has its own local frame, independent of the site — the
+window's strip states it: *origin at the bottom-left corner · X east, Y north*.
 
 - The origin, (0, 0), is the table's **bottom-left corner** — its south-west
   corner on the ground.
@@ -45,17 +46,18 @@ north–south, and a landscape table reverses that.
 The consequence is practical. A pattern entered against a portrait table does
 not transfer to a landscape one, and a pattern entered before you changed the
 modules per row no longer sits where you meant it to. If you change the table
-configuration, open the editor again and check the pattern against the new
+configuration, open the window again and check the pattern against the new
 frame before exporting.
 
 ### What a pile is
 
-Each pile is drawn as a **circle of the radius you give**, centred on the
-(X, Y) you entered. The default radius is **0.15 m**.
+Each pile is drawn as a circle of the **Pile radius**, centred on the (X, Y) you
+entered. One radius applies to the whole pattern; it defaults to **0.15 m** and
+can be set from 0.01 to 2 m.
 
 The radius is a drawing and setting-out figure — the pile as it appears in plan.
 The pile diameters for lightning arresters and street lights are separate
-fields in **Structures & Shadow** and are not part of this pattern. See
+fields on the **Structures & Shadow** card and are not part of this pattern. See
 [Structures and shadow](/docs/inputs/structures-and-shadow).
 
 ### How the pattern reaches the rest of the plant
@@ -68,83 +70,117 @@ So a pile's position on the ground is:
 
 > the table's south-west corner, **X** metres east and **Y** metres north.
 
-That relation is worth knowing because it lets you check the report by hand.
+That relation is worth knowing because it lets you check the export by hand.
 Take any table, take its south-west corner, step east by the pattern's X and
-north by its Y, and that is the coordinate the report gives for that pile. All
+north by its Y, and that is the coordinate the export gives for that pile. All
 internal geometry is in metres, projected to the site's local UTM zone, so the
-report's coordinates and the pattern's offsets are in the same units and add
+exported coordinates and the pattern's offsets are in the same units and add
 directly.
 
-## Opening the editor
+## Opening the Pile layout window
+
+Two routes open the same window. **Piles: OFF** in the Layout view's tools is
+disabled until a layout exists; **Edit-Pile ▸ Define Pile Layout…** on the menu
+bar is the route to come back to the pattern later. On a narrow window the
+**Piles** button folds into the **Layers ▾** popover as a row of its own — it
+has moved, not gone.
+
+<Screenshot id="edit-pile-menu" />
 
 <Steps>
 <Step>
 ### Generate a layout first
 
-**📍 Piles: OFF** on the toolbar is disabled until a layout exists. There is
-nothing to stamp a pattern onto before that.
+There is nothing to stamp a pattern onto before that, so **Piles: OFF** stays
+greyed out until a layout is on screen.
 </Step>
 
 <Step>
-### Click 📍 Piles: OFF
+### Click Piles: OFF
 
-The first time you use it, the **Pile Layout** editor opens so you can define
-the pattern.
+The first time you use it, the **Pile layout** window opens so you can define
+the pattern. Its strip reads *One table* **w × h m** with the table's real
+dimensions, and a chip counts the piles placed so far.
 </Step>
 
 <Step>
 ### Place the piles on the reference table
 
-Work on the single table the editor shows, entering each pile's X and Y and its
-radius. The drawing and the coordinate table are two views of the same pattern.
+The right-hand side draws the one table to scale: **click inside the outline
+to place a pile**. On the left, **+ Add** adds a row to the coordinate table,
+**Remove** deletes the selected pile, **Clear** empties the pattern, and the
+table itself — **#**, **X (m)**, **Y (m)** — is the same pattern as numbers,
+which you can edit directly. Set the **Pile radius** once for the whole
+pattern.
 </Step>
 
 <Step>
-### Reopen it whenever you need to
+### Or let Auto grid… place an even pattern
 
-Later changes go through **Edit-Pile ▸ Define Pile Layout…** on the menu bar.
-The toolbar button then switches the overlay on and off.
+**Auto grid…** asks for **Piles per row** (along X, east) and **Rows of piles**
+(along Y, north), places them *evenly spaced, inset 6 % from the ends and 10 %
+from the sides*, and **replaces the piles placed so far**. Its button reads
+**Place n piles**.
+</Step>
+
+<Step>
+### Apply to all tables
+
+The primary button reads **Apply to all n tables** — n being the table count —
+and is disabled, with the reason *"Place at least one pile"*, until the pattern
+has a pile in it. The overlay switches on, the tools button reads
+**Piles: ON**, and the status line reports *"Piles applied: n per table · N
+piles across the plant."* When the pattern is empty the button instead reads
+**Remove piles from …**, which takes the overlay off again.
 </Step>
 </Steps>
 
-<Screenshot id="pile-dialog" />
+<Screenshot id="pile-editor" />
+
+**Export to Excel…** in the window's footer writes the pile coordinates to a
+workbook, and **Close** leaves without applying anything.
 
 ## Checking the pattern against the ground
 
-The pile overlay stays visible even with the **Plant Layout** switch off. That
-combination — piles on, layout off — is the one to use when you are checking
-the pattern, because nothing is drawn except the piles themselves.
+Once applied, the piles are drawn on every table, each with its label.
 
 <Screenshot id="piles-overlay" />
+
+<Screenshot id="view-header-piles-on" />
+
+The **Piles: ON** overlay stays visible even with **Plant layout** switched off
+in the **Layers ▾** popover. That combination — piles on, layout off — is the
+one to use when you are checking the pattern, because nothing is drawn except
+the piles themselves and their coordinates.
+
+<Screenshot id="piles-layout-off" />
 
 With the tables hidden you can see the pattern as a field of points and judge
 it the way the setting-out team does: whether the rows read cleanly, whether
 the spacing along the table is what the structure drawing says, whether
-anything lands somewhere impossible. The aerial photograph and the terrain
-contours have their own switches, so you can leave either behind the piles.
+anything lands somewhere impossible. **Satellite** and the **Contour /
+terrain** row have their own switches, so you can leave either behind the piles.
 
-## What the summary reports
+## What the Summary view reports
 
-The `Piles` column of the **Layout & Energy Summary** is the plant's total pile
-count, computed as the number of tables multiplied by the number of piles in
-the pattern.
+The **Piles** row of the Summary view is the plant's total pile count, computed
+as the number of tables multiplied by the number of piles in the pattern.
 
 Two things follow:
 
 - **Change the pattern and the total changes.** Add a pile to the reference
-  table and the column rises by one per table in the plant.
+  table and the row rises by one per table in the plant.
 - **Change the table count and the total changes.** Anything that adds or
   removes tables — an obstruction, an arrester footprint, a hand edit in
   [Sketch Mode](/docs/editing/sketch-mode) — moves the pile total with it.
 
-The full column list is in
-[Summary columns](/docs/reference/summary-columns).
+The full row list is in [Summary rows](/docs/reference/summary-columns).
 
 ### Half tables receive the full pattern
 
 The pattern is stamped onto every table in the plant without checking whether
-that table is a full one or a half unit, and the column counts every table at
-the full pattern size.
+that table is a full one or a half unit, and the row counts every table at the
+full pattern size.
 
 <Callout type="warn">
 On a plant using half-table infill this makes the pile figure optimistic, and
@@ -153,31 +189,40 @@ overlay over a run of half units before handing the count to a procurement or
 setting-out team.
 </Callout>
 
-If half units are a material share of the plant, treat the column as an upper
+If half units are a material share of the plant, treat the row as an upper
 bound and count them separately. Whether to use half-table infill at all is
 covered in
 [Maximizing placement and half tables](/docs/layout/maximize-and-half-tables).
 
-## Exporting the pile report
+## Exporting the piles
 
-**Export PDF (with Piles)** writes the pile drawing. It sits beside
-**Export PDF (Layout + Summary)**, which is the ordinary report without the
-pile pages.
+Three exports carry the pattern, and one of them exists only while the overlay
+is on.
 
-Both reports are A3 landscape. The difference that matters for this one is
-resolution: the first page of the pile export is drawn at **300 dpi**, where
-the ordinary report's pages are drawn at **150**. A pile drawing is printed
-large and zoomed into on site, and the ordinary resolution does not survive
-that.
+- **Export to Excel…**, in the Pile layout window, writes the coordinates as a
+  workbook — the list a setting-out team keys into an instrument.
+- **Export ▾ Export PDF (with Piles)** appears in the Export menu **only while
+  Piles is on**. It is the PDF report with the pile drawing and coordinates:
+  the site layout plan with the piles, the design summary, the single-line
+  diagram, the bill of materials and, when energy was calculated, the energy
+  pages — every page A3 landscape. The first page is drawn at **300 dpi** for
+  this export, because a pile drawing is printed large and zoomed into on site.
+  Switch the overlay off and the item disappears; the Word report from
+  **Export Detailed Project Report** is the ordinary report without the piles.
+- **Export DXF** writes the piles to their own `PILES` layer, present whenever a
+  pile pattern has been defined. See [CAD export](/docs/exports/dxf). Piles are
+  not written to the Google Earth file.
 
-If you are handing one document to a survey or setting-out team, this is the
-one. See [PDF report](/docs/exports/pdf-report) for what the other pages of the
-report carry.
+<Screenshot id="export-menu-piles" />
+
+If you are handing one document to a survey or setting-out team, the PDF with
+piles is the one. See [The project report](/docs/exports/project-report) for
+what the other pages carry.
 
 ## Limits
 
 <Callout type="warn">
-The editor holds **one** pattern at a time, and applies it to every table in
+The window holds **one** pattern at a time, and applies it to every table in
 the plant. A plant that mixes table types — a different module count, a
 different number of rows — needs one pass per type: define the pattern for the
 first type and export, then redefine it for the second and export again. There
@@ -197,6 +242,10 @@ Beyond that:
 - **The pattern cannot vary by location.** Every table gets the same pattern, so
   there is no way to treat the tables in one corner of the site differently.
   Export a pattern per table type, as above.
+- **A later Generate keeps piles uniform on purpose.** After Sketch Mode edits,
+  Generate re-plots the aligned grid with **Maximize placement** switched off,
+  precisely so that stamped pile coordinates stay regular for construction. See
+  [Sketch Mode](/docs/editing/sketch-mode#what-generate-layout-does-to-your-edits).
 
 ## Where to go next
 
@@ -212,13 +261,13 @@ Beyond that:
     description="Dimension and label the drawing a construction team works from"
   />
   <Card
-    title="PDF report"
-    href="/docs/exports/pdf-report"
-    description="Every page of the exported report, in order"
+    title="The project report"
+    href="/docs/exports/project-report"
+    description="The Word report, and the PDF with piles beside it"
   />
   <Card
-    title="Summary columns"
+    title="Summary rows"
     href="/docs/reference/summary-columns"
-    description="What every column of the summary table means"
+    description="What every row of the Summary view means"
   />
 </Cards>

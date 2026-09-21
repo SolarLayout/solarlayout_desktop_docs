@@ -7,7 +7,7 @@ Temperature is the largest single loss in the breakdown and the only one the
 application works out for you. As soon as a module file is loaded, the
 temperature row stops being an assumption and becomes a calculation, because
 the number it needs — the module's temperature coefficient of maximum power —
-is read from that file and appears nowhere in the input panel.
+is read from that file and appears nowhere on the **Yield** tab.
 
 That is why this loss has its own page. Every other row on
 [The loss breakdown](/docs/energy/losses) is a percentage you defend by
@@ -28,7 +28,7 @@ Loss (%) = |μ_Pmpp| × (T_module − 25)
 
 | Term | What it is | Where it comes from |
 | --- | --- | --- |
-| `T_module` | Module operating temperature, °C | Computed, and displayed beside the loss row |
+| `T_module` | Module operating temperature, °C | Computed, and shown on the **Module temp. (Sandia)** readout under the loss row |
 | `T_ambient` | Average ambient air temperature, °C | **Avg. ambient temp.**, or your weather file's temperature column |
 | `G` | Average operating irradiance on the module plane, W/m² | Derived from the annual in-plane irradiance — see below |
 | `a` | Sandia temperature-rise coefficient for the mounting, dimensionless | Fixed by **Mounting type** |
@@ -87,6 +87,11 @@ wind speed follows from the combination `a + b × W`, not from `a` alone.
 
 ## The three inputs you control
 
+They sit in the **Energy Yield** card on the **Yield** tab, directly under the
+irradiance fields and above the ground albedo — not inside the losses expander,
+because the ambient temperature and wind speed describe the site rather than a
+loss.
+
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Avg. ambient temp.** | 28.0 °C | −10 to 55 °C | The air temperature the rise is added to. Overridden by your weather file's temperature column when one is present. |
@@ -135,16 +140,25 @@ copied between two sites does not transfer.
 
 ## What you see
 
-The computed **module temperature is displayed next to the temperature loss
-row**, in degrees Celsius, so the intermediate result is visible rather than
-buried inside the percentage.
+The result surfaces in two places on the Yield tab.
 
-Below the inputs sits a **formula trace**: the relation with your own values
-substituted into it. Between the two, the loss row is auditable — a reviewer
-can take the trace, the coefficient pair from the table above and the module's
-datasheet coefficient, and reproduce the percentage by hand.
+**The readout under the loss row.** Inside the **Performance-ratio losses**
+expander, the **Module temp. (Sandia)** line under **Temperature losses** reads
+*"—"* until a module file is loaded, and afterwards gives the computed module
+temperature together with the irradiance and wind speed it was worked out at —
+of the form *"41.2 °C (G = 600 W/m², W = 3.0 m/s)"*. The intermediate result is
+visible rather than buried inside the percentage.
 
-<Screenshot id="energy-temperature-trace" />
+**The formula trace under the site conditions.** Once a module file is loaded,
+a line appears under the wind speed field with the relation and your own values
+substituted into it — the ambient temperature, the operating irradiance, the
+two mounting coefficients and the wind speed on the left, the module
+temperature they give, the module's coefficient from the file, and the loss
+percentage that results. Between the two, the loss row is auditable — a
+reviewer can take the trace, the coefficient pair from the table above and the
+module's datasheet coefficient, and reproduce the percentage by hand.
+
+<Screenshot id="losses-expander" />
 
 Check the module temperature rather than only the loss. It is the quantity with
 a physical meaning, and it is the one that tells you immediately whether the
@@ -153,12 +167,14 @@ temperature means no irradiance has arrived yet.
 
 ## Monthly temperature loss
 
-The annual figure is one number, but the monthly performance-ratio table is not
-built by repeating it twelve times. Each month gets its own module temperature
-from the same Sandia relation, using that month's own operating irradiance and
-its own ambient temperature. Monthly ambient temperature comes from your weather
-file's temperature column when it has one, and otherwise from a sinusoidal
-seasonal model whose amplitude scales with the site's absolute latitude.
+The annual figure is one number, but the monthly table on the Energy view is
+not built by repeating it twelve times. Each month gets its own module
+temperature from the same Sandia relation, using that month's own operating
+irradiance and its own ambient temperature, and both are shown in the table's
+**T_amb (°C)** and **T_cell (°C)** columns. Monthly ambient temperature comes
+from your weather file's temperature column when it has one, and otherwise from
+a sinusoidal seasonal model whose amplitude scales with the site's absolute
+latitude.
 
 This is why a hot low-latitude site shows its worst monthly performance ratio
 in the hottest months rather than the least sunny ones. See
@@ -178,7 +194,7 @@ module file.
 Typing the module dimensions and wattage by hand is a complete input for
 placement and capacity, but it leaves this row uncalculated. If a yield figure
 has to stand up to review, load the manufacturer's `.PAN` file for the module
-you are actually buying — see
+you are actually buying with **Load .PAN** on the **Array** tab — see
 [Module specifications](/docs/inputs/module). It takes one click and it converts
 the largest loss in the breakdown from a number you have to argue for into a
 number you can derive.

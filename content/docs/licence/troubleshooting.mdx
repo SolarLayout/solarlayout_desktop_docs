@@ -1,99 +1,109 @@
 ---
 title: Licence problems
-description: Every access state the License / Subscription window shows, what each one means, and the fix — plus the 3-day offline grace.
+description: Every state the access chip and the License / Subscription window can show, what each one means, and the fix — plus the 3-day offline grace.
 ---
 
-The access-status chip in the top toolbar always shows this device's status at
-a glance (with a **Get Free Access** or **Contact Us** button beside it when
-action is needed) — or open **Help ▸ License / Subscription…** for the same
-detail plus the Device ID. The License / Subscription window's headline is
-always one of three: **✓  Active**, **✗  No access**, or **⏳  Waiting for
-activation** — the text beneath it says which state applies and why.
+The access chip in the ribbon always shows this device's status at a glance —
+**● Active — until &lt;date&gt;**, **● Access expired** or **● Access
+revoked** with a **Contact Us** button, or **● Access status unavailable** —
+and on a device with no access at all it gives way to a gold **Get Free
+Access** button. **Help ▸ License / Subscription…** opens the window with the
+same state as a headline, a line explaining it, and the buttons that act on
+it.
 
-There is no licence file to find, copy or keep safe. Access is tied to this
-computer through its **Device ID** — the Windows registry value also shown
-under Settings ▸ System ▸ About ▸ Device ID — and checked online with the
-server.
+There is no licence file to find, copy or keep safe. Access belongs to your
+account, covers up to three devices, and is checked online. This computer is
+identified by its **Device ID** — the Windows registry value also shown under
+Settings ▸ System ▸ About ▸ Device ID — which sits behind **Having trouble?**
+at the bottom of the window with a **Copy** button.
 
 ## The states
 
 <Accordions>
 
-<Accordion title="Access active">
+<Accordion title="✓ Active — until <date>">
 
-**What it means.** This device has active access. The headline reads
-**✓  Active**, with the sub-text "You have access until &lt;date&gt;."
-underneath. The buttons beneath it are **Access Details**, **Refresh** and
-**Close**.
+**What it means.** This device has active access. The line under the headline
+reads *"You have access until &lt;date&gt;."* and the buttons are **Access
+Details**, **Support cases**, **Refresh** and **Close**.
 
-<Screenshot id="licence-valid" />
+<Screenshot id="licence-active" />
 
-**Nothing to fix.** **Generate Layout**, every export, and the SLD and BOM
-tools all work.
+**Nothing to fix.** **Generate Layout** and every export work.
 
 </Accordion>
 
-<Accordion title="Your access has ended. Contact SolarLayout to purchase a licence.">
-
-**What it means.** This device's access has expired. The headline reads
-**✗  No access**, and **Layout generation is disabled until your access is
-active.**
-
-**Fix.** Contact SolarLayout at
-[sales@solarlayout.app](mailto:sales@solarlayout.app) to arrange paid access
-for this device, then click **Refresh** once it is issued.
-
-</Accordion>
-
-<Accordion title="Access has been revoked. Contact SolarLayout.">
-
-**What it means.** Access for this device has been withdrawn. The headline
-reads **✗  No access**.
-
-**Fix.** Contact SolarLayout to resolve it, then click **Refresh**.
-
-</Accordion>
-
-<Accordion title="No active access for this device. Click 'Get Free Access' to get started.">
+<Accordion title="Start your free trial">
 
 **What it means.** This device has never had access requested for it, or a
-previous request was never completed. The headline reads **✗  No access**.
+previous request was never completed. The line reads *"All features are
+available during your free trial. Activation takes one click in your
+browser."* and the buttons are **Get Free Access** and **Contact Us**. This
+is the only state in which the window opens by itself at launch.
 
-<Screenshot id="licence-no-licence" />
+<Screenshot id="licence-no-access" />
 
 **Fix.** Click **Get Free Access**. The application opens your browser at the
 activation page for this device
 (`https://solarlayout.app/desktop/solarlayout?device=<DeviceID>`). Complete
 activation there, then switch back to the window — it re-checks automatically
-and flips to **✓  Active** without needing a manual **Refresh**. See
-[Activate your licence](/docs/licence/activate).
+and flips to **✓ Active** without a manual **Refresh**. See
+[Activate this device](/docs/licence/activate).
 
 </Accordion>
 
-<Accordion title="Waiting for activation">
+<Accordion title="⏳ Waiting for activation">
 
-**What it means.** This is shown right after clicking **Get Free Access**,
-while activation is being completed in the browser.
+**What it means.** Shown right after clicking **Get Free Access**, while
+activation is being completed in the browser. The line reads *"This will
+update automatically when you return here after activating in your browser."*
 
 **Fix.** Finish activating on the page that opened, then switch back to the
-License / Subscription window. It checks again on its own; **Refresh** does
-the same thing if you want to trigger it directly.
+window. It checks again on its own; **Refresh** does the same thing if you want
+to trigger it directly.
 
 </Accordion>
 
-<Accordion title="Could not verify access — connect to the internet and try again.">
+<Accordion title="Access expired">
+
+**What it means.** Your account's access has ended, on this device and every
+other device on the account. The line reads *"Your free trial or subscription
+has ended. Contact us to purchase, or to request a trial extension."* and the
+ribbon chip reads **● Access expired** with a **Contact Us** button.
+
+**Fix.** Click **Contact Us**, or write to SolarLayout at
+[sales@solarlayout.app](mailto:sales@solarlayout.app), to purchase or to
+request an extension. Once it is granted every device picks up the new date;
+click **Refresh** to see it at once.
+
+</Accordion>
+
+<Accordion title="Access revoked">
+
+**What it means.** Access on your account has been withdrawn; it ends on every
+device at once. The line reads *"Access on this device has been revoked.
+Contact us to restore it."* and the ribbon chip reads **● Access revoked**
+with a **Contact Us** button.
+
+**Fix.** Contact SolarLayout to resolve it, then click **Refresh**.
+
+</Accordion>
+
+<Accordion title="Access status unavailable">
 
 **What it means.** The application could not reach the server and has no
-usable cached result to fall back on.
+usable cached result to fall back on. The line reads *"We couldn't reach the
+SolarLayout server. Check your connection and press Refresh."*
 
 A good check is cached, so a brief outage does not stop work: the application
 keeps working under its last known status for up to **3 days** without a
-connection. This message only appears once that offline grace has run out, or
-on a machine that has never checked in successfully.
+connection, and the ribbon chip reads **● Active — until &lt;date&gt;
+(offline)** meanwhile. This state only appears once that offline grace has run
+out, or on a machine that has never checked in successfully.
 
-**Fix.** Reconnect to the internet and click **Refresh**. If the message
+**Fix.** Reconnect to the internet and click **Refresh**. If the state
 persists on a machine that is definitely online, contact SolarLayout — see
-[Getting help](/docs/support).
+[What to send when you ask for help](#what-to-send-when-you-ask-for-help).
 
 </Accordion>
 
@@ -103,35 +113,50 @@ persists on a machine that is definitely online, contact SolarLayout — see
 
 <Accordions>
 
-<Accordion title="Generate Layout is blocked">
+<Accordion title="Generate Layout or an export is blocked">
 
-Clicking **Generate Layout** — or an export, or the SLD or BOM tools — without
-active access shows a **Subscription Required** dialog: *"Layout generation is
-locked."*, then the reason for the current state, then *"Open Help ▸ License /
-Subscription… to view your Device ID and start your free trial."* The License
-/ Subscription window then opens itself so you can act on it immediately.
+Clicking **Generate Layout** or any export without active access opens the
+**License / Subscription** window itself — there is no separate message. Read
+the headline and find that state above. The SLD and BOM views are not blocked;
+they simply have no layout to work from.
 
-<Screenshot id="licence-blocked-generate" />
+</Accordion>
 
-Read the headline in the window it opens and find that state above.
+<Accordion title="The activation page says You have used all 3 devices">
+
+Your account already uses SolarLayout on three devices, so this one cannot be
+added — and nothing frees a place: replacing a computer does not release its
+slot. Contact SolarLayout at
+[sales@solarlayout.app](mailto:sales@solarlayout.app) with the Device ID of
+the new machine.
+
+</Accordion>
+
+<Accordion title="The activation page says This device is already in use">
+
+This computer was activated under a different account. Sign in with that
+account instead, or contact SolarLayout.
 
 </Accordion>
 
 <Accordion title="I updated or reinstalled the application and access is gone">
 
-It should not be. Access is server-side and tied to the Device ID, not to any
-file on disk, so it survives updates and reinstalls automatically — there is
-nothing to re-load.
+It should not be. Access is server-side and belongs to your account, not to
+any file on disk, so it survives updates and reinstalls automatically — there
+is nothing to re-load.
 
-If the window still reports **✗  No access** after an update or reinstall:
+If the window still reports **Start your free trial** after an update or
+reinstall:
 
-1. **Click Refresh** in the License / Subscription window — the app may simply
-   not have checked in yet since the update.
+1. **Click Refresh** in the License / Subscription window — the application
+   may simply not have checked in yet since the update.
 2. **Check the machine's internet connection.** The check needs to reach the
    server at least once after install.
-3. **Compare the Device ID** shown now against what you activated with. It
-   should be unchanged after an update; a full reinstall of Windows, or a move
-   to a different computer, is what changes it — not an application update.
+3. **Compare the Device ID** under **Having trouble?** against the one listed
+   on your account's details page. It should be unchanged after an update; a
+   full reinstall of Windows, or a move to a different computer, is what
+   changes it — not an application update. A changed Device ID is a new device
+   on the account: click **Get Free Access** again.
 
 </Accordion>
 
@@ -139,10 +164,20 @@ If the window still reports **✗  No access** after an update or reinstall:
 
 It should not. The Device ID comes from the machine, not the Windows user
 account, so a second account on the same PC reports the same Device ID and the
-same access — unlike an older per-user file would have. If the second account
-shows **✗  No access**, click **Refresh**; if that does not resolve it, follow
+same access. If the second account shows **Start your free trial**, click
+**Refresh**; if that does not resolve it, follow
 [What to send when you ask for help](#what-to-send-when-you-ask-for-help)
 below.
+
+</Accordion>
+
+<Accordion title="The Support button will not file a ticket">
+
+Without active access the **Support** button in the ribbon shows *"You'll need
+active access to file a support ticket. Start a free trial, or contact us
+directly."* with **Get Free Access**, **Contact Us** and **Cancel**. Use
+**Contact Us**, or write to
+[sales@solarlayout.app](mailto:sales@solarlayout.app).
 
 </Accordion>
 
@@ -151,16 +186,16 @@ below.
 Send all of this in one message, so access can be checked without a round
 trip:
 
-- **The Device ID**, copied with the **Copy** button in the License /
-  Subscription window — not retyped.
-- **The exact headline and message text** the window shows, including any
-  date it names.
-- **The email address used when you got access**, if any.
-- **The app version**, shown in the bottom status bar.
+- **The Device ID**, copied with the **Copy** button behind **Having
+  trouble?** in the License / Subscription window — not retyped.
+- **The exact headline and the line under it**, including any date it names.
+- **The email address of your account.**
+- **The app version**, shown at the right of the status bar.
 
 Send it to SolarLayout at
 [sales@solarlayout.app](mailto:sales@solarlayout.app), or use **Contact Us**
-in the License / Subscription window to open the same route.
+in the License / Subscription window to open the same route. See
+[Getting help](/docs/support).
 
 </Accordion>
 
@@ -170,14 +205,14 @@ in the License / Subscription window to open the same route.
 
 <Cards>
   <Card
-    title="How licensing works"
+    title="How access works"
     href="/docs/licence/overview"
     description="What access unlocks and what stays available without it"
   />
   <Card
-    title="Activate your licence"
+    title="Activate this device"
     href="/docs/licence/activate"
-    description="Copy your Device ID and get free access for this device"
+    description="Get free access for this device and confirm it automatically"
   />
   <Card
     title="Getting help"

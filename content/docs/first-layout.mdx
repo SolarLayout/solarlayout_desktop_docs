@@ -1,14 +1,14 @@
 ---
 title: Your first layout
-description: A complete first run — load a boundary, generate the layout, read the summary, calculate energy, and export the report.
+description: A complete first run — load a boundary, generate the layout, read the plant chips and the Summary view, calculate energy, and export the report.
 ---
 
 This walkthrough takes one prepared boundary file and produces a placed plant,
-an energy estimate and a multi-page PDF report, changing almost nothing along
-the way. The point of a first run is to see what the defaults give you on your
+an energy estimate and a project report, changing almost nothing along the
+way. The point of a first run is to see what the defaults give you on your
 own site before you start fixing values.
 
-It assumes **Fixed Tilt** with **String Inverter**, the combination most
+It assumes **Fixed tilt** with **String inverter**, the combination most
 readers start from. Where a tracker plant or a central-inverter plant differs,
 the difference is noted — the full comparison is in
 [Choosing a design mode](/docs/design-modes).
@@ -20,43 +20,54 @@ the difference is noted — the full comparison is in
 
 Three things:
 
-- **The application, installed and open.** The design-mode window appears
-  first; pick **Fixed Tilt** with **String Inverter**.
-- **A valid licence for this machine.** The application opens without one, and
-  you can load a file and look at the inputs, but **Generate Layout** needs a
-  valid, in-date licence. Glance at the access-status chip in the top toolbar
-  first — it reads **Active — until \<date>** when you're covered, or shows a
-  **Get Free Access** / **Contact Us** button when you're not — or open
-  **Help ▸ License / Subscription…** for the full detail before you start —
-  see [Activate your licence](/docs/licence/activate).
+- **The application, installed and open.** The **SolarLayout · New design**
+  window appears first; leave **Fixed tilt** and **String inverter** selected
+  and click **Continue**.
+- **Active access for this device.** The application opens without it, and you
+  can load a file and look at the inputs, but **Generate Layout** needs it.
+  Glance at the access chip in the ribbon — it reads **● Active — until
+  \<date>** when you are covered; with no access the chip is replaced by a
+  **Get Free Access** button. See [Activate your licence](/docs/licence/activate).
 - **One boundary file.** A Google Earth file (`.kmz` or `.kml`) with a closed
   boundary polygon is the easiest starting point. Water bodies, buildings and
-  transmission lines drawn inside the boundary are read as exclusions.
+  transmission lines drawn inside the boundary are read as exclusions. If you
+  have no file yet, the bundled sample site — one boundary with a pond, a
+  transmission line and an obstruction — does for a first run.
 
 If you are not sure your file is prepared correctly, read
 [Preparing a Google Earth file](/docs/inputs/kmz-requirements) first. A file
-whose boundary ring is not closed opens a **Boundary Validation Issues**
-window listing each problem boundary, with a checkbox to exclude it and carry
-on with the rest.
+whose boundary ring is not closed opens the **Check boundaries** window, which
+lists each problem boundary with a **Leave out** tick and offers
+**Continue without \<n\>** or **Fix in Google Earth first**.
 </Step>
 
 <Step>
 ### Load the boundary file
 
-At the top of the input panel, the **Input KMZ File** row holds the path,
+The **Site** tab opens with the **Input Boundary File** card: the path field,
 a **Browse…** button, and an **ⓘ** button that opens the preparation guide.
+While the field is empty, an **Open sample site** link under it loads the
+bundled sample — the same as **File ▸ Open Sample Site**.
 
-Click **Browse…** and pick your file. The file window accepts
-`.kmz` `.kml` `.dxf` `.dwg` `.jpg` `.jpeg` `.png` `.gif` `.bmp` `.tif`
-`.tiff`.
+<Screenshot id="generate-hint" />
+
+Click **Browse…** and pick your file, or click **Open sample site**. The file
+window accepts `.kmz` `.kml` `.dxf` `.dwg` `.jpg` `.jpeg` `.png` `.gif` `.bmp`
+`.tif` `.tiff`.
 
 What happens next depends on the kind of file:
 
 | File | What you are asked |
 | --- | --- |
 | `.kmz` or `.kml` | Nothing. The boundaries, obstacles and line features are read straight from the file, and the site's position comes with them. |
-| `.dxf` or `.dwg` | A **DXF Site Coordinates** window asks for the site latitude and longitude. They are optional — skip them and the layout is still generated, but energy calculation is unavailable. |
-| An image | An **Image Boundary — Scale & Coordinates** window asks how a real site distance maps to a distance on the drawing, plus optional coordinates. The largest closed outline in the image becomes the boundary. |
+| `.dxf` or `.dwg` | The **Site reference** window asks for the site latitude and longitude. **Layout only** skips them — the layout is still generated, but energy calculation is unavailable. |
+| An image | The same **Site reference** window, with a **SCALE** card first: how a real site distance maps to a distance on the drawing. The largest closed outline in the image becomes the boundary. |
+
+Once the file is read, the line under the field becomes the boundary summary —
+*"1 boundary · 1 obstacle · 1 line obstruction"* for the sample — the plot
+previews the boundary, and **Generate Layout** enables.
+
+<Screenshot id="site-loaded" />
 
 Every feature in a Google Earth file must lie **inside** a boundary polygon.
 Top-level polygons become plant boundaries; polygons fully inside one become
@@ -72,27 +83,27 @@ with no recognised keyword is a generic obstruction such as a building.
 Every field below is already filled in. Read the values, confirm none of them
 is absurd for your site, and change nothing yet.
 
-| Group | Field | Default |
-| --- | --- | --- |
-| **Module Specifications** | Length (long side) | 2.38 m |
-| | Width (short side) | 1.13 m |
-| | Wattage | 610 Wp |
-| | Bifacial module | off |
-| **MMS-Table Configuration** | Orientation | Portrait |
-| | Modules per row | 28 |
-| | Rows per MMS-Table | 2 |
-| | Gap between modules E-W / N-S | 0.020 m each |
-| | Gap between MMS-Tables | 1.0 m |
-| | **Maximize placement** | off |
-| | Add half tables in leftover space | off |
-| **Spacing & Tilt** | Override tilt angle | off — derived from latitude |
-| | Override row pitch | off — derived |
-| **Site Parameters** | Perimeter road width | 6.0 m |
-| | Place Lightning Arresters | off |
-| | ICR Block | 18.0 MWp |
-| | Transmission line corridor | 15.0 m per side |
-| **String Inverter** | Max strings per inverter | 20 |
-| | **Calculate Cables for PV Power Plant** | off |
+| Tab | Card | Field | Default |
+| --- | --- | --- | --- |
+| **Array** | **Module Specifications** | Length (long side) | 2.38 m |
+| | | Width (short side) | 1.13 m |
+| | | Wattage | 610 Wp |
+| | | Bifacial module | off |
+| | **MMS-Table Configuration** | Orientation | Portrait |
+| | | Modules per row | 28 |
+| | | Rows per MMS-Table | 2 |
+| | | Gap between modules E-W / N-S | 0.020 m each |
+| | | Gap between MMS-Tables | 1.0 m |
+| | | **Maximize placement** | off |
+| | | Add half tables | off |
+| | **Spacing & Tilt** | Override tilt angle | off — derived from latitude |
+| | | Override row pitch | off — derived |
+| **Site** | **Site Parameters** | Perimeter road width | 6.0 m |
+| | | Place Lightning Arresters | off |
+| | | ICR Block | 18.0 MWp |
+| | | Transmission line corridor | 15.0 m per side |
+| **Electrical** | **String Inverter** | Max strings per inverter | 20 |
+| | **Cables** | Calculate cables | off |
 
 Four of them decide the shape of the result:
 
@@ -120,21 +131,20 @@ the inverter control room building. The number of control rooms is the plant
 capacity divided by this block size, rounded up.
 
 <Callout type="warn">
-Leave **Calculate Cables for PV Power Plant** unticked for a first run. Cable
-calculation is the slow step on a large or complex layout — tick the box and
-the application itself offers **Enable Now** and **Not Now (Recommended)**.
-Inverter counts and capacities are computed either way; only the cable length
-columns stay blank. Generate first, review the layout, then enable it for the
-final run.
+Leave **Calculate cables** in the **Cables** card unticked for a first run.
+Cable calculation is the slow step on a large or complex layout — tick the box
+and the application itself offers **Enable Now** and **Not Now (Recommended)**.
+Inverter counts and capacities are computed either way; only the cable rows
+read as not computed. Generate first, review the layout, then enable it for
+the final run. See [Cables](/docs/inputs/cables).
 </Callout>
 </Step>
 
 <Step>
 ### Click Generate Layout
 
-The button sits below the input panel.
-
-<Screenshot id="generate-button" />
+The gold button is pinned above the stage tabs, so it is in the same place
+whichever tab you are on; **F5** does the same.
 
 The application works through the site in a fixed order:
 
@@ -160,8 +170,8 @@ The application works through the site in a fixed order:
 9. Lightning arresters are placed, if you enabled them, and the capacity is
    recomputed.
 
-A status line under the plot reports how many plants were laid out and the
-total area in acres. See
+The status bar reads **Layout ready**, followed by any notes that apply — the
+number of water bodies excluded, tables cleared for building shadows. See
 [How placement works](/docs/layout/how-placement-works) for the detail.
 </Step>
 
@@ -170,50 +180,53 @@ total area in acres. See
 
 <Screenshot id="layout-fixed-tilt" />
 
-On the plot: the plant boundary in gold, the module tables in blue, the
-control rooms in dark blue, the string inverters in green, water bodies in
-blue and other obstructions in red. The legend names them. Cables, terrain
-contours and arresters have their own switches and start off, so the first
-picture is the placement alone.
+On the **Layout** view: the module tables in blue, the control rooms in dark
+blue, the string inverters in violet, water bodies in blue and other
+obstructions and the transmission corridor in red, the perimeter road band in
+grey. The **Legend ▾** chip in the plot corner unfolds the legend. Cables,
+terrain contours and arresters have their own rows in the **Layers ▾** popover
+and start off, so the first picture is the placement alone.
 
-Under the plot, the **Layout & Energy Summary** carries one row per plant
-boundary and a **TOTAL** row across them. The columns you care about on a
-first run:
+Under the view, the **plant chips** carry the totals: **DC capacity**, **Site
+area**, **Tables**, **Modules**, **ICR blocks**, and **Year-1 P50 energy**,
+which reads *—* until energy is calculated. Clicking any chip opens the
+**Summary** view.
 
-| Column | What it means |
-| --- | --- |
-| `Plant` | The boundary's name, from the file |
-| `Plant Area (Acres)` | The plant area inside the boundary |
-| `Plant Boundary (in meter)` | The length of the plant boundary, in metres |
-| `Full Tbl` | Full MMS-tables placed |
-| `Half Tbl` | Half tables placed, if you enabled them — half the east–west width, carrying half the strings |
-| `Modules` | Total modules across the plant |
-| `DC(MWp)` | Installed DC capacity |
-| `Tilt(°)` | The tilt used. A trailing `*` means it was auto-calculated rather than entered |
-| `Pitch(m)` | The row pitch used, with the same `*` convention |
-| `ICR` | Inverter control rooms placed |
-| `Str.Inv` | String inverters placed |
-| `Inv kWp` | The capacity carried per string inverter |
+<Screenshot id="summary-view" />
 
-A `—` in a column means the figure was not computed — the cable length columns
-read that way until you turn cable calculation on. The **⛶ Maximize** button on
-the summary header opens the table in its own window, which is the only
-comfortable way to read the full column set.
+The Summary view is the per-plant sheet turned on its side — a **Metric**
+column and one column per plant. The rows you care about on a first run:
 
-<Screenshot id="summary-table" />
+| Group | Row | What it means |
+| --- | --- | --- |
+| SITE | Plant area (acres) | The gross area inside the boundary, before the road setback |
+| | Boundary length (m) | The length of the plant boundary |
+| | ICR blocks | Inverter control rooms placed |
+| ARRAY | Full tables | Full MMS-tables placed |
+| | Half tables | Half tables placed, if you enabled them — half the east–west width, carrying half the strings |
+| | Modules | Total modules across the plant |
+| | Tilt (°) | The tilt used. A trailing `*` means it was auto-calculated rather than entered |
+| | Pitch (m) | The row pitch used, with the same `*` convention |
+| ELECTRICAL | DC capacity (MWp) | Installed DC capacity |
+| | String inverters | String inverters placed |
+| | Inverter rating (kWp) | The capacity carried per string inverter |
 
-On a tracker plant, `Full Tbl` and `Half Tbl` read `Full Trk` and `Half Trk`,
-and `Tilt(°)` becomes `MaxAng(°)`. In central-inverter mode, `Str.Inv` and
-`Inv kWp` are replaced by monitoring box and central inverter columns. The
-complete list is in [Summary columns](/docs/reference/summary-columns).
+A `—` in a row means the figure was not computed — the CABLES rows read that
+way until you turn cable calculation on. **Copy** puts the sheet on the
+clipboard for a spreadsheet; **Open in window** opens it in its own window.
+
+On a tracker plant the array rows read **Full trackers**, **Half trackers** and
+**Max tracking angle (°)**. In a central-inverter design the inverter rows are
+replaced by monitoring box and central inverter rows. The complete list is in
+[Summary rows](/docs/reference/summary-columns).
 </Step>
 
 <Step>
 ### Check the tilt and pitch the application derived
 
-Scroll back to **Spacing & Tilt**. Both override boxes are still unticked, but
-the two labels beside them now report what the run actually used, and those
-values have been pre-filled into the greyed-out fields.
+Open the **Array** tab and look at **Spacing & Tilt**. Both override boxes are
+still unticked, but the two lines under them now report what the run actually
+used, and those values have been pre-filled into the greyed-out fields.
 
 <Screenshot id="spacing-tilt-auto-resolved" />
 
@@ -241,80 +254,83 @@ Energy is a separate step, and it needs the site's latitude and longitude —
 which a Google Earth file always carries, and a CAD drawing carries only if
 you supplied them.
 
-<Screenshot id="energy-buttons" maxWidth={380} />
-
-Click **Calculate Energy**. With the default weather source, **PVGIS API
-(auto-fetch on Calculate)**, irradiance is fetched for the site from the EU
+Open the **Yield** tab and click **Calculate Energy** in the **Run Energy
+Calculation** card — or open the **Energy** view and click **Calculate
+energy** there; they are the same action. With the default weather source,
+**PVGIS API (auto-fetch)**, irradiance is fetched for the site from the EU
 Joint Research Centre service, with no key or account, falling back to NASA
 POWER when PVGIS has no data for the location. The GHI and in-plane GTI fields
-fill in with a label naming the source that was used. GHI is global horizontal
-irradiance; GTI is the irradiance in the plane of the modules.
+fill in with a source line naming the service that was used. GHI is global
+horizontal irradiance; GTI is the irradiance in the plane of the modules.
 
 Everything the estimate needs beyond irradiance is already set. The
 performance ratio — PR, the fraction of the theoretically available energy the
-plant actually delivers — is broken down loss by loss in the **Energy Yield**
-group, with the inverter at 97 %, soiling at 2 %, availability at 99 %, and
-row-to-row shading computed automatically from the GCR. Degradation ships at
-1.0 % in the first year and 0.4 % a year after that, over a 30-year plant life.
-Change them when you have supplier figures; see
+plant actually delivers — is broken down loss by loss under **ADVANCED** in the
+**Energy Yield** card, with the inverter at 97 %, soiling at 2 %, availability
+at 99 %, and row-to-row shading computed automatically from the GCR.
+Degradation ships at 1.0 % in the first year and 0.4 % a year after that, over
+a 30-year plant life. Change them when you have supplier figures; see
 [Performance ratio and losses](/docs/energy/losses).
 
-The results land at the right-hand end of the summary:
+<Screenshot id="energy-view" />
 
-| Column | What it means |
+The result lands on the **Energy** view: four tiles — **Year-1 energy**,
+**Specific yield**, **Performance ratio** and **CUF** — the monthly table to
+IEC 61724-1, and the charts. The **Year-1 P50 energy** chip fills in, and the
+Summary view's ENERGY rows follow:
+
+| Row | What it means |
 | --- | --- |
-| `P50Yr1(MWh)` | Year-one generation at the first exceedance probability |
-| `P75Yr1(MWh)` | Year-one generation at the second |
-| `P90Yr1(MWh)` | Year-one generation at the third |
-| `CUF(%)` | Capacity utilisation factor — year-one energy against the plant running at full capacity all year |
-| `25yrP50(MWh)` | Cumulative generation over years 1 to **Plant lifetime**, at the first exceedance probability |
+| P50 energy, year 1 (MWh) | Year-one generation at the first exceedance probability |
+| P75 energy, year 1 (MWh) | Year-one generation at the second |
+| P90 energy, year 1 (MWh) | Year-one generation at the third |
+| CUF (%) | Capacity utilisation factor — year-one energy against the plant running at full capacity all year |
+| P50 energy, 25 years (MWh) | Cumulative generation over years 1 to **Plant lifetime**, at the first exceedance probability |
 
-The three probability columns are named from the exceedance probabilities you
-set — 50 %, 75 % and 90 % by default — and the headers change with them. P90 is
-the figure a lender usually asks for: the annual energy the plant is 90 %
-likely to exceed.
+The three probability rows are named from the exceedance probabilities you
+set — 50 %, 75 % and 90 % by default — and change with them. P90 is the figure
+a lender usually asks for: the annual energy the plant is 90 % likely to
+exceed.
 
-The last column is the one to read carefully. Its header text is fixed, so it says
-`25yrP50(MWh)` whatever you set, while the figure is the cumulative total over the
+The last row is the one to read carefully. Its name is fixed, so it says
+*25 years* whatever you set, while the figure is the cumulative total over the
 **Plant lifetime** — 30 years on the shipped default — at the first exceedance
 probability. Quote it with the lifetime and the probability stated, not by its
-header.
+name.
 
-**📊 Show Energy Chart** draws the year as hourly bars for any day, or as
-twelve monthly bars with annual totals. **Export TMY data CSV** writes the
-full-year series at an interval you pick. Both are covered in
+**📊 Show Energy Chart** on the Yield tab draws the year as hourly bars for any
+day, or as twelve monthly bars with annual totals. **Export TMY data CSV**
+writes the full-year series at an interval you pick. Both are covered in
 [Hourly and monthly output](/docs/energy/timeseries).
 </Step>
 
 <Step>
-### Export the PDF report
+### Export the report
 
-<Screenshot id="export-buttons" maxWidth={380} />
+**Export ▾** sits beside **Save project** at the right of the view tabs, in
+every view.
 
-Click **Export PDF (Layout + Summary)**. Every page is A3 landscape, in this
-order:
+<Screenshot id="export-menu" />
 
-1. **Engineering drawing** — the layout with a border, a north arrow, a title
-   block, and a plant-details table with editable form fields.
-2. **Summary** — the layout summary, the design parameters, and the inverter
-   and cable summary including the per-control-room cable breakdown.
-3. **Single Line Diagram** — your diagram, if you have built one.
-4. **Bill of Material** — paginated across as many pages as it needs.
-5. **Energy** — present only when an energy calculation has been run.
+Click **Export Detailed Project Report**. It writes a Word document — A3
+landscape — in this order: a cover page, **Project Overview & Methodology**,
+**Design Basis — Input Parameters**, **Results & Analysis — Output**, **Energy
+Yield & Loss Analysis** (only when energy was calculated), and then the
+drawing annexures: the **Site Layout Plan**, the **Design Summary**, the
+**Single Line Diagram**, the **Bill of Materials** and the energy drawings.
 
-**Export PDF (with Piles)** produces the pile drawing instead, once you have
-defined a pile pattern under **Edit-Pile ▸ Define Pile Layout…**.
-
-Two other buttons carry the same layout elsewhere. **Export KMZ** writes the
+Two other items carry the same layout elsewhere. **Export KMZ** writes the
 Google Earth file, with one folder per plant and a summary placemark.
 **Export DXF** writes the CAD drawing in UTM metres on named layers —
 boundaries, tables, control rooms, cables, trenches and annotations each on
-their own. See [Exports](/docs/exports/pdf-report).
+their own. See [The project report](/docs/exports/project-report),
+[The Google Earth export](/docs/exports/kmz) and
+[The CAD drawing export](/docs/exports/dxf).
 
-Finally, save the session itself with **File ▸ Save Project…**. The project
-file holds the inputs, the layout, your hand edits, the diagram and the
-materials list, so you reopen exactly where you stopped. See
-[Saving and reopening projects](/docs/projects).
+Finally, save the session itself with **Save project** or **File ▸ Save
+Project…**. The project file holds the inputs, the layout, your hand edits,
+the diagram and the materials list, so you reopen exactly where you stopped.
+See [Saving and reopening projects](/docs/projects).
 </Step>
 
 </Steps>

@@ -1,30 +1,38 @@
 ---
 title: Bill of materials
-description: The materials list computed from the placed layout — its five columns, the row and rebuild controls, and how it reaches the report and the exports.
+description: The BOM view — the materials list computed from the placed layout, its five columns, the BOM TOOLS panel, every line item it can carry, and how it reaches the report and the exports.
 ---
 
 The bill of materials — the BOM — is a materials list computed from the layout
-you have generated. It opens as a table beside the plot, every cell in it is
-editable, and the finished list prints as its own pages in the exported PDF
-report.
+you have generated. It is a view of the plant: the **BOM** tab (**Ctrl+4**)
+shows the list as a table in place of the plot, every cell in it is editable,
+and the finished list prints as the **Bill of Materials** pages of the Detailed
+Project Report.
 
 It is not a separate document you keep by hand. The quantities are read out of
-the plant, so a layout that changes and is generated again produces a different
-list. What you add on top of that — extra line items, corrected descriptions,
-remarks for a procurement team — is yours, and it stays until you ask for the
-list to be rebuilt.
+the plant, so a layout that changes and is generated again produces a
+different list. What you add on top of that — extra line items, corrected
+descriptions, remarks for a procurement team — is yours, and it stays until
+you ask for the list to be rebuilt.
 
-## Opening the list
+## The BOM view
 
-**📋 BOM** on the plot toolbar switches the mode on. It is **off** by default.
-Generate a layout first: the list is computed from a placed plant, and there is
-nothing to compute before one exists.
+Click the **BOM** tab, or press **Ctrl+4**. Generate a layout first: the list
+is computed from a placed plant, and there is nothing to compute before one
+exists.
 
-<Screenshot id="bom-mode" />
+The table takes the whole area under the view header. The left column hands
+its inputs over to a green banner **● Bill of Materials** with an **Exit BOM**
+button, and under it the **BOM TOOLS** panel; **Exit BOM** hands the column
+back to the stage tabs. The status line reads *"BOM Mode ON — double-click any
+cell to edit. It prints on its own page in the PDF."* The view tabs and the
+tools beside them are described on [Views](/docs/workspace/views).
 
-The list is part of the session, so it is saved into the project file along with
-the inputs, the layout and your sketch edits, and comes back when the project is
-reopened. See [Projects](/docs/projects).
+<Screenshot id="bom-view" />
+
+The list is part of the session, so it is saved into the project file along
+with the inputs, the layout and your sketch edits, and comes back when the
+project is reopened. See [Projects](/docs/projects).
 
 ## The five columns
 
@@ -42,46 +50,61 @@ The table has a fixed set of columns, in this order.
 and a line counted in metres sit in the same table without ambiguity, which
 matters as soon as cables and structures appear on the same list.
 
-## The controls
+## BOM TOOLS
 
-Three buttons sit above the table, and they do exactly what their labels say.
+The panel in the left column holds everything that acts on the list.
 
-| Button | What it does |
+<Screenshot id="bom-tools" maxWidth={360} />
+
+| Control | What it does |
 | --- | --- |
 | **➕ Add Row** | Adds an empty row for you to fill in |
 | **🗑 Delete Selected Row** | Removes the row you have selected |
 | **⚙ Rebuild from Layout** | Discards the current list and computes a fresh one from the plant as it now stands |
+| **BOM Template:** | A selector offering **Plant (auto-computed)** and the one built-in template that matches the current design |
+| **📥 Load Template** | Opens the chosen template in a window of its own — see [Materials list templates](/docs/bom/templates) |
+| **⬇ Export BOM to Excel** | Writes the list on screen as a spreadsheet |
+| **⬇ Export BOM to PDF** | Writes the list on screen as a document of its own |
+| **Hide Layout & Energy Summary** | Hides the row of plant chips under the view, so the table gets the full height of the window |
+
+The hint under the buttons says what the panel is for: *"The main table is the
+automated BOM. Load Template opens it in a separate window; edit it there,
+then replace the plant BOM with it (used in the PDF)."*
+
+**Hide Layout & Energy Summary** carries a label older than the interface: what
+it hides is the chip row, not a table. Untick it and the chips come back;
+nothing is discarded.
 
 ### What rebuilding does
 
-**⚙ Rebuild from Layout** is not a refresh that merges. It recomputes the whole
-list from the current plant and puts that in place of what was there.
+**⚙ Rebuild from Layout** is not a refresh that merges. It recomputes the
+whole list from the current plant and puts that in place of what was there.
 
 <Callout type="warn">
 **⚙ Rebuild from Layout** discards your edits. Every row you added, every
-description you corrected and every remark you typed is replaced by the computed
-list. There is no merge and no partial rebuild — the plant's own figures are the
-whole of what comes back.
+description you corrected and every remark you typed is replaced by the
+computed list. There is no merge and no partial rebuild — the plant's own
+figures are the whole of what comes back.
 </Callout>
 
 That is the behaviour you want in one specific situation and not in any other:
 
-- **Rebuild** after you have changed the layout — moved a control room, drawn an
-  obstruction, added or deleted tables by hand, turned cable calculation on, run
-  the cleaning tool — and you want the quantities to match the plant again.
-- **Do not rebuild** once you have started editing the list for real. Finish the
-  layout first, rebuild once, then edit. The order costs nothing and saves the
-  work.
+- **Rebuild** after you have changed the layout — moved a control room, drawn
+  an obstruction, added or deleted tables by hand, turned cable calculation on,
+  run the cleaning tool — and you want the quantities to match the plant again.
+- **Do not rebuild** once you have started editing the list for real. Finish
+  the layout first, rebuild once, then edit. The order costs nothing and saves
+  the work.
 
-If you need both — a fully edited list and a set of current quantities to check
-it against — export the edited list to a spreadsheet before rebuilding, then
-compare the two outside the application.
+If you need both — a fully edited list and a set of current quantities to
+check it against — export the edited list to a spreadsheet before rebuilding,
+then compare the two outside the application.
 
 ## Editing a cell
 
-Click any cell and type. Every column is editable, including the computed
-quantities — so a figure you overwrite is a figure you own from then on, and it
-stands until the list is rebuilt.
+Double-click any cell and type. Every column is editable, including the
+computed quantities — so a figure you overwrite is a figure you own from then
+on, and it stands until the list is rebuilt.
 
 Three edits are worth making even on a list you otherwise leave alone:
 
@@ -93,8 +116,8 @@ Three edits are worth making even on a list you otherwise leave alone:
 - **Missing line items.** Anything the plant's geometry cannot imply. Read the
   computed list against your own material take-off and add what is not in it.
 
-For a starting point that already has that detail written in, load one of the
-built-in templates rather than typing it from scratch. See
+For a starting point written for a reference plant of the same design, load
+the built-in template rather than typing from scratch. See
 [Materials list templates](/docs/bom/templates).
 
 ## Where the quantities come from
@@ -103,16 +126,15 @@ Two sources, and understanding the split tells you which figures move when you
 change the design.
 
 **The plant's own counts.** Everything the layout has placed and measured is
-already known — the module count, the full and half tables or tracker units, the
-inverter control rooms, the string inverters or string monitoring boxes, the
-lightning arresters, the street lights, the piles, and the cable and trench
-lengths. These are the same figures the summary table reports under the plot, so
-the two never disagree. See
-[Summary columns](/docs/reference/summary-columns).
+already known — the module count, the full and half tables or tracker units,
+the inverter control rooms, the string inverters or string monitoring boxes,
+the lightning arresters, the street lights, the piles, and the cable and trench
+lengths. These are the same figures the Summary view reports, so the two never
+disagree. See [Summary columns](/docs/reference/summary-columns).
 
-**The topology rules.** Some quantities are not placed on the ground and have to
-be derived from a rule instead. The switchgear and transformer counts are the
-clear case, and they follow three rules:
+**The topology rules.** Some quantities are not placed on the ground and have
+to be derived from a rule instead. The combiner box and transformer counts are
+the clear case, and they follow three rules:
 
 | Rule | Value |
 | --- | --- |
@@ -120,65 +142,67 @@ clear case, and they follow three rules:
 | ACCBs per IDT | 4 |
 | Maximum IDT rating | 17.2 MVA |
 
-The IDT is the three-winding transformer in the diagram symbol set. The reason
+ACCB is the AC combiner box; IDT is the inverter duty transformer. The reason
 these three numbers matter here rather than only in the electrical design is
 that **the single-line diagram's automatic build uses the same rules**. Build
-the diagram from the plant and it groups inverters into ACCBs, ACCBs into
-transformers and transformers onto the medium-voltage panel by exactly the
+the diagram from the plant and it groups inverters into combiner boxes, boxes
+into transformers and transformers onto the medium-voltage panel by exactly the
 counts above — so the diagram and the materials list agree on how many of each
-there are. See [Automatic diagram build](/docs/sld/auto-build).
+there are. See [Building a diagram from the plant](/docs/sld/auto-build).
 
 ### What the list contains
 
-The rows come out in a fixed order. A row whose quantity would be zero is **left
-out altogether**, so a short list is not a fault — it means the plant has none of
-that item.
+The rows come out in a fixed order. A row whose quantity would be zero is
+**left out altogether**, so a short list is not a fault — it means the plant
+has none of that item.
 
-| Description | Unit | What the remark column adds |
-| --- | --- | --- |
-| Plant AC Capacity | MW | How it was derived from the inverter file. Shows a dash until one is loaded |
-| Plant DC Capacity | MWp | — |
-| PV Module | Nos | The wattage of each |
-| String Inverter | Nos | The capacity of each |
-| MMS Table — Full | Nos | — |
-| Half MMS Table | Nos | That it is half length and carries half the strings |
-| DC String Cable | m | That the figure includes both conductors |
-| DC String Trench | m | Where the trench runs to |
-| AC Cable (Inverter → ICR) | m | — |
-| AC Trench (Inverter → ICR) | m | — |
-| ACCB (AC Combiner Box) | Nos | The inverters-per-box limit |
-| Inverter Duty Transformer (IDT) | Nos | The voltage pair, the units per transformer, and the winding progression |
-| ICR (Inverter Control Room) | Nos | — |
-| MV Panel (Switchgear) | Lot | That it sits inside the main control room |
-| MV Cable (ICR → MCR) | m | — |
-| MV Trench (ICR → MCR) | m | — |
-| Power Transformer | MVA | How it was derived from the transformers feeding it |
-| MCR (Main Control Room) | Nos | — |
-| Lightning Arrester | Nos | — |
-| Street Light (perimeter) | Nos | Pole height and spacing |
-| Robotic Module Cleaning Equipment | Nos | The row count, and any robots added for broken lines or battery range |
-| Cleaning Robot Bridge (table-to-table) | Nos | The standard span |
-| Cleaning Robot Bridge (supported span) | Nos | That it crosses arresters, buildings or obstructions |
+| # | Description | Unit | What the remark column adds |
+| --- | --- | --- | --- |
+| 1 | Plant AC Capacity | MW | *"PmaxOut × no. of inverters (from OND)"*; the quantity reads `—` until an inverter file is loaded |
+| 2 | Plant DC Capacity | MWp | — |
+| 3 | PV Module | Nos | The wattage of each |
+| 4 | String Inverter, **or** SMB (String Monitoring Box) + Central Inverter | Nos | The capacity of each; the SMBs per central inverter |
+| 5 | MMS Table … — Full, **or** Tracker (Full) | Nos | — |
+| 6 | Half MMS Table, **or** Half Tracker | Nos | *"half length; carries half the strings"* — only when the plant has any |
+| 7 | DC String Cable | m | *"incl. +ve / −ve conductors"* |
+| 8 | DC String Trench | m | Where the trench runs to — the SMB or the string inverter |
+| 9 | DC Cable (SMB → Central Inverter) | m | Central inverter only |
+| 10 | AC Cable (Inverter → ICR) | m | String inverter only |
+| 11 | AC Trench (Inverter → ICR), **or** DC Trench (SMB → Central Inverter) | m | — |
+| 12 | ACCB (AC Combiner Box) | Nos | *"≤ 15 inverters each"* |
+| 13 | Inverter Duty Transformer (IDT) | Nos | *"33 kV / 800 V"*, the units per transformer and the winding progression |
+| 14 | ICR (Inverter Control Room) | Nos | — |
+| 15 | MV Panel (Switchgear) | Lot | *"Inside MCR"* — only once a main control room is placed |
+| 16 | MV Cable (ICR → MCR) | m | Main control room only |
+| 17 | MV Trench (ICR → MCR) | m | Main control room only |
+| 18 | Power Transformer | MVA | *"ΣIDT × 1.2"* — main control room only |
+| 19 | MCR (Main Control Room) | Nos | Main control room only |
+| 20 | Lightning Arrester | Nos | — |
+| 21 | Street Light (perimeter) | Nos | Pole height and spacing |
+| 22 | Robotic Module Cleaning Equipment | Nos | The row count, and any robots added for broken lines or battery range |
+| 23 | Cleaning Robot Bridge (table-to-table) | Nos | The standard span |
+| 24 | Cleaning Robot Bridge (supported span) | Nos | *"Over arresters / buildings / obstructions"* |
 
 Four things change that list:
 
-- **A tracker plant** replaces the two table rows with **Tracker (Full)** and
-  **Half Tracker**.
-- **A central-inverter plant** replaces **String Inverter** with
-  **SMB (String Monitoring Box)** and **Central Inverter**, adds
-  **DC Cable (SMB → Central Inverter)**, and renames the second trench row to
-  match — there is no AC leg. See
-  [Choosing a design mode](/docs/design-modes).
-- **Running without cable calculation** drops every cable and trench row.
-- **Not placing a main control room** drops the five rows from the switchgear
+- **A tracker plant** carries **Tracker (Full)** and **Half Tracker** in place
+  of the two table rows.
+- **A central-inverter plant** carries **SMB (String Monitoring Box)** and
+  **Central Inverter** in place of **String Inverter**, adds **DC Cable (SMB →
+  Central Inverter)**, and its second trench row is the DC trunk trench —
+  there is no AC leg. See [Choosing a design mode](/docs/design-modes).
+- **Running without cable calculation** leaves every cable and trench row at
+  zero, so they drop out.
+- **Not placing a main control room** drops rows 15 to 19, from the switchgear
   panel down to the room itself.
 
 ### The cleaning robot fleet
 
-The robot fleet is the one quantity that appears only because you asked for it.
-Run **🤖 Robotic Module Cleaning**, decide which wide gaps you will bridge, and
-the resulting fleet size feeds both the summary's **`Robots`** column and this
-list. Until you run it, there is no fleet on the list at all.
+Rows 22 to 24 appear only after you have run the cleaning tool. Run
+**🤖 Robotic Module Cleaning** on the Tools tab, decide which wide gaps you
+will bridge, and click its **Add n robots + m bridges to BOM** button. The
+fleet then feeds both the Summary view's **Cleaning robots** row and this list.
+Until you do, there is no fleet on the list at all.
 
 That is deliberate. A cleaning fleet is a purchase decision with a bridge count
 attached to it, not something a layout implies, so the list never carries a
@@ -187,46 +211,41 @@ fleet you did not ask for. See
 
 ## Exporting the list
 
-Two exports, both of the list on screen rather than the computed one — whatever
-you have edited is what is written.
+Two exports on the tools panel, both of the list on screen rather than the
+computed one — whatever you have edited is what is written.
 
 | Button | What you get |
 | --- | --- |
 | **⬇ Export BOM to Excel** | The five columns as a spreadsheet, for pricing, sorting and merging into a wider procurement sheet |
 | **⬇ Export BOM to PDF** | The list as a document of its own, for circulation and sign-off |
 
-**⬇ Export BOM to PDF** is separate from the report. The PDF report already
-carries the materials list as its own **Bill of Material** pages, paginated
-across as many pages as the list needs, alongside the drawing, the summary and
-the diagram. Use this button when you want the list on its own — a purchasing
-department rarely wants the engineering drawing attached to it. See
-[The PDF report](/docs/exports/pdf-report).
+<Screenshot id="bom-page" />
 
-## Enlarging the working area
-
-**Hide Layout & Energy Summary** collapses the plot and the summary table so the
-materials list has the width of the window to itself. On a long list this is the
-difference between reading a row and scrolling to read a row.
-
-The layout is unaffected — nothing is discarded, and switching the option off
-brings the plot and the summary straight back.
+These are separate from the report. **Export ▾ ▸ Export Detailed Project
+Report**, in the view header, writes a Word document that already carries the
+materials list as its **Bill of Materials** annexure, paginated across as many
+pages as the list needs, alongside the drawing, the summary and the diagram —
+and **Export PDF (with Piles)** carries the same pages while the pile overlay
+is on. Use the standalone buttons when you want the list on its own; a
+purchasing department rarely wants the engineering drawing attached to it.
+See [The Detailed Project Report](/docs/exports/project-report).
 
 ## What the list is, and is not
 
 State this to whoever receives it, because it sets what they can do with it.
 
-- **It is a materials list, not a priced bill of quantities.** There is no rate
-  column, no amount column and no total. Pricing happens after the export, in
-  the spreadsheet.
+- **It is a materials list, not a priced bill of quantities.** There is no
+  rate column, no amount column and no total. Pricing happens after the
+  export, in the spreadsheet.
 - **The descriptions are generic.** They describe the item, not a supplier's
-  catalogue part. Nothing here is tied to a make, a model or a stock code until
-  you type one in.
+  catalogue part. Nothing here is tied to a make, a model or a stock code
+  until you type one in.
 - **It follows from a layout, so it inherits the layout's assumptions.** Cable
-  quantities exist only if cable calculation was on for the run; a fleet exists
-  only if you sized one; arresters exist only if you asked for them. A zero on
-  this list is usually a setting rather than an absence.
-- **Nothing is checked against a standard.** Quantities are counts and lengths,
-  not a verified schedule of material.
+  quantities exist only if cable calculation was on for the run; a fleet
+  exists only if you sized one; arresters exist only if you asked for them. A
+  missing row on this list is usually a setting rather than an absence.
+- **Nothing is checked against a standard.** Quantities are counts and
+  lengths, not a verified schedule of material.
 
 ## A working order
 
@@ -244,29 +263,31 @@ hand edits in Sketch Mode. See [Sketch Mode](/docs/editing/sketch-mode).
 <Step>
 ### Turn cable calculation on and generate again
 
-Cable and trench lengths are only computed when you ask for them, and they are
-usually the largest quantities on the list. See
+Cable and trench lengths are only computed when you ask for them, and they
+are usually the largest quantities on the list. See
 [Cable routing](/docs/layout/cables).
 </Step>
 
 <Step>
 ### Size the cleaning fleet, if you want one
 
-Run **🤖 Robotic Module Cleaning** and settle the bridge decisions, so the fleet
-count is on the list before you rebuild.
+Run **🤖 Robotic Module Cleaning**, settle the bridge decisions, and add the
+result to the BOM, so the fleet count is on the list before you rebuild.
 </Step>
 
 <Step>
-### Switch **📋 BOM** on and rebuild once
+### Open the BOM view and rebuild once
 
-**⚙ Rebuild from Layout** gives you a list that matches the finished plant.
+Click the **BOM** tab, then **⚙ Rebuild from Layout** for a list that matches
+the finished plant.
 </Step>
 
 <Step>
 ### Edit, then export
 
-Correct the descriptions, add the line items the layout cannot know about, and
-export to a spreadsheet or a PDF. From here on, avoid rebuilding.
+Correct the descriptions, add the line items the layout cannot know about,
+and export to a spreadsheet, a PDF, or the report. From here on, avoid
+rebuilding.
 </Step>
 </Steps>
 
@@ -276,7 +297,7 @@ export to a spreadsheet or a PDF. From here on, avoid rebuilding.
   <Card
     title="Materials list templates"
     href="/docs/bom/templates"
-    description="The four built-in reference lists, and the action that replaces the computed one"
+    description="The built-in reference list for your design, and the action that replaces the computed one"
   />
   <Card
     title="Robotic module cleaning"
@@ -284,12 +305,12 @@ export to a spreadsheet or a PDF. From here on, avoid rebuilding.
     description="Sizing the fleet that puts a robot count on this list"
   />
   <Card
-    title="The PDF report"
-    href="/docs/exports/pdf-report"
-    description="Where the materials list appears among the report's pages"
+    title="The Detailed Project Report"
+    href="/docs/exports/project-report"
+    description="Where the materials list appears among the report's sections"
   />
   <Card
-    title="Automatic diagram build"
+    title="Building a diagram from the plant"
     href="/docs/sld/auto-build"
     description="The topology rules this list shares with the single-line diagram"
   />

@@ -1,52 +1,54 @@
 ---
-title: Inverter and cable settings
-description: How many strings feed one inverter or string monitoring box, whether cables are routed and measured, and what a manufacturer inverter file changes.
+title: Inverter settings
+description: How many strings feed one inverter or string monitoring box, what a manufacturer inverter file changes, and where the AC figures land in the Summary view.
 ---
 
-This group sets how the plant's DC output is collected and converted, how much
-of it one piece of collection equipment takes, and whether the application
-routes and measures the cables between the tables and the control rooms. Its
-title and its fields follow the electrical mode you chose at launch, because
-the two topologies collect the strings in different places. See
+The inverter card on the **Electrical** tab sets how the plant's DC output is
+collected and converted, how much of it one piece of collection equipment takes,
+and which manufacturer's machine the AC side is sized from. Its title and its
+fields follow the inverter topology you chose at launch, because the two
+topologies collect the strings in different places. See
 [Choosing a design mode](/docs/design-modes) for the choice itself.
+
+Whether the cables between the tables and the control rooms are routed and
+measured is a separate card on the same tab — see [Cables](/docs/inputs/cables).
 
 One definition governs everything on this page. A **string** is **one row of
 modules within an MMS-Table** (MMS — module mounting structure). A fixed-tilt
 table configured with two rows therefore carries two strings; a half table
 carries half the strings of a full one. Everything you set here is counted in
-strings, so the table configuration and this group are two ends of the same
+strings, so the table configuration and this card are two ends of the same
 decision — see [Table configuration](/docs/inputs/table).
 
-## The group in each mode
+## The card in each design
 
-| Electrical mode | Group title | Where the strings are collected |
+| Inverter topology | Card title | Where the strings are collected |
 | --- | --- | --- |
-| **String Inverter** | **String Inverter** | String inverters distributed across the plant, each converting DC to AC where it stands and sending AC onward |
-| **Central Inverter** | **SMB – String Monitoring Box** | String monitoring boxes distributed across the plant, each collecting strings and passing DC onward |
+| **String inverter** | **String Inverter** | String inverters distributed across the plant, each converting DC to AC where it stands and sending AC onward |
+| **Central inverter** | **SMB – String Monitoring Box** | String monitoring boxes distributed across the plant, each collecting strings and passing DC onward |
 
-In Central Inverter mode the string monitoring box — SMB — is the collection
+In a central-inverter design the string monitoring box — SMB — is the collection
 point. It does no conversion: it gathers the strings assigned to it and sends
 their combined DC output on to a central inverter, which sits inside an ICR
 (inverter control room) rather than out in the field. The field equipment and
-the conversion equipment are separate objects in that mode, and the group gives
+the conversion equipment are separate objects in that design, and the card gives
 you a field for each.
 
-<Tabs items={["String Inverter", "Central Inverter"]}>
-<Tab value="String Inverter">
+<Tabs items={["String inverter", "Central inverter"]}>
+<Tab value="String inverter">
 
 <Screenshot id="inverter-group-string" maxWidth={520} />
 
-Two fields and a file row: how many strings one inverter may take, whether
-cables are calculated, and which inverter file the AC side is sized from.
+One field and a file row: how many strings one inverter may take, and which
+inverter file the AC side is sized from.
 
 </Tab>
-<Tab value="Central Inverter">
+<Tab value="Central inverter">
 
 <Screenshot id="inverter-group-central" maxWidth={520} />
 
-The same area gains one field — how many string monitoring boxes one central
-inverter may take — and the cable rows are relabelled for the DC-trunk
-topology.
+The same card gains one field — how many string monitoring boxes one central
+inverter may take.
 
 </Tab>
 </Tabs>
@@ -58,15 +60,15 @@ The application clusters the placed tables and puts down as many inverters or
 monitoring boxes as the cap requires, so a lower number means more equipment,
 each covering a smaller group of tables.
 
-<Tabs items={["String Inverter", "Central Inverter"]}>
-<Tab value="String Inverter">
+<Tabs items={["String inverter", "Central inverter"]}>
+<Tab value="String inverter">
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Max strings per inverter** | 20 | 1–500 | The largest number of string cables one string inverter accepts |
 
 </Tab>
-<Tab value="Central Inverter">
+<Tab value="Central inverter">
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
@@ -79,16 +81,17 @@ Set this from the inverter or monitoring box you intend to buy, counted the way
 the application counts: one string per row of modules in a table. The number of
 modules in that row does not enter into it — a row is a string whether it holds
 few modules or many. What the row holds decides the string's voltage and
-current, which is a separate question, settled by automatic string sizing.
+current, which is a separate question, settled by
+[string sizing](/docs/inputs/string-sizing).
 
-The DC capacity that ends up attached to each unit is reported in the summary
-table, as `Inv kWp` in String Inverter mode and `SMB kWp` in Central Inverter
-mode, alongside the count itself. See
-[Summary table columns](/docs/reference/summary-columns).
+The unit count and the DC capacity attached to each unit are reported in the
+Summary view's **ELECTRICAL** group — **String inverters** and **Inverter
+rating (kWp)** in a string design, **SMBs** and **SMB rating (kWp)** in a
+central design. See [Summary columns](/docs/reference/summary-columns).
 
 ## Maximum SMBs per central inverter
 
-Central Inverter mode only.
+Central-inverter design only.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
@@ -99,165 +102,93 @@ inverter:
 
 **Central inverter capacity = SMB capacity × Max SMB per Central Inverter**
 
-So the two fields are the whole DC-side sizing chain in this mode. The strings
+So the two fields are the whole DC-side sizing chain in this design. The strings
 per SMB fix what one monitoring box collects; the SMBs per central inverter fix
 how many of those collections one machine converts. Change either and the
-central inverter count changes with it, reported as `C.Inv` and `CInv kWp` in
-the summary.
+central inverter count changes with it, reported on the **Central inverters**
+and **Central inverter rating (kWp)** rows of the Summary view.
 
 **One ICR building houses up to four central inverters.** The control rooms
-themselves are sized and placed from the **ICR Block** capacity in the site
-parameters, not from this group — see [Control rooms](/docs/layout/icr).
-
-## Calculate Cables for PV Power Plant
-
-**Off by default.** With it off, the layout is generated, the equipment is
-placed and counted, and no cable is routed. With it on, the application traces
-every run and reports its length.
-
-What gets traced depends on the mode, because the conversion happens in a
-different place:
-
-<Tabs items={["String Inverter", "Central Inverter"]}>
-<Tab value="String Inverter">
-
-| Run | From | To | Counted |
-| --- | --- | --- | --- |
-| String cable (DC) | Each table | Its string inverter | ×2 — once for the positive conductor and once for the negative |
-| AC cable | Each string inverter | The nearest ICR | ×1 — a single three-phase run |
-
-The inverter converts in the field, so the run into the control room is AC.
-Lengths appear in the summary as `StrDC(m)` and `AC-ICR(m)`.
-
-</Tab>
-<Tab value="Central Inverter">
-
-| Run | From | To | Counted |
-| --- | --- | --- | --- |
-| String cable (DC) | Each table | Its string monitoring box | ×2 — positive and negative conductors |
-| DC trunk | Each string monitoring box | The ICR | ×2 — positive and negative conductors |
-
-There is **no AC leg**, because the central inverter sits inside the ICR
-building. Nothing is converted before the cable arrives, so both runs are DC
-and both are counted twice. Lengths appear as `StrDC(m)` and `DC-CInv(m)`.
-
-</Tab>
-</Tabs>
-
-Medium-voltage runs from the control rooms onward are a separate matter, routed
-in both modes. Conductor lengths and trench lengths are reported separately,
-because several cables share one trench. See
-[Cable routing](/docs/layout/cables).
-
-### The notice that appears when you tick it
-
-Ticking the box raises a notice before anything is enabled: cable calculation
-can take a long time on large or complex layouts, and the recommendation is to
-generate the layout first without it, review what you get, and enable it for
-the final run. The buttons are **Enable Now** and
-**Not Now (Recommended)** — and the recommended one, which does *not* enable
-cable calculation, is the default.
-
-<Screenshot id="cable-calc-warning" />
-
-<Callout type="warn">
-Take the recommendation on a plant you have not laid out before. Cable routing
-is the slow step on a large plant, and it is the step whose result you are
-least likely to keep: change the table configuration, the perimeter road, the
-ICR block or the strings per inverter, and every run is traced again from
-scratch.
-</Callout>
-
-Why it is slow is worth knowing, because it tells you when it will not be. The
-AC runs are traced as horizontal and vertical segments only — no diagonals — and
-every candidate path is checked against the usable area before it is accepted,
-so a run may cross the perimeter road band but never leaves the plant fence. The
-work therefore grows with the number of tables and with how broken up the usable
-area is: a rectangular site with a clean fence routes far more cheaply than the
-same area cut by canals, water bodies and steep ground. On very large plants the
-application falls back to a fast geometric estimate of cable length so that
-generation stays quick.
-
-### What you still get with cables off
-
-- **The inverter and monitoring box counts are computed anyway.** So are their
-  capacities, the central inverter count, and everything downstream that
-  depends on them — the AC capacity, the DC/AC ratio, the single-line diagram
-  and the bill of materials.
-- **The cable columns of the summary show a dash.** A `—` in `StrDC(m)`,
-  `AC-ICR(m)`, `DC-CInv(m)`, `MV(m)` or any trench column means the value was
-  not computed, not that it is zero.
-- **The DC, AC and MV cable view switches have nothing to draw**, and the cable
-  layers are left out of the CAD export.
-
-Everything else about the design is final. Only the cable numbers are missing,
-and one more run with the box ticked fills them in.
+themselves are sized and placed from the **ICR Block** capacity on the Site
+tab, not from this card — see [Control rooms](/docs/layout/icr).
 
 ## Loading a manufacturer inverter file
 
-The group carries a row for a PVsyst inverter file — the `.OND` file the
-manufacturer publishes for the machine you intend to buy. Click **Load .OND**
-and pick the file.
+The card's file row reads *No OND file loaded* beside **Load .OND** and
+**View**. Click **Load .OND** and, in the **Load Inverter OND File** dialog,
+pick the `.OND` file — the PVsyst inverter file the manufacturer publishes for
+the machine you intend to buy. The row then shows the manufacturer and model,
+and **View** becomes available.
 
 <Screenshot id="ond-loaded" maxWidth={520} />
 
 The file settles the AC side of the design:
 
 - **The maximum AC output drives the plant AC capacity.** The application takes
-  the file's maximum AC output as the rating of one machine and reports the
-  plant's AC capacity from it — `AC(MWac)` and `InvCap(MW)` in the summary.
-- **The DC/AC ratio follows.** With a DC capacity from the placed modules and an
-  AC capacity from the file, the ratio is reported as `DC/AC`. It is the number
-  a reviewer looks at first, and without an inverter file there is nothing to
-  divide by.
+  the file's maximum output power as the rating of one machine and reports the
+  plant's AC capacity from it — the **AC capacity (MWac)** and **Inverter
+  capacity (MW)** rows of the Summary view, and the *Plant AC Capacity* line of
+  the bill of materials, which reads `—` until an inverter file is loaded.
+- **The DC / AC ratio follows.** With a DC capacity from the placed modules and
+  an AC capacity from the file, the ratio is reported on the **DC / AC ratio**
+  row. It is the number a reviewer looks at first, and without an inverter file
+  there is nothing to divide by.
 - **When the file declares no maximum output, the nominal power is used
   instead.** Some files carry only a nominal rating; the design still sizes,
   from that figure.
 
+<Callout>
+Loading an inverter file does **not** set the inverter efficiency used in the
+energy calculation. The **String / Central Inverter efficiency** field on the
+Yield tab stays at whatever you entered; read the file's efficiency curve
+(below) and set that field yourself. See [Loss assumptions](/docs/energy/losses).
+</Callout>
+
 ### Viewing what was read
 
-**View** opens the file read-only, laid out the way PVsyst presents it, so you
-can confirm the machine before designing around it. The tabs are *Main
-parameters*, *Efficiency curve*, *Additional parameters*, *Output parameters*,
-*Sizes and Technology* and *Commercial data*.
+**View** opens the file read-only in a window titled **Inverter (OND)** followed
+by the file name, laid out the way PVsyst presents it, so you can confirm the
+machine before designing around it. It has five tabs: *Main parameters*,
+*Efficiency curve*, *Additional parameters*, *Output parameters* and *Sizes and
+technology*.
 
 <Screenshot id="ond-viewer" />
 
 The *Efficiency curve* tab draws efficiency against load from the points in the
-file. Read it against the inverter loading your DC/AC ratio implies: a plant
+file. Read it against the inverter loading your DC / AC ratio implies: a plant
 run at a high ratio spends most of its hours in the upper part of that curve,
 and the conversion loss you enter in the yield calculation should agree with
-what the curve shows there. That loss is a separate input — see
-[Loss assumptions](/docs/energy/losses).
+what the curve shows there.
 
 <Screenshot id="ond-efficiency-curve" />
 
-### The file is also what makes automatic string sizing possible
+### The file is also what makes string sizing possible
 
 The number of modules you may wire in series is bounded by the inverter's
 tracking voltage window — the range of DC voltage over which the inverter can
 hold the maximum power point (MPPT — maximum power point tracking). That window
 is a property of the machine, and the application reads it from the inverter
 file. With no inverter file loaded there is no window, and therefore nothing to
-size a string against.
+size a string against: the **Size…** button on the Array tab asks for one
+before it opens the calculator.
 
 This is why the module file and the inverter file are usually loaded together
-at the start of a session, and why the question about calculating modules in
-series automatically leads back here. See
-[Automatic string sizing](/docs/inputs/string-sizing).
+at the start of a session. Both are also required by
+[Simulation with AC capacity](/docs/simulation/ac-capacity), which sizes the
+plant backwards from a target AC figure using the same two files.
 
 ## Where to go next
 
 <Cards>
   <Card
-    title="Automatic string sizing"
+    title="String sizing"
     href="/docs/inputs/string-sizing"
     description="How many modules go in series, and the three limits that decide it"
   />
   <Card
-    title="Cable routing"
-    href="/docs/layout/cables"
-    description="How DC, AC and medium-voltage runs are traced, and what trench lengths mean"
+    title="Cables"
+    href="/docs/inputs/cables"
+    description="Switching cable routing on, and the allowances added to the DC string-cable total"
   />
   <Card
     title="Control rooms"
@@ -267,6 +198,6 @@ series automatically leads back here. See
   <Card
     title="Simulation with AC capacity"
     href="/docs/simulation/ac-capacity"
-    description="Sizing the plant from a target AC capacity and DC/AC ratio instead"
+    description="Sizing the plant from a target AC capacity and DC / AC ratio instead"
   />
 </Cards>

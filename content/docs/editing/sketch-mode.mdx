@@ -1,6 +1,6 @@
 ---
 title: Sketch Mode
-description: The hand-editing surface — select, move, copy, delete, place tables, arresters, obstructions and cable trenches, and recompute the plant totals from your edits.
+description: The hand-editing surface — select, move, copy, delete, place tables, arresters, roads, corridors and cable trenches on a generated layout, and recompute the plant totals from your edits.
 ---
 
 The generated layout is a starting point. It knows what the boundary file told
@@ -12,99 +12,165 @@ you put that knowledge into the design.
 
 Everything you place by hand is part of the plant. A table you add counts
 towards the module count and the capacity; an arrester you add counts in the
-arrester column; an obstruction you draw clears the tables under it. The
-drawing tools — lines, text, dimensions, measurements — are covered separately
-in [Annotations, measuring and layers](/docs/editing/annotations), because they
+arrester row; a road you draw clears the tables under it. The drawing tools —
+lines, shapes, text, dimensions, measurements — are covered separately in
+[Annotations, measuring and layers](/docs/editing/annotations), because they
 change the drawing rather than the plant.
 
 ## Turning Sketch Mode on and off
 
-**✏ Sketch Mode** is on the toolbar above the plot, and starts off. Switch it
-on and the left-hand panel changes from the input groups to the tool palette.
-Switch it off and the input panel comes back.
+**Sketch** sits in the Layout view's tools, to the right of the view tabs, and
+starts off. Sketch is a tool of the Layout view: it is available only there,
+and switching to another view — Summary, Energy, BOM or SLD — switches Sketch
+off. See [Views](/docs/workspace/views) for the tools row.
 
-<Screenshot id="sketch-palette" maxWidth={360} />
+Click **Sketch** and the left column changes. The pinned **Generate Layout**
+button gives way to an orange **● Sketch Mode** banner with the table count on
+its right and one button, **Exit Sketch Mode — apply edits, recalc totals**;
+the input tabs are replaced by the tool palette; and an orange contextual bar
+appears above the plot. The status line reads *"Sketch Mode ON — select a tool
+from the left panel."*
+
+<Screenshot id="sketch-mode" />
+
+Click **Exit Sketch Mode — apply edits, recalc totals** and the inputs come
+back. The status line reads *"Sketch Mode OFF — plant totals updated."*
 
 <Callout type="warn">
 The plant totals are recomputed when you **leave** Sketch Mode, not while you
-are editing. Module count, capacity and arrester count in the
-**Layout & Energy Summary** stay at their pre-edit figures until you switch
-Sketch Mode off, so switch it off before reading the summary, exporting, or
-calculating energy.
+are editing. Module count, capacity and arrester count in the Summary view and
+the plant chips stay at their pre-edit figures until you exit, so exit before
+reading the Summary, exporting, or calculating energy.
 </Callout>
 
 ## How the palette is organised
 
+The palette is grouped. Pick a tool, act on the plot, and the tool stays armed
+until you pick another; one tool is active at a time.
+
+<Screenshot id="sketch-palette" />
+
 | Group | Tools | Covered in |
 | --- | --- | --- |
-| Selecting and moving | **↖ Move** | this page |
-| Copying and deleting | **⎘ Copy**, **🗑 Delete** | this page |
-| Placing equipment | **➕ Table**, **➕ Half Table**, **➕ LA** (lightning arrester), the obstruction tool, **⚡ T-Line** | this page |
-| Cable trenches | **🟢 DC Trench**, **🔴 AC Trench**, **🟩 MV Trench**, **✂ Del Trench** | this page |
-| Navigating | **🖐 Pan**, **🔍 Zoom** | this page |
-| Drawing aids | **🧲 Snap**, **⊾ Ortho**, **▦ Grid**, **↶ Undo**, **↷ Redo**, **🎨 Colour** | this page |
-| Drawing and annotating | lines, shapes, text, dimensions, layers, groups | [Annotations](/docs/editing/annotations) |
-| Measuring | **📏 Measure**, **📐 Dimension** | [Annotations](/docs/editing/annotations) |
+| **PLANT OBJECTS** | **➕ Table** · **➕ Half Table** · **➕ LA** · **🚧 Road** · **⚡ T-Line** | this page |
+| **CABLE TRENCHES** | **🟢 DC Trench** · **🔴 AC Trench** · **🟩 MV Trench** · **✂ Del Trench** | this page |
+| **DRAW** | **╱ Line** · **⌒ Polyline** · **□ Rect** · **○ Circle** · **More shapes** (Arc, Ellipse, Spline, Fill/Zone) | [Annotations](/docs/editing/annotations) |
+| **ANNOTATE** | **🅣 Text** · **📏 Measure** · **📐 Dimension** · **🧭 Scale bar + N** | [Annotations](/docs/editing/annotations) |
+| **SELECT & EDIT** | **↖ Move** · **⎘ Copy** · **🗑 Delete** | this page |
+| **MODIFY SELECTION** | **⟳ Rotate** · **⤢ Scale** · **⇋ Mirror** · **⇥ Offset** · **▤ Array** · **⧉ Group** · **⿲ Ungroup** | [Annotations](/docs/editing/annotations) |
+| **IMPORT & CLEAR** | **📂 Import DXF** · **🗑 Clear Annotations** | [Annotations](/docs/editing/annotations) |
+| **COMMAND** | a typed command line | [Annotations](/docs/editing/annotations) |
 
-One tool is active at a time. Pick a tool, act on the plot, and the tool stays
-armed until you pick another.
+On a tracker plant the plant objects read **➕ Tracker** and **➕ Half Tracker**
+instead.
 
-## Selecting and moving
+<Screenshot id="sketch-palette-tracker" />
 
-**↖ Move** is the tool you spend most of your time in. It selects and it
-drags, and it is also the tool that repositions anything you have already
-placed.
+Under the palette a hint summarises the keyboard: *"Shift+Click = multi ·
+Ctrl+Arrow = nudge 1 m · Ctrl+C/V = copy/paste · Ctrl+Z/Y = undo/redo · Esc =
+cancel. Rubber-band: drag →right = window, ←left = crossing. Click a start
+point, then type len\<bearing / dx,dy ↵ in the bar above the plot."*
+
+There are **no Pan or Zoom buttons in the palette**. The mouse wheel zooms at
+the cursor, and the **Home**, **Pan** and **Zoom** icons in the Layout tools do
+the rest — but while **Pan** or **Zoom** is active a drag on the plot moves the
+view and the sketch tool ignores it, so click the navigation icon off before you
+draw.
+
+## The contextual bar
+
+The orange strip above the plot holds the drawing aids and the numeric entry.
+It is present only in Sketch Mode.
+
+<Screenshot id="sketch-context-bar" />
+
+| Control | Default | What it does |
+| --- | --- | --- |
+| **🧲 Snap** | on | What you click snaps to nearby geometry — corners, edge midpoints, centres — so a trench meets a control room exactly rather than nearly |
+| **⊾ Ortho** | off | What you draw is held horizontal or vertical, so a trench cannot pick up an accidental few degrees |
+| **▦ Grid** + spacing | off, 10.0 m | Draws a reference grid at the spacing you set (0.5–1000 m) |
+| **🎨 Colour** | orange-red | The stroke colour for what you draw next |
+| **Layer**, **＋**, **👁** | layer *0* | The active annotation layer, a new layer, and show or hide the active layer |
+| Numeric entry | — | *"len\<bearing or dx,dy → Enter"*: a typed length and direction for the point you are about to place |
+| **E: — N: —** | — | The live cursor position in metres |
+| **↶ Undo** · **↷ Redo** | — | Step back and forward through your edits |
+
+**🧲 Snap** and **⊾ Ortho** are the two to have on before drawing anything you
+intend to build from. A trench drawn free-hand a degree or two off square looks
+right on the screen and exports as a drawing nobody can set out from.
+
+The numeric entry takes over from the mouse for the second point of anything:
+click a start point, then type `25.4<30` for 25.4 m at a bearing of 30°,
+`10,5` for 10 m east and 5 m north, or a bare `25.4` for that distance along
+the cursor direction — or a radius — and press Enter.
+
+## Selecting
+
+**↖ Move** is the tool you spend most of your time in. It selects, it drags,
+and it is the tool that repositions anything you have already placed.
 
 | Action | What it does |
 | --- | --- |
 | Click an object | Selects it |
-| Shift-click another object | Adds it to the selection |
-| Drag on empty space | Draws a rubber-band box; everything inside it is selected |
+| **Shift**+click another object | Adds it to the selection |
+| Drag on empty space **to the right** | A **window** rubber band: selects what lies entirely inside the box |
+| Drag on empty space **to the left** | A **crossing** rubber band: selects everything the box touches |
 | Drag any selected object | Moves the whole selection together |
-| Ctrl and an arrow key | Nudges the selection 1 m in that direction |
+| **Ctrl**+arrow key | Nudges the selection 1 m in that direction |
+| **Ctrl+C** / **Ctrl+V** | Copies and pastes the selection |
+| **Ctrl+Z** / **Ctrl+Y** | Undo and redo |
+| **Esc** | Cancels the tool or clears what it was doing |
 
 <Screenshot id="sketch-selection" />
 
-The rubber band is how you work at block scale — drag across a run of tables,
-then move or delete the lot in one action. The 1 m nudge is how you work at
-table scale: pick up a table with the mouse, drop it roughly, then step it into
-position without touching the mouse again.
+The two rubber bands are the CAD convention and worth learning: a window
+selection is for picking a clean block of tables without catching the row
+beside it; a crossing selection is for grabbing every trench that passes
+through an area. The 1 m nudge is how you work at table scale: pick up a
+table with the mouse, drop it roughly, then step it into position without
+touching the mouse again.
+
+The **MODIFY SELECTION** group — rotate, scale, mirror, offset, array, group,
+ungroup — is greyed out until there is a selection it can act on. Those tools
+are described with the drawing tools on
+[Annotations, measuring and layers](/docs/editing/annotations).
 
 ### Moving a control room
 
-A control room is not moved with **↖ Move**. With no pan or zoom tool active,
-click and hold a control room on the plot, drag it, and release. The layout
-rebuilds around the new position — tables under the new footprint are cleared,
-and the tables it vacated are available again. A drop where the room does not
-fit entirely inside the usable area snaps back to where it started. See
-[Control rooms](/docs/layout/icr).
+A control room is not moved with **↖ Move**, and does not need Sketch Mode at
+all. With neither **Pan** nor **Zoom** active, click and hold a blue ICR on the
+plot, drag it, and release. The layout rebuilds around the new position — tables
+under the new footprint are cleared, and the tables it vacated are available
+again. A drop where the room does not fit entirely inside the usable area snaps
+back to where it started. See [Inverter control rooms](/docs/layout/icr).
 
-## Copying and deleting
+## Moving, copying and deleting
 
 | Tool | What you do | What happens |
 | --- | --- | --- |
-| **⎘ Copy** | Select, then use the tool | The selection is duplicated, offset 5 m east and 5 m north of the original |
+| **↖ Move** | Select, then drag | The selection moves together |
+| **⎘ Copy** | Click a table | A copy is placed 5 m east and 5 m north of it |
 | **🗑 Delete** | Click any object | The object is removed |
 
-**Ctrl+C** and **Ctrl+V** do the same thing as **⎘ Copy**, with the same
-offset. The offset means the copy lands clear of the original, so you can see
-it and drag it where it belongs instead of it sitting invisibly on top of what
-you copied.
+To copy several things at once, select them with **↖ Move**, then **Ctrl+C**
+and **Ctrl+V**. The offset means a copy lands clear of the original, so you can
+see it and drag it where it belongs instead of it sitting invisibly on top of
+what you copied.
 
-**🗑 Delete** removes on a single click, with no confirmation. **↶ Undo** is
-the way back.
+**🗑 Delete** removes on a single click, with no confirmation. **↶ Undo** is the
+way back.
 
-## Placing equipment
+## Placing plant objects
 
 Each of these adds a real object to the plant, not a drawing of one.
 
 | Tool | What you do | Effect on the layout |
 | --- | --- | --- |
-| **➕ Table** | Click a position | Places one full module mounting structure (MMS) table, at the size and orientation set in the table configuration |
-| **➕ Half Table** | Click a position | Places a half unit — half the table's east–west width, carrying half the strings |
+| **➕ Table** | Click a position | Places one full MMS table, at the size and orientation set in the table configuration |
+| **➕ Half Table** | Click a position | Places a half unit — half the east–west modules and capacity; half the north–south strings on a tracker |
 | **➕ LA** | Click a position | Places a lightning arrester and clears the tables under its footprint |
-| **🚧** (obstruction) | Drag a rectangle | Adds a rectangular obstruction and removes the tables overlapping it |
-| **⚡ T-Line** | Click each vertex, then right-click to finish | Draws a transmission line across the plot |
+| **🚧 Road** | Drag a straight centre-line, then enter a width | Places a road corridor of that width and removes the tables under it |
+| **⚡ T-Line** | Drag a straight centre-line, then enter a width | Draws the red centre-line, records the corridor as a keep-out and removes the tables inside it |
 
 A few things follow from that table.
 
@@ -115,49 +181,28 @@ unit is half the east–west width and carries half the strings, and counts as
 half a table wherever tables are counted.
 
 **Arresters can be added even when the automatic pass placed none.** With
-**Place Lightning Arresters** left off in **Site Parameters** no arresters are
-placed and tables fill the whole usable area; **➕ LA** is how you add the few
-you actually want. The footprint that gets cleared is the arrester footprint
-for your mounting type, which is much larger on a fixed-tilt plant than on a
+**Place Lightning Arresters** left off on the Site tab no arresters are placed
+and tables fill the whole usable area; **➕ LA** is how you add the few you
+actually want. The footprint that gets cleared is the arrester footprint for
+your mounting type, which is much larger on a fixed-tilt plant than on a
 tracker plant. See [Lightning arresters](/docs/layout/lightning-arresters).
 
-**An obstruction drawn here behaves like an obstruction read from the boundary
-file.** It is subtracted from the ground available to tables, and the tables
-already overlapping it are removed. The rectangle is the Sketch Mode tool; the
-obstruction controls beside the plot also offer **Draw Polygon**, **Undo Last**
-and **Clear All** for a shape a rectangle cannot describe. See
-[Obstructions and exclusions](/docs/layout/obstructions).
+**Roads and transmission lines are drawn as a centre-line with a width.** Drag
+the line, release, and a prompt asks for the width — **Road width**, default
+**5.0 m**, for a road; **Transmission line corridor**, default **10.0 m**, for a
+line. The width is the whole corridor: the centre-line is buffered by half of
+it on each side, so the strip cleared of tables is the width you gave, not
+twice it.
 
-**A transmission line is a multi-click tool, and it asks for its own corridor.**
-Click each vertex in turn and right-click to finish, the same pattern as the
-polyline drawing tools. You are then asked for a **corridor width**, and the
-centre-line is buffered by half of it — so the strip cleared of tables is the
-width you gave, not twice it. Give no width and the corridor is **10.0 m**. The
-centre-line is drawn in red, the corridor becomes ground to keep clear, and the
-tables inside it are removed.
+**Transmission line corridor** on the Site tab has no part in this. That field
+applies to the lines read from a boundary file, and it is a setback each side
+rather than a total width. To clear the same ground as a 15 m setback on a line
+you draw here, enter a corridor width of 30 m.
 
-**Transmission line corridor** in **Site Parameters** has no part in this. That
-field applies to the lines read from a boundary file, and it is a setback each
-side rather than a total width. To clear the same ground as a 15 m setback on a
-line you draw here, enter a corridor width of 30 m.
-
-### Placing a main control room or an object
-
-The main control room and free-standing objects are placed from the controls
-beside the plot rather than from the tool palette. **Place MCR** arms the
-placement — the button reads **Cancel Placement** while it is armed — and the
-next click on the plot drops the room. **Remove MCR** takes it away again.
-**Place Object** and **Remove Objects** work the same way for the objects whose
-footprint and height you set in **Structures & Shadow**.
-
-A click outside the plant boundary is refused with
-*"Please place inside the boundary."* — nothing is placed, and the tool stays
-armed for another try.
-
-On a multi-plot site, placing the main control room also drops a unit
-substation in every other plot. See
-[Site equipment](/docs/layout/site-equipment) and
-[Multi-plot sites](/docs/layout/multi-plot).
+A polygon obstruction, a rectangle from the **Tools** tab, and the main control
+room and objects are placed from the Tools tab rather than from the palette. See
+[Obstructions](/docs/layout/obstructions) and
+[Site equipment](/docs/layout/site-equipment).
 
 ## Cable trenches
 
@@ -167,60 +212,22 @@ knows nothing about what is already buried on the site.
 
 | Tool | What you do |
 | --- | --- |
-| **🟢 DC Trench** | Click points to draw a DC trench polyline |
-| **🔴 AC Trench** | Click points to draw an AC trench polyline |
-| **🟩 MV Trench** | Click points to draw a medium-voltage trench polyline |
-| **✂ Del Trench** | Click a cable trench — automatic or hand-drawn — to delete it |
+| **🟢 DC Trench** | Click vertices, right-click to finish: a DC trench |
+| **🔴 AC Trench** | Click vertices, right-click to finish: an AC trench |
+| **🟩 MV Trench** | Click vertices, right-click to finish: a medium-voltage trench |
+| **✂ Del Trench** | Click any trench — automatic or hand-drawn — to delete it; the untouched trenches stay as the automatic routing |
 
 <Callout type="info">
 Trench edits survive the next run. Once you have deleted an automatic trench or
 drawn one of your own, **Generate Layout** keeps the current cables instead of
-re-routing them, so your route is not overwritten the next time you change an
-input and generate again.
+re-routing them — the cable follows your trenches — so your route is not
+overwritten the next time you change an input and generate again. There is no
+control that hands the cabling back to automatic routing.
 </Callout>
 
 What that means for the reported cable and trench lengths — and why trench
 totals are shorter than conductor totals — is on
 [Cable routing](/docs/layout/cables).
-
-## Navigating
-
-| Tool | What you do |
-| --- | --- |
-| **🖐 Pan** | Drag to move the view |
-| **🔍 Zoom** | Drag a box to zoom into it |
-| **Home (⌂)** | Fits the view to the whole plant |
-
-**Home** is worth remembering. It does not step back through your zoom
-history — it fits the view to the plant's own extent, so it is one click back
-to the whole site from wherever you have got to.
-
-Note that a control-room drag needs **no** pan or zoom tool active. If a
-click-hold on a control room pans the view instead of picking the room up, turn
-the pan tool off first.
-
-## The drawing aids
-
-These do not place anything. They change how the tools behave and how the
-result looks.
-
-| Control | What it does |
-| --- | --- |
-| **🧲 Snap** | Constrains what you click to snap onto nearby geometry, so a trench meets a control room exactly rather than nearly |
-| **⊾ Ortho** | Constrains what you draw to horizontal and vertical, so a trench or a line cannot pick up an accidental few degrees |
-| **▦ Grid** | Draws a reference grid on the plot |
-| **↶ Undo** | Steps back through your edits |
-| **↷ Redo** | Steps forward again |
-| **🎨 Colour** | Sets the stroke colour used by the drawing tools |
-
-**🧲 Snap** and **⊾ Ortho** are the two to switch on before drawing anything
-you intend to build from. A trench drawn free-hand a degree or two off square
-looks right on the screen and exports as a drawing nobody can set out from.
-
-The stroke colour applies to drawn elements. The default stroke is an
-orange-red, 1.5 pt wide; **🎨 Colour** changes it for the elements you draw
-next, not for what is already on the plot. Plant objects — tables, control
-rooms, cables, arresters — keep their own colours from the legend regardless.
 
 ## An edit from start to finish
 
@@ -228,15 +235,16 @@ rooms, cables, arresters — keep their own colours from the legend regardless.
 <Step>
 ### Switch Sketch Mode on
 
-Click **✏ Sketch Mode** on the toolbar. The input panel is replaced by the tool
-palette.
+Click **Sketch** in the Layout view's tools. The input tabs are replaced by the
+tool palette and the contextual bar appears above the plot.
 </Step>
 
 <Step>
 ### Zoom to the ground you are changing
 
-Use **🔍 Zoom** to drag a box around the area. **Home (⌂)** returns to the whole
-plant whenever you lose your place.
+Roll the mouse wheel over the area, or use **Zoom** to drag a box around it —
+then click **Zoom** off again so your drags reach the sketch tool. **Home**
+returns to the whole plant whenever you lose your place.
 </Step>
 
 <Step>
@@ -250,23 +258,25 @@ reference to judge spacing against.
 <Step>
 ### Make the edit
 
-Select with **↖ Move** and drag, nudge with Ctrl and the arrow keys, place with
-**➕ Table** or **➕ LA**, clear ground with the obstruction tool, reroute with a
-trench tool. **↶ Undo** and **↷ Redo** step through anything that went wrong.
+Select with **↖ Move** and drag, nudge with **Ctrl** and the arrow keys, place
+with **➕ Table** or **➕ LA**, clear ground with **🚧 Road**, reroute with a
+trench tool. **↶ Undo** and **↷ Redo** step through anything that went wrong;
+**Esc** cancels a half-finished action.
 </Step>
 
 <Step>
-### Switch Sketch Mode off
+### Exit Sketch Mode
 
-The plant totals are recomputed here. Read the module count, capacity and
-arrester count in the summary and confirm they moved the way you expected.
+Click **Exit Sketch Mode — apply edits, recalc totals**. The plant totals are
+recomputed here. Read the module count, capacity and arrester count in the
+Summary view and confirm they moved the way you expected.
 </Step>
 
 <Step>
 ### Save the project
 
-**💾 Save(Project)** writes the whole session to a `.slp` file, sketch edits
-included, so the edited plant reopens as you left it. See
+**Save project** in the view header writes the whole session to a `.slp` file,
+sketch edits included, so the edited plant reopens as you left it. See
 [Projects](/docs/projects).
 </Step>
 </Steps>
@@ -276,27 +286,28 @@ included, so the edited plant reopens as you left it. See
 Sketch Mode is not a drawing overlay. The objects you place are counted, and
 the counting happens when you leave.
 
-| Summary column | What your edits do to it |
+| Summary row | What your edits do to it |
 | --- | --- |
-| `Full Tbl` | Rises and falls with full tables placed and deleted |
-| `Half Tbl` | Rises and falls with half units placed and deleted |
-| `Modules` | Recomputed from the tables actually present |
-| `DC(MWp)` | Recomputed from the module count and the module wattage |
-| `LA` | Recomputed from the arresters actually present |
+| **Full tables** | Rises and falls with full tables placed and deleted |
+| **Half tables** | Rises and falls with half units placed and deleted |
+| **Modules** | Recomputed from the tables actually present |
+| **DC capacity (MWp)** | Recomputed from the module count and the module wattage |
+| **Lightning arresters** | Recomputed from the arresters actually present |
 
-The full column list is in
-[Summary columns](/docs/reference/summary-columns).
+The full row list is in [Summary rows](/docs/reference/summary-columns); the
+plant chips under the view follow the same figures.
 
-Because the summary is recomputed rather than adjusted, the figure you read
+Because the totals are recomputed rather than adjusted, the figure you read
 after leaving Sketch Mode is the figure the whole application then works from.
-The PDF report, the Google Earth file and the CAD drawing are all written from
-the current layout, so they carry your edited plant, not the automatic one —
-which is the point of editing it. See [Exports](/docs/exports/pdf-report).
+The project report, the Google Earth file and the CAD drawing are all written
+from the current layout, so they carry your edited plant, not the automatic one
+— which is the point of editing it. See
+[The project report](/docs/exports/project-report).
 
 Two consequences worth planning around:
 
 - **Calculate energy after editing, not before.** Year-one and lifetime
-  generation are computed from the plant capacity. Edit the layout, leave
+  generation are computed from the plant capacity. Edit the layout, exit
   Sketch Mode so the capacity settles, then calculate. See
   [How yield is calculated](/docs/energy/overview).
 - **Rebuild the bill of materials after editing.** The materials list is
@@ -305,15 +316,19 @@ Two consequences worth planning around:
 
 ## What Generate Layout does to your edits
 
-Pressing **Generate Layout** again after editing does **not** preserve the
-tables you placed and deleted by hand. It re-places every table, tracker,
-inverter and control room from scratch.
+Pressing **Generate Layout** after editing does a precise thing, and the
+intuitive guess is wrong in both directions:
 
-What survives is the ground you ruled out. The obstructions, corridors and main
-control room you drew are collected and handed to the placement as areas to keep
-clear, so the plant is rebuilt *around* your constraints rather than ignoring
-them. Hand-drawn cable trenches also survive, by a separate mechanism described
-in [Cable routing and trenches](/docs/layout/cables).
+1. If you are still in Sketch Mode, Generate leaves it first, so the edits are
+   committed rather than lost.
+2. If the layout was edited, Generate **re-places every table, tracker,
+   inverter and control room from scratch** into the newly available space.
+   Hand-placed and hand-deleted **tables do not survive** a Generate.
+3. The obstructions, roads, corridors and main control room you drew **do**
+   survive — they are collected and handed to the placement as ground to keep
+   clear, so the plant is rebuilt *around* your constraints rather than
+   ignoring them.
+4. Hand-drawn cable trenches also survive, by the separate rule above.
 
 <Callout type="warn">
 The re-plot is forced back to the aligned grid: **Maximize placement** is
@@ -323,9 +338,10 @@ count. The status line says *"Re-plotting the aligned grid around your sketch
 edits…"* while this happens.
 </Callout>
 
-So the order of work matters. Draw your obstructions and place the control room
-first, generate, and hand-edit individual tables **last** — anything you do to
-tables before a Generate is discarded by it.
+There is no "keep my layout and refresh the numbers" path. So the order of work
+matters: draw your roads and corridors and place the control room first,
+generate, and hand-edit individual tables **last** — anything you do to tables
+before a Generate is discarded by it.
 
 ## Where to go next
 
@@ -333,12 +349,12 @@ tables before a Generate is discarded by it.
   <Card
     title="Annotations, measuring and layers"
     href="/docs/editing/annotations"
-    description="The drawing, measuring and layer tools, and the typed command line"
+    description="The drawing, measuring, modify and layer tools, and the typed command line"
   />
   <Card
     title="Pile layout"
     href="/docs/editing/piles"
-    description="Define a pile pattern on one table and export the coordinate report"
+    description="Define a pile pattern on one table and export the coordinates"
   />
   <Card
     title="Cable routing"
@@ -346,7 +362,7 @@ tables before a Generate is discarded by it.
     description="What the automatic routes do, and what a hand-drawn trench changes"
   />
   <Card
-    title="Obstructions and exclusions"
+    title="Obstructions"
     href="/docs/layout/obstructions"
     description="Every kind of ground kept clear of tables, and how to add your own"
   />

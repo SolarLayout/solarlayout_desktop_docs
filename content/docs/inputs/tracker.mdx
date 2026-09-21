@@ -3,20 +3,23 @@ title: Tracker configuration
 description: The single-axis tracker unit — geometry, orientation, east–west pitch, rotation limit and the live aperture and ground coverage readout.
 ---
 
-The **Tracker Configuration** group appears in Single Axis Tracker mode only.
-Choosing a tracker mode at launch replaces two fixed-tilt groups — the table
-configuration and the spacing and tilt group — with this single group, because a
-tracker has no fixed tilt to derive and no row pitch to calculate. You set the
-east–west pitch directly, and everything else follows from the tracker unit
-itself. For the fixed-tilt equivalent see
-[Table configuration](/docs/inputs/table).
+The **Tracker Configuration** card sits on the **Array** tab, under
+[Module specifications](/docs/inputs/module), in a single-axis tracker design
+only. Choosing a tracker at launch replaces two fixed-tilt cards — MMS-Table
+Configuration and Spacing & Tilt — with this single card, because a tracker has
+no fixed tilt to derive and no row pitch to calculate. You set the east–west
+pitch directly, and everything else follows from the tracker unit itself. For
+the fixed-tilt equivalent see [Table configuration](/docs/inputs/table).
+
+The card is divided into three sections — *Tracker Geometry*, *Row Spacing* and
+*Tracker Parameters* — with a green preview line under them.
 
 <Screenshot id="tracker-group" maxWidth={420} />
 
 ## The geometry the fields describe
 
 The tracker modelled here is a horizontal single-axis tracker. Four facts about
-its geometry make every field in the group read straightforwardly:
+its geometry make every field on the card read straightforwardly:
 
 - **The rotation axis runs north to south**, along a torque tube. The tube is
   horizontal; the tracker does not tilt toward the equator the way a fixed
@@ -43,7 +46,7 @@ coverage ratio, the aperture divided by the east–west pitch.
 | **No. of strings per tracker** | 2 | 1–20 | Strings threaded end to end along one torque tube |
 | **Modules across tracker (E–W)** | 1 | 1–8 | Modules side by side across the tube. More than one gives a wider aperture |
 | **Module orientation** | P config (Portrait) | P or L config | Which module edge runs east–west across the tube |
-| **Modules per string (N–S)** | 28 | 4–120 | Modules in series in one string, counted along the axis |
+| **Modules per string (N–S)** | 28 | 4–120 | Modules in series in one string, counted along the axis. The **Size…** button beside it opens the string-sizing calculator |
 | **Gap between modules E–W** | 0.020 m | 0.0–5.0 m | Clear space between modules sitting side by side across the tube |
 | **Gap between modules N–S** | 0.020 m | 0.0–5.0 m | Clear space between consecutive modules along the tube |
 | **Tracker E-W pitch** | 5.5 m | 1.0–30.0 m | Centre-to-centre spacing between tracker columns. Sets the GCR |
@@ -51,7 +54,7 @@ coverage ratio, the aperture divided by the east–west pitch.
 | **Max rotation angle (±)** | 55.0° | 5.0–75.0° | The rotation limit either side of horizontal |
 | **Tracker height from ground** | 1.5 m | 0.5–10.0 m | Height of the torque tube above ground |
 | **Maximize placement** | off | — | Positions each tracker column independently to hug the boundary |
-| **Add half trackers in leftover space** | off | — | Allows a shortened tracker where a full unit will not fit |
+| **Add half trackers** | off | — | Allows a shortened tracker where a full unit will not fit |
 
 ## P and L configuration
 
@@ -92,7 +95,7 @@ standard bridge between units, so a realistic value matters beyond the geometry.
 
 ## The four relations
 
-Four figures come out of the group, each from one line of arithmetic:
+Four figures come out of the card, each from one line of arithmetic:
 
 ```
 modules along tube = strings per tracker × modules per string
@@ -141,12 +144,28 @@ add, which is why the aperture is a clean multiple; the north–south length is
 not. Add the service gap of 2.0 m to the 64.38 m length to get the north–south
 spacing each unit consumes in its column.
 
+<Callout type="warn">
+The east–west pitch has a floor. A pitch at or below the aperture is raised to
+the aperture plus 0.5 m without a warning, and the reported ground coverage
+ratio is worked out from that effective pitch, not from the figure you typed.
+With a wide aperture — several modules across in P config — check that the
+pitch you entered is the pitch you got.
+</Callout>
+
 ## The live preview
 
-A preview line sits directly under the group and reports those same four
-figures — **Aperture (E-W)**, **Length (N-S)**, **GCR** and
-**Modules/tracker** — recalculated as you type. It updates before you generate
-anything, so it is the fastest way to converge on a unit you are happy with.
+A green preview line sits directly under the parameters and reads
+*Aperture (E-W): … m | Length (N-S): … m | GCR: … | Modules/tracker: n*,
+recalculated as you type. It updates before you generate anything, so it is
+the fastest way to converge on a unit you are happy with.
+
+<Callout>
+The preview is indicative, not exact: it leaves the module gaps out of the
+aperture and the length. On the shipped defaults the previewed north–south
+length is 1.10 m short of the unit that is placed, because 56 modules along the
+tube carry 55 gaps of 0.020 m. The relations above, with the gaps in, are what
+the layout uses.
+</Callout>
 
 Use it for three checks in particular:
 
@@ -209,8 +228,9 @@ worth being plain about how far they reach.
 **Max rotation angle (±)** is the rotation limit either side of horizontal,
 55.0° as shipped. It is a reference and shading-analysis figure. It does not
 move a tracker unit on the ground and does not change the pitch: on a tracker
-plant the summary reports this angle in place of the fixed-tilt tilt column, so
-the drawing and the schedule carry the mechanical limit you specified.
+plant the Summary view reports it on the **Max tracking angle (°)** row, in
+place of the fixed-tilt **Tilt (°)** row, so the drawing and the schedule carry
+the mechanical limit you specified.
 
 **Tracker height from ground** is the height of the torque tube above ground,
 1.5 m as shipped, and is likewise a reference and shading-analysis figure rather
@@ -242,7 +262,7 @@ exactly when a tracker earns its premium over a fixed plant. See
 
 ## Packing options
 
-Both packing options work as they do in Fixed Tilt mode, on tracker units
+Both packing options work as they do in a fixed-tilt design, on tracker units
 instead of tables:
 
 - **Maximize placement**, off as shipped, positions each tracker column
@@ -250,9 +270,15 @@ instead of tables:
   every column from a shared origin. It fits extra units against diagonal and
   curved boundaries, at the cost of columns that no longer line up and a longer
   run on a large site.
-- **Add half trackers in leftover space**, off as shipped, allows a shortened
-  unit where a full one will not fit. Half units are reported in their own
-  summary column and count as half a unit wherever units are weighted.
+- **Add half trackers**, off as shipped, allows a shortened unit where a full
+  one will not fit. Half units are reported on the Summary view's **Half
+  trackers** row, under **Full trackers**, and count as half a unit wherever
+  units are weighted.
+
+The **Size…** button beside **Modules per string (N–S)** opens the **String
+sizing** window; accepting a pick there writes the series count into
+**Modules per string (N–S)** and the parallel count into **No. of strings per
+tracker**. See [String sizing](/docs/inputs/string-sizing).
 
 Both are covered in detail on
 [Maximize placement and half tables](/docs/layout/maximize-and-half-tables).

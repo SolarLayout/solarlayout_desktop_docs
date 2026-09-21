@@ -1,6 +1,6 @@
 ---
 title: How placement works
-description: The order a layout is built in — usable area, table grid, control rooms, inverters, cables, arresters — and why each stage changes the one after it.
+description: The order a layout is built in — usable area, table grid, control rooms, inverters, cables, arresters — and how to read the result in the Layout view.
 ---
 
 A layout is built in one pass, in a fixed order. Each stage narrows the ground
@@ -12,7 +12,7 @@ Knowing the order tells you which input to change when a result is not what you
 expected. A plant that came out smaller than the site area suggests has usually
 lost ground at one specific stage — the perimeter road, a transmission line
 corridor, excluded terrain, or the footprints of the control rooms and
-arresters — and each of those is a different field in the input panel.
+arresters — and each of those is a different field on one of the input tabs.
 
 ## The usable area
 
@@ -26,7 +26,7 @@ subtractions:
 | Subtracted | Set by |
 | --- | --- |
 | The perimeter road band around the inside of the fence | **Perimeter road width**, on [Site parameters](/docs/inputs/site) |
-| Polygon obstructions — water bodies, buildings, substations, and anything you draw by hand | The boundary file, plus [Obstructions and exclusions](/docs/layout/obstructions) |
+| Polygon obstructions — water bodies, buildings, substations, and anything you draw by hand | The boundary file, plus [Obstructions](/docs/layout/obstructions) |
 | Transmission line, canal and road corridors, buffered on both sides of the line | **Transmission line corridor**, per side |
 | Ground too steep or too uneven to build on | [Topography](/docs/inputs/topography), when enabled |
 
@@ -39,9 +39,9 @@ perimeter road band, but never outside the plant fence** — the road is a
 service corridor, not an electrical exclusion.
 
 The road band itself is computed once, as the strip between the boundary and
-the shrunk boundary, and the same strip is used by the on-screen plot, the PDF
-report, the Google Earth file and the CAD drawing. The road you see on screen
-is the road in every export.
+the shrunk boundary, and the same strip is used by the on-screen plot, the
+report drawing, the Google Earth file and the CAD drawing. The road you see on
+screen is the road in every export.
 
 ## The stages in order
 
@@ -92,11 +92,11 @@ suggests 30 m per side for a 400 kV line.
 
 ### 5. Steep and unsuitable ground is excluded
 
-When **Avoid steep / unsuitable ground** is on, an elevation model of the site
-is built — from a contour file you supply, or from public satellite elevation
-data — and ground that fails your slope limits is cut out of the usable area as
-well. Ground relief within a single table footprint is limited separately, as
-the pile-reveal differential you are prepared to build.
+When **Avoid steep ground** is on, an elevation model of the site is built —
+from a contour file you supply, or from public satellite elevation data — and
+ground that fails your slope limits is cut out of the usable area as well.
+Ground relief within a single table footprint is limited separately, as the
+pile-reveal differential you are prepared to build.
 
 Terrain is the one stage that can fail harmlessly. If there is no contour file
 and no internet connection, the layout proceeds with no terrain exclusion
@@ -161,16 +161,18 @@ the number of rooms is then re-checked against the new, lower capacity. See
 
 ### 9. Inverters are placed and cables routed
 
-Inverters — or string monitoring boxes (SMBs) in Central Inverter mode — are
-placed from groups of tables, sited in the gap bands between rows rather than in
-the middle of one. A placed string inverter is drawn as a small marker, 2 m east
-to west by 1 m north to south. Their counts are reported whether or not cables
-are routed.
+Inverters — or string monitoring boxes (SMBs) in a central-inverter design —
+are placed from groups of tables, sited in the gap bands between rows rather
+than in the middle of one. A placed string inverter is drawn as a small marker,
+2 m east to west by 1 m north to south. Their counts are reported whether or
+not cables are routed.
 
 Routing the cables is optional, and it is the slow step on a large or complex
-plant. With **Calculate Cables for PV Power Plant** off, the counts still
-appear and every cable length column reads `—`. With it on, DC runs, AC runs
-and the medium-voltage runs between control rooms are routed and measured. On a
+plant. With **Calculate cables** off — it is on the **Cables** card of the
+Electrical tab, see [Cables](/docs/inputs/cables) — the counts still appear and
+every cable row of the Summary view reads `—`. With it on, the DC runs and the
+AC runs are routed and measured; the medium-voltage runs to the main control
+room follow once that room has been placed and the layout generated again. On a
 very large plant the application switches to fast geometric estimation so
 generation stays quick. See [Cable routing](/docs/layout/cables).
 
@@ -215,98 +217,135 @@ rather than by the plant it serves.
 
 ## Reading the plot
 
-The plot fills the right-hand side of the window, with the toolbar above it and
-the **Layout & Energy Summary** table below.
+The plot is the **Layout** view — the first of the five view tabs on the right
+of the window. How the views, their tools and the chip row fit together is on
+[Views](/docs/workspace/views); this section covers what you use to read a
+layout once it exists.
 
-### The toolbar
+### The tools row
 
-<Screenshot id="toolbar" />
+To the right of the view tabs, the Layout view carries its own tools: **Save
+project** and **Export ▾**, then **Satellite**, **Wireframe**, **Piles: OFF**,
+**Layers ▾**, **Sketch**, the **Home**, **Pan** and **Zoom** icons and the
+expand button.
 
-| Button | Default | What it does |
+<Screenshot id="view-header" />
+
+| Tool | Default | What it does |
 | --- | --- | --- |
-| **💾 Save(Project)** | — | Saves the whole session to a `.slp` project file |
-| **⛶ Expand Plot** | — | Opens the plot in a large window of its own |
-| **🛰 Satellite** | Off, and disabled until a layout exists | Draws aerial imagery behind the layout, aligned to the file's latitude and longitude. Needs an internet connection |
-| **▢ Wireframe** | Off — tables are drawn filled | Draws tables and tracker units as outlines only |
-| **📍 Piles: OFF** | Off, and disabled until a layout exists | Shows the pile overlay. The first use opens the pile editor; piles stay visible even with **Plant Layout** off |
-| **✏ Sketch Mode** | Off | Opens the hand-editing tools |
-| **📋 BOM** | Off | Opens the bill-of-materials editor |
-| **⚡ SLD** | Off | Opens the single-line-diagram editor |
+| **Satellite** | Off, and disabled until a layout exists | Draws an aerial photograph behind the layout, aligned to the file's latitude and longitude. Needs an internet connection |
+| **Wireframe** | Off — tables are drawn filled | Draws tables and tracker units as outlines only |
+| **Piles: OFF** | Off, and disabled until a layout exists | Shows the pile overlay; the first use opens the Pile layout window. See [Pile layout](/docs/editing/piles) |
+| **Layers ▾** | — | Opens the popover of on/off rows, below |
+| **Sketch** | Off | Switches Sketch Mode on. See [Sketch Mode](/docs/editing/sketch-mode) |
+| **Home**, **Pan**, **Zoom** | — | Fit the whole plant; drag to move the view; drag a box to zoom into it |
+| Expand | — | Opens the plot in a window of its own |
 
-**🛰 Satellite** is the fastest check that a layout is standing on the ground
-you meant. Real tracks, ponds and buildings appear behind the tables, so a
-missing obstruction in the boundary file is obvious.
+**Satellite** is the fastest check that a layout is standing on the ground you
+meant. Real tracks, ponds and buildings appear behind the tables, so a missing
+obstruction in the boundary file is obvious.
 
-<Screenshot id="layout-satellite" />
+<Screenshot id="satellite" />
 
-**▢ Wireframe** is the view to use when tables are dense enough to merge into a
+**Wireframe** is the view to use when tables are dense enough to merge into a
 solid block of colour, and when you want to see cables or piles that filled
 tables would otherwise hide.
 
-<Screenshot id="layout-wireframe" />
+<Screenshot id="wireframe" />
 
-### View switches
+When the window is too narrow for every tool, **Satellite**, **Wireframe** and
+**Piles** move to the top of the Layers popover as rows of their own and the
+button reads **Layers ▾ +3**. Nothing is lost; it has moved.
 
-Below the toolbar is a block of ON/OFF switches, each controlling one layer of
-the drawing.
+### The Layers popover
 
-<Screenshot id="view-toggles" />
+**Layers ▾** opens a popover of ON/OFF rows, each controlling one layer of the
+drawing.
 
-| Switch | Default |
-| --- | --- |
-| **AC Cables** | OFF |
-| **DC Cables** | OFF |
-| **MV Cables (ICR→MCR)** | OFF |
-| **Contour / Terrain** | OFF |
-| **Plant Layout** | ON |
-| **Legend** | ON |
-| **Lightning Arresters** | OFF |
-| **Summary** | ON |
+<Screenshot id="layers-popover" />
 
-The three cable layers and the arrester layer start off because a first run
+| Row | Default | What it shows |
+| --- | --- | --- |
+| **Plant layout** | ON | The tables and equipment. Off leaves only the boundary and obstacles |
+| **Legend** | OFF | The colour key on the plot — the same switch as the **Legend ▾** chip in the plot corner |
+| **Lightning arresters** | OFF | The arrester rectangles, their labels and their protection circles |
+| **ICR blocks** | OFF | Each control room's block of tables, filled in its own colour and outlined |
+| **DC string cables (Tbl→Inv)** | OFF | Enabled only when cables were calculated |
+| **AC cables (Inv→ICR)** — **DC cables (SMB→CI)** in a central-inverter design | OFF | Enabled only when cables were calculated |
+| **MV cables (ICR→MCR)** | OFF | Needs a main control room placed and cables calculated |
+| **Contour / terrain** | OFF | Elevation contours, with a readout of the RL range and the excluded area |
+| **Plant totals** | ON | The row of plant chips under the view; off hides it |
+
+The three cable rows and the arrester row start off because a first run
 usually has neither cables nor arresters to draw. Switch them on after a run
 that produced them.
 
 ### The colour key
 
-The **Legend** switch draws the key on the plot itself. The colours are fixed:
+The legend is folded by default so it never sits on the drawing. Open it from
+the **Legend ▾** chip in the plot's top-right corner — or from the **Legend**
+row of the popover, which is the same switch — and the chip reads **Legend ▴**
+while it is open. The open legend can be dragged out of the way.
+
+<Screenshot id="legend-open" />
+
+The colours are fixed:
 
 | Drawn in | What it is |
 | --- | --- |
-| Gold | The plant boundary |
 | Blue | Module tables and tracker units |
 | Dark blue | Inverter control rooms |
-| Green or lime | String inverters, or string monitoring boxes |
-| Orange | DC cables |
+| Violet | The main control room, and the string inverters |
+| Green | DC string cables |
 | Red | AC cables |
 | Dark green | Medium-voltage cables between the control rooms and the main control room |
-| Dark red | Lightning arresters |
-| Red | Obstructions and exclusion zones |
+| Orange-red | Lightning arrester protection circles |
+| Red | Obstructions, exclusion zones and transmission line corridors |
 | Blue | Water bodies |
+| Grey | The perimeter road band |
 
-Contour lines, when the **Contour / Terrain** switch is on, run green at the
+Contour lines, when the **Contour / terrain** row is on, run green at the
 lowest elevation through blue to red at the highest, and the excluded area is
 reported in acres.
 
-### Fitting the view
+The plot also carries a units note in its bottom-left corner naming the UTM
+zone and the unit — metres — so a drawing captured from the screen says what
+its coordinates are.
 
-The navigation toolbar under the plot is the standard set of pan and zoom
-controls, with one difference worth knowing: **Home (⌂)** fits the view to the
-plant rather than returning to some earlier zoom. Whatever you have panned or
-zoomed to, one click frames the whole plant again.
+### Moving around the plot
 
-For anything you need to look at closely, **⛶ Expand Plot** gives the drawing a
-window of its own; **⟵ Return to Main Window** brings you back.
+The **mouse wheel zooms at the cursor**, so pointing at a control room and
+rolling the wheel takes you straight to it. **Pan** drags the view and **Zoom**
+drags a box to zoom into; **Home** fits the whole plant again, whatever you
+have panned or zoomed to — it does not step back through earlier views.
 
-<Screenshot id="expand-plot" />
+The view you set **persists**. The plot keeps your zoom and position across
+redraws — switching a layer on, moving a control room, drawing an obstruction —
+until you click **Home**, generate a new layout or load a new boundary file.
 
-The summary table under the plot has its own **⛶ Maximize** button, which is
-the only comfortable way to read the full column set. What each column means is
-in [Summary table columns](/docs/reference/summary-columns).
+For anything you need to look at closely, the expand button at the right of the
+tools opens **SolarLayout — Expanded View**: the plot in a large, resizable
+window with a full toolbar. **⟵ Return to Main Window** brings the plot back;
+until you do, the main window says so in the plot's place.
+
+### The plant chips
+
+A row of chips under the view carries the plant totals — DC capacity, site
+area, tables or trackers, modules, ICR blocks, lightning arresters once some are
+placed, and year-one P50 energy once it has been calculated. They are the only
+place the totals appear; the status bar no longer carries them. Clicking a chip
+opens the **Summary** view, which replaced the table that used to sit under the
+plot and holds every per-plant figure. Every row of it is defined in
+[Summary rows](/docs/reference/summary-columns).
 
 ## Where to go next
 
 <Cards>
+  <Card
+    title="Views"
+    href="/docs/workspace/views"
+    description="The five views, their tools and the chip row under them"
+  />
   <Card
     title="Maximizing placement and half tables"
     href="/docs/layout/maximize-and-half-tables"
@@ -316,11 +355,6 @@ in [Summary table columns](/docs/reference/summary-columns).
     title="Inverter control rooms"
     href="/docs/layout/icr"
     description="How many there are, where they go, and moving one by hand"
-  />
-  <Card
-    title="Obstructions and exclusions"
-    href="/docs/layout/obstructions"
-    description="Every kind of ground the layout keeps clear"
   />
   <Card
     title="Site parameters"

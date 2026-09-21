@@ -1,21 +1,23 @@
 ---
 title: How access works
-description: Access belongs to your account and covers up to three devices, checked online — what Get Free Access unlocks, the status chip, and the offline grace period.
+description: Access belongs to your account and covers up to three devices, checked online — what it unlocks, the access chip in the ribbon, the License window's states, and the offline grace period.
 ---
 
-Access to SolarLayout Desktop belongs to **your account** — the email you
-sign in with at solarlayout.app — and covers **up to three devices**. It is
-not a licence file. Help ▸ **License / Subscription…** opens the window that
-shows this device's status and requests access for it — there is no file to
-install, copy, back up, or keep safe. The Device ID tells the server which
+Access to SolarLayout Desktop belongs to **your account** — the email you sign
+in with at solarlayout.app — and covers **up to three devices**. It is not a
+licence file: there is nothing to install, copy, back up or keep safe.
+**Help ▸ License / Subscription…** opens the window that shows this device's
+status and requests access for it. The Device ID tells the server which
 computer is asking, and status is checked online.
 
-You don't need to open that window just to check status, though — a small
-access-status chip is always visible in the top toolbar: **● Active — until
-&lt;date&gt;**, **● No active access** with a **Get Free Access** button
-beside it, **● Access expired** or **● Access revoked** with a **Contact Us**
-button, or **● Access status unavailable** if the last check failed. The app
-version is shown in the status bar at the bottom of the window.
+You need not open that window just to check status. The ribbon at the top of
+every window carries an **access chip**: **● Active — until &lt;date&gt;**
+(with *"(offline)"* appended while a cached result is in use), **● Access
+expired** or **● Access revoked** with a **Contact Us** button beside it, or
+**● Access status unavailable** if the last check failed. On a device with no
+access at all the chip itself is hidden and only a gold **Get Free Access**
+button shows in its place. The chip is refreshed at startup, whenever the window
+regains focus, after the License window closes, and every 30 minutes.
 
 The application opens fully usable regardless of that status. Access only
 matters once you ask it to generate a layout or hand you a result.
@@ -25,104 +27,104 @@ matters once you ask it to generate a layout or hand you a result.
 | Action | Needs active access |
 | --- | --- |
 | **Generate Layout** | Yes |
-| Every export (PDF, KMZ, DXF, and the rest) | Yes |
-| The SLD tool | Yes |
-| The BOM tool | Yes |
+| Every item of the **Export ▾** menu — KMZ, DXF, ICR-block DXF, cable schedule, the report, the PDF with piles, the image | Yes |
+| **Export TMY data CSV** on the Yield tab | Yes |
+| Filing a support ticket from the **Support** button | Yes |
+| Reading and changing every input, loading a boundary file, opening a project | No |
+| The **SLD** and **BOM** views | No |
 
-Because almost everything downstream is computed *from* a generated layout,
-a device without active access is in practice limited to exploring the
-inputs — reading and changing every field in the panel, loading a boundary
-file, and opening every menu, the in-app guide, and the **License /
-Subscription…** window itself.
+Because almost everything downstream is computed *from* a generated layout, a
+device without active access is in practice limited to exploring the inputs,
+loading a boundary file, and opening every menu, the in-app guide and the
+**License / Subscription** window itself.
 
-Clicking **Generate Layout** without active access opens a **Subscription
-Required** dialog instead of a layout: *"Layout generation is locked."*,
-followed by the reason for this device, then *"Open Help ▸ License /
-Subscription… to view your Device ID and start your free trial."* The
-**License / Subscription** window then opens itself.
-
-<Screenshot id="licence-blocked-generate" />
+Clicking **Generate Layout** or an export without active access does not show
+a separate message: the **License / Subscription** window opens itself, with
+the headline for this device's state, so you can act on it at once. At launch
+the window also opens by itself, but only on a device that has never had
+access.
 
 ## The License / Subscription window
 
-The window's status headline reports one of three states:
+The headline and the line under it report the state:
 
-- **✓ Active** (green), with *"You have access until &lt;Month DD, YYYY&gt;."*
-  underneath.
-- **✗ No access** (red), with the reason for this device followed by
-  *"Layout generation is disabled until your access is active."*
-- **⏳ Waiting for activation** (amber), shown right after you click **Get
-  Free Access**, until the app confirms it.
+| Headline | Detail |
+| --- | --- |
+| **✓ Active — until &lt;date&gt;** | *"You have access until &lt;date&gt;."* |
+| **Start your free trial** | *"All features are available during your free trial. Activation takes one click in your browser."* |
+| **⏳ Waiting for activation** | *"This will update automatically when you return here after activating in your browser."* — shown right after **Get Free Access** |
+| **Access expired** | *"Your free trial or subscription has ended. Contact us to purchase, or to request a trial extension."* |
+| **Access revoked** | *"Access on this device has been revoked. Contact us to restore it."* |
+| **Access status unavailable** | *"We couldn't reach the SolarLayout server. Check your connection and press Refresh."* |
 
-<Screenshot id="licence-no-licence" />
+An optional line *"Access granted to &lt;email&gt;"* names the account.
 
-Below the status is **Your Device ID** — a read-only field labelled *"This
-Device ID identifies this computer to SolarLayout (it matches Settings ▸
-System ▸ About ▸ Device ID):"*, with a **Copy** button beside it. The Device
-ID is the Windows registry `MachineGuid` — the same value Windows itself
-shows under Settings ▸ System ▸ About ▸ Device ID.
+<Screenshot id="licence-active" />
 
-The buttons on offer depend on the state:
+The buttons depend on the state:
 
 - While active: **Access Details**, which opens the same web page as
-  activation, for this device.
+  activation for this device, and **Support cases**, which opens your list of
+  support cases.
 - While not active: **Get Free Access** and **Contact Us**.
 - Always: **Refresh** and **Close**.
 
-<Screenshot id="licence-valid" />
+The **Device ID** sits behind a **Having trouble?** disclosure at the bottom:
+the group **Your Device ID** with the hint *"If support asks for your Device
+ID, copy it from here and include it in your message."* and a **Copy** button.
+The Device ID is the Windows registry MachineGuid — the same value Windows
+shows under Settings ▸ System ▸ About ▸ Device ID.
+
+<Screenshot id="licence-no-access" />
 
 ## Getting access
 
 Click **Get Free Access** and the application opens your browser at the
 activation page for this device. Complete activation there, then switch back
-to the **License / Subscription** window — it re-checks automatically and
-the headline flips to **✓ Active**.
+to the **License / Subscription** window — it re-checks whenever it regains
+focus and the headline flips to **✓ Active — until &lt;date&gt;** by itself.
 
 **Contact Us** opens the SolarLayout contact page in your browser, for
 questions or to arrange paid access. [Activate this device](/docs/licence/activate)
 walks through the full flow.
 
-## Access states
-
-The server reports one of four states for this device: `active`, `expired`,
-`revoked`, or `none`. Each shows its own reason in the **License /
-Subscription** window:
-
-| State | Reason shown |
-| --- | --- |
-| Expired | *"Your access has ended. Contact SolarLayout to purchase a licence."* |
-| Revoked | *"Access has been revoked. Contact SolarLayout."* |
-| None | *"No active access for this device. Click 'Get Free Access' to get started."* |
-
 ## Working offline
 
-When this device can't reach the server, a good check it already made is
+When this device cannot reach the server, a good check it already made is
 cached, and the application keeps working under that cached status for up to
-3 days before it needs to check in again. If it can't reach the server and
-has no usable cached check, it reports *"Could not verify access — connect
-to the internet and try again."*
+**3 days** before it needs to check in again; the ribbon chip reads
+**● Active — until &lt;date&gt; (offline)** meanwhile. An active result is
+treated as fresh for 5 minutes, so the application does not call the server on
+every check. If it cannot reach the server and has no usable cached check, the
+window reads **Access status unavailable**.
 
 ## Using more than one device
 
-Free access is for up to three devices per account. Activate each one the
-same way — open the **License / Subscription** window on that computer, click
+Free access is for up to three devices per account. Activate each one the same
+way — open the **License / Subscription** window on that computer, click
 **Get Free Access**, and finish in the browser. On your second or third
-computer the activation page says *"This will be device 2 of 3 on your
-account."* and its button reads **Add this device**.
+computer the activation page says *"This will be device N of 3 on your
+account."* and its button reads **Add this device**; the page's details card
+lists every device with a **This device** badge.
 
 Every device on your account shares one access record, so a device added
 later shows the same end date and the same status as the others. If your
-access is extended, every device picks up the new date on its next check; if
-it ends or is revoked, it ends on every device at once.
+access is extended, every device picks up the new date; if it ends or is
+revoked, it ends on every device at once.
 
 Two limits, stated plainly:
 
 - **A device counts against your account for good.** Replacing a computer does
   not free its place. Once three have been used, the activation page reads
-  **You have used all 3 devices** — contact SolarLayout to sort it out.
+  **You have used all 3 devices** — *"Your account already uses SolarLayout on
+  3 devices, so this one cannot be added."* Contact SolarLayout to sort it
+  out.
 - **A device belongs to one account.** If this computer was activated under a
   different email, the page reads **This device is already in use** — sign in
   with that account instead, or contact SolarLayout.
+
+An expired or revoked account may still add a device; the new device simply
+shows that status.
 
 ## Updates, reinstalls, and other accounts
 
@@ -131,8 +133,8 @@ survives reinstalls and application updates automatically — there is nothing
 to re-load, and a reinstalled computer keeps its place among your devices. See
 [Updates and reinstalling](/docs/install/updates).
 
-A second Windows user account on the same PC has the same Device ID, so
-access carries over to it too — unlike a per-user file would.
+A second Windows user account on the same PC has the same Device ID, so access
+carries over to it too.
 
 ## Where to go next
 
@@ -140,7 +142,7 @@ access carries over to it too — unlike a per-user file would.
   <Card
     title="Activate this device"
     href="/docs/licence/activate"
-    description="Copy the Device ID and request access for this device"
+    description="Request access for this device and confirm it automatically"
   />
   <Card
     title="Access problems"

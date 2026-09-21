@@ -1,6 +1,6 @@
 ---
 title: Obstructions
-description: Every kind of ground kept clear of modules — water, buildings, line corridors, terrain, shadows — and how to draw an exclusion by hand.
+description: Every kind of ground kept clear of modules — water, buildings, line corridors, terrain, shadows — and how to draw an exclusion by hand from the Tools tab or in Sketch Mode.
 ---
 
 An obstruction is **area subtracted from the usable area**. Whatever the reason
@@ -33,7 +33,7 @@ slightly more ground than its own outline: a table that merely clips the edge of
 a pond is dropped in full. See
 [How placement works](/docs/layout/how-placement-works).
 
-<Screenshot id="layout-obstructions" />
+<Screenshot id="obstructions" />
 
 ## Obstructions that come from the boundary file
 
@@ -87,8 +87,8 @@ rather than from this field.
 
 The setback that suits a distribution line will not suit an export line. The
 application's own guidance is to raise it for higher voltages — for example 30 m
-per side on a 400 kV line. Set it in the **Site Parameters** group; see
-[Site parameters](/docs/inputs/site).
+per side on a 400 kV line. Set it on the **Site Parameters** card of the Site
+tab; see [Site parameters](/docs/inputs/site).
 
 The corridor is subtracted from the usable area exactly like a polygon, so the
 tables stop short of it on both sides and you get the clean service strip a line
@@ -108,7 +108,7 @@ reported in acres. See [Topography](/docs/inputs/topography).
 ## Shadows of structures
 
 The year-round shadow of a building or an object is also treated as ground to
-keep clear. With **Clear tables inside shadows** on — which is the default — any
+keep clear. With **Clear tables in shadows** on — which is the default — any
 table falling inside the shadow footprint of an inverter control room, the main
 control room or a placed object across the shadow window is removed.
 
@@ -128,43 +128,67 @@ found something the survey missed, or when you want to reserve ground for
 something the application does not model — a laydown area, a construction
 compound, a future extension.
 
-The obstruction controls sit below the plot and act on the layout already on
-screen.
+The **Obstructions** card is the first card of the **Tools** tab, which is
+locked until a layout exists — the tools act on the layout already on screen.
 
-| Button | What it does |
-| --- | --- |
-| **Draw Rectangle** | Arms the rectangle tool. Drag on the plot to define the rectangle. |
-| **Draw Polygon** | Arms the polygon tool. Click each vertex to define an arbitrary shape. |
-| **Undo Last** | Removes the most recently drawn obstruction. |
-| **Clear All** | Removes every hand-drawn obstruction. |
+<Screenshot id="obstruction-controls" />
 
-<Screenshot id="obstruction-controls" maxWidth={420} />
+| Button | What it does | Hint while armed |
+| --- | --- | --- |
+| **Draw Rectangle** | Arms the rectangle tool | *"Click and drag on the plot to draw a rectangular obstruction."* |
+| **Draw Polygon** | Arms the polygon tool | *"Click to add vertices. Double-click or right-click to close."* |
+| **Undo Last** | Removes the most recently drawn obstruction | — |
+| **Clear All** | Removes every hand-drawn obstruction | — |
+
+<Screenshot id="obstruction-controls-armed" />
 
 The application calls all of these **Obstruction**, whatever the ground is
 actually for. Tables overlapping a hand-drawn obstruction are removed the same
-way as for one read from the file.
+way as for one read from the file, and the status line reports the cost at
+once: *"Obstruction added — n tables | m modules | x MWp"*. After **Clear All**
+the status line reads *"All roads cleared."* — the same thing under an older
+name.
 
-### The obstruction tool in Sketch Mode
+<Callout type="warn">
+Drawing an obstruction re-places the inverters but does **not** re-measure the
+cables. After a hand-drawn obstruction the **String DC cable (m)** and **AC
+cable to ICR (m)** rows of the Summary view read **0** — while the trench rows
+keep their old figures — until you click **Generate Layout** again with
+**Calculate cables** on. Generate again before quoting cable lengths.
+</Callout>
 
-Sketch Mode carries its own rectangle obstruction tool in the tool palette: pick
-it, drag a rectangle, and the overlapping tables are removed. It is the same
-result as **Draw Rectangle**, reached from the palette you are already working
-in when you are editing tables by hand.
+### The obstruction tools in Sketch Mode
 
-The palette also has an **⚡ T-Line** tool for a transmission line the boundary
-file did not carry — click each vertex and right-click to finish. See
+Sketch Mode's **PLANT OBJECTS** group carries two corridor tools, and both work
+the same way: drag a straight **centre-line** on the plot, then enter a width.
+
+| Tool | Prompt | Default width | What it does |
+| --- | --- | --- | --- |
+| **🚧 Road** | **Road width** | 5.0 m | Places a road corridor of that width along the line and removes the tables under it |
+| **⚡ T-Line** | **Transmission line corridor** | 10.0 m | Draws the red centre-line, records a corridor of that width as a keep-out and removes the tables inside it |
+
+The **DRAW** group's **╱ Line** and **⌒ Polyline** ask for a **Line width** as
+well: **0** draws a line only, and anything more than 0 makes it a corridor that
+removes the tables under it — a third way to clear an irregular strip. See
 [Sketch Mode](/docs/editing/sketch-mode).
 
 A hand-drawn transmission line **does not use the Transmission line corridor
-setback**. The tool asks you for a corridor width instead, and buffers the
-centre-line by half of it, so the strip cleared of tables is the width you gave —
-not twice it. Give no width and the corridor is **10.0 m**. The centre-line is
-drawn in red, the corridor becomes a keep-out, and the tables inside it are
-removed.
+setback**. The width you enter is the whole corridor: the centre-line is
+buffered by half of it on each side, so the strip cleared of tables is the
+width you gave, not twice it. So a line you draw and a line of the same route
+read from the boundary file clear different ground unless you convert one figure
+into the other. To match a 15 m setback each side, enter a corridor width of
+30 m.
 
-So a line you draw and a line of the same route read from the boundary file clear
-different ground unless you convert one figure into the other. To match a 15 m
-setback each side, enter a corridor width of 30 m.
+### What Generate does to hand-drawn obstructions
+
+Hand-drawn obstructions, roads and corridors **survive** a later
+**Generate Layout**. They are collected and handed to the placement as ground to
+keep clear, so the plant is rebuilt around them. What does *not* survive is any
+table you placed or deleted by hand in Sketch Mode — Generate re-places every
+table from scratch. Draw the obstructions first, generate, and hand-edit
+individual tables last. The full rule is on
+[Sketch Mode](/docs/editing/sketch-mode#what-generate-layout-does-to-your-edits).
 
 ## What else the usable area governs
 
@@ -185,7 +209,9 @@ alone:
   usable area, so an exclusion can push a room away from the centre of the group
   of tables it serves.
 - **Reported area.** Excluded terrain is reported in acres, so you can see how
-  much ground the slope limits took.
+  much ground the slope limits took. The **Plant area (acres)** row of the
+  Summary view is the gross boundary area, so it does not fall as exclusions
+  grow.
 
 ## What reaches the drawing
 
@@ -202,7 +228,7 @@ clear.
 | Hand-drawn obstructions | `OBSTRUCTIONS` |
 | Terrain contour lines | `TERRAIN` |
 
-See [CAD drawing export](/docs/exports/dxf). The Google Earth export carries the
+See [CAD export](/docs/exports/dxf). The Google Earth export carries the
 exclusion zones alongside the boundary and the tables; see
 [Google Earth export](/docs/exports/kmz).
 
@@ -218,11 +244,12 @@ did not intend.
 </Step>
 
 <Step>
-### Switch the satellite view on
+### Switch Satellite on
 
-The aerial photograph behind the layout shows the real ground. A pond visible on
-the imagery with tables sitting on it means the polygon is missing from the file
-or was drawn outside the boundary.
+**Satellite** in the Layout view's tools puts the aerial photograph behind the
+layout and shows the real ground. A pond visible on the imagery with tables
+sitting on it means the polygon is missing from the file or was drawn outside
+the boundary.
 </Step>
 
 <Step>

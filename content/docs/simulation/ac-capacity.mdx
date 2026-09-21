@@ -1,60 +1,127 @@
 ---
 title: Sizing from an AC capacity
-description: Work backwards from a contracted AC capacity and a target DC to AC ratio to a layout capped at the capacity you are allowed to build.
+description: Work backwards from a contracted AC capacity and a target DC/AC ratio to a layout capped at the capacity you are allowed to build.
 ---
 
 The normal way round is to fill the site: place as many modules as the usable
-area holds and read the resulting capacity off the summary. **🔆 Simulation with
-AC Capacity** works the other way. You state the AC capacity you are contracted
-for and the DC to AC ratio you want to build at, and the plant is sized to match
-it.
+area holds and read the resulting capacity off the plant chips. **🔆 Simulation
+with AC Capacity** works the other way. You state the AC capacity you are
+contracted for and the DC/AC ratio you want to build at, and the plant is sized
+to match it.
 
 That is the shape most utility-scale projects actually arrive in. The connection
 agreement fixes the megawatts you may export, the tariff is set against them,
 and the design question is not how much the site could hold but how much of the
 site you should use to deliver exactly what you have sold.
 
-## What it needs
+## Where it is, and what it needs
+
+The button is the first of three in the **Studies** card on the **Tools** tab.
+The card is there from the start, but every button in it is greyed out until a
+layout exists — the simulation works from a placed layout, because it needs to
+know what the site can deliver before it can cap anything to a target.
+
+<Screenshot id="studies" />
+
+It also needs two files, because typed module dimensions carry no electrical
+data:
 
 <Steps>
 <Step>
 ### Generate a layout first
 
-The button appears **only after the first layout has been generated**. The
-simulation works from a placed layout — it needs to know what the site can
-deliver before it can cap anything to a target.
+Let the site fill. That first run tells you the ceiling — the most DC the usable
+area will take on your current settings — which is the number every target is
+compared against.
 </Step>
 
 <Step>
 ### Load a module file
 
-The string sizing needs the module's electrical data, which comes from the
-`.PAN` file rather than from the three dimension fields. See
-[Module specifications](/docs/inputs/module).
+The string sizing needs the module's voltages, which come from the `.PAN` file
+rather than from the three dimension fields. **Load .PAN** is on the **Array**
+tab — see [Module specifications](/docs/inputs/module).
 </Step>
 
 <Step>
 ### Load an inverter file
 
 The inverter's rated AC output, its current limit and its DC power limit all
-come from the `.OND` file. See
-[Inverters and cables](/docs/inputs/inverter).
-</Step>
-
-<Step>
-### Enter the target capacity and ratio
-
-Give the AC capacity you are sizing to and the DC to AC ratio you intend to
-build at. The window computes the inverter count, the target DC capacity and
-the module and inverter counts that follow.
+come from the `.OND` file. **Load .OND** is on the **Electrical** tab — see
+[Inverters](/docs/inputs/inverter).
 </Step>
 </Steps>
 
-<Screenshot id="ac-capacity-dialog" />
+Without both files the button answers with a message instead of the window:
+*"Load a PAN module file and an OND inverter file first (in the input panel),
+then run the AC-capacity simulation."*
 
-Without both files the simulation has nothing to size a string or an inverter
-from, so both are requirements rather than refinements here — unlike a plain
-layout run, which works from typed dimensions alone.
+## The window
+
+**Simulation with AC Capacity** is one window: inputs on the left, a live
+result on the right, and the action in the footer. Everything on the right
+updates as you type.
+
+<Screenshot id="ac-capacity" />
+
+### The strip
+
+Across the top, the ceiling and the design: *This layout holds* **x MWp** *DC ·
+the target cannot exceed it*, then chips reading *String inverter* or *Central
+inverter* and the table configuration as *"n-string tables"*. The first number
+is the placed DC capacity of the layout you generated, and nothing in this
+window can raise it.
+
+### TARGET
+
+| Field | Default | What it does |
+| --- | --- | --- |
+| **AC capacity** | — | The AC capacity you are sizing to, in kW. The equivalent in MW is shown beside it |
+| **DC/AC ratio** | 1.30 | Installed DC divided by installed AC — the ratio you intend to build at |
+| **Overload limit** | 1.5 in a string design, 1.4 in a central design | The design overload limit: the highest DC/AC ratio the window will size at. This is a design figure, not the inverter's nameplate DC input |
+| **Modules per string** | — | The string length. **Size…** beside it opens the string-sizing window — see [String sizing](/docs/inputs/string-sizing) |
+| **Strings per SMB** | 20 | Central-inverter designs only. The window reports *"→ n SMBs per inverter"* beside it |
+
+### EQUIPMENT
+
+Two rows, **MODULE · PAN** and **INVERTER · OND**, each with a one-line
+specification of the loaded file and **View** and **Replace…** buttons, so you
+can check or swap either file without leaving the window. Under them an
+expander, **Override nameplate values**, exposes **Module Pmax** in W and
+**Inverter rated AC** in kW for the case where the file's figures are not the
+ones you are contracting against.
+
+### RESULT · updates as you type
+
+A verdict banner states whether the target fits, and below it *Target DC* and
+*Headroom* sit over a capacity meter marked *"layout holds x MWp"*, so you can
+see at once how much of the placed plant the target uses. Six tiles carry the
+sizing:
+
+| Tile | What it reports |
+| --- | --- |
+| **Inverters** | The whole number of inverters the target needs |
+| **Strings per inverter** | Parallel strings per inverter, from the inverter's own limits |
+| **Installed AC** | Inverter count × rated AC output — always at or above the target |
+| **Target DC** | Requested AC × the DC/AC ratio |
+| **DC/AC ratio** | The ratio the figures are built at |
+| **DC per inverter** | The DC behind each inverter at that sizing |
+
+The verdicts:
+
+| Verdict | What it means | What the window offers |
+| --- | --- | --- |
+| **Fits this layout** | *"Target DC uses n % of the x MWp placed. Regenerating trims the layout to y MWp."* — the site can deliver it | The primary button in the footer |
+| **Needs x MWp more than this layout holds** | The first run already used all the usable area there is | *"… Lower the target, or make room in the layout (tighter pitch, more area) and generate again."*, with fix buttons **Set AC capacity to … kW** and **Set ratio to …** |
+| **DC/AC ratio is over the inverter's limit** | *"You asked for r; the overload limit is m. DC beyond the limit is clipped. Figures below use the limit."* | **Set ratio to …** and **Raise limit to …** |
+| **Missing input** | A field the sizing needs is empty | — |
+
+### The footer
+
+A tick box, **Let me choose where placement starts** — *"After regenerating,
+click a point on the plot; the tables nearest it are kept."* — then **Close**
+and the primary button, **Regenerate layout at x MWp**, which names the
+capacity it will trim the layout to.
 
 ## How it sizes
 
@@ -66,7 +133,8 @@ temperature extremes against the inverter's voltage window. See
 [String sizing](/docs/inputs/string-sizing).
 
 **Parallel strings per inverter** come from the inverter's own limits: its input
-current limit and its DC power limit, whichever binds first.
+current limit and its DC power limit, whichever binds first — rounded to whole
+tables in a string-inverter design.
 
 **The inverter count** follows from the target:
 
@@ -78,11 +146,11 @@ installed_ac  = num_inverters × Pac_rated  ≥  AC_capacity
 
 | Term | What it is |
 | --- | --- |
-| `AC_capacity` | The target AC capacity you entered |
-| `Pac_rated` | The rated AC output of one inverter, read from the inverter file — its maximum AC output power, or its nominal AC power where the file declares no maximum |
+| `AC_capacity` | The **AC capacity** you entered |
+| `Pac_rated` | The rated AC output of one inverter, read from the inverter file — or **Inverter rated AC** under the override expander |
 | `ceil( … )` | Rounded **up** to a whole inverter. There is no such thing as a fraction of an inverter |
-| `num_inverters` | How many inverters the plant is sized with |
-| `installed_ac` | The AC capacity actually installed, which is the inverter count multiplied by the rated output |
+| `num_inverters` | The **Inverters** tile |
+| `installed_ac` | The **Installed AC** tile — the inverter count multiplied by the rated output |
 
 Rounding up is the important behaviour: **it never under-sizes.** The installed
 AC capacity is always at or above your target, never below it. Where the
@@ -90,17 +158,22 @@ inverter rating does not divide the target exactly you get the next whole
 inverter and a slightly higher installed figure — deliberately, because the
 alternative is a plant that cannot deliver what it was contracted for.
 
-## DC overload and the DC to AC ratio
+**The target DC** is then the requested AC capacity multiplied by the DC/AC
+ratio — the **Target DC** tile, and the figure in the primary button's label.
 
-The **DC to AC ratio** is installed DC capacity divided by installed AC
-capacity. A ratio of 1.4 means 1.4 MWp of modules behind every 1 MW of inverter.
+## DC overload and the DC/AC ratio
 
-| Inverter type | Maximum practical DC to AC ratio |
+The **DC/AC ratio** is installed DC capacity divided by installed AC capacity. A
+ratio of 1.4 means 1.4 MWp of modules behind every 1 MW of inverter. The window
+ships at **1.30**.
+
+| Inverter design | Shipped overload limit |
 | --- | --- |
-| String inverters | 1.5× |
-| Central inverters | 1.4× |
+| String inverters | 1.5 |
+| Central inverters | 1.4 |
 
-Both figures are the design overload limit, and both are adjustable by you.
+Both figures are the design overload limit, and the **Overload limit** field
+lets you change them.
 
 ### Why a ratio above 1 is normal
 
@@ -119,42 +192,53 @@ clipping is small; the energy gained across every other hour is not. This is why
 utility-scale plants are routinely DC-overloaded rather than matched.
 
 <Callout type="warn">
-The ratio limit here is the **design** overload figure, not the inverter's
-nameplate maximum DC input. Do not read 1.5× as a hardware rating you can push
+The **Overload limit** is the **design** overload figure, not the inverter's
+nameplate maximum DC input. Do not read 1.5 as a hardware rating you can push
 to. Check the manufacturer's own maximum DC input power and voltage before
 raising the field, and keep the warranty conditions in view — clipping is a
-design choice, over-driving an input is a defect.
+design choice, over-driving an input is a defect. Ask for a ratio above the
+limit and the window says so, sizes at the limit, and offers to set the ratio
+down or the limit up.
 </Callout>
 
 ## The two outcomes
 
-Once the target DC capacity is known, it is compared against what the first
-layout actually placed.
+Once the target DC is known, it is compared against what the first layout
+actually placed — the figure in the strip.
 
-### The target is at or below the first run's capacity
+### The target is at or below what the layout holds
 
-The site can deliver it. You are offered a regenerated layout **capped to the
-target**: the same site, the same settings, with placement trimmed so the
-installed DC capacity lands on your target instead of filling the ground.
-
-<Screenshot id="ac-capacity-regenerate" />
+The verdict reads **Fits this layout**. Click **Regenerate layout at x MWp**
+and the layout is rebuilt **capped to the target**: the same site, the same
+settings, with placement trimmed so the installed DC capacity lands on your
+target instead of filling the ground. Tick **Let me choose where placement
+starts** first if you want to decide which end of the site keeps its tables:
+after the regeneration you click a point on the plot, and the tables nearest it
+are the ones kept.
 
 This is the normal path. The capped layout is the one to review, export and
-issue, because it is the plant matching the connection you hold.
+issue, because it is the plant matching the connection you hold. The status
+line after the regeneration confirms it: *"… | DC target x MWp met"*.
 
-### The target is above the first run's capacity
+### The target is above what the layout holds
 
-The site cannot deliver it, and no regeneration can change that — the first run
-already used all the usable area there is. You are advised to **reduce the AC
-capacity or the DC to AC ratio**.
+The verdict reads **Needs x MWp more than this layout holds**, and no
+regeneration can change that — the first run already used all the usable area
+there is. The window offers to set the AC capacity or the ratio down to what
+fits.
 
-Before doing either, check whether the site is really the binding constraint. The
-usable area is the boundary shrunk by the perimeter road width, with
-obstructions, corridors and terrain exclusions subtracted, so a target that
+Before accepting either, check whether the site is really the binding
+constraint. The usable area is the boundary shrunk by the perimeter road width,
+with obstructions, corridors and terrain exclusions subtracted, so a target that
 misses by a little may be reachable through the layout inputs rather than the
 commercial ones — a narrower perimeter road, half tables enabled, or
 **Maximize placement** on an awkward boundary. See
 [Maximize placement and half tables](/docs/layout/maximize-and-half-tables).
+Change those, generate again, and reopen the window.
+
+If a regenerated plant lands below its target, the status line says so rather
+than leaving you to spot it on the plot: *"⚠ DC x MWp is BELOW the y MWp target
+— the site has no room left; reduce the AC capacity or DC/AC ratio"*.
 
 ## Why a capped plant has empty ground
 
@@ -165,9 +249,9 @@ the drawing to anyone else.
 
 **The delivered DC must land at or just above the target, never below.** If the
 trim undershot, the installed DC would be less than the ratio you designed to,
-and the delivered DC to AC ratio would fall short of the figure the whole
-exercise was built around. Landing slightly high is a rounding artefact; landing
-low is a failure to deliver the design.
+and the delivered DC/AC ratio would fall short of the figure the whole exercise
+was built around. Landing slightly high is a rounding artefact; landing low is a
+failure to deliver the design.
 
 **Trimmed tables are held back and returned afterwards.** The stages that run
 after placement clear more ground: control rooms are re-placed against the
@@ -187,20 +271,22 @@ connection is ever increased.
 
 ## Where the result appears
 
-Three columns at the right-hand end of the summary table carry the outcome:
+Three rows in the **ELECTRICAL** group of the **Summary** view carry the
+outcome:
 
-| Column | What it reports |
+| Row | What it reports |
 | --- | --- |
-| **AC(MWac)** | The plant's AC capacity |
-| **InvCap(MW)** | The installed inverter capacity |
-| **DC/AC** | The delivered DC to AC ratio |
+| **AC capacity (MWac)** | The plant's AC capacity |
+| **Inverter capacity (MW)** | The installed inverter capacity |
+| **DC / AC ratio** | The delivered DC/AC ratio |
 
-Read all three together, and read them against the target you typed. **DC/AC**
-is the check that matters: it is the delivered ratio, computed from what was
-actually placed, and it is the figure that tells you the cap did what you asked.
-A delivered ratio marginally above the target is the expected result of rounding
-inverters up and landing DC just above target. See
-[Summary columns](/docs/reference/summary-columns) for the full column set.
+Read all three together, and read them against the target you typed. **DC / AC
+ratio** is the check that matters: it is the delivered ratio, computed from what
+was actually placed, and it is the figure that tells you the cap did what you
+asked. A delivered ratio marginally above the target is the expected result of
+rounding inverters up and landing DC just above target. The **DC capacity**
+chip under the view shows the capped figure. See
+[Summary columns](/docs/reference/summary-columns) for the full row set.
 
 The capped layout carries into everything downstream unchanged — the report, the
 drawing exports, the bill of materials and the energy calculation all describe
@@ -212,9 +298,8 @@ the capped plant, so run the energy calculation again after a regeneration.
 <Step>
 ### Run an uncapped layout first
 
-Let the site fill. That first run tells you the ceiling — the most DC the usable
-area will take on your current settings — which is the number the target is
-compared against.
+Let the site fill. That first run sets the figure in the window's strip — the
+most DC the usable area will take on your current settings.
 </Step>
 
 <Step>
@@ -228,15 +313,16 @@ was calculated against a plant that no longer exists.
 <Step>
 ### Size to the target
 
-Enter the contracted AC capacity and the ratio you intend to build at, and read
-the resulting inverter count and target DC capacity.
+Enter the contracted **AC capacity** and the **DC/AC ratio** you intend to build
+at, and read the inverter count and target DC off the tiles.
 </Step>
 
 <Step>
-### Accept the regenerated, capped layout
+### Regenerate at the target
 
-Review it on the plot. The bare ground is expected; check the delivered ratio in
-the summary rather than the appearance of the plan.
+Click **Regenerate layout at x MWp** and review the plot. The bare ground is
+expected; check **DC / AC ratio** on the Summary view rather than the
+appearance of the plan.
 </Step>
 
 <Step>
@@ -256,18 +342,18 @@ no longer apply. Re-run it before exporting anything.
     description="The modules-in-series method this simulation reuses"
   />
   <Card
-    title="Inverters and cables"
+    title="Inverters"
     href="/docs/inputs/inverter"
     description="Loading an inverter file and what its ratings drive"
   />
   <Card
     title="Summary columns"
     href="/docs/reference/summary-columns"
-    description="The capacity and ratio columns, and every other column"
+    description="The capacity and ratio rows, and every other row"
   />
   <Card
     title="Robotic cleaning fleet"
     href="/docs/simulation/robotic-cleaning"
-    description="The other simulation tool, sized from the placed layout"
+    description="The next study in the same card, sized from the placed layout"
   />
 </Cards>

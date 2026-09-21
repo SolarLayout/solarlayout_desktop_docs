@@ -3,16 +3,17 @@ title: Table configuration
 description: The MMS table — orientation, modules per row, rows per table, gaps, and the two options that change how tables are packed.
 ---
 
-The **MMS-Table Configuration** group appears in Fixed Tilt mode only, and
+The **MMS-Table Configuration** card sits on the **Array** tab, under
+[Module specifications](/docs/inputs/module), in a fixed-tilt design only. It
 defines the repeating unit the whole plant is tiled from. MMS is the module
-mounting structure — the racking one table of modules sits on. Choose a Single
-Axis Tracker mode at launch and this group is replaced, along with the spacing
-group, by a single tracker group; see
+mounting structure — the racking one table of modules sits on. Choose a
+single-axis tracker at launch and this card is replaced, along with the
+Spacing & Tilt card, by a single Tracker Configuration card; see
 [Tracker configuration](/docs/inputs/tracker).
 
-Everything here is a count or a gap. The module dimensions come from
-[Module specifications](/docs/inputs/module); this group multiplies them out
-into a table, and the layout then places that table as many times as it fits.
+Everything here is a count or a gap. The module dimensions come from the
+Module Specifications card; this card multiplies them out into a table, and the
+layout then places that table as many times as it fits.
 
 <Screenshot id="table-group" maxWidth={420} />
 
@@ -21,13 +22,13 @@ into a table, and the layout then places that table as many times as it fits.
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Orientation** | Portrait | Portrait or Landscape | Decides which module edge runs east–west and which runs north–south |
-| **Modules per row** | 28 | 1–100 | Modules side by side along one row of the table, east to west |
+| **Modules per row** | 28 | 1–100 | Modules side by side along one row of the table, east to west. The **Size…** button beside it opens the string-sizing calculator |
 | **Rows per MMS-Table** | 2 | 1–10 | Rows of modules stacked up the tilted face, north to south. One row is one string |
 | **Gap between modules E-W** | 0.020 m | 0.0–5.0 m | Clear space between neighbouring modules within a row |
 | **Gap between modules N-S** | 0.020 m | 0.0–5.0 m | Clear space between the stacked rows on the same table |
 | **Gap between MMS-Tables** | 1.0 m | 0.0–20.0 m | Clear space east to west, between one table and the next in the same row |
 | **Maximize placement** | off | — | Positions each row of tables independently to hug the boundary |
-| **Add half tables in leftover space** | off | — | Allows a half-width table where a full one will not fit |
+| **Add half tables** | off | — | Allows a half-width table where a full one will not fit |
 
 ## Orientation
 
@@ -118,12 +119,22 @@ maintenance corridor between rows, it is the pitch override, not a gap.
 One row of modules within a table is one string. **Rows per MMS-Table** is
 therefore also the number of strings a full table carries, which is what the
 inverter or string monitoring box limits are counted against — see
-[Inverters and cables](/docs/inputs/inverter).
+[Inverter settings](/docs/inputs/inverter).
 
 At the defaults, a table carries two strings of 28 modules. Changing
 **Modules per row** changes the string length and so the string voltage;
 changing **Rows per MMS-Table** changes how many strings arrive at each
 combiner. They are not interchangeable ways of adding capacity.
+
+### The Size… button
+
+**Size…**, beside **Modules per row**, opens the **String sizing** window,
+which works out the range of modules in series the module's voltages and the
+inverter's tracking window allow, and lets you pick a series count and a number
+of parallel strings. Accepting the pick writes both numbers back here — the
+series count into **Modules per row** and the parallel count into **Rows per
+MMS-Table**. It needs a module file and an inverter file to be loaded; see
+[String sizing](/docs/inputs/string-sizing).
 
 ## What the layout does with the table
 
@@ -164,17 +175,19 @@ Both options are covered together, with the placement behaviour drawn out, on
 
 ## Half tables
 
-**Add half tables in leftover space** ships off. A half table is half the
-east–west width of a full table, carrying half the strings, and it is dropped
-into any position where a full table will not fit.
+**Add half tables** ships off. A half table is half the east–west width of a
+full table, carrying half the strings, and it is dropped into any position
+where a full table will not fit.
 
 - The dimension that halves is the east–west width, and a half table carries
   half the strings a full table carries.
-- Half tables are reported separately in the summary, in their own column
-  beside the full-table count, and count as half a table wherever tables are
-  weighted.
+- Half tables are reported separately in the Summary view, on the **Half
+  tables** row under **Full tables**, and count as half a table wherever tables
+  are weighted.
 - Nothing is placed anywhere a full table would already have gone. Half tables
   only ever occupy leftover ground.
+- Half tables can also be placed one at a time in Sketch Mode, whatever this
+  option is set to.
 
 Leave it off for a first pass, so the layout you review is the clean grid case.
 Turn it on when you are chasing the last of the capacity out of an awkward
@@ -197,11 +210,11 @@ can actually pick up.
   <Card
     title="Module specifications"
     href="/docs/inputs/module"
-    description="The module dimensions this group multiplies out"
+    description="The module dimensions this card multiplies out"
   />
   <Card
     title="Tracker configuration"
     href="/docs/inputs/tracker"
-    description="The group that replaces this one in a tracker design"
+    description="The card that replaces this one in a tracker design"
   />
 </Cards>

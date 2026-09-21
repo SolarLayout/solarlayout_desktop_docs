@@ -1,6 +1,6 @@
 ---
 title: Which boundary file to use
-description: The three kinds of boundary file the application accepts, what each one carries, and why a Google Earth file is the input to prepare.
+description: The three kinds of boundary file the application accepts, what each one carries, and how the Input Boundary File card on the Site tab reads them.
 ---
 
 Every design starts from one file that says where the plant goes. The
@@ -37,8 +37,8 @@ Four things follow from the file being a Google Earth file, and only from that:
   service is queried with. Nothing has to be typed in for the energy estimate
   to run.
 - **Several plots can be laid out in one run.** Put every plant boundary in the
-  one file and each becomes its own plant, with its own row in the summary
-  table. See [Multi-plot sites](/docs/layout/multi-plot).
+  one file and each becomes its own plant, with its own column in the Summary
+  view. See [Multi-plot sites](/docs/layout/multi-plot).
 - **The result goes back where it came from.** The finished layout exports as a
   Google Earth file you can open beside the input. See
   [Google Earth export](/docs/exports/kmz).
@@ -46,9 +46,10 @@ Four things follow from the file being a Google Earth file, and only from that:
 ## What the other two inputs cost you
 
 - **The geographic position has to be typed in.** A CAD drawing and an image
-  carry no coordinates. The application asks for the site latitude and
-  longitude when you load one, and if you skip that question the layout is
-  still generated geometrically but **energy calculation is unavailable**.
+  carry no coordinates. Choosing one opens the **Site reference** window, which
+  asks for the site latitude and longitude, and if you continue without them
+  the layout is still generated geometrically but **energy calculation is
+  unavailable**.
 - **Nothing is identified by name.** Water bodies cannot be distinguished from
   any other closed shape, so a pond is treated as a plain obstruction.
 - **Line features and setbacks are yours to add.** Transmission line and canal
@@ -58,7 +59,7 @@ Four things follow from the file being a Google Earth file, and only from that:
 
 ## Accepted file extensions
 
-The file chooser accepts:
+The **Select boundary file** dialog accepts, under its *Boundary Files* filter:
 
 | Kind | Extensions |
 | --- | --- |
@@ -66,56 +67,73 @@ The file chooser accepts:
 | CAD drawing | `.dxf` `.dwg` |
 | Raster image | `.jpg` `.jpeg` `.png` `.gif` `.bmp` `.tif` `.tiff` |
 
+A `.dwg` file needs the free ODA File Converter installed; without it, save
+the drawing as `.dxf` instead. The supported-formats line on the card says the
+same when you hover over it.
+
 ## Loading the file
 
-The boundary file is the first group in the input panel, at the top of the
-left-hand side of the window.
+The **Input Boundary File** card is the first card on the **Site** tab, directly
+under the pinned **Generate Layout** button. It holds a read-only path field
+with the placeholder *Select a boundary file…*, a **Browse…** button and a round
+**ⓘ** button. Under the field a line reads *Supported formats: KMZ, KML, DXF,
+DWG, JPG, PNG, GIF, BMP, TIFF*, and while the field is still empty it carries an
+**Open sample site** link. Where the card sits in the window is described on
+[The main window](/docs/workspace/main-window).
 
-<Screenshot id="input-panel-full" />
+<Screenshot id="boundary-file-card" />
 
 <Steps>
 <Step>
 ### Click Browse…
 
-The field beside it is read-only — it reports the path of the file in use and
-cannot be typed into, so **Browse…** is the only way to choose a file. Pick any
-of the extensions above; the application works out which kind of file it is
-from the extension.
-
-<Screenshot id="boundary-file-picker" />
+The path field cannot be typed into — it reports the file in use — so
+**Browse…** is the only way to choose one. Pick any of the extensions above;
+the application works out which kind of file it is from the extension.
 </Step>
 
 <Step>
 ### Answer the question the file type raises
 
-A CAD drawing opens the **DXF Site Coordinates** window asking for the site
-latitude and longitude. An image opens **Image Boundary — Scale & Coordinates**,
-asking how a real site distance maps to a distance on the drawing. A Google
-Earth file asks nothing, because it already carries its position.
+A CAD drawing opens the **Site reference** window asking for the site latitude
+and longitude. An image opens the same window with a **SCALE** card first,
+asking how a distance on site maps to a distance on the drawing. A Google Earth
+file asks nothing, because it already carries its position — unless one of its
+boundary rings is not closed, in which case the **Check boundaries** window
+opens. See [Boundary file requirements](/docs/inputs/kmz-requirements#when-a-boundary-fails-the-check).
 </Step>
 
 <Step>
-### Check the path field
+### Read the summary line
 
-Once the file is read, the field shows the path of the file the layout will be
-built from. Load a different file at any time and the next
+Once the file is read, the line under the field changes from the list of
+formats to a summary of what was found — for the sample site,
+*1 boundary · 1 obstacle · 1 line obstruction* — and **Generate Layout**
+becomes available. Load a different file at any time and the next
 **Generate Layout** uses it.
+
+<Screenshot id="boundary-file-loaded" />
 </Step>
 </Steps>
 
-The group is labelled **Input KMZ File** even though it accepts CAD drawings
-and images as well.
+### The sample site
 
-<Screenshot id="boundary-file-row" maxWidth={520} />
+**Open sample site** on the card — or **File ▸ Open Sample Site** from the menu
+bar — loads the bundled sample: one boundary with a pond, a transmission line
+and an obstruction inside it. It is the quickest way to see every kind of
+feature read and laid out before you prepare your own file, and it is the site
+[Your first layout](/docs/first-layout) walks through.
 
 ### The ⓘ button
 
-The **ⓘ** button next to **Browse…** opens the application's own preparation
-guide: the rules for boundaries, water bodies, transmission lines and
-obstructions, ending in a quick-reference table of what must be a polygon, what
-must be a line, and how each must be named. It is the same material as
+The **ⓘ** button beside **Browse…** — its tooltip reads *Open the boundary file
+preparation guide* — opens the **KMZ File Preparation Guide**: the rules for
+boundaries, water bodies, transmission lines and obstructions, ending in a
+quick-reference table of what must be a polygon, what must be a line, and how
+each must be named. It is the same material as
 [Boundary file requirements](/docs/inputs/kmz-requirements), available without
-leaving the application.
+leaving the application; that page also notes the two places where the guide's
+fixed text lags behind the application.
 
 ## What happens when the file is read
 
