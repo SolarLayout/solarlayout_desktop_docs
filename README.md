@@ -95,11 +95,12 @@ Read **[`docs/WRITING_GUIDE.md`](./docs/WRITING_GUIDE.md)** and
 **[`docs/PRODUCT_FACTS.md`](./docs/PRODUCT_FACTS.md)**.
 
 `PRODUCT_FACTS.md` is a fact sheet built by reading the application's source
-code. It exists because the product's own README, code comments and in-app help
-contradict the shipping behaviour in fourteen specific places — the wrong
-control-room and arrester footprints, the wrong module and loss defaults, a
-tier system that does not exist, and two features that cannot be reached from
-the shipped interface. §18 lists each one. **Write only from the fact sheet.**
+code, re-verified against the rebuilt interface on 2026-09-21. It exists
+because the product's own README, code comments and in-app help contradict the
+shipping behaviour in a number of specific places — wrong footprints and
+defaults, a tier system that does not exist, features that cannot be reached,
+and interface descriptions from before the rebuild. §18 lists each one.
+**Write only from the fact sheet.**
 
 ### Adding a page
 
@@ -118,35 +119,38 @@ the shipped interface. §18 lists each one. **Write only from the fact sheet.**
 - **`<Screenshot id="…" />`** in MDX. At build time it looks for the file under
   `public/screenshots/`. Found — it renders the image, sized from the file's
   own dimensions. Missing — it renders a placeholder carrying the capture
-  brief, so an un-shot image reads as pending rather than as a broken page.
+  brief. **The site never ships a placeholder:** `bun run test:e2e` fails when
+  a manifest entry or a referenced id has no file, so every entry is captured
+  before it is merged.
 - **`bun run screenshots:index`**, which writes
-  `docs/screenshot-index.xlsx` — the worklist for whoever takes the pictures.
+  `docs/screenshot-index.xlsx` — the list of every image, its page and the
+  state it shows.
 
 Because both read the same rows, the worklist cannot drift from the pages.
 
-### Taking the screenshots
+### How the desktop set is captured
 
-1. Open `docs/screenshot-index.xlsx`. Sheet **Screenshots** is the worklist;
-   sheet **How to capture** holds the conventions — window size, display
-   scaling, what to blur, callout style.
-2. Filter the **Priority** column and work through `1 — Essential` first.
-3. Save each PNG to `public/screenshots/<Image file name>`, creating the
-   sub-folder if needed.
-4. That is all. No code or content change is required — the placeholder is
-   replaced the next time the site builds.
-5. Re-run `bun run screenshots:index` to refresh the **Status** column.
+The desktop screenshots are not screen-grabs. The application renders its own
+widgets to PNG (`QWidget.render()` at 2× on a 1400 × 900 logical window;
+dialogs at their own size), driven by a script built on the product
+repository's `tools/ui_shots.py` / `tools/docs_screenshots.py` bootstrap, with
+modal dialogs rendered by patching their `exec_`. Inputs: the bundled sample
+site, a three-plot variant of it, and a test module (`.PAN`) and inverter
+(`.OND`) file. See
+[`docs/superpowers/plans/2026-09-21-desktop-docs-revamp.md`](./docs/superpowers/plans/2026-09-21-desktop-docs-revamp.md)
+for the set, and `CAPTURING_SCREENSHOTS.md` in the product repository for the
+legibility rules (fixed logical size, never the maximised window, 2×).
+
+When the interface changes, recapture the affected ids and drop the files at
+`public/screenshots/<file>`; no code or content change is needed for an image
+whose id and state are unchanged. A new state means a new entry in
+`content/screenshots.ts` (keep the object shape — the Excel generator parses
+these literals and fails loudly if the shape changes) and a page that uses it.
 
 The application has a single visual theme, so there is **one image per entry** —
-no light and dark pairs.
-
-### Adding a new screenshot
-
-Append an entry to `SCREENSHOTS` in `content/screenshots.ts`, then reference it
-as `<Screenshot id="your-id" />`. Regenerate the worklist. Keep the object
-shape as-is — the Excel generator parses these literals and fails loudly if
-the shape changes.
-
----
+no light and dark pairs. Images the application cannot produce (the Microsoft
+Store, Google Earth, a CAD program) are described in prose, not promised as
+screenshots.
 
 ## Product videos
 

@@ -84,7 +84,7 @@ nothing salesy, no exclamation marks, no "simply", no "just", no "easily", no
 - Keep the application's own capitalisation and punctuation inside bold,
   including the ellipsis on menu items that open a window.
 - `code font` only for file names, extensions, paths, and file content:
-  `license.lic`, `.slp`, `%APPDATA%`, `.PAN`.
+  `.slp`, `.docx`, `%APPDATA%`, `.PAN`.
 
 ## 3. Facts
 
@@ -94,9 +94,10 @@ nothing salesy, no exclamation marks, no "simply", no "just", no "easily", no
   not state it**. Describe the capability without the number.
 - Never infer a default from what seems sensible. Never carry a number over
   from another page — look it up.
-- The product's own README, docstrings, code comments and in-app help are
-  **stale in fourteen known places**. `PRODUCT_FACTS.md` §18 lists them. Do
-  not repeat any of them, even if you find them somewhere authoritative-looking.
+- The product's own README, docstrings, code comments and in-app F1 guide are
+  **stale in known places**, including descriptions of the interface from
+  before the 2026-09 rebuild. `PRODUCT_FACTS.md` §18 lists them. Do not repeat
+  any of them, even if you find them somewhere authoritative-looking.
 - If you genuinely need a fact that is missing, leave exactly this, and keep
   writing around it:
   `{/* VERIFY: <the precise question> */}`
@@ -142,6 +143,9 @@ The only way to show a product image.
   visible error block.
 - Only use ids whose `page` field matches the page you are writing, unless
   an image from elsewhere is genuinely the right illustration.
+- Every id has its file on disk; the browser tests fail otherwise. Never add
+  an entry to the manifest without its image — the site does not ship
+  "Screenshot pending" placeholders.
 - Do **not** pass `alt`, `width` or `height` — they come from the manifest.
 - Optional `caption="…"` overrides the manifest title; optional
   `maxWidth={320}` caps a narrow image such as a single panel group.
@@ -269,7 +273,11 @@ Say these the same way everywhere:
   zone. Say this once per page at most, and only where it matters.
 - **Generate Layout** needs a valid licence. Mention it only on the licence
   pages and once in the first-layout walkthrough.
-- Auto-calculated values are marked with an asterisk in the summary table.
+- Auto-calculated tilt and pitch carry a trailing asterisk in the Summary view.
+- Inputs live on five stage tabs — **Site · Array · Electrical · Yield · Tools** —
+  under the pinned **Generate Layout** button; results are the views
+  **Layout · Summary · Energy · BOM · SLD**. Name the tab or view a control is
+  on the first time a page sends the reader to it.
 
 ## 9. Before you finish a page
 

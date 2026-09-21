@@ -3,10 +3,11 @@
 **This file is the only permitted factual source for content in this repo.**
 
 Every value below was read from executing code in the product repository
-(`PVlayout_Advance`, branch `main`) and carries a `file:line`-style citation.
+(`PVlayout_Advance`, branch `main`, re-verified 2026-09-21 after the interface
+rebuild of issues #156, #203, #210 and #213) and carries a `file:line`-style citation.
 Where the product's own README, module docstrings, code comments, or in-app F1
 help state something different, **they are stale and must not be used**. A
-list of the specific known-stale claims is in [§14](#14-known-stale-sources--do-not-repeat-these).
+list of the specific known-stale claims is in [§18](#18-known-stale-sources--do-not-repeat-these).
 
 Citations are relative to the product repo root. `IP` = `apps/solarlayout-desktop/solarlayout_desktop/input_panel.py`,
 `MW` = `.../main_window.py`, `MP` = `packages/solar-core/solar_core/models/project.py`.
@@ -19,10 +20,12 @@ Citations are relative to the product repo root. `IP` = `apps/solarlayout-deskto
 
 ## 1. Product identity
 
-- Application name as it appears in the app: **SolarLayout.Desktop**
-  (window titles, `app.setApplicationName`) — `entrypoints.py:main_full`.
-  In prose, write **SolarLayout Desktop** (no dot); use the dotted form only
-  when quoting a literal UI string.
+- Application name: the ribbon brand and the window title read **SolarLayout**
+  (`MW:907`; the title is *"SolarLayout  [Fixed Tilt  |  String Inverter]"*,
+  `MW:954-956`); the Windows application name and the PDF metadata still use
+  **SolarLayout.Desktop** (`entrypoints.py`, `pdf_exporter.py:1747`). In prose,
+  write **SolarLayout Desktop**; quote the dotted form only when quoting a
+  literal string that carries it.
 - Platform documented: **Microsoft Windows only.**
 - Distribution documented: **Microsoft Store**, published by **Rensaar**.
   Store-distributed packages are signed and updated by Microsoft and are
@@ -65,41 +68,70 @@ Manifest display strings, if a page needs to quote them: display name
   every button is created unconditionally. Do not write "Pro", "Pro Plus",
   or "available in your plan".
 
-## 2. Launch: design-mode selection
+## 2. Launch: design selection
 
-A modal 4-card dialog appears at every launch before the main window
-(`startup_dialog.py`). The reader must pick one combination:
+A modal **SolarLayout · New design** window appears at every launch before the
+main window (`startup_dialog.py`, a `ResultDialog`, 620 px wide). It asks two
+questions as two segmented controls, shows a summary card, and has one gold
+**Continue** button — `startup_dialog.py:52-104`:
 
-| Mounting | Electrical | Chain shown on the card |
-|---|---|---|
-| Fixed Tilt | String Inverter | Modules → MMS-Table → String Inverter → ICR |
-| Fixed Tilt | Central Inverter | Modules → MMS-Table → SMB → Central Inverter |
-| Single Axis Tracker | String Inverter | Modules → Tracker MMS → String Inverter → ICR |
-| Single Axis Tracker | Central Inverter | Modules → Tracker MMS → SMB → Central Inverter |
+| Control | Options (left is the default) |
+|---|---|
+| **MOUNTING** | **Fixed tilt** · **Single-axis tracker** |
+| **INVERTER** | **String inverter** · **Central inverter** |
 
-- Single Axis Tracker is **horizontal, N–S axis**; panels sweep E–W.
-- The choice controls which input groups appear: SAT replaces the
-  *MMS-Table Configuration* **and** *Spacing & Tilt* groups with a single
-  *Tracker Configuration* group — `IP:82-86`.
-- Central Inverter mode renames the inverter group to *SMB – String
-  Monitoring Box*, adds *Max SMB per Central Inverter*, and relabels the
-  cable rows — `IP:767-795`.
-- Switching mode later: **File ▸ Move to String / Central Window…** (shortcut
-  **Ctrl+N**), also on the toolbar as **⊕ Move to String / Central Window** —
-  `MW:974-980, MW:2197`. Two things about it that the label understates
-  (`MW:2685-2704`):
-  - It shows the **same four-card dialog**, so it switches the **mounting type
-    as well** as the inverter topology — not only the electrical axis.
-  - It opens a **new, independent window**. The current session stays open
-    alongside it, so two design modes can be compared side by side. It is not
-    a mode switch applied to the work in progress.
+The card updates live. Its three lines, per combination — `startup_dialog.py:22-46, 108-114`:
+
+| Mounting | Inverter | Card title | Chain line | Note |
+|---|---|---|---|---|
+| Fixed tilt | String inverter | Fixed tilt + string inverters | Modules → MMS table → String inverter → ICR | South-facing tilted panels on fixed racks. Tilt and row pitch come from the site latitude. |
+| Fixed tilt | Central inverter | Fixed tilt + central inverter | Modules → MMS table → SMB → Central inverter | (same) |
+| Single-axis tracker | String inverter | Single-axis tracker + string inverters | Modules → Tracker → String inverter → ICR | Horizontal N–S axis, panels sweep east to west. You set the E–W pitch. |
+| Single-axis tracker | Central inverter | Single-axis tracker + central inverter | Modules → Tracker → SMB → Central inverter | (same) |
+
+- Footer hint, verbatim: *"You can switch later with “Move to String / Central Window”."*
+- Closing the window without **Continue** quits the launch.
+- ⛔ There are no longer four cards with **Select** buttons. Do not describe cards.
+- Single-axis tracker is **horizontal, N–S axis**; panels sweep E–W.
+- The choice controls which input cards appear on the **Array** tab (§4): a
+  tracker design replaces *MMS-Table Configuration* **and** *Spacing & Tilt*
+  with a single *Tracker Configuration* card — `IP:174-180`.
+- Central inverter renames the inverter card to *SMB – String Monitoring Box*,
+  adds *Max SMB per Central Inverter*, and relabels the cable loss rows — `IP:1043-1065`.
+- The main window's title reads `SolarLayout.Desktop  [Fixed Tilt  |  String Inverter]`
+  (or the other combinations) — `MW:954-956`.
+- **Changing the design later:** the ribbon's **design chip** (reads
+  *"Fixed tilt · String inverter ▾"*, *"Tracker · Central inverter ▾"*, …) or
+  **File ▸ Move to String / Central Window…** (**Ctrl+N**) opens the same
+  New design window and launches a **new, independent window** for the chosen
+  combination; the current window stays open, so two designs can be compared
+  side by side. It is not a mode switch applied to the work in progress —
+  `MW:1152-1158, 1220-1230, 3172-3191, 4734-4739`. The MOUNTING chip's tooltip
+  on the Array tab says *"Chosen on the start screen. Use File ▸ New Project to
+  change it."* (`IP:216`); **File ▸ New Project** (Ctrl+Shift+N) opens a fresh
+  window at defaults in the *same* design, so the accurate route to a different
+  design is the design chip / Move to… item.
 
 ## 3. Boundary input
 
-Field label: **Input KMZ File**; button **Browse…**; an **ⓘ** button opens the
-preparation guide — `IP:98-138`.
+The **Site** tab opens with the **Input Boundary File** card — `IP:331-396`:
+a read-only path field with the placeholder *"Select a boundary file…"*, a
+**Browse…** button, and a round **ⓘ** icon button (tooltip *"Open the boundary
+file preparation guide"*) that opens the **KMZ File Preparation Guide** window.
+Under the field a small line reads *"Supported formats: KMZ, KML, DXF, DWG, JPG,
+PNG, GIF, BMP, TIFF"* (its tooltip: *"DWG files need the free ODA File Converter
+installed (or save the drawing as DXF)."*) and, while the field is empty, a link
+**Open sample site** (also **File ▸ Open Sample Site**) loads the bundled
+`sample-demo.kmz` — one boundary with a pond, a transmission line and an
+obstruction — `IP:35-38, 382-396, 1674-1682`. Once a file is read the line
+becomes the boundary summary, e.g. *"1 boundary · 1 obstacle · 1 line
+obstruction"* — `IP:404-411`, `MW:7700-7703`.
 
-Accepted extensions in the file dialog — `IP:1310-1314`:
+⛔ The card is not called "Input KMZ File" any more and the field has no
+label. Quote **Input Boundary File**.
+
+Accepted extensions (the **Select boundary file** dialog, filter *"Boundary
+Files"*) — `IP:41-53, 1661-1672`:
 `.kmz .kml .dxf .dwg .jpg .jpeg .png .gif .bmp .tif .tiff`
 
 ### 3.1 KMZ / KML
@@ -123,9 +155,20 @@ Accepted extensions in the file dialog — `IP:1310-1314`:
   (buildings, substations).
 - **LineString** features (transmission lines, canals, roads) get a setback
   buffer on each side; total corridor = 2 × setback.
-- Open/invalid rings raise a **Boundary Validation Issues** dialog listing
-  each problem boundary with a checkbox to exclude it and proceed with the
-  rest, or Cancel to go fix the file — `boundary_validation_dialog.py:1-13`.
+- Open rings raise the **Check boundaries** window (`boundary_validation_dialog.py`,
+  a `ResultDialog`): a warning banner *"N of M boundaries have a problem"* (or
+  *"1 boundary has a problem"*) with the detail *"Leave them out and continue
+  with the others, or fix them in Google Earth and load the file again."*; a
+  table with columns **Leave out** · **Boundary** · **Problem** (each problem
+  reads *"Ring is NOT CLOSED  (gap between first and last point ≈ 42.7 m)"*,
+  `kmz_parser.py:272-275`), every row ticked by default; the note *"An unticked
+  boundary is kept as it is and may produce a wrong layout."*; footer buttons
+  **All**, **None**, **Fix in Google Earth first**, and the primary
+  **Continue without N** (reads **Continue with all boundaries** when nothing is
+  ticked) — `boundary_validation_dialog.py:39-159`. **Fix in Google Earth first**
+  closes the window and the file is not loaded (`MW:3640-3642`); the primary
+  loads the file without the ticked boundaries.
+  ⛔ The window is not called "Boundary Validation Issues" and has no plain Cancel.
 
 #### Road line features get their own width — not the TL setback
 
@@ -150,10 +193,32 @@ computed differently — `kmz_parser.py:39-44, 96-133, 311-319, 452-470`:
   setback in §4.5. So an unnamed or oddly-named line still becomes a corridor;
   it just uses the setback rather than a width.
 
+#### The preparation guide (ⓘ)
+
+**KMZ File Preparation Guide** (`kmz_help_dialog.py:53-213`): an intro paragraph,
+then the sections *1 ▸ Plant / Site Boundary*, *2 ▸ Water Bodies (Ponds, Lakes,
+Canals …)*, *3 ▸ Transmission Lines (TL) / Canals / Roads*, *4 ▸ Buildings /
+Obstruction Areas*, *5 ▸ Common Mistakes to Avoid*, and a **Quick Reference**
+table with the columns Feature / KML type / Name rule / Colour on map; one
+**Close** button. ⚠️ Its text is fixed: it lists the water keywords as *"pond
+lake reservoir river canal water wetland swamp tank"* and says *"A 15 m setback
+is automatically applied on each side of the line."* — the parser's keyword
+list (above) and the editable corridor field (§4.5) are the truth.
+
 ### 3.2 DXF / DWG
 
-- CAD drawings carry no geographic position. A **DXF Site Coordinates**
-  dialog asks for optional site latitude/longitude — `dxf_latlon_dialog.py:1-12`.
+- CAD drawings carry no geographic position, so choosing a `.dxf` / `.dwg`
+  file opens the **Site reference** window (`dxf_latlon_dialog.py`,
+  `site_reference_dialog.py`, a `ResultDialog`, 520 px): caption **LOCATION**,
+  a ticked checkbox **I know the site coordinates**, **Latitude** (default
+  20.000000 °N, −90–90) and **Longitude** (default 78.000000 °E, −180–180), a
+  consequence banner *"With coordinates: layout, row pitch from latitude, and
+  energy yield."* / *"Without coordinates: layout only. Energy yield is
+  disabled."*, the footer hint *"Without coordinates you get the layout only."*,
+  a **Layout only** button and the primary **Use this location** (which reads
+  **Continue without coordinates** when the checkbox is unticked) —
+  `site_reference_dialog.py:46-226`.
+  ⛔ The window is not called "DXF Site Coordinates".
 - Without coordinates the layout is still generated geometrically, but
   **energy calculation is unavailable**.
 - Geo-referencing preserves shape and area exactly: each DXF point is
@@ -161,14 +226,14 @@ computed differently — `kmz_parser.py:39-44, 96-133, 311-319, 452-470`:
   reference point projected to UTM — `dxf_parser.py:8-22`.
 - ⚠️ **Skipping the coordinates does not stop the layout — it silently uses a
   fallback position.** The parser falls back to **latitude 20.0° N, longitude
-  78.0° E** (`dxf_parser.py:38-39, 274-275`). Consequences the reader must know:
+  78.0° E** (`dxf_parser.py:38-39, 274-275`), which is also the window's
+  untouched default. Consequences the reader must know:
   - The layout is generated normally, but the **automatic tilt and row pitch
     are derived from that fallback latitude**, not from the real site. On a site
     far from that latitude they will be wrong. Overriding both is the fix.
-  - **Calculate Energy is properly disabled** in this case
-    (`MW:2914, 3135-3140`), with a tooltip explaining why and telling the reader
-    to reload with coordinates. So no wrong energy figure is produced — the
-    exposure is limited to tilt and pitch.
+  - **Calculate Energy is properly disabled** in this case, with a tooltip
+    explaining why and telling the reader to reload with coordinates. So no
+    wrong energy figure is produced — the exposure is limited to tilt and pitch.
 - **Every interior ring becomes a hard obstacle.** Water bodies cannot be
   distinguished, because there are no feature names to classify on —
   `dxf_parser.py:268-272`. The largest closed ring is the boundary; anything
@@ -177,22 +242,25 @@ computed differently — `kmz_parser.py:39-44, 96-133, 311-319, 452-470`:
   `dxf_parser.py:64-69, 171-172`. Circles, splines, arcs, hatches and plain
   lines are ignored, for both the boundary and interior obstacles. The
   application's own error text tells the reader to draw the boundary as a
-  closed `LWPOLYLINE` or `POLYLINE` — `dxf_parser.py:281`. This is a
-  reader-facing requirement: a boundary drawn as anything else will not be
-  found.
+  closed `LWPOLYLINE` or `POLYLINE` — `dxf_parser.py:281`.
+- `.dwg` needs the free ODA File Converter installed (the formats line's tooltip).
 
 ### 3.3 Raster image
 
-- An **Image Boundary — Scale & Coordinates** dialog asks how a real site
-  distance maps to a drawing distance, plus optional latitude/longitude —
-  `image_scale_dialog.py:1-12`.
+- Choosing an image opens the same **Site reference** window with an extra
+  **SCALE** card first (`image_scale_dialog.py`, `site_reference_dialog.py:97-128`):
+  one sentence row, *"[100.00 m] on site is drawn as [10.00 mm]"* (site
+  0.1–1 000 000 m, drawing 0.01–100 000 mm), with the live hint *"1 : 10,000.
+  Measure any known distance on the drawing."*; then the LOCATION card and the
+  same footer as §3.2. Both buttons keep the scale.
+  ⛔ The window is not called "Image Boundary — Scale & Coordinates".
 - The largest closed outline in the image becomes the boundary —
   `image_boundary_parser.py:1-9`.
 - Scale maths — `image_boundary_parser.py:10-20`:
   `mm_per_pixel = 25.4 / dpi`; `site_m_per_mm = site_distance_m / drawing_distance_mm`;
   `m_per_pixel = mm_per_pixel × site_m_per_mm`. DPI is read from image
   metadata, defaulting to **96**.
-- Dialog default scale: **100 m site / 10 mm drawing** — `image_scale_dialog.py:480-481`.
+- Default scale: **100 m site / 10 mm drawing** — `site_reference_dialog.py:64-65`.
   (The module docstring's "1000 m / 10 mm" example is stale.)
 
 ## 4. Input defaults — as shipped in the UI
@@ -201,23 +269,54 @@ computed differently — `kmz_parser.py:39-44, 96-133, 311-319, 452-470`:
 dataclass defaults are never seen by a reader because the input panel's
 widgets override them. Divergences are marked ⚠️.
 
-### 4.1 Module Specifications — `IP:143-221`
+### 4.0 The five stage tabs — `IP:63-81, 162-204`, `MW:1471, 1521-1522, 1579-1581`
+
+Inputs live in five tabs under the pinned **Generate Layout** button, named
+**Site · Array · Electrical · Yield · Tools**. Every card is a collapsible
+group (a ⊖ button in its header), expanded by default. Tab tooltips: Site —
+*"Boundary-level settings: roads, arresters, ICR blocks, keep-clear, terrain"*;
+Array — *"Module, mounting, table geometry, tilt and pitch"*; Electrical —
+*"Inverter sizing and cable options"*; Yield — *"Weather source, site
+conditions, losses and the energy run"*; Tools — *"Edit the generated layout:
+obstructions, MCR, objects and studies"*.
+
+| Tab | Cards, in order (exact titles) |
+|---|---|
+| **Site** | Input Boundary File · Site Parameters · Structures & Shadow (keep-clear) · Topography (slope-aware exclusion) |
+| **Array** | a read-only **MOUNTING** chip (*"Fixed-tilt MMS tables"* or *"Single-axis tracker"*) · Module Specifications · then **MMS-Table Configuration** + **Spacing & Tilt** (fixed tilt) or **Tracker Configuration** (tracker) |
+| **Electrical** | String Inverter *(or)* SMB – String Monitoring Box · Cables |
+| **Yield** | Run Energy Calculation · Energy Yield |
+| **Tools** | Obstructions · the tip *"Tip: Click and drag a blue ICR to reposition it."* · Main Control Room & Objects · Studies |
+
+The **Tools** tab is locked until a layout exists (tooltip *"Generate a layout
+first"*; its buttons are disabled) — `MW:1581, 3986-3990`, `IP:263-268`.
+
+### 4.1 Module Specifications — `IP:403-477` (Array tab)
 
 | Field | Default | Range | Unit |
 |---|---|---|---|
+| Module file | *"No .PAN file loaded"*, buttons **Load .PAN** and **View** (View enabled once a file loads) | — | — |
 | Length (long side) | 2.38 | 0.5–5.0 | m |
 | Width (short side) | 1.13 | 0.5–3.0 | m |
 | Wattage | **610** ⚠️ (`MP` says 580) | 100–1000 | Wp |
 | Bifacial module | off | — | — |
 | Bifaciality factor (φ) | 0.70 (enabled only when Bifacial is on) | 0.50–0.95 | — |
 
-- **Load .PAN** parses a PVsyst module file and auto-fills wattage, long
-  side, short side, and — when the file declares it — turns on Bifacial and
-  fills φ. It also recomputes the temperature loss — `IP:1386-1435`.
-- **View** opens a read-only PVsyst-style viewer with tabs *Basic data*,
-  *Sizes and Technology*, *Model parameters*, *Additional Data*, *Graphs*;
-  the Graphs tab draws an I–V / P–V curve from the STC points —
-  `pan_viewer_dialog.py:1-10`.
+- **Load .PAN** (file dialog **Select PVsyst Module File**) parses a PVsyst
+  module file and auto-fills wattage, long side, short side, and — when the
+  file declares it — turns on Bifacial and fills φ. It also recomputes the
+  temperature loss. The file row then shows the module label in green (its
+  tooltip carries μ_Pmpp, NOCT and *"⚡ Bifacial detected φ = …"*) —
+  `IP:1735-1822`.
+- ⛔ **Loading a module file no longer asks anything.** The old *"Calculate the
+  number of modules in series automatically?"* Auto / Manual prompt is gone
+  (`IP:1820-1822`). String sizing is opened from the **Size…** button beside
+  **Modules per row** (fixed tilt) or **Modules per string (N–S)** (tracker) —
+  see §4.8a.
+- **View** opens the read-only viewer **Module (PAN) — <file>** with the tabs
+  *Basic data*, *Sizes and technology*, *Model parameters*, *Additional data*,
+  *Graphs*; the Graphs tab draws the I–V and P–V curves titled *"STC (1000 W/m²,
+  25 °C)"* — `pan_viewer_dialog.py:156-179, 274`.
 - PAN dimension values are accepted in metres (< 100) or millimetres
   (≥ 100) — `pan_parser.py:9-11`.
 - The nominal operating cell temperature **is** read from the file, from any of
@@ -228,23 +327,21 @@ widgets override them. Divergences are marked ⚠️.
   model (`MP:121`) but has no widget, so the **Gap between MMS-Tables** field
   is east–west only. Do not describe a north–south table gap; north–south
   spacing is the row pitch (§4.3).
-- After a PAN load the app asks **"Calculate the number of modules in series
-  automatically?"** with **Auto** / **Manual** buttons — `IP:1440-1460`.
 
-### 4.2 MMS-Table Configuration (Fixed Tilt only) — `IP:223-270`
+### 4.2 MMS-Table Configuration (Fixed Tilt only) — `IP:479-527`
 
 | Field | Default | Range | Unit |
 |---|---|---|---|
 | Orientation | Portrait (or Landscape) | — | — |
-| Modules per row | 28 | 1–100 | — |
+| Modules per row *(with the **Size…** button)* | 28 | 1–100 | — |
 | Rows per MMS-Table | 2 | 1–10 | — |
 | Gap between modules E-W | **0.020** ⚠️ (`MP` says 0) | 0.0–5.0 | m |
 | Gap between modules N-S | **0.020** ⚠️ (`MP` says 0) | 0.0–5.0 | m |
 | Gap between MMS-Tables | 1.0 | 0.0–20.0 | m — **east–west only**, between tables in the same row |
 | Maximize placement | off | — | — |
-| Add half tables in leftover space | **off** ⚠️ (`MP` says on) | — | — |
+| Add half tables | **off** ⚠️ (`MP` says on) | — | — |
 
-Table dimensions — `MP:45-65`:
+Table dimensions — `MP:45-65`, also in the gap tooltips (`IP:490-495`):
 - Portrait: module short side → E-W, long side → N-S. Landscape: reversed.
 - `table_width  = modules_in_row × mod_ew + (modules_in_row − 1) × gap_ew`
 - `table_height = rows_per_table × mod_ns + (rows_per_table − 1) × gap_ns`
@@ -252,39 +349,43 @@ Table dimensions — `MP:45-65`:
 **Maximize placement** positions each row independently to hug the exact
 boundary edge, fitting extra tables near diagonal or curved fences. Table
 columns will **not** be vertically aligned across rows, and computation takes
-longer on large sites — `IP:248-257`.
+longer on large sites — `IP:505-513`.
 
 **Half tables** are half the E-W width carrying half the strings, dropped
-wherever a full table will not fit — `IP:260-268`.
+wherever a full table will not fit; the tooltip adds *"Half tables are also
+available in Sketch Mode."* — `IP:519-525`.
 
-### 4.3 Spacing & Tilt (Fixed Tilt only) — `IP:272-335`
+### 4.3 Spacing & Tilt (Fixed Tilt only) — `IP:529-594`
 
 | Field | Default | Range | Unit |
 |---|---|---|---|
-| Override tilt angle | off → auto from latitude | — | — |
+| Override tilt angle | off → the line under it reads *"Auto (latitude-based)"* | — | — |
 | Tilt angle (when overridden) | 20.0 | 0.0–90.0 | ° |
-| Override row pitch | off → auto | — | — |
+| Override row pitch | off → *"Auto (no-shading, latitude-based)"* | — | — |
 | Row pitch (when overridden) | 7.0 | 1.0–50.0 | m |
 
 - Auto tilt rule of thumb shown in the tooltip: `tilt ≈ latitude × 0.76 + 3.1°`
-  — `IP:284`.
-- Auto pitch is the no-shading pitch at winter-solstice solar noon —
-  `IP:316-318`. Formula — `spacing_calc.py:5-15`:
+  — `IP:538-544`.
+- Auto pitch is the no-shading pitch at winter-solstice solar noon.
+  Formula — `spacing_calc.py:5-15`:
   `pitch = L·cos(tilt) + L·sin(tilt) / tan(solar_elevation)` where `L` is the
   table height in the tilt plane.
-- After a layout runs, the auto values are displayed inline
-  ("Auto → 12.3° (latitude-based)", "Auto → 7.42 m (no-shading, latitude-based)")
-  and pre-filled into the override boxes — `IP:1684-1718`.
+- After a layout runs, the auto lines read *"Auto → 12.3° (latitude-based)"*
+  and *"Auto → 7.42 m (no-shading, latitude-based)"* and the values are
+  pre-filled into the (still greyed-out) boxes — `IP:2078-2103`.
 - Reported **GCR** = table height ÷ row pitch.
 
-### 4.4 Tracker Configuration (SAT only) — `IP:337-480`
+### 4.4 Tracker Configuration (SAT only) — `IP:596-744`
+
+Card tooltip *"Horizontal single-axis tracker, N/S axis"*; dividers
+*— Tracker Geometry —*, *— Row Spacing —*, *— Tracker Parameters —*.
 
 | Field | Default | Range | Unit |
 |---|---|---|---|
 | No. of strings per tracker | 2 | 1–20 | — |
 | Modules across tracker (E–W) | 1 | 1–8 | — |
 | Module orientation | P config (Portrait) — long side E–W | — | — |
-| Modules per string (N–S) | 28 | 4–120 | — |
+| Modules per string (N–S) *(with the **Size…** button)* | 28 | 4–120 | — |
 | Gap between modules E–W | 0.020 | 0.0–5.0 | m |
 | Gap between modules N–S | 0.020 | 0.0–5.0 | m |
 | Tracker E-W pitch | 5.5 | 1.0–30.0 | m |
@@ -292,7 +393,7 @@ wherever a full table will not fit — `IP:260-268`.
 | Max rotation angle (±) | 55.0 | 5.0–75.0 | ° |
 | Tracker height from ground | 1.5 | 0.5–10.0 | m |
 | Maximize placement | off | — | — |
-| Add half trackers in leftover space | off | — | — |
+| Add half trackers | off | — | — |
 
 - **L config (Landscape)** puts the module long edge N–S along the torque tube.
 - Tracker unit dimensions **as actually placed** — `tracker_layout_engine.py:352-357`.
@@ -302,25 +403,25 @@ wherever a full table will not fit — `IP:260-268`.
   - `length (N-S)   = n_ns × mod_ns + (n_ns − 1) × gap_ns`
   - `modules per tracker = modules_across × strings_per_tracker × modules_per_string`
   - `N-S step between units in a column = length + N-S service gap`
-- ⚠️ **The live preview line under-reports.** It shows **Aperture (E-W)**,
-  **Length (N-S)**, **GCR** and **Modules/tracker**, but computes the first two
-  **without the module gaps** — `IP:499-501` uses plain `across × mod_ew` and
-  `strings × per_string × mod_ns`. On the shipped defaults that makes the
-  previewed north–south length **1.10 m short** of the placed length (56
-  modules leave 55 gaps of 0.020 m). Publish the relations above, and describe
-  the preview as indicative rather than exact.
+- A green **live preview line** under the parameters reads *"Aperture (E-W):
+  x.xx m | Length (N-S): x.xx m | GCR: x.xxx | Modules/tracker: n"* —
+  `IP:768-773`. ⚠️ **It under-reports:** it computes the first two **without
+  the module gaps** (`IP:763-764`). On the shipped defaults the previewed
+  north–south length is **1.10 m short** of the placed length (56 modules
+  leave 55 gaps of 0.020 m). Publish the relations above, and describe the
+  preview as indicative rather than exact.
 - ⚠️ **The east-west pitch has a silent floor** —
   `tracker_layout_engine.py:365`: `pitch = max(aperture + 0.5, your pitch)`. A
   pitch at or below the aperture is raised to aperture + 0.5 m without a
   warning, and the reported ground coverage ratio uses the effective pitch:
-  `gcr = aperture / effective pitch`. So a very tight pitch will not produce
-  the ratio the reader asked for.
-- Tracker height and max angle are described in the tooltips as reference /
-  shading-analysis inputs — `IP:427-438`.
+  `gcr = aperture / effective pitch`.
+- Tooltips: *"Typical range: 14–30 modules per string."*; *"Typical HSAT pitch:
+  4.5–7 m (GCR ≈ aperture / pitch)"* — `IP:646, 674`. Tracker height and max
+  angle are reference / shading-analysis inputs.
 - Placement sweep is the mirror of fixed tilt: outer loop E-W across tracker
   columns, inner loop N-S along units in the column — `tracker_layout_engine.py:19-21`.
 
-### 4.5 Site Parameters — `IP:513-557`
+### 4.5 Site Parameters — `IP:777-821` (Site tab)
 
 | Field | Default | Range | Unit |
 |---|---|---|---|
@@ -330,17 +431,18 @@ wherever a full table will not fit — `IP:260-268`.
 | ICR Block | 18.0 | 0.1–500.0 | MWp |
 | Transmission line corridor | 15.0 per side (30 m total) | 0.0–500.0 | m |
 
-- Number of ICRs = `ceil(total plant MWp ÷ ICR Block)` — `IP:543`, `MP:162-164`.
+- Number of ICRs = `ceil(total plant MWp ÷ ICR Block)` — `IP:805-809`, `MP:162-164`.
 - With Lightning Arresters **off**, no arresters are placed and tables fill
   the whole usable area; they can still be added by hand in Sketch Mode —
-  `IP:521-525`.
+  `IP:785-789`.
 - The corridor tooltip suggests raising the setback for higher-voltage lines
-  (e.g. 30 m per side for 400 kV) — `IP:553-554`.
+  (e.g. 30 m per side for 400 kV) — `IP:813-819`.
 
-### 4.6 Structures & Shadow (keep-clear) — `IP:569-660`
+### 4.6 Structures & Shadow (keep-clear) — `IP:833-930` (Site tab)
 
-Footprints are **Length (E-W) × Width (N-S)**, plus a **Height** that drives
-the shadow footprint.
+A grid with column headers **L**, **W**, **H**: Length (E-W) × Width (N-S),
+plus a Height that drives the shadow footprint. The compact fields carry no
+unit suffix; the row labels do (*"ICR (m):"*).
 
 | Structure | Length | Width | Height | Unit |
 |---|---|---|---|---|
@@ -349,103 +451,108 @@ the shadow footprint.
 | USS | 5.0 | 4.0 | 5.0 | m |
 | Object | 0.0 | 0.0 | 0.0 (0 = not configured) | m |
 
-Ranges for those twelve fields — `IP:582-587`: **Length 0.0–500.0 m**,
-**Width 0.0–500.0 m**, **Height 0.0–200.0 m**, each to one decimal place. They
-are the same for all four structures.
+Ranges for those twelve fields: **Length 0.0–500.0 m**, **Width 0.0–500.0 m**,
+**Height 0.0–200.0 m**, each to one decimal place. They are the same for all
+four structures. Corroborated by the constants — `MP:233-243`.
 
-Corroborated by the constants — `MP:233-243`: `ICR_EW=10.0`, `ICR_NS=4.0`,
-`MCR_EW=15.0`, `MCR_NS=8.0`, `USS_EW=5.0`, `USS_NS=4.0`. The runtime footprint
-comes from the user's fields, passed through as `icr_w`/`icr_h` —
-`layout_engine.py:831-834`.
-
-| Other field | Default | Range | Unit |
+| Other row | Default | Range | Unit |
 |---|---|---|---|
-| LA height ⚠️ inert | 9.0 | 0.0–100.0 | m |
-| LA pile Ø ⚠️ inert | 0.3 | 0.0–5.0 | m |
-| Shadow Window | 9.0 to 16.0 | 4–12 / 12–20 | solar hours |
-| Clear tables inside shadows | **on** | — | — |
-| Street light pile Ø | 0.3 | 0.0–5.0 | m |
-| Street light height | 6.0 | 0.0–50.0 | m |
-| Street light span (pole to pole) | 40.0 | 1.0–500.0 | m |
-| Street light setback (inset inside perimeter) | 0.2 | 0.0–50.0 | m |
-| Street lights | **off** | — | — |
+| LA (m): *pile Ø* ⚠️ inert | 0.30 | 0.0–5.0 | m |
+| LA (m): height ⚠️ inert | 9.0 | 0.0–100.0 | m |
+| Shadow Window (h): | **9.0 to 15.0** ⚠️ (was documented as 16.0) | 4–12 / 12–20 | solar hours |
+| Clear tables in shadows: | **on** | — | — |
+| *— Street Light —* Pile Ø / Height: | 0.30 / 6.0 | 0.0–5.0 / 0.0–50.0 | m |
+| Span / Setback: | 40.0 / 0.20 | 1.0–500.0 / 0.0–50.0 | m |
+| Place street lights: | **off** | — | — |
 
+- Shadow-window tooltip: *"Solar-time window the keep-clear sweeps on every day
+  of the year. 9 to 15 h is the usual shadow-free design window (winter
+  solstice governs). A later end adds the low-sun afternoon tail and roughly
+  doubles the ground each 5 m building sterilises."* — `IP:883-887`.
 - **USS (Unit Substation):** in a multi-plot file, *Place MCR* first drops a
   USS of this size in every plot **except** the one holding the MCR; each
-  plot's ICRs route their MV cables to their USS — `IP:597-600`.
+  plot's ICRs route their MV cables to their USS — `IP:861-864`.
   The USS→MCR link itself is an overhead line or buried cable handled
   outside the automatic MV routing — `MP:271-276`.
-- **Clear tables inside shadows** removes tables/trackers falling inside the
+- **Clear tables in shadows** removes tables/trackers falling inside the
   year-round shadow footprint of the ICR / MCR / objects during the shadow
-  window — `IP:626-628`. Note the arrester is **not** in that list.
+  window. Note the arrester is **not** in that list.
 - ⚠️ **LA height and LA pile Ø are inert.** They are read from the panel into
-  the layout settings (`IP:737-738`) and then **nothing consumes them** — no
+  the layout settings (`IP:1010-1011`) and then **nothing consumes them** — no
   placement, no shadow clearing, no quantity, no export. They are also absent
-  from the project-file state (`IP:2007-2110`), so they do not even persist.
-  **Do not claim any effect for them.** Mention them only as recorded design
-  figures, or omit them; never imply the arrester height casts a clearing
-  shadow or reaches the bill of materials.
+  from the project-file state, so they do not even persist. **Do not claim any
+  effect for them.**
 - **Street lights** on: place poles along the perimeter spaced by the span,
   just inside the fence, and clear tables their shadow touches. Count ≈
-  perimeter ÷ span — `IP:647, IP:652-655`.
+  perimeter ÷ span — `IP:919`.
 
-### 4.7 Topography (slope-aware exclusion) — `IP:662-711`
+### 4.7 Topography (slope-aware exclusion) — `IP:932-984` (Site tab)
 
 | Field | Default | Range | Unit |
 |---|---|---|---|
-| Avoid steep / unsuitable ground | off | — | — |
-| Contour data | Auto (satellite DEM) | — | — |
-| Fetch from satellite if no file (SRTM 30 m) | on | — | — |
+| Avoid steep ground | off | — | — |
+| Contour data | button **Load contour / levels…**, label *"Auto (satellite DEM)"* | — | — |
+| Satellite DEM if no file | on | — | — |
 | Max N–S slope | 10.0 | 0.0–45.0 | ° |
 | Max E–W slope | 15.0 | 0.0–100.0 | % |
 | Max height var / table | 5.0 | 0.0–30.0 | m |
-| Exclude depressions / water-pooling cells | **off** ⚠️ (`MP` says on) | — | — |
+| Exclude depressions | **off** ⚠️ (`MP` says on) | — | — |
 
 - **Contour data** accepts a DXF contour file **in the project's UTM
-  coordinates**, or a CSV of `lon,lat,elevation` — `IP:682-683`.
-  File dialog filter: `*.dxf *.dwg *.csv *.txt` — `IP:716`.
-- With no file and auto-fetch on, the DEM is built from public satellite
-  elevation data (SRTM) — needs an internet connection.
+  coordinates**, or a CSV of `lon,lat,elevation`. File dialog **Select contour
+  / spot-level file**, filter `*.dxf *.dwg *.csv *.txt` — `IP:987-989`.
+- With no file and the satellite option on, the DEM is built from public
+  satellite elevation data (SRTM) — needs an internet connection.
 - Excluded ground: slope steeper than the limits, and (when enabled)
   depressions / water-pooling cells — `terrain.py:5-11`.
 - **Max height var / table** is the ground relief allowed within one table
-  footprint — the pile-reveal differential — `IP:703-705`.
+  footprint — the pile-reveal differential.
 - Any terrain failure (no network, bad file) is non-fatal: the layout simply
   proceeds without terrain exclusion — `terrain.py:16-18`.
 - ⛔ **Do not document a reduced-level (RL) band.** `terrain_min_rl` /
-  `terrain_max_rl` exist in `MP:205-206` but have **no widgets** in the input
-  panel, so a reader cannot set them. The F1 help's flood-level example is
-  unreachable.
+  `terrain_max_rl` exist in `MP:205-206` but have **no widgets**, so a reader
+  cannot set them, although the enable tooltip still mentions an RL band.
 - Contours are drawn green (low) → blue → red (high) and toggled by the
-  **Terrain** switch; the excluded area is reported in acres — `MW:7709`.
+  **Contour / terrain** row of the Layers popover (§6); the excluded area is
+  reported in acres.
 
-### 4.8 String Inverter / SMB group — `IP:767-862`
+### 4.8 String Inverter / SMB card — `IP:1040-1104` (Electrical tab)
+
+Card title **String Inverter** (string design) or **SMB – String Monitoring
+Box** (central design).
 
 | Field | Default | Range | Notes |
 |---|---|---|---|
 | Max strings per inverter *(String)* / Max strings per SMB *(Central)* | 20 | 1–500 | 1 string = 1 row of modules within an MMS-Table |
 | Max SMB per Central Inverter *(Central only)* | 10 | 1–200 | Central Inverter capacity = SMB capacity × this |
-| Calculate Cables for PV Power Plant | **off** | — | see below |
+| OND (inverter) | *"No OND file loaded"*, buttons **Load .OND** and **View** | — | View enabled once a file loads |
 
-- Ticking **Calculate Cables** raises a performance notice: cable
-  calculation can take a long time on large or complex layouts; the
-  recommendation is to generate the layout first without it, review, then
-  enable it for the final run. Buttons: **Enable Now** /
-  **Not Now (Recommended)** (the default) — `IP:909-937`.
-- With cables off, inverter/SMB counts are still computed and cable columns
-  show `—` — `MP:139-141`.
-- **Load .OND** parses a PVsyst inverter file; **PmaxOut** drives plant AC
-  capacity, falling back to **Pnom** when absent — `IP:872-902`.
-- **View** opens a read-only OND viewer with tabs *Main parameters*,
-  *Efficiency curve*, *Additional parameters*, *Output parameters*, *Sizes
-  and Technology*, *Commercial data* — `ond_viewer_dialog.py:1-9`.
+- **Load .OND** (file dialog **Load Inverter OND File**) parses a PVsyst
+  inverter file; the row then shows *Manufacturer Model*. **PmaxOut** drives
+  plant AC capacity, falling back to **Pnom** when absent — `IP:1174-1212`.
+  ⚠️ The button's tooltip still says Pnom is used; the code uses PmaxOut first.
+- **View** opens the read-only viewer **Inverter (OND) — <file>** with **five**
+  tabs: *Main parameters*, *Efficiency curve*, *Additional parameters*,
+  *Output parameters*, *Sizes and technology* — `ond_viewer_dialog.py:51-58`.
+  (There is no *Commercial data* tab.)
 - Max central inverters housed in one ICR building: **4** — `MP:132`.
+- ⛔ The cable option is **not** in this card any more — see §4.8b.
 
-### 4.8a Automatic string sizing — `string_sizing.py`, `string_sizing_dialog.py`
+### 4.8a String sizing — `string_sizing.py`, `string_sizing_dialog.py`
 
-Offered after a module file loads (§4.1). **Auto** needs the inverter file,
-because the MPPT window comes from it; with no MPPT range in the file, sizing
-is not possible and the reader enters the counts by hand — `IP:1463-1476`.
+Opened from the **Size…** button (tooltip *"Open the string-sizing
+calculator"*) beside **Modules per row** (fixed tilt) or **Modules per string
+(N–S)** (tracker) — `IP:1824-1837`. It needs both files — `IP:1839-1863`:
+
+- No module file → an information box **Module PAN file required**: *"String
+  sizing reads the module voltages from a PAN file. Use Load .PAN under Module
+  Specifications, then choose Size… again."*
+- No inverter file → **Inverter OND file required**: *"String sizing needs the
+  inverter's MPPT window from an OND file. Select it now."*, then the Load OND
+  file dialog opens at once.
+- An OND without an MPPT range → a warning **MPPT range missing**: *"The OND
+  file has no MPPT voltage range, so the string length cannot be sized
+  automatically. Enter it manually."*
 
 The three constraints, all evaluated at module/cell temperature, not ambient —
 `string_sizing.py:1-22`:
@@ -458,52 +565,97 @@ The three constraints, all evaluated at module/cell temperature, not ambient —
 
 Cold therefore sets the **maximum** string length and hot the **minimum**.
 
-Window fields, with shipped defaults — `string_sizing_dialog.py:52-126`:
+The **String sizing** window (a `ResultDialog`, 860 px; `string_sizing_dialog.py`):
 
-| Field | Default | Range / options | Notes |
+- A context strip: *Module <maker model> <Wp>*, *Voc … V · Vmp … V*, and an
+  *Inverter MPPT <min>–<max> V* chip.
+- Left, **SITE**: **System voltage** (editable combo: 1000 V, 1100 V, **1500 V**,
+  2000 V), **Coldest day** (−5.0 °C, −40–40; hint *sets Voc*), **Hottest day**
+  (45.0 °C, 10–70; hint *sets Vmp*).
+- **CELL TEMPERATURE**: **Model** — *Sandia (wind-based)* (default) or *NOCT
+  model*; **Wind speed** 3.0 m/s (0–15, Sandia only) or **NOCT** (30–60 °C,
+  from the module file; hint *typ. 42–48*, or *estimated* when the file has
+  none); **Irradiance, hot case** 1000 W/m² (100–1200).
+  Relations: NOCT `T_cell = T_amb + ((NOCT − 20) / 800) × G`;
+  Sandia `T_cell = T_amb + G × (0.0126 − 0.0029 × wind)`.
+- An expander **Override voltage temperature coefficient** (summary *"−0.280
+  %/°C from PAN"* or *"not in PAN"*; opened only when the file lacks it), field
+  **Coefficient** (−1.0 to −0.05 %/°C; default the file's Voc coefficient, else
+  −0.28), applied to both Voc and Vmp.
+- Right, **RESULT · updates as you type**: a verdict banner, a range bar, the
+  pick — **Modules in series** (tracker: **Modules per string**) and **Parallel
+  strings per table** (tracker: **Strings per tracker**), both 1–200 — and two
+  tiles, *String Voc at −5 °C* (sub-text *limit 1,500 V* or *over the 1,500 V
+  limit*) and *String Vmp at <hot cell> °C cell* (*floor 850 V* / *below the
+  850 V floor* / *no MPPT floor in the OND file*). Until edited, the series
+  count follows the largest feasible string.
+- Verdicts — `string_sizing.py:238-287`: *"<n_min> to <n_max> modules in series
+  are feasible"* (or *"Only <n> modules in series are feasible"*) with a detail
+  naming the binding constraint at each end, e.g. *"The cold-day voltage caps
+  the string at N; the hot-day MPPT floor needs at least M."*; *"No string
+  length fits these limits"* with *"No feasible string length. Raise the system
+  voltage or check the temperatures."*; *"The string length cannot be sized"*.
+  An out-of-range pick explains itself: *"Over 1,500 V on the coldest day.
+  Choose N or fewer."*, *"Below the 850 V MPPT floor on the hottest day. Choose
+  M or more."*
+- Footer: **Cancel** and the primary **Use this string**, which reads **Use 26 in
+  series × 2 strings** once the pick is valid. Accepting writes **Modules per
+  row** / **Rows per MMS-Table** (fixed tilt) or **Modules per string (N–S)** /
+  **No. of strings per tracker** (tracker) — `IP:1885-1890`. The window
+  remembers its inputs for the session.
+
+⛔ There is no green *"Feasible: …"* line and no red warning line any more;
+do not describe *Site min temperature* / *Site max temperature* fields.
+
+### 4.8b Cables card — `IP:1106-1164` (Electrical tab) — new
+
+| Field | Default | Range | Unit |
 |---|---|---|---|
-| System voltage (V) | 1500 | 1000 / 1100 / 1500 / 2000, and editable | DC system voltage class |
-| Site min temperature | −5.0 °C | −40–40 | cold case — drives the maximum string length |
-| Site max temperature | 45.0 °C | 10–70 | hot case base — drives the minimum |
-| Cell-temp model | Sandia (wind-based) | Sandia, or NOCT model | see the two relations below |
-| NOCT | from the module file | 30–60 °C | estimated from module efficiency when the file has none, and the window says so |
-| Irradiance G (hot case) | 1000 W/m² | 100–1200 | tooltip suggests 800–1000 |
-| Wind speed (Sandia) | 3.0 m/s | 0–15 | Sandia model only |
-| Voltage temp. coeff | from the module file, else −0.28 %/°C | −1.0 to −0.05 | from the Voc coefficient; applied to **both** Voc and Vmp |
+| Calculate cables | **off** | — | — |
+| Inter-module lead | 0.5 | 0.0–2.0 | m/module |
+| String return run along table | **on** | — | — |
+| DC cable slack | 10.0 | 0.0–30.0 | % |
 
-Cell-temperature relations offered — `string_sizing_dialog.py:80-84`:
-- NOCT: `T_cell = T_amb + ((NOCT − 20) / 800) × G`
-- Sandia: `T_cell = T_amb + G × (0.0126 − 0.0029 × wind)`
+- Ticking **Calculate cables** raises **Cable Calculation — Performance
+  Notice**: *"Cable calculation can take a long time on large or complex
+  layouts."* — *"It is recommended to generate the plant layout first without
+  cable calculation, review the result, and then enable cable calculation for
+  the final run. Do you want to enable cable calculation now?"* Buttons
+  **Enable Now** / **Not Now (Recommended)** (the default; unticks the box) —
+  `IP:1217-1245`. Reopening a project does not raise it.
+- Its tooltip: string DC cables (MMS → String Inverter) and AC cables (String
+  Inverter → ICR) are routed and their total lengths shown; in a central design
+  the DC cables SMB → Central Inverter (×2 for +/− conductors) — `IP:1118-1132`.
+- With cables off, inverter/SMB counts are still computed and the cable
+  figures read `—` — `MP:139-141`.
+- **Inter-module lead**: *"Inter-module string cable per module (BOQ
+  convention 0.5 m). Counted once per string. Fixed-tilt tables only."*
+- **String return run along table**: *"One string per module row leaves its two
+  leads at opposite ends of the table, so one conductor runs back along the
+  table to exit beside the other. Untick for U-wired strings whose leads exit
+  the same end. Fixed-tilt tables only."*
+- **DC cable slack**: *"Slack / wastage added to the DC string-cable total (BOQ
+  convention 10 %)."*
+- ⚠️ The three allowances are **not saved** in a project file (`IP:2421-2512`).
 
-The window also displays, read-only, the module's STC Voc and Vmp and the
-inverter's MPPT window. Results, recalculated live —
-`string_sizing_dialog.py:228-245`:
+### 4.9 Energy Yield card — `IP:1247-1626` (Yield tab)
 
-- **Feasible:** a green line reading *"Feasible: <n_min>–<n_max> modules in
-  series (<n> option(s))."*
-- **Not feasible:** a red warning line carrying the reason. No range is
-  offered, and the reader enters the counts by hand.
-- **Always shown**, whichever the outcome, a detail line giving the cold cell
-  temperature with its resulting Voc and Vmp; the hot cell temperature —
-  stated as the site maximum plus a computed rise — with its Voc and Vmp; and
-  then **which constraint bounds each end**, labelled *"Upper limit — …"* and
-  *"Lower limit — …"*. This is the part worth telling a reader about: it names
-  the binding constraint rather than only the answer.
+The Yield tab opens with the **Run Energy Calculation** card (§9) and then this
+card. Top to bottom:
 
-The reader picks the final series count and the number of parallel strings;
-these land in **Modules per row** / **Rows per MMS-Table** (Fixed Tilt) or
-**Modules per string (N–S)** / **No. of strings per tracker** (SAT) —
-`IP:1478-1505`.
-
-### 4.9 Energy Yield group — `IP:939-1272`
-
-**Weather Data Source** (mutually exclusive) — `IP:950-980`:
-- **PVGIS API (auto-fetch on Calculate)** — default. EU JRC service, no API
-  key. Falls back to **NASA POWER** when PVGIS has no data.
-- **Hourly GHI file (CSV)** — reveals a Browse row. Selecting it pops a
-  format reminder: **exactly 3 columns in order** — hourly timestamp, GHI
-  (W/m²), ambient temperature (°C); a full year is 8 760 rows; a header row
-  is optional and auto-detected — `IP:1521-1540`.
+**— Weather Data Source —** — two mutually exclusive tick boxes — `IP:1258-1288`:
+- **PVGIS API (auto-fetch)** — default. EU JRC service, no API key. Falls back
+  to **NASA POWER** when PVGIS has no data.
+- **Hourly GHI file (CSV)** — reveals the row **GHI file (CSV):** (*"No file
+  loaded"* + **Browse…**). Ticking it pops **Hourly GHI File — Required
+  Format**: *"The CSV file must contain exactly 3 columns in this order:"* —
+  Column 1 Hourly timestamp (e.g. 2023-01-01 00:30), Column 2 GHI (W/m²),
+  Column 3 Ambient temperature (°C) — *"The file should cover a full year (8 760
+  hourly rows). A header row is optional — the parser detects it
+  automatically."* — `IP:1899-1927`. After a load the row reads e.g. *"<file>
+  8760 h | GHI 1850 kWh/m²/yr | GTI from GHI+tilt | T_avg 27.3 °C ✓ Temp data
+  loaded"* and the source line *"Source: Hourly file (8760 h) | GTI calculated
+  after layout | Monthly T from file"* — `IP:1955-1973`.
 
   The parser itself is more tolerant than that dialog: it accepts flexible
   column names and an optional GTI column — `pvgis_file_parser.py:1-25`.
@@ -514,46 +666,53 @@ these land in **Modules per row** / **Rows per MMS-Table** (Fixed Tilt) or
   When a temperature column is present, monthly averages come from the file
   instead of the sinusoidal seasonal model.
 
+**— Irradiance —** and site conditions:
+
 | Field | Default | Range | Unit |
 |---|---|---|---|
 | GHI | 0.0 (auto-filled) | 0–3000 | kWh/m²/yr |
 | GTI (in-plane) | 0.0 (auto-filled) | 0–3500 | kWh/m²/yr |
+| *(source line)* | *"Source: —"* → *"Source: PVGIS (EU JRC) — auto fetched"* / *"Source: NASA POWER — auto fetched"* / *"Source: Auto-fetch failed — switch to GHI file"* (red) | | |
 | Avg. ambient temp. | 28.0 | −10–55 | °C |
 | Mounting type | Open Rack – Ground Mount | 4 options | — |
 | Avg. wind speed | 3.0 | 0.5–15.0 | m/s |
-| Ground albedo (ρ) | 0.25 | 0.05–0.80 | — |
+| *(formula trace, after a module file loads)* | e.g. *"Sandia: 28 + 600×exp(-3.56+-0.075×3.0) = 41.2 °C / μPmpp = -0.340 %/°C → Temp loss = 5.51 %"* | | |
+| **— Bifacial Ground Albedo —** Ground albedo (ρ) | 0.25 | 0.05–0.80 | — |
 
-Sandia mounting options and coefficients — `IP:1052-1056`:
+Sandia mounting options and coefficients — `IP:1359-1365`, `energy_calculator.py:436-444`:
 Open Rack – Ground Mount `a=−3.56, b=−0.075`; Roof Mount – Close
 `a=−2.81, b=−0.0455`; Stand-off Mount `a=−3.23, b=−0.130`;
 Insulated Back `a=−2.81, b=−0.0455`.
 
-**Performance Ratio breakdown** — publish the UI defaults ⚠️ (all differ from
-`MP:442-451`):
+**ADVANCED** — three expanders, **collapsed by default**, each header carrying
+a live summary — `IP:1423-1425, 1595-1623`:
+
+**Performance-ratio losses** (summary *"≈ 19.0 % combined"* on the defaults) —
+publish the UI defaults ⚠️ (all differ from `MP:487-496`):
 
 | Loss / factor | Default | Range | Notes |
 |---|---|---|---|
-| String / Central Inverter efficiency | 97.0 % | 50–100 | label follows the mode |
-| String DC cable losses | 1.0 % | 0–20 | *(MMS → SMB in Central mode)* |
-| AC cable losses (Str. Inv. → ICR) | 1.0 % | 0–20 | *(SMB → Central Inv. in Central mode)* |
+| String / Central Inverter efficiency | 97.0 % | 50–100 | label follows the design |
+| String DC cable losses | 1.0 % | 0–20 | *(MMS → SMB in a central design)* |
+| AC cable losses (Str. Inv. → ICR) | 1.0 % | 0–20 | *(DC cable losses (SMB → Central Inv.) in a central design)* |
 | Soiling losses | 2.0 % | 0–20 | dust, dirt, bird droppings |
 | Temperature losses | 6.0 % | 0–20 | auto-computed once a PAN is loaded |
+| ↳ Module temp. (Sandia) | read-only *"—"* → *"41.2 °C (G = 600 W/m², W = 3.0 m/s)"* | — | |
 | Module mismatch | 1.0 % | 0–10 | |
-| Shading losses | 1.0 % | 0–20 | editable only when auto-compute is off |
-| Auto-compute (row-to-row from GCR) | **on** ⚠️ | — | |
-| Module ground clearance | 0.5 m | 0.0–5.0 | lower-edge height above ground |
+| Shading losses | 1.0 % | 0–20 | **greyed out** while auto-compute is on |
+| ↳ Auto (row-to-row, GCR) | **on** | — | line under it: *"Auto (row-to-row, computed on Generate)"* → *"Auto → 1.23% (row-to-row, computed)"* |
+| ↳ Module ground clearance | 0.5 m | 0.0–5.0 | lower-edge height above ground |
 | Availability | 99.0 % | 50–100 | |
 | Transformer losses | 1.0 % | 0–10 | |
 | Other losses | 2.0 % | 0–10 | monitoring, auxiliary, misc |
 
-Temperature model — `IP:1140-1150`, `energy_calculator.py`:
+Temperature model — `IP:1461-1472`, `energy_calculator.py`:
 `T_module = T_ambient + G × exp(a + b × W)`, then
 `Loss (%) = |muPmpp| × (T_module − 25)`. `G` is the average operating
 irradiance derived from GTI as `min(900, GTI × 1000 / (365 × 8))` W/m², or
-600 W/m² when GTI is 0 — `IP:1608-1611`. The computed module temperature is
-displayed next to the row, with a formula trace under the inputs.
+600 W/m² when GTI is 0 — `IP:1996`.
 
-**Degradation** — `IP:1203-1224`:
+**Degradation & lifetime** (summary *"0.40 %/yr · 30 yr"*) — `IP:1529-1545`:
 
 | Field | Default | Range | Unit |
 |---|---|---|---|
@@ -561,7 +720,7 @@ displayed next to the row, with a formula trace under the inputs.
 | Annual degradation | **0.4** ⚠️ | 0–5 | %/yr |
 | Plant lifetime | **30** ⚠️ | 1–50 | years |
 
-**Probabilistic Yield (P-values)** — `IP:1226-1269`:
+**Uncertainty & exceedance** (summary *"P50 / P75 / P90"*) — `IP:1552-1590`:
 
 | Field | Default | Range | Unit |
 |---|---|---|---|
@@ -570,17 +729,29 @@ displayed next to the row, with a formula trace under the inputs.
 | Exceedance prob. 2 | 75.0 | 1.0–99.9 | % |
 | Exceedance prob. 3 | 90.0 | 1.0–99.9 | % |
 
-Tooltip formulas — `IP:1237-1238`: `P75 = P50 × (1 − 0.674 × σ)`,
-`P90 = P50 × (1 − 1.282 × σ)`. All three columns are user-set exceedance
-probabilities; the summary column headers are built from them, so they read
-`P50Yr1(MWh)` etc. and change when the reader changes the probabilities —
-`MW:7307-7314`.
+Tooltip formulas: `P75 = P50 × (1 − 0.674 × σ)`, `P90 = P50 × (1 − 1.282 × σ)`.
+All three are user-set exceedance probabilities; the Summary view's rows and
+the sheet's column headers are built from them, so they read `P50Yr1(MWh)`
+etc. and change when the reader changes the probabilities.
 
 Bifacial model — `MP:495-501`:
 `GTI_rear ≈ GHI × ground_albedo × F_ground_rear × (1 − GCR)` where
 `F_ground_rear = (1 + cos(tilt)) / 2`; `bifacial_gain = φ × GTI_rear / GTI_front`.
 Bifaciality tooltip states a typical bifacial energy gain of **5–15 %** over
-a monofacial module and a typical φ range of **0.65–0.80** — `IP:205, IP:213`.
+a monofacial module and a typical φ range of **0.65–0.80**.
+
+### 4.10 What a project file keeps — `IP:2421-2512`
+
+Saved in `.slp`: module, table, tilt/pitch, tracker geometry, road width, LA
+radius, ICR block, corridor, max strings per inverter/SMB, the cable-calculation
+tick, weather source and file, GHI/GTI, every loss, ambient/wind/mounting/albedo,
+degradation and P-values, plus the layout, sketch edits, SLD, BOM and terrain
+result. **Not saved:** the three cable allowances (§4.8b), everything in
+Structures & Shadow (footprints, LA, shadow window, clear-in-shadows, street
+lights), everything in Topography, Maximize placement, half tables, the
+**Place Lightning Arresters** tick, the shading auto tick and ground clearance,
+and the terrain file path. A reopened project shows the defaults for those.
+
 
 ## 5. Layout pipeline
 
@@ -673,149 +844,297 @@ Order of operations — `layout_engine.py:1-11`, `MP`, and the ICR/LA modules:
   keeps the current cables instead of re-routing, so the edits persist —
   `MP:667-669`.
 
-## 6. Canvas, toolbar and view toggles
+## 6. The main window: ribbon, left column, views
 
-Toolbar buttons — `MW:2261-2365`:
+### 6.0 Chrome — `MW:1136-1273, 2897-2918`
 
-| Button | Default | What it does |
-|---|---|---|
-| 💾 Save(Project) | — | Save the session to `.slp` |
-| ⛶ Expand Plot | — | Open the plot in a large window with **⟵ Return to Main Window** (`MW:2474-2499`) |
-| 🛰 Satellite | off, disabled until a layout exists | Esri World Imagery aerial photo behind the layout, geo-aligned to the file's latitude/longitude. Needs internet. |
-| ▢ Wireframe | off (filled) | Draw tables / trackers as outline only |
-| 📍 Piles: OFF | off, disabled until a layout exists | Pile overlay. First use opens the Pile Layout editor; piles stay visible even with Plant Layout off. Re-open from **Edit-Pile ▸ Define Pile Layout…** |
-| ✏ Sketch Mode | off | Hand-edit the layout |
-| 📋 BOM | off | Bill-of-materials editor |
-| ⚡ SLD | off | Single-line-diagram editor |
+- **Menu bar:** File · Edit-Pile · Help (§16).
+- **Ribbon** (navy bar): the brand **SolarLayout**; the **design chip** reading
+  *"Fixed tilt · String inverter ▾"* / *"Tracker · Central inverter ▾"* etc.
+  (tooltip *"Open another window for a different design: fixed tilt or tracker,
+  string or central inverter. This window stays open."*, `MW:1223-1230`); a
+  status mirror (gold italic) that repeats status-bar messages; the
+  **access chip** (§15); a **Docs** button (opens https://solarlayout.app/docs)
+  and a **Support** button (§15).
+- **Left column:** the pinned gold **Generate Layout** button (**F5**) with a
+  hint line under it — *"Select a boundary file on the Site tab to generate a
+  layout."* while no file is selected (`MW:8381-8421`) — then the five stage
+  tabs (§4.0). While Sketch, SLD or BOM owns the column a **mode banner**
+  replaces the button (§7, §11, §12).
+- **Right side:** a view header, the view itself, and the plant chips.
+- **Status bar:** progress and result messages on the left; on the right the
+  live **cursor position** (UTM metres) and the **app version** (*v1.2.3*, or
+  *dev* when run from source) — `MW:2903-2909`. There is no idle instruction.
 
-ON/OFF switches — `MW:1359-1470`, `MW:7184-7272`:
+### 6.1 Views — `MW:2683-2714, 6671-6716`
 
-| Switch | Default |
+Five tabs across the top of the right side: **Layout · Summary · Energy ·
+BOM · SLD** (**Ctrl+1 … Ctrl+5**). They are views of the same plant, so each
+takes the whole area under the header. The Energy tab reads *"Energy •"* when a
+result landed while another view was up. Tools sit to the right of the tabs:
+
+| Always | **Save project** · **Export ▾** (§13) |
 |---|---|
-| AC Cables | OFF |
-| DC Cables | OFF |
-| MV Cables (ICR→MCR) | OFF |
-| Contour / Terrain | OFF |
-| Plant Layout | ON |
-| Legend | ON |
-| Lightning Arresters | OFF |
-| Summary | ON |
+| Layout and SLD | **Satellite** · **Wireframe** · **Piles: OFF** (reads **Piles: ON** when on) · **Layers ▾** · **Sketch** · the three navigation icons **Home**, **Pan**, **Zoom** · **⛶** (expand) |
+| Summary and Energy | **Copy** · **Open in window** |
 
-Canvas colours — `MW:342` and the exporters: MV cable `#006400` (dark
-green); boundary gold; tables blue; ICR dark blue; inverters green/lime; DC
-cable orange; AC cable red; arresters dark red; obstacles red; water blue.
+- **Satellite** (disabled until a layout exists): an Esri World Imagery aerial
+  photo behind the layout, geo-aligned to the file's latitude/longitude; needs
+  internet. **Wireframe**: tables / trackers as outlines only. **Piles**
+  (disabled until a layout exists): the pile overlay; first use opens the Pile
+  layout editor (§8). **Sketch**: Sketch Mode (§7).
+- **Navigation:** the toolbar is reduced to **Home**, **Pan** and **Zoom**
+  (`NAV_TOOLS`, `MW:918, 2647-2649`). Home fits the whole plant (tooltip *"Fit
+  the whole plant · the mouse wheel zooms at the cursor"*). The **mouse wheel
+  zooms at the cursor** in every view but SLD, and the view you set persists
+  across redraws until Home, a new layout or a new boundary file —
+  `MW:9182-9267`. Back / Forward, Subplots, Customize and the toolbar's Save are
+  gone; saving the plot as a picture is **Export ▾ Export Image (PNG)**.
+- **When the tools do not fit** beside the tabs, Satellite / Wireframe / Piles
+  move to the top of the Layers popover as ON/OFF rows (labelled *Satellite
+  image*, *Wireframe tables*, *Piles*) and the button reads **Layers ▾ +3**;
+  if still too wide, the tools wrap under the tabs — `MW:6718-6738`.
+- **⛶ Expand** opens **SolarLayout — Expanded View**: the plot in a large
+  resizable window with a full toolbar and a **⟵ Return to Main Window**
+  button; the main window shows *"Plot is open in the Expanded View window.
+  Close that window to return the plot here."* meanwhile — `MW:2949-3021`.
 
-The matplotlib navigation toolbar is standard except that **Home (⌂)** resets
-to the stored plant bounding box (fit-to-plant) rather than matplotlib's
-internal initial view — `MW:69-80`.
+### 6.2 Layers popover — `MW:1583-1767`
 
-**Layout & Energy Summary** table sits under the canvas with a **⛶ Maximize**
-button that opens it in its own window — `MW:2390`, `MW:5804`.
+**Layers ▾** opens a 260 px popover (header *Layers*, × to close) of ON/OFF
+pills. Rows in order, with defaults:
 
-### 6.1 Summary table columns — `MW:7280-7315`
+| Row | Default | Notes |
+|---|---|---|
+| Plant layout | **ON** | OFF shows only the boundary and obstacles |
+| Legend | OFF | the same switch as the **Legend ▾** chip in the plot corner |
+| Lightning arresters | OFF | rectangles + labels + protection circles |
+| ICR blocks | OFF | colours each ICR block's area and outlines it |
+| DC string cables (Tbl→Inv) | OFF | enabled only when cables were calculated |
+| AC cables (Inv→ICR) — *"DC cables (SMB→CI)"* in a central design | OFF | enabled only when cables were calculated |
+| MV cables (ICR→MCR) | OFF | needs an MCR placed and cables calculated |
+| Contour / terrain | OFF | with an *RL:* readout: *"RL: min – max m · Excluded: x ac / v m³"* |
+| Plant totals | **ON** | hides the plant chip row under the view |
 
-Fixed order. `Full Tbl`/`Half Tbl` become `Full Trk`/`Half Trk` for SAT, and
-`Tilt(°)` becomes `MaxAng(°)`:
+⛔ The old ON/OFF switch block in the input panel is gone, "Legend" is OFF by
+default (it was documented ON), and there is no "Summary" switch — the row is
+**Plant totals** and it hides the chip strip, not a table.
 
-`Plant` · `Plant Area (Acres)` · `Plant Boundary (in meter)` · `Full Tbl` ·
-`Half Tbl` · `Modules` · `DC(MWp)` · `Tilt(°)` · `Pitch(m)` · `ICR` →
-then **String mode:** `Str.Inv` · `Inv kWp`; **Central mode:** `SMBs` ·
-`SMB kWp` · `C.Inv` · `CInv kWp` →
-then **String:** `StrDC(m)` · `AC-ICR(m)`; **Central:** `StrDC(m)` · `DC-CInv(m)` →
-then `LA` · `St.Lt` · `Robots` · `Piles` · `MV(m)` · `DC-Tr(m)` · `AC-Tr(m)` ·
-`MV-Tr(m)` · `AC(MWac)` · `InvCap(MW)` · `DC/AC` ·
-`P50Yr1(MWh)` · `P75Yr1(MWh)` · `P90Yr1(MWh)` · `CUF(%)` · `25yrP50(MWh)`.
+- **Legend chip:** a small **Legend ▾** button in the plot's top-right corner
+  (Layout view only); the legend is folded by default so it never sits on the
+  drawing; when open the chip reads **Legend ▴** and the legend itself can be
+  dragged — `MW:2876-2886, 8687-8700`.
+- The plot carries a units note bottom-left: *"UTM 38N · metres"* — `MW:7116-7124`.
+- Canvas colours — `MW:369-382`: tables blue; ICR dark blue; MCR violet
+  (`#EE82EE`); string inverters violet (`#8B00FF`); DC string cable **green**
+  (`#00b050`); AC cable red; MV cable dark green (`#006400`); arrester circles
+  orange-red (`#FF4500`); obstacles / transmission corridor red; water blue;
+  the perimeter road band grey.
 
-- The three P-columns are named from the reader's exceedance probabilities.
-- ⚠️ **`25yrP50(MWh)` is a mislabelled header.** The header text is hard-coded
-  `MW:7314`, but the value is the lifetime total — the sum of years 1 to
-  **Plant lifetime** (`energy_calculator.py:696-706`, default **30** years),
-  scaled to the first exceedance probability (`p1_lifetime_mwh`,
-  `energy_calculator.py:715-717`). So on default settings the column headed
-  "25yr" reports a **30-year** figure. Document the column as the lifetime
-  total at the first exceedance probability, and say the header text does not
-  follow the lifetime setting.
+### 6.3 Plant chips (KPI strip) — `SU/chip_row.py`, `MW:2855-2872, 9093-9124`
+
+One row under every view, never wrapping. Chips and captions, with the value
+format: **DC capacity** (*48.11 MWp*), **Site area** (*88.94 acres*),
+**Plants** (multi-plot only), **Tables** / **Trackers**, **Modules**,
+**ICR blocks**, **Lightning arresters** (only when some are placed),
+**Year-1 P50 energy** (*98,377 MWh*, or *—* before an energy run). Clicking a
+chip opens the Summary view; the energy chip opens the Energy view. When the
+row is too narrow the lowest-priority chips hide first (Lightning arresters,
+Plants, ICR blocks, Site area, Tables, Modules; DC capacity and energy last).
+Water-body results are left out of the totals. This is the only place plant
+totals are shown — the status line no longer carries them.
+
+### 6.4 The Summary view — `MW:2729-2753, 6777-6921`, `SC/summary_sheet.py`
+
+The per-plant figures as a sheet turned on its side: a **Metric** column, one
+column per plant (header *"<plant> ›"* — clicking it shows that plant on the
+Layout view), and a **Total** column when there are two or more plants. Rows
+are grouped under **SITE · ARRAY · ELECTRICAL · CABLES · ENERGY**:
+
+| Group | Rows (fixed tilt / tracker wording) |
+|---|---|
+| SITE | Plant area (acres) · Boundary length (m) · ICR blocks · Lightning arresters · Street lights · Cleaning robots · Piles |
+| ARRAY | Full tables / Full trackers · Half tables / Half trackers · Modules · Tilt (°) / Max tracking angle (°) · Pitch (m) |
+| ELECTRICAL | DC capacity (MWp) · String inverters · Inverter rating (kWp) — *or* SMBs · SMB rating (kWp) · Central inverters · Central inverter rating (kWp) — · AC capacity (MWac) · Inverter capacity (MW) · DC / AC ratio |
+| CABLES | String DC cable (m) · AC cable to ICR (m) / DC cable to central inverter (m) · MV cable (m) · DC trench (m) · AC trench (m) · MV trench (m) |
+| ENERGY | P50 energy, year 1 (MWh) · P75 energy, year 1 (MWh) · P90 energy, year 1 (MWh) · CUF (%) · P50 energy, 25 years (MWh) |
+
+- The three P rows are named from the reader's exceedance probabilities (§4.9).
+- ⚠️ **"P50 energy, 25 years" is mislabelled.** The value is the lifetime
+  total — the sum of years 1 to **Plant lifetime** (default **30**) — scaled to
+  the first exceedance probability (`energy_calculator.py:696-717`); the row
+  name does not follow the lifetime setting. Document it as the lifetime total.
 - A trailing **`*`** on Tilt or Pitch means the value was auto-calculated
-  rather than entered — shown for Fixed Tilt only — `MW:7325-7328`.
-- A `—` means not computed (e.g. cable columns with cable calculation off).
-- A **TOTAL** row aggregates every plant — `MW:7400+`.
+  (fixed tilt only); a `—` means not computed (cable rows with cables off,
+  energy rows before a run). Whole numbers of four or more digits get
+  thousands separators on screen.
+- Empty state: *"Generate a layout to see the per-plant summary here."*
+- **Copy** puts the sheet on the clipboard as tab-separated text (*"Copied.
+  Paste into Excel or a document."*). **Open in window** opens
+  **SolarLayout — Summary**, a non-modal window with the tabs **Summary** and
+  **Monthly energy (Year 1)** (the second enabled once energy exists) that
+  follows the layout — `MW:7067-7114`.
+- Plant Area is the gross boundary area before the road setback (§19a).
 
-## 7. Sketch Mode — `sketch_manager.py`, `MW:1517-1860`
+### 6.5 The Energy view — `MW:2755-2849, 6933-7057`
 
-Entering Sketch Mode reveals a tool palette. Leaving it recomputes plant
-totals (modules, capacity, LA count).
+Before a run: the title **No energy result yet**, a note — *"Generate a layout
+first. Energy is calculated for the generated layout."* with no layout, *"Uses
+the weather source and losses set on the Yield tab. With PVGIS selected,
+irradiance is fetched for the site (needs internet)."* when ready, or the
+DXF-without-coordinates explanation — and a gold **Calculate energy** button
+that does what the Yield tab's button does.
+
+After a run: four tiles — **Year-1 energy** (MWh), **Specific yield**
+(kWh/kWp), **Performance ratio** (%), **CUF** (%) — then the monthly table
+(columns **Month · GHI (kWh/m²) · H_i (kWh/m²) · T_amb (°C) · T_cell (°C) ·
+Y_r (h) · Y_f (kWh/kWp) · PR (%) · Energy (MWh) · CUF (%)**, twelve rows and
+a **TOTAL / Annual** row; *"Monthly Energy Breakdown — IEC 61724-1 — Year 1
+(all plants combined)"*), under it the chart **In-plane irradiation (kWh/m²,
+bars) and performance ratio (%, line)**, and on the right **Monthly energy,
+Year 1 (MWh)**. The irradiation chart steps aside on a short window.
+
+The Yield tab's status line after a run reads *"PR: 82.9% | Yr1: 98,471 MWh |
+CUF: 23.4% | 25yr: 2,713.1 GWh | Monthly table updated"* — `MW:4358-4362`.
+
+## 7. Sketch Mode — `sketch_manager.py`, `MW:1769-2111, 5377-5453`
+
+**Sketch** (Layout view tools) switches it on. The left column is taken over:
+an orange banner **● Sketch Mode** with the table count on the right and one
+button **Exit Sketch Mode — apply edits, recalc totals**; leaving it
+recomputes plant totals (modules, capacity, LA count), and leaving the Layout
+view switches Sketch off. Status: *"Sketch Mode ON — select a tool from the
+left panel."* / *"Sketch Mode OFF — plant totals updated."*
+
+The palette is grouped (the unit reads *Tracker* on a tracker design):
+
+| Group | Tools |
+|---|---|
+| **PLANT OBJECTS** | ➕ Table · ➕ Half Table · ➕ LA · 🚧 Road · ⚡ T-Line |
+| **CABLE TRENCHES** | 🟢 DC Trench · 🔴 AC Trench · 🟩 MV Trench · ✂ Del Trench |
+| **DRAW** | ╱ Line · ⌒ Polyline · □ Rect · ○ Circle · an expander **More shapes** (◜ Arc · ⬭ Ellipse · ∿ Spline · ▨ Fill/Zone) |
+| **ANNOTATE** | 🅣 Text · 📏 Measure · 📐 Dimension · 🧭 Scale bar + N |
+| **SELECT & EDIT** | ↖ Move · ⎘ Copy · 🗑 Delete |
+| **MODIFY SELECTION** | ⟳ Rotate · ⤢ Scale · ⇋ Mirror · ⇥ Offset · ▤ Array · ⧉ Group · ⿲ Ungroup — greyed until a selection can be acted on |
+| **IMPORT & CLEAR** | 📂 Import DXF · 🗑 Clear Annotations |
+| **COMMAND** | a command line, placeholder *"cmd: L PL REC C ARC EL SPL H DIM RO SC MI O AR ↵"* |
+
+Hint under the palette: *"Shift+Click = multi · Ctrl+Arrow = nudge 1 m ·
+Ctrl+C/V = copy/paste · Ctrl+Z/Y = undo/redo · Esc = cancel. Rubber-band: drag
+→right = window, ←left = crossing. Click a start point, then type len<bearing /
+dx,dy ↵ in the bar above the plot."*
+
+Tool behaviour (tooltips, `MW:1795-1861`):
 
 | Tool | Behaviour |
 |---|---|
-| ↖ Move | Click to select; Shift-click multi-select; drag empty space for a rubber band; drag any selection to move it together. Ctrl+Arrow nudges 1 m. |
-| ⎘ Copy | Duplicate the selection, offset 5 m E + 5 m N. Ctrl+C / Ctrl+V also work. |
-| 🗑 Delete | Click any object to remove it |
-| ➕ Table | Place a full MMS table |
-| ➕ Half Table | Place a half unit (the module axis is halved) |
-| ➕ LA | Place a Lightning Arrester (clears tables under its footprint) |
-| 🚧 Road | Drag a rectangle obstruction (removes overlapping tables) |
-| ⚡ T-Line | Click vertices; right-click to finish a transmission line |
-| 🅣 Text | Click to drop a multi-line label; reposition with ↖ Move |
-| ╱ Line | Click-drag a straight line |
-| ⌒ Polyline | Click vertices; right-click or double-click to finish |
-| □ Rect | Click-drag a rectangle |
-| ○ Circle | Click the centre, drag the radius |
-| ◜ Arc | Click start, end, then a point on the arc |
-| ⬭ Ellipse | Click-drag a bounding box |
-| ∿ Spline | Click fit points; right-click or double-click to finish |
-| ▨ Fill/Zone | Click a closed polygon to fill it |
-| 📏 Measure | Click points: 2 gives distance + bearing, more gives a running total |
-| 📐 Dimension | Click-drag, or click a point then a second, to place a dimension |
-| 🟢 DC Trench / 🔴 AC Trench / 🟩 MV Trench | Click points to draw a trench polyline |
-| ✂ Del Trench | Click a cable trench (auto or manual) to delete it |
-| 🖐 Pan / 🔍 Zoom | Navigate; Home fits the view |
+| ↖ Move | Click any object to select it, then drag to move. Shift+Click adds to the selection; drag on empty space to rubber-band select. Ctrl+Arrow nudges 1 m. |
+| ⎘ Copy | Click a table to place a copy 5 m east and 5 m north of it. To copy several, select them with Move, then Ctrl+C and Ctrl+V. |
+| 🗑 Delete | Click any object to remove it. |
+| ➕ Table / ➕ Half Table | Click to place a full unit, or a half unit (half the E-W modules / capacity; N-S strings on a tracker). |
+| ➕ LA | Click to place a lightning arrester (tables under its footprint are removed). |
+| 🚧 Road | **Drag a straight centre-line, then enter the road width (m)** in a **Road width** prompt (default 5.0 m). The corridor is placed and tables under it are removed. |
+| ⚡ T-Line | Drag a straight centre-line, then enter the corridor width (m) in a **Transmission line corridor** prompt (default 10.0 m). The red line is placed and tables in the corridor are removed. |
+| ╱ Line / ⌒ Polyline | Draw, then a **Line width** prompt: 0 = line only, more than 0 = a corridor that removes tables under it. Polyline: click vertices, right-click to finish. |
+| □ Rect / ○ Circle / ◜ Arc / ⬭ Ellipse / ∿ Spline / ▨ Fill/Zone | Annotation shapes (arc: start, end, then a point on it; spline and fill: click points, right-click or double-click to finish). |
+| 🅣 Text | Click to add multi-line text (an **Add text** prompt); move it with Move. |
+| 📏 Measure | Click points; snaps to corners / edge midpoints / centres. 2 points = distance + bearing; 3 or more then double- or right-click = area + perimeter; angles at each vertex; Esc clears. Not saved. |
+| 📐 Dimension | A permanent dimension between two points (click-drag, or click a start point then type a length); saved, redrawn, exported to DXF. |
+| 🧭 Scale bar + N | Shows a metric scale bar and a north arrow (toggle). |
+| 🟢 / 🔴 / 🟩 trench | Click vertices, right-click to finish. On Generate the cable follows your trenches. |
+| ✂ Del Trench | Click any trench (automatic or manual) to delete it; the untouched trenches stay as the automatic routing. |
+| ⟳ Rotate / ⤢ Scale / ⇋ Mirror / ⇥ Offset / ▤ Array | Act on the selection: a typed angle (° clockwise); a factor; left↔right or top↔bottom; a perpendicular distance; a rectangular or polar pattern. |
+| ⧉ Group / ⿲ Ungroup | Group selected annotations so they select and move together (Group needs 2+ annotations selected). |
+| 📂 Import DXF | Editable elements on the active layer; coordinates read as-is in project metres (§19a). |
 
-Also in the palette — `MW:1617-1843`: **🎨 Colour**, **🧲 Snap**, **⊾ Ortho**,
-**↶ Undo**, **↷ Redo**, **▦ Grid**, layer controls (**＋** new layer, **👁**
-visibility), **📂 Import DXF**, **⧉ Group** / **⿲ Ungroup**,
-**🧭 Scale bar + North**, **🗑 Clear Annotations**.
+⛔ There are **no Pan / Zoom buttons** in the palette: the navigation icons and
+the mouse wheel do it, and a drag is ignored by the sketch tool while Pan or
+Zoom is on.
 
-A typed command line accepts CAD-style aliases — `MW:4876-4888`:
-`L`/`LINE`, `PL`/`POLY`, `REC`/`RECT`/`R`, `C`/`CIR`, `ARC`/`A`, `EL`/`ELL`,
-`SPL`/`SP`, `H`/`HATCH`/`FILL`, `DIM`/`D`, `T`/`TEXT`, `M`/`MEA`, `S`/`SEL`.
+**Contextual bar** (orange strip above the plot, Sketch Mode only), in order —
+`MW:2013-2111`: **🧲 Snap** (on) · **⊾ Ortho** · **▦ Grid** + spacing (10.0 m,
+0.5–1000) · **🎨 Colour** (default `#FF4500`) · **Layer** combo (*0*) · **＋**
+new layer · **👁** show / hide the active layer · a numeric entry (*"len<bearing
+or dx,dy → Enter"*: `25.4<30` = 25.4 m at bearing 30°, `10,5` = 10 m east and 5
+m north, `25.4` = along the cursor direction or a radius) · the live cursor
+readout *"E: — N: —"* · **↶ Undo** · **↷ Redo**.
 
-Annotation elements carry a layer and an optional named group; the default
-stroke is `#FF4500` at 1.5 pt — `MP:413-427`.
+Command aliases — `MW:5776-5824` (the map the command line actually uses;
+case-insensitive): `L`/`LINE` Line · `PL`/`POLY` Polyline · `REC`/`RECT`/`R`
+Rect · `C`/`CIR` Circle · `ARC`/`A` Arc · `EL`/`ELL` Ellipse · `SPL`/`SP` Spline
+· `H`/`HATCH`/`FILL` Fill/Zone · `DIM`/`D` Dimension · `T`/`TEXT` Text ·
+`M`/`MEA` Measure · `S`/`SEL` Move (select) · `RO`/`ROTATE` · `SC`/`SCALE` ·
+`MI`/`MIRROR` · `O`/`OFFSET` · `AR`/`ARRAY` · `U`/`UNDO` · `RE`/`REDO` ·
+`G`/`GROUP` · `UG`/`UNGROUP`. An unknown token reports *"Unknown command
+'…'."* in the status bar; a tool alias reports *"Command 'X' → tool activated."*
 
-**Moving an ICR:** with no pan/zoom tool active, click-hold a blue ICR, drag
-to a valid spot inside the perimeter road and release — the layout rebuilds.
-Invalid drops snap back.
+Annotation elements carry a layer and an optional group; the default stroke is
+`#FF4500` at 1.5 pt — `MP:413-427`.
 
-**Obstructions** are internally called roads (`PlacedRoad`); every UI label
-says *Obstruction*. Controls: **Draw Rectangle**, **Draw Polygon**,
-**Undo Last**, **Clear All** — `MW:1240-1266`.
+**Moving an ICR:** with no Pan / Zoom tool active, click-hold a blue ICR, drag to
+a valid spot inside the perimeter road and release — the layout rebuilds.
+Invalid drops snap back. The Tools tab shows *"Tip: Click and drag a blue ICR to
+reposition it."*
 
-**MCR / objects:** **Place MCR** (button becomes **Cancel Placement** while
-armed) then click the plot; **Remove MCR**; **Place Object** / **Remove
-Objects**. Placement outside the boundary is refused with "Please place
-inside the boundary." — `MW:1291-1330`, `MW:6212-6523`.
+**Obstructions** (Tools tab) are internally called roads; every label says
+*Obstruction*. **Draw Rectangle** (*"Click and drag on the plot to draw a
+rectangular obstruction."*), **Draw Polygon** (*"Click to add vertices.
+Double-click or right-click to close."*), **Undo Last**, **Clear All** —
+`MW:1480-1522, 5305-5375`. Status after a draw: *"Obstruction added — n tables |
+m modules | x MWp"*; after Clear All the status still reads *"All roads cleared."*
+
+**MCR / objects** (Tools tab, **Main Control Room & Objects**): **Place MCR**
+(reads **Cancel Placement** while armed; hint *"Click on the plot to place the
+MCR."*, or in a multi-plot file *"n plots — click INSIDE each plot to drop a USS
+(Unit Substation). The LAST unassigned plot you click gets the MCR. Each plot's
+ICRs route to its own USS/MCR."*), **Remove MCR**, **Place Object** (enabled as
+soon as an Object L/W/H is set, no layout needed), **Remove Objects**. Placement
+outside the boundary is refused with *"Please place inside the boundary."*;
+after placing: *"MCR placed. Total MV cable: n m"* (with cables) or *"MCR placed.
+Enable 'Cable Calc' and regenerate layout to route MV cables."* —
+`MW:1525-1579, 7519-7850`.
 
 ## 8. Piles — `pile_dialog.py`
 
-- The editor defines a pile pattern on **one reference table**, whose local
-  origin (0, 0) is the table's bottom-left (south-west) corner. X runs east
-  across the table width; Y runs north up its height.
-- Each pile is a circle of the given radius centred on the entered (X, Y);
-  default radius **0.15 m** — `MP:125`.
-- The pattern is stamped onto **every** table in the plant, so a pile's UTM
-  position is `(table.x + X, table.y + Y)`.
-- The summary's `Piles` column is `tables × piles-per-table`.
-- **Export PDF (with Piles)** produces the pile drawing; page 1 is rendered
-  at 300 dpi for that export rather than 150 — `MW:1136`, `pdf_exporter.py:1699-1700`.
+**Piles: OFF** in the Layout tools, or **Edit-Pile ▸ Define Pile Layout…**,
+opens **Pile layout** (a `ResultDialog`, 860 px). Strip: *One table* **w × h m**
+*origin at the bottom-left corner · X east, Y north*, chip *n piles*. Left:
+**+ Add**, **Auto grid…**, **Remove**, **Clear**; a table **# · X (m) · Y (m)**
+(empty text *"Click inside the outline to place a pile, or use Auto grid for an
+even pattern."*); **Pile radius** (0.01–2 m, default **0.15**). Right: one
+table drawn to scale — click inside it to place a pile. Footer: **Export to
+Excel…**, **Close**, and the primary **Apply to all n tables** (disabled with
+the reason *"Place at least one pile"*; **Remove piles from …** when clearing).
+**Auto grid** asks **Piles per row** (along X, east) and **Rows of piles**
+(along Y, north): *"Evenly spaced, inset 6% from the ends and 10% from the
+sides · replaces the piles placed so far"*, button **Place n piles**.
+
+- The pattern is defined on **one reference table** whose origin (0, 0) is its
+  bottom-left (south-west) corner; it is stamped onto **every** table, so a
+  pile's UTM position is `(table.x + X, table.y + Y)`.
+- Status after applying: *"Piles applied: n per table · N piles across the
+  plant."* The **Piles: ON** overlay stays visible even with Plant layout off.
+- The Summary's **Piles** row is `tables × piles-per-table` (halves at full
+  weight, §19a).
+- With piles on, **Export ▾** gains **Export PDF (with Piles)** — the PDF report
+  with the pile coordinates; page 1 is rendered at 300 dpi for that export —
+  `MW:4703-4724`, `pdf_exporter.py:1699-1700`.
 
 ## 9. Energy calculation — `energy_calculator.py`
 
-Buttons — `MW:1156-1210`: **Calculate Energy**, **📊 Show Energy Chart**,
-**Export TMY data CSV** with an interval selector.
+**Run Energy Calculation** card (first on the Yield tab) — `MW:1405-1471`:
+**Calculate Energy**, **📊 Show Energy Chart**, **Interval:** (1 min, 10 min,
+**15 min**, 30 min, 1 hour) and **Export TMY data CSV**, plus a status line.
+All disabled until a layout exists; the Energy view's **Calculate energy**
+button is the same action.
 
 Irradiance priority: PVGIS (EU JRC, returns in-plane GTI directly for the
 lat/lon/tilt/azimuth, no key) → NASA POWER (monthly GHI climatology with a
-simple isotropic tilt correction) → zeros with source `unavailable`.
+simple isotropic tilt correction) → zeros with source `unavailable`. Status
+lines: *"Fetching irradiance from PVGIS…"*, *"Irradiance fetched from PVGIS (EU
+JRC): GHI n | GTI n kWh/m²/yr | 12 monthly values"*, or *"PVGIS fetch failed —
+check your internet connection, or switch to 'Hourly GHI file (CSV)' and load a
+local file."*
 
 Model:
 - `Specific yield = GTI (kWh/m²/yr) × PR`
@@ -842,202 +1161,249 @@ length `s` up the rear collector is
 `s/L = 1 − 1/(GCR · (cos β + sin β · cot ψ))`, where ψ is the solar profile
 angle (`tan ψ = tan α / cos(γ_s − γ_c)`). It is evaluated for every hour of a
 representative year, weighted by in-plane beam, and returned as an annual
-beam near-shading loss in %. This is the same model that feeds the
-Shadow View, so the picture and the number always agree.
+beam near-shading loss in %. The same model feeds the Shadow View.
 
-**📊 Show Energy Chart** — `energy_timeseries_window.py:1-20`:
-- **Daily (hourly):** 24 hourly bars, energy (kWh/hour, deep green) stacked
-  over inclined irradiance / GTI (W/m², amber), a slider across all 365 days,
-  a month jump, and a live red crosshair readout in both subplots showing
-  time, energy and GTI.
-- **Monthly (yearly):** 12 bars — energy (MWh/month) and irradiance
-  (kWh/m²/month) — with annual totals.
-- Data source priority: hourly GTI in the loaded file → hourly GHI
-  transposed to GTI → synthesised from 12 monthly GTI values plus solar
-  geometry → uniform annual distribution.
+**📊 Show Energy Chart** — `energy_timeseries_window.py`: a window titled
+*"Hourly energy · 48.11 MWp · Fixed tilt · PR 82.9 %"* with one toolbar: a view
+combo **Daily (hourly)** / **Monthly (yearly)**; **◀**, a date field with a
+calendar, **▶**; and chips *Energy*, the peak hour, *Irradiance*. Daily view:
+24 hourly bars of energy over 24 bars of in-plane irradiance, a hover readout
+(*"Drag along the month strip or use ◀ ▶ · hover the chart for hourly
+values"*), and a day slider with twelve clickable month ticks. Monthly view:
+twelve bars of energy (MWh) and irradiance (kWh/m²) with *"Full year <year> ·
+monthly totals"*. Data source priority: hourly GTI in the loaded file → hourly
+GHI transposed to GTI → synthesised from 12 monthly GTI values plus solar
+geometry → uniform annual distribution.
 
-**Export TMY data CSV** — `MW:1184-1208`, `energy_calculator.py:938-1019`:
+**Export TMY data CSV** — `MW:4513-4562`, `energy_calculator.py:938-1019`:
 full-year GHI, GTI and Energy time series at **1 / 10 / 15 / 30 / 60 min**,
-default **15 min**. `E (kWh) = capacity_kWp × GTI(W/m²)/1000 × PR × LID × (interval/60)`.
-Timestamps are local time, so values are zero at night and peak at solar
-noon. The export needs an hourly series — either a loaded file or a PVGIS
-API hourly fetch — `IP:1998-2001`.
+default **15 min** (dialog **Export TMY Irradiance & Energy Data**, default
+name `tmy_energy_15min.csv`). `E (kWh) = capacity_kWp × GTI(W/m²)/1000 × PR ×
+LID × (interval/60)`. Timestamps are local time. Needs an hourly series — a
+loaded file or a PVGIS API hourly fetch.
 
-**Shadow View (row spacing)** — `shadow_view_dialog.py:1-13`: a 2-D
-cross-section of three adjacent rows in the plane perpendicular to the row
-axis. Two sliders move the sun (day of year, solar hour); the shaded part of
-each rear collector is highlighted live. Button: **🌓 Shadow View (row spacing)** — `MW:1096`.
+**🌓 Shadow View (row spacing)** (Studies, Tools tab; `shadow_view_dialog.py`):
+window **Shadow View** with two tabs. **Between rows (side view)** — a
+cross-section of three adjacent rows; inputs **Tilt angle**, **Row pitch**,
+**Lower-edge height** (note *"Analysis only — the layout is unchanged"*);
+sliders **Day of year** (default 355) and **Solar time** (5–19 h, default 12);
+a verdict such as *"The rear row is shade-free …"* (tick) or *"n % of the rear
+row is shaded …"* with *"Sun elevation … · profile angle … · lower s m of the L
+m slope"*. **Object shadow (plan / keep-clear)** — **Object length (E–W)**,
+**Width (N–S)**, **Height**, **Solar time from … to …**; verdict *"Keep a m²
+clear — the shadow reaches up to r m"* or *"This object casts no shadow in the
+chosen window"*.
 
-## 10. Simulation tools
+## 10. Studies (Tools tab) — `MW:1317-1353`
 
-### 10.1 Simulation with AC Capacity — `ac_capacity_dialog.py`, `ac_capacity_sim.py`, `dc_cap.py`
+The **Studies** card holds **🔆 Simulation with AC Capacity**, **🤖 Robotic
+Module Cleaning** and **🌓 Shadow View (row spacing)**. All three are present
+from the start and **disabled until a layout exists** (they do not appear later).
 
-Button **🔆 Simulation with AC Capacity** appears **only after the first
-layout** — `MW:1070-1076`.
+### 10.1 Simulation with AC Capacity — `ac_capacity_dialog.py`, `ac_capacity_sim.py`, `dc_cap.py`, `ac_capacity_verdict.py`
 
-- Sizes the plant from a target **AC capacity** plus a target **DC/AC ratio**,
-  using the PAN and OND files. Modules-in-series come from the same string
-  sizing method; parallel strings per inverter come from the inverter's
-  current and DC-power limits.
-- `num_inverters = ceil(AC_capacity / Pac_rated)` — never under-sizes;
-  `installed_ac = num_inverters × Pac_rated ≥ AC_capacity`.
-- Maximum practical DC/AC ratio, user-adjustable: **1.5× for string
-  inverters, 1.4× for central inverters**. This is the design overload limit,
-  not the inverter's nameplate DC input, because utility inverters are
-  routinely DC-overloaded and simply clip the surplus.
-- If the target DC ≤ the first run's DC, the app offers to regenerate the
-  layout capped to the target. If the target DC is higher, it advises
-  reducing the AC capacity or the DC/AC ratio.
-- The delivered DC must land **at or just above** target, never below, or the
-  delivered ratio falls short of the design. Because later stages (ICR
-  re-placement, arresters, inverter pads) clear more ground after the trim,
-  trimmed tables are held in a reserve and put back afterwards, skipping any
-  whose ground is now occupied. Half tables count as 0.5 throughout —
-  `dc_cap.py:1-24`.
+Needs a module file and an inverter file (otherwise: *"Load a PAN module file
+and an OND inverter file first (in the input panel), then run the AC-capacity
+simulation."*). The window **Simulation with AC Capacity** (880 px):
+
+- Strip: *This layout holds* **x MWp** *DC · the target cannot exceed it*, chips
+  *String inverter* / *Central inverter* and *"n-string tables"*.
+- **TARGET**: **AC capacity** (kW, with *= x.xx MW* beside it), **DC/AC ratio**
+  (default **1.30**), **Overload limit** (default **1.5** string / **1.4**
+  central — the design overload limit, not the inverter's nameplate DC input),
+  **Modules per string** with a **Size…** button (§4.8a).
+- **EQUIPMENT**: the **MODULE · PAN** and **INVERTER · OND** rows with **View**
+  and **Replace…**, a one-line spec of each, and an expander **Override
+  nameplate values** (**Module Pmax** W, **Inverter rated AC** kW).
+- **RESULT · updates as you type**: a verdict banner, *Target DC* and
+  *Headroom* over a capacity meter (*"layout holds x MWp"*), and tiles
+  **Inverters**, **Strings per inverter**, **Installed AC**, **Target DC**,
+  **DC/AC ratio**, **DC per inverter**. A central design adds **Strings per
+  SMB** (default 20) with *"→ n SMBs per inverter"*.
+- Verdicts: **Fits this layout** — *"Target DC uses n % of the x MWp placed.
+  Regenerating trims the layout to y MWp."*; **Needs x MWp more than this
+  layout holds** — *"… Lower the target, or make room in the layout (tighter
+  pitch, more area) and generate again."* with fix buttons *Set AC capacity
+  to … kW* / *Set ratio to …*; **DC/AC ratio is over the inverter's limit** —
+  *"You asked for r; the overload limit is m. DC beyond the limit is clipped.
+  Figures below use the limit."* with *Set ratio to …* / *Raise limit to …*;
+  **Missing input**.
+- Footer: a checkbox **Let me choose where placement starts** (*"After
+  regenerating, click a point on the plot; the tables nearest it are kept."*),
+  **Close**, and the primary **Regenerate layout at x MWp**.
+- Maths: `num_inverters = ceil(AC_capacity / Pac_rated)` — never under-sizes;
+  `installed_ac = num_inverters × Pac_rated ≥ AC_capacity`; target DC =
+  requested AC × ratio. Modules-in-series come from the string-sizing method;
+  parallel strings per inverter from the inverter's current and DC-power
+  limits, rounded to whole tables on a string design.
+- The delivered DC lands **at or just above** target, never below. Trimmed
+  tables are held in reserve and put back after later stages clear ground;
+  half tables count as 0.5 — `dc_cap.py:1-24`. After a regenerate the status
+  line reads *"… | DC target x MWp met"* or warns *"⚠ DC x MWp is BELOW the y
+  MWp target — the site has no room left; reduce the AC capacity or DC/AC
+  ratio"*.
 
 ### 10.2 Robotic Module Cleaning — `robotic_cleaning_dialog.py`, `robotic_cleaning.py`
 
-Button **🤖 Robotic Module Cleaning** — `MW:1085`.
+Window **Robotic module cleaning** (900 px, maximisable). Strip: **n cleaning
+lines**, *robots travel west–east along each table row* (tracker:
+*north–south along each tracker column*), chip *n tables*.
 
-- A robot drives along the module frames of one cleaning line. **Fixed tilt:
-  lines run west–east. Tracker: lines run north–south.**
-- Inputs, in a **Robot** group — `robotic_cleaning_dialog.py:78-115`. The word
-  "table" becomes "tracker" throughout on a tracker plant:
+**ROBOT** card:
 
-| Field | Default | Range | Notes |
-|---|---|---|---|
-| **Travel per charge** | 0 m | 0–100 000 | how far the robot goes on one charge; **0 = no battery limit**, giving one robot per cleaning segment |
-| **To-and-fro run** — *"Robot must clean out AND return on the same charge"* | **ticked** | — | when ticked the distance to cover is twice the segment length, so a shorter range is needed to finish a row |
-| **Standard bridge span (table gap)** | the gap already configured | 0–50 m | widest gap a standard bridge spans; gaps up to this are always crossable and need no confirmation |
-| **Skip robot if line has ≤** | 0 | 0–1000, in steps of 0.5 | a line or segment carrying this many tables or fewer is too short to warrant its own robot and is not counted; **0 = count every line** |
+| Field | Default | Notes |
+|---|---|---|
+| **Travel per charge** (m) | 0 — hint *0 = no limit* | how far the robot goes on one charge |
+| **Standard bridge span** (m) | the configured gap — **Gap between MMS-Tables** (1.0 m) on fixed tilt, **N–S service gap between units** (2.0 m) on a tracker; 2.0 m if that is zero | widest gap a standard bridge spans |
+| **Skip lines up to** (tables / trackers, steps of 0.5) | 0 | a line carrying this many units or fewer gets no robot |
+| **Out and back** (*must return on the same charge*) | ticked | doubles the distance to cover |
 
-- The bridge-span default is taken from the reader's own geometry —
-  `robotic_cleaning.py:63-70`: the **Gap between MMS-Tables** on a fixed-tilt
-  plant (default **1.0 m**), or the **N–S service gap between units** on a
-  tracker plant (default **2.0 m**). If that value is zero it falls back to
-  **2.0 m**.
-- Every gap too wide for a standard bridge is listed individually with its
-  measured span and location, split into gaps blocked by equipment
-  (arresters, buildings, obstructions) and gaps in open ground. Each has a
-  checkbox. Ticking it means the reader will install a supported bridge, so
-  the robot drives across and the fleet count drops. Leaving it unticked
-  breaks the line, and that stretch keeps its own robot. **Nothing is bridged
-  unless ticked.**
-- Fleet size: one robot per row to start, growing for two reasons — broken
-  lines (each segment needs its own robot) and battery range (a robot that
-  cannot finish its segment on one charge needs company).
-- A segment whose weighted table count is at or below **min tables per line**
-  is too short to justify a dedicated robot and is not counted; a half unit
-  counts as 0.5 — `robotic_cleaning.py:87-91`.
-- Everything recalculates live. Results feed the summary's `Robots` column
-  and the BOM. The BOM never carries a fleet the reader did not ask for —
-  `MP:645-648`.
+**RESULT**: a verdict banner — *"n robots for m lines"* with a detail such as
+*"k of them only because of unbridged gaps. Bridge a gap to save its robot."*,
+*"One robot per cleaning line."* or *"No robot is lost to an unbridged gap."*
+(or *"No tables placed"*) — and tiles **Standard bridges**, **Longest
+segment**, **Cleaning segments**, **One full pass**.
 
-## 11. SLD Mode — `sld_manager.py`, `sld_symbols.py`, `sld_autobuild.py`, `sld_sheet.py`
+Right: **GAPS TOO WIDE FOR A STANDARD BRIDGE · n** with a filter *Inside the
+boundary · Crossing it · At equipment*, **Bridge all n** / **None**, and a table
+**Bridge · Table row · Gap · Saves · Blocked by**. Ticking a gap means the reader
+will install a supported bridge, so the fleet count drops; unticked, the line
+stays broken and that stretch keeps its own robot. **Nothing is bridged unless
+ticked**; bridges preview on the plot as they are ticked; a bridge that would
+leave the site is preview only. Footer: **Close** and the primary **Add n robots
++ m bridges to BOM**. Results feed the Summary's *Cleaning robots* row and the
+BOM.
 
-- Tools: **↖ Move** (select and drag), **Wire** (click-drag a connecting
-  wire), **Text** (multi-line label), **Delete**.
-- Rotation: **⟲ 90°**, or type an angle and **⟳ Apply** — `MW:1992-1997`.
-- **🔗 Group** / **✂ Ungroup** / **⧉ Copy**; **✋ Pan**, **🔍 Zoom**, **⤢ Fit**;
-  **🗑 Clear SLD** — `MW:2006-2046`.
-- Symbol set — `sld_symbols.py:110-731`: PV Module, Inverter, SMB, ACCB,
-  2-winding / 3-winding (IDT) / 4-winding / 5-winding transformers, Power Tx,
-  MV Panel, Lightning Arrester, ISO with Earth Switch, isolator with earth,
-  Voltage Transformer (2-core), VT delta, Current Transformer, Voltmeter
-  Selector Switch, Voltmeter, Multi Function Meter, VCB, CB status, R-Y-B
-  phase indication, Fuse, MCB, MCCB, relay.
-- The inverter and every transformer are placed **pre-rotated to 270°** so
-  they align with the horizontal SLD bus in all topologies —
-  `sld_manager.py:736-739`.
-- **📄 Import PDF / DXF** brings an existing diagram in. A vector SLD PDF
-  cannot be reliably parsed back into typed symbols, so the first page is
-  rendered to a high-resolution image and placed as a **background** on the
-  canvas; the reader overlays editable symbols, wires and text on top, and
-  the whole thing carries into the exported PDF. Longest rendered dimension
-  is capped at 2600 px — `pdf_sld_import.py:1-18`. **✖ Remove BG** removes it.
+## 11. SLD view — `sld_manager.py`, `sld_symbols.py`, `sld_autobuild.py`, `sld_sheet.py`
+
+The **SLD** tab (Ctrl+5) shows the drawing sheet on the right and takes over
+the left column with a blue banner **● SLD Preparation** / **Exit SLD** and the
+**SLD TOOLS** panel. **Nothing is generated on entry**: the row **Generate:**
+offers **Automatic** (build the diagram from the layout and the bill of
+materials; status *"Auto-built SLD (simple feeder) — edit as needed."*) or
+**Manual** (a blank sheet; *"Start a blank SLD for manual drawing? This clears
+the current diagram."* when one exists) — `MW:2126-2150, 6471-6516`.
+
+- Tools (2-column grid): **↖ Move/Select**, **🗑 Delete**, **╱ Wire**,
+  **📝 Text**, then the symbols **PV Module**, **Inverter**, **SMB**, **ACCB**,
+  **2 Wdg Tx**, **3 Wdg Tx**, **4 Wdg Tx**, **5 Wdg Tx**, **MV Panel**,
+  **Lightning Arr.**, **ISO+Earth Sw**, **Isolator+Earth**, **VT (2 Core)**,
+  **CT**, **VSS**, **Voltmeter (V)**, **MFM**, **VCB**, **CB ON/OFF/TRIP**,
+  **R-Y-B Phase**, **Fuse**, **MCB**, **MCCB**, **⊚ Relay** (asks for the ANSI
+  device number), then any imported image symbols.
 - **🖼 Import Image Symbol** traces an image's outlines into a **vector**
-  symbol (normalised polylines), not a pasted raster — so it renders as crisp
-  line art and exports to DWG/DXF as real vectors. Symbols are stored per
-  user and stay available across sessions. A **Symbol Editor** opens first
-  with **✏ Pen** / **🧽 Erase** / **🗑 Clear** so the traced strokes can be
-  fixed before accepting — `sld_custom_symbols.py:1-18`, `sld_symbol_editor.py:1-8`.
+  symbol (crisp line art, real vectors in DWG/DXF), stored per user across
+  sessions; the **Symbol Editor — edit, then Accept** window opens first with
+  **✏ Pen**, **🧽 Erase**, **🗑 Clear** and **Accept** / **Reject**.
   **🗑 Delete Image Symbol** removes one.
-- **Auto-build** generates a starter diagram from the current plant's counts
-  and the BOM's ratings, annotated with ×N multiplicities and ratings —
-  `sld_autobuild.py:1-12`:
-  - String inverter: PV → String Inverter (×N) → ACCB (×n) → Transformer → MV Panel → Grid
-  - Central inverter: PV → SMB (×N) → Central Inverter (×n) → Transformer → MV Panel → Grid
-  - Topology rules: 15 inverters per ACCB, 4 ACCBs per IDT, IDT max 17.2 MVA
-    — `sld_autobuild.py:19-22`, mirrored in `bom_builder.py:16-19`.
-- The sheet is an **A3 landscape** frame (420 × 297 drawing units) with an
-  orange outer border, an inner frame, a zone grid (numbers 8..1 across,
-  letters F..A down) and a right-hand band carrying LEGENDS, NOTES and a
-  blank title-block skeleton with generic field labels only —
+- **Rotate:** angle spin (0–360°, step 15, default 90) + **⟳ Apply**, **⟲ 90°**;
+  **🔗 Group**, **✂ Ungroup**, **⧉ Copy**; **View:** **✋ Pan**, **🔍 Zoom**,
+  **⤢ Fit**; **🗑 Clear SLD**; checkbox **Full SLD (per-ICR / per-feeder)**
+  (Automatic only: off = one annotated feeder with ×N multiplicities, on =
+  parallel feeders converging to per-ICR transformers); **📄 Import PDF /
+  DXF**, **✖ Remove BG**; **⬇ Export SLD to DWG**, **⬇ Export SLD to PDF**;
+  hint *"Pick a symbol, click on the canvas to place it. Move/Select
+  (Shift-click) to select; ⟲ 90° or Apply to rotate. Use ✋ Pan / 🔍 Zoom to
+  navigate (turn off to edit)."*; checkbox **Hide Layout & Energy Summary**
+  (hides the plant chip row).
+- The inverter and every transformer are placed **pre-rotated to 270°** so
+  they align with the horizontal bus — `sld_manager.py:736-739`.
+- **📄 Import PDF / DXF**: a vector SLD PDF cannot be reliably parsed back into
+  typed symbols, so the first page is rendered to a high-resolution image
+  (longest side capped at 2600 px) and placed as a **background**; the reader
+  overlays editable symbols, wires and text, and the whole thing carries into
+  the exports — `pdf_sld_import.py:1-18`.
+- **Auto-build** rules — `sld_autobuild.py:1-22`: string design PV → String
+  Inverter (×N) → ACCB (×n) → Transformer → MV Panel → Grid; central design PV
+  → SMB (×N) → Central Inverter (×n) → Transformer → MV Panel → Grid; 15
+  inverters per ACCB, 4 ACCBs per IDT, IDT max 17.2 MVA (mirrored in
+  `bom_builder.py:16-19`). It needs no energy run.
+- The sheet is an **A3 landscape** frame (420 × 297 units) with an orange
+  outer border, an inner frame, a zone grid (8..1 across, F..A down) and a
+  right-hand band carrying LEGENDS, NOTES and a blank title block —
   `sld_sheet.py:1-21`. For a large plant the **physical** paper size grows
-  (A3 → A1 → A0) while the drawing coordinate box stays at A3 proportions —
+  (A3 → A1 → A0) while the drawing box keeps A3 proportions —
   `pdf_exporter.py:1468-1476`.
 - **⬇ Export SLD to DWG** writes a DXF natively and converts it to DWG when
-  the ODA File Converter is installed, otherwise it stays `.dxf`.
-  Symbol glyphs are rendered off-screen and their primitives re-emitted as
-  DXF entities, rotated about each element's centre, so the CAD drawing
-  matches the screen — `sld_dxf_export.py:1-16`. **⬇ Export SLD to PDF**
-  writes the sheet as a PDF.
-- **Hide Layout & Energy Summary** enlarges the working area.
+  the ODA File Converter is installed, otherwise it stays `.dxf` —
+  `sld_dxf_export.py:1-16`.
 
-## 12. BOM Mode — `bom_builder.py`, `bom_presets.py`, `bom_template_window.py`
+## 12. BOM view — `bom_builder.py`, `bom_presets.py`, `bom_template_window.py`
 
-- Columns: **S.No · Material Description · Quantity · Unit · Remark** —
-  `MW:2199`, `bom_builder.py:7`.
-- The main table is the app's **automated BOM**, computed from the layout and
-  fully editable: **➕ Add Row**, **🗑 Delete Selected Row**,
-  **⚙ Rebuild from Layout** — `MW:2123-2133`.
-- **BOM Template** picks a built-in preset and **📥 Load Template** opens it
-  in a **separate, non-modal window** beside the automated BOM. Presets —
-  `bom_presets.py:10, 130, 262, 400`:
-  `30MWp_20MW_Central_FT`, `30MWp_20MW_String_FT`,
-  `26.65MWp_20MW_Central Inverter_SAT`, `26.65MWp_20MW_String Inverter_SAT`.
-- Edit the template there, then **Overlap into Plant BOM**. After
-  confirmation it **replaces** the automated BOM — and therefore the BOM page
-  of the exported PDF — `bom_template_window.py:1-10`.
-- **⬇ Export BOM to Excel**, **⬇ Export BOM to PDF** — `MW:2163-2167`.
-- **Hide Layout & Energy Summary** enlarges the working area.
+The **BOM** tab (Ctrl+4) shows the editable table on the right (columns
+**S.No · Material Description · Quantity · Unit · Remark**) and takes over the
+left column with a green banner **● Bill of Materials** / **Exit BOM** and the
+**BOM TOOLS** panel: **➕ Add Row**, **🗑 Delete Selected Row**, **⚙ Rebuild
+from Layout** (discards edits); **BOM Template:** — a combo with **Plant
+(auto-computed)** and **only the one built-in template that matches the
+current design** (`30MWp_20MW_String_FT`, `30MWp_20MW_Central_FT`,
+`26.65MWp_20MW_String Inverter_SAT` or `26.65MWp_20MW_Central Inverter_SAT`) —
+and **📥 Load Template**; **⬇ Export BOM to Excel**, **⬇ Export BOM to PDF**;
+the hint *"The main table is the automated BOM. Load Template opens it in a
+separate window; edit it there, then replace the plant BOM with it (used in the
+PDF)."*; checkbox **Hide Layout & Energy Summary**. Status on entry: *"BOM Mode
+ON — double-click any cell to edit. It prints on its own page in the PDF."*
+
+- **Load Template** opens **BOM template — <name>**, a separate non-modal
+  window (**+ Add row**, **Delete row**, **Close**, and the primary **Replace
+  plant BOM with this template**, confirmed by a **Replace plant BOM** box).
+  After replacing: *"Plant BOM replaced with the template (n rows). It will
+  appear on the PDF Bill of Material page."* Closing after edits asks *"You
+  edited the template. Replace the plant BOM with it before closing?"*
+- The computed line items are in §19a.
 
 ## 13. Exports
 
-### 13.1 PDF report — `pdf_exporter.py:1689-1750`
+### 13.1 The Export menu — `MW:2437-2462, 4719-4732`
 
-Buttons: **Export PDF (Layout + Summary)** and **Export PDF (with Piles)** —
-`MW:1126, MW:1136`. Every page is **A3 landscape** (16.54 × 11.69 in), emitted
-in this order:
+**Export ▾** sits beside **Save project** in the view header. Items, in order:
 
-1. **Engineering drawing** — the layout, border, north arrow at top-right,
-   title block, and a plant-details table with editable form fields.
-2. **Summary** — layout summary, design parameters, and the inverter/cable
-   summary including the per-ICR cable breakdown.
-3. **Single Line Diagram** — the reader's diagram (skipped silently if the
-   drawing errors, so it never blocks the rest of the report).
-4. **Bill of Material** — paginated across as many pages as needed.
-5. **Energy** — present only when an energy calculation has been run: two
-   pages when monthly data is available (inputs + PR breakdown, then the
-   monthly IEC 61724-1 table and the multi-year forecast), otherwise one
-   combined page.
+| Item | Produces | Available |
+|---|---|---|
+| **Export KMZ** | the Google Earth file (§13.2) | after a layout |
+| **Export DXF** | the layered CAD drawing (§13.3) | after a layout |
+| **Export ICR-Block DXF** | one DXF drawing set: sheet 1 the whole plant, then one sheet per ICR block | after a layout |
+| **Export Cable Schedule (Excel)** | a workbook with one sheet per ICR block: DC strings (table/row → inverter/SMB) and AC / DC-trunk feeders, with recommended conductor sizes | after a layout (cables calculated for real lengths) |
+| — | | |
+| **Export Detailed Project Report** | a **Word document (.docx)** — cover page, site layout plan, design summary, single line diagram, bill of materials and energy yield (§13.1a) | after a layout |
+| **Export PDF (with Piles)** | the PDF report including the pile drawing and coordinates | only while **Piles** is on |
+| — | | |
+| **Export Image (PNG)** | the plot as it is on screen, as an image file | after a layout |
 
-PDF metadata: Title "SolarLayout.Desktop Report", Subject "Automated PV
-layout summary".
+Every export needs active access (§15) and all are disabled while a run is in
+progress. Status lines: *"KMZ exported: …"*, *"DXF exported: …"*, *"ICR-block
+DXF exported (n block sheets + plant): …"*, *"Cable schedule exported (n
+ICR-block sheets): …"*, *"Document exported: …"*, *"PDF exported: …"*.
 
-### 13.1a Export button labels — `MW:1112-1136`
+Also outside the menu: **Export TMY data CSV** (Yield tab, §9), **⬇ Export BOM
+to Excel** / **⬇ Export BOM to PDF** (BOM tools), **⬇ Export SLD to DWG** /
+**⬇ Export SLD to PDF** (SLD tools), **Export to Excel…** (pile editor).
 
-Quote these exactly:
+⛔ There is no *"Export PDF (Layout + Summary)"* button any more, and no export
+button block under the inputs.
 
-| Button | Produces |
-|---|---|
-| **Export KMZ** | the Google Earth file |
-| **Export DXF** | the CAD drawing |
-| **Export PDF  (Layout + Summary)** | the report |
-| **Export PDF  (with Piles)** | the report with the pile drawing |
-| **Export TMY data CSV** | the irradiance and energy time series |
-| **⬇ Export BOM to Excel** / **⬇ Export BOM to PDF** | the materials list |
-| **⬇ Export SLD to DWG** / **⬇ Export SLD to PDF** | the single-line diagram |
+### 13.1a The Detailed Project Report (.docx) — `SC/docx_exporter.py`
+
+Saved through **Save Word Document**. A3 landscape, 12 mm margins, footer
+*"Rensaar Private Limited — Detailed Project Report"*. Content order: cover
+page → **Project Overview & Methodology** → **Design Basis — Input Parameters**
+→ **Results & Analysis — Output** → **Energy Yield & Loss Analysis** (only when
+energy was calculated) → the drawing annexures **Site Layout Plan**, **Design
+Summary**, **Single Line Diagram**, **Bill of Materials** (paginated *(i/n)*)
+and **Energy Yield — Drawings** (two figures when monthly data exists, else
+one). The drawings are the same page builders the PDF uses. The layout
+drawing hides DC / AC / MV cables and the arrester circles and forces the
+arrester rectangles and labels visible, then restores the on-screen state
+(§19a).
+
+**Export PDF (with Piles)** (`pdf_exporter.py:1689-1750`): every page A3
+landscape, in this order — the engineering drawing (layout, border, north
+arrow at top-right, title block, plant-details table) with the piles; the
+summary (layout summary, design parameters, inverter/cable summary with the
+per-ICR breakdown); the single-line diagram (skipped silently on error); the
+bill of materials (paginated); the energy pages (only when energy was
+calculated: two pages with monthly data, else one). Metadata: Title
+*"SolarLayout.Desktop Report"*, Subject *"Automated PV layout summary"*.
 
 ### 13.2 KMZ — `kmz_exporter.py:1-11`
 
@@ -1066,7 +1432,7 @@ All coordinates in UTM metres.
 | `TABLES` | module tables / tracker units | blue |
 | `ICR` | inverter control rooms | cyan |
 | `MCR` | main control room | violet |
-| `INVERTERS`, or `SMB` in Central Inverter mode | inverters or string monitoring boxes | lime |
+| `INVERTERS`, or `SMB` in a central design | inverters or string monitoring boxes | lime |
 | `OBSTRUCTIONS` | hand-drawn obstructions | green |
 | `OBJECTS` | user-placed objects | brown |
 | `STREET_LIGHT` | street-light poles | orange |
@@ -1091,151 +1457,152 @@ All coordinates in UTM metres.
 - **Tables are written as block references**, not as individual polylines —
   every table of a given size is an insert of one shared block definition, so
   editing that block in a CAD program updates every table in the plant at once
-  (`dxf_exporter.py:212-218`). The block's own geometry sits on layer `0` so it
-  inherits the properties of the layer each insert is placed on, per standard
-  CAD practice. This is worth telling a drafting team.
+  (`dxf_exporter.py:212-218`). The block's own geometry sits on layer `0`.
 
 ### 13.4 What the Google Earth export does NOT carry
 
 Checked against `kmz_exporter.py`: **street lights, piles and terrain contours
-are not written.** They appear on the plot, in the PDF drawing and in the CAD
-export, but not in the Google Earth file. Do not imply otherwise.
+are not written.** They appear on the plot, in the report drawing and in the
+CAD export, but not in the Google Earth file.
 
-## 14. Projects — `project_io.py`
+## 14. Projects — `project_io.py`, `MW:1162-1187, 3033-3160`
 
-- **File ▸ Save Project…** / **Open Project…**, and the toolbar's
-  **💾 Save(Project)** — `MW:984-993`, `MW:2261`.
-- Format: **`.slp`** (Solar Layout Project). It stores the whole session —
-  inputs, layout, sketch edits, SLD, BOM, terrain.
+- **Save project** in the view header, or **File ▸ Save Project…** (**Ctrl+S**);
+  **File ▸ Open Project…** (**Ctrl+O**). Save dialog **Save Project**, filter
+  *"PV Layout Project (*.slp)"*; status *"Project saved (full): …"* / *"Project
+  loaded: …"*.
+- Format: **`.slp`** (Solar Layout Project). It stores the session — inputs
+  (see §4.10 for what is *not* kept), layout, sketch edits, SLD, BOM, terrain.
 - The file is a tamper-evident binary container: a `PVSLP` magic signature, a
   format version byte, a truncated SHA-256 checksum over a secret plus the
   compressed payload, then a zlib-compressed, base64url-encoded JSON payload.
   A wrong magic or a mismatched checksum is reported as an error rather than
   loaded.
-- **File ▸ New Project** starts fresh — `MW:964`.
+- **File ▸ New Project** (**Ctrl+Shift+N**) opens a fresh window at defaults in
+  the same design; **File ▸ Open Sample Site** loads the bundled sample.
 
-## 15. Access & licensing — `license_dialog.py`, `trial_client.py`, `licensing.py`
+## 15. Access & licensing — `license_dialog.py`, `access_chip.py`, `trial_client.py`, `licensing.py`
 
-**Online, device-bound access — no licence file.** The old offline `license.lic`
-scheme was removed; `licensing.py` now provides only `machine_id()`, and
-entitlement is checked server-side via `solar_core.trial_client`. There is **no
-`.lic` file** to install, copy, back up, or load — the **Device ID** is the key.
-The app opens without access, but **Generate Layout** — and every export, plus
-the SLD and BOM tools — is blocked until access is active (`_require_license`,
-`MW:2748`, called from the generate/export/SLD/BOM handlers, e.g. `MW:3017`).
+**Online, device-bound access — no licence file.** Entitlement is checked
+server-side; there is **no `.lic` file** to install, copy, back up, or load.
+The app opens without access, but **Generate Layout** and every export (KMZ,
+DXF, ICR-block DXF, cable schedule, report, TMY CSV) are blocked until access
+is active (`_require_license`, `MW:3200-3213`). When blocked, the app opens
+the **License / Subscription** window itself — there is no separate
+"Subscription Required" message. ⛔ The SLD and BOM views are **not** gated.
 
-**Device ID** — `licensing.machine_id()`: on Windows the registry **MachineGuid**,
+**Device ID** — `licensing.machine_id()`: on Windows the registry MachineGuid,
 the value shown under Settings ▸ System ▸ About ▸ Device ID.
 
-**Help ▸ License / Subscription…** (`MW:1020`) opens the **License / Subscription**
-window (`license_dialog.py`):
-- Status headline, set by `_refresh` from `trial_client.check_status(force=True)`
-  (`license_dialog.py:105-124`): **✓  Active** (green) with *"You have access
-  until <date>."*; **✗  No access** (red) with the reason and *"Layout generation
-  is disabled until your access is active."*; **⏳  Waiting for activation**
-  (amber) shown immediately after **Get Free Access** (`license_dialog.py:142`).
-- **Your Device ID** — a read-only field labelled *"This Device ID identifies this
-  computer to SolarLayout (it matches Settings ▸ System ▸ About ▸ Device ID):"*
-  with a **Copy** button (`license_dialog.py:53-66`).
-- State-dependent buttons (`license_dialog.py:122-124`): active → **Access
-  Details** (opens the web page); not active → **Get Free Access** + **Contact
-  Us**; always → **Refresh** + **Close**.
-- The window re-checks on focus (`changeEvent`, `license_dialog.py:92-98`), so
-  returning from the browser after activating flips it to Active by itself.
+**Help ▸ License / Subscription…** opens the window (`license_dialog.py`):
+- Headline and detail by state (`access_chip.py:56-84`): **✓ Active — until
+  <date>** / *"You have access until <date>."*; **Start your free trial** /
+  *"All features are available during your free trial. Activation takes one
+  click in your browser."* (no access yet); **Access expired** / *"Your free
+  trial or subscription has ended. Contact us to purchase, or to request a
+  trial extension."*; **Access revoked** / *"Access on this device has been
+  revoked. Contact us to restore it."*; **Access status unavailable** / *"We
+  couldn't reach the SolarLayout server. Check your connection and press
+  Refresh."*; after **Get Free Access**: **⏳ Waiting for activation** / *"This
+  will update automatically when you return here after activating in your
+  browser."* An optional line *"Access granted to <email>"* names the account.
+- Buttons: active → **Access Details**, **Support cases**; not active → **Get
+  Free Access**, **Contact Us**; always **Refresh**, **Close**.
+- The **Device ID** is folded behind a **Having trouble?** disclosure: group
+  **Your Device ID**, hint *"If support asks for your Device ID, copy it from
+  here and include it in your message."*, a **Copy** button — `license_dialog.py:99-132`.
+- The window re-checks on focus, so returning from the browser after
+  activating flips it to Active by itself.
 
 **Getting access.** **Get Free Access** opens the browser at
-`{web}/desktop/solarlayout?device=<DeviceID>` (`trial_client.activation_url`,
-`trial_client.py:54-55`; `_WEB_BASE` default `https://solarlayout.app`).
-**Contact Us** opens `{web}/contact`; **Access Details** (when active) opens the
-same `/desktop` page.
+`{web}/desktop/solarlayout?device=<DeviceID>` (`_WEB_BASE` default
+`https://solarlayout.app`). **Contact Us** opens `{web}/contact`; **Access
+Details** the same `/desktop` page; **Support cases** the support-case list.
 
 **Status model** (`trial_client.check_status`): the server returns
-`active | expired | revoked | none` plus a `valid_till` date. Reader-facing
-reasons, verbatim: expired → *"Your access has ended. Contact SolarLayout to
-purchase a licence."*; revoked → *"Access has been revoked. Contact
-SolarLayout."*; none → *"No active access for this device. Click 'Get Free
-Access' to get started."*; can't verify with no usable cache → *"Could not verify
-access — connect to the internet and try again."* A good check is cached; the app
-keeps working through a **3-day offline grace** window, and an active result is
-treated fresh (no network call) for 5 minutes.
+`active | expired | revoked | none` plus a `valid_till` date. A good check is
+cached; the app keeps working through a **3-day offline grace** window, and an
+active result is treated fresh (no network call) for 5 minutes. At launch the
+License window opens by itself only in the `none` state.
 
-**Gate message.** When blocked, the **Subscription Required** dialog reads
-*"Layout generation is locked."*, then the reason, then *"Open Help ▸ License /
-Subscription… to view your Device ID and start your free trial."*, then opens the
-License window itself (`MW:2758-2762`).
-
-**Account-level access, up to 3 devices (server side, 2026-09 — `solarlayout`
-repo, GH #1249).** Access belongs to the signed-in account (email) per app, not
-to a device: one access record per account holds the kind, status and end date
-(`apps/mvp_api/src/modules/desktop/desktop.service.ts:53` `DEVICE_LIMIT = 3`;
-`:48` `TRIAL_DAYS = 7`). A device row is only a registration against that
-account, so every device shows the **same** end date and status, an extension
-reaches all of them, and revoke ends all of them. Rules, in the order the server
-applies them (`desktop.service.ts:106-115`): a device already on the account is
-a no-op; a device registered under **another** account is refused
-(`DEVICE_ALREADY_ACTIVATED`); a **fourth** device is refused
-(`DEVICE_LIMIT_REACHED`); an expired or revoked account may still add a device,
-which simply shows that status. **Nothing frees a slot** — a used device counts
-for the life of the account; support only. The activation page
-(`apps/solarlayout_web/src/app/desktop/[app]/_components/DesktopAccessClient.tsx`)
-reads, verbatim: helper *"This will be device N of 3 on your account."* (`:382`);
-button **Add this device** when the account already has a device, else
-**Activate free access for this device** (`:438-439`); at the cap the heading
-**You have used all 3 devices** (`:513`) with *"Your account already uses
-<App> on 3 devices, so this one cannot be added."* (`:759`); a device on
-another account → heading **This device is already in use** (`:515`), *"Another
-account is already using <App> on this device…"* (`:790`); subtext *"Free
-access is for up to 3 devices per account."* (`:557`); the details card lists
-every device with a **This device** badge on the current one and *"N of 3
-devices"* (`:635-639`). The desktop License window itself is unchanged: it
-still reports this device's status, which is now derived from the account.
+**Account-level access, up to 3 devices** (server side — `solarlayout` repo,
+GH #1249): access belongs to the signed-in account (email) per app, not to a
+device; one access record per account holds the kind, status and end date
+(`DEVICE_LIMIT = 3`, `TRIAL_DAYS = 7`). Every device on the account shows the
+**same** end date and status; an extension reaches all of them; revoke ends all
+of them. Rules in order: a device already on the account is a no-op; a device
+registered under **another** account is refused (*"This device is already in
+use"*); a **fourth** device is refused (*"You have used all 3 devices"* —
+*"Your account already uses <App> on 3 devices, so this one cannot be
+added."*); an expired or revoked account may still add a device, which simply
+shows that status. **Nothing frees a slot** — support only. The activation
+page says *"This will be device N of 3 on your account."*, its button reads
+**Add this device** (or **Activate free access for this device** for the
+first), and its details card lists every device with a **This device** badge.
 
 **Updates & second users.** Access is server-side and belongs to the account,
-so it survives reinstalls and updates with nothing to re-load (a reinstalled
-computer keeps its place among the account's devices), and a second Windows
-user account on the same PC shares the same Device ID.
+so it survives reinstalls and updates with nothing to re-load, and a second
+Windows user account on the same PC shares the same Device ID.
 
-**Always-visible chrome (added 2026-08):**
-- **Access-status chip** — always shown in the top app toolbar (`_access_label`,
-  `MW:1037`; rendered by `_refresh_access_chip`, `MW:2785-2801`, from
-  `access_chip.access_view`). Text by state: **● Active — until <date>** (green,
-  `tokens.GREEN_ON`); **● No active access** (gold, `tokens.GOLD`) with a **Get
-  Free Access** button; **● Access expired** / **● Access revoked** (red,
-  `tokens.RED_ON`) with a **Contact Us** button; **● Access status unavailable**
-  (muted). Refreshes on startup, on window focus, after the License window closes,
-  and on a 30-minute timer.
-- **Docs** button — top app toolbar, beside **Support** (`MW:1055`); opens
-  `trial_client.docs_url()` = `{web}/docs` = https://solarlayout.app/docs
-  (`trial_client.py:76`).
-- **App version** — always shown in the bottom status bar
-  (`status_bar.addPermanentWidget`, `MW:2467-2469`), text
-  `app_version.display_version()` (e.g. `v1.1.0`; `dev` when run from source).
+**Always-visible chrome:**
+- **Access chip** in the ribbon (`MW:3242-3265`): **● Active — until <date>**
+  (orange on navy; *"(offline)"* appended when the cached result is in use);
+  **● Access expired** / **● Access revoked** (red) with a **Contact Us**
+  button; **● Access status unavailable** (muted). With no access at all the
+  chip itself is hidden and only a gold **Get Free Access** button shows.
+  Refreshed at startup, on window focus, after the License window closes, and
+  every 30 minutes.
+- **Docs** button → https://solarlayout.app/docs. **Support** button → the
+  **Support / Feedback** window (*"Tell us what's going on — we'll get back to
+  you by email."*; **Subject**, **Category** — *Something's broken · How do I… ·
+  I have a suggestion · Billing & account · My results don't look right* —,
+  **Description**, a **View support cases & replies** link, **Cancel** /
+  **Send**; validation *"Please enter a subject and a description (at least 10
+  characters)."*). Without active access the button shows *"You'll need active
+  access to file a support ticket. Start a free trial, or contact us
+  directly."* with **Get Free Access** / **Contact Us** / **Cancel**.
+- **App version** in the status bar (§6.0).
 
 - ⛔ Never document how access is granted server-side, keys, or any vendor
   operation. Reader-side only.
 
-## 16. Menus — `MW:962-1020`
+## 16. Menus — `MW:1136-1210`
 
-- **File:** New Project · Move to String / Central Window… · Save Project… ·
-  Open Project… · Exit
+- **File:** New Project (Ctrl+Shift+N) · Move to String / Central Window…
+  (Ctrl+N) · Save Project… (Ctrl+S) · Open Project… (Ctrl+O) · Open Sample
+  Site · Exit (Ctrl+Q)
 - **Edit-Pile:** Define Pile Layout…
-- **Help:** How to Use This Tool · License / Subscription…
+- **Help:** How to Use This Tool (F1) · License / Subscription…
+
+**Help ▸ How to Use This Tool** opens **Help — SolarLayout** with the tabs
+*Getting Started · Input Parameters · Layout / Sketch Editing · Inverters, ICR,
+Cables · Terrain / Obstructions · Energy Yield · SLD / BOM · Export, PDF,
+Licensing*. ⚠️ Its text is older than the interface in places (it still
+mentions Back / Forward toolbar arrows, "Pro Plus" energy pages and a visible
+Device ID); the docs site, not the in-app guide, is the reference.
 
 ## 17. Other reader-visible behaviour
 
-- Water-body detection currently uses **KMZ-defined polygons only**; the mode
-  is hard-set to `"kmz"` after every browse — `IP:1320-1322`. A satellite
-  detector exists in the codebase (`satellite_water_detector.py`,
-  `satellite_detection_dialog.py`, `water_body_mode_dialog.py`) but is
-  **not reachable** from the shipped flow. ⛔ **Do not document satellite
-  water detection as a feature.**
-- An unexpected error shows "An unexpected error occurred, but the
-  application will keep running." and appends the traceback to
-  `solarlayout_error.log` in the system temp directory — `entrypoints.py:_install_excepthook`.
+- Water-body detection uses **KMZ-defined polygons only** (`MW:3667-3672`
+  hard-sets satellite detection off). A **Water bodies** window exists in the
+  code but is **not reachable**. ⛔ Do not document satellite water detection.
+- An unexpected error shows *"An unexpected error occurred, but the
+  application will keep running."* and appends the traceback to
+  `solarlayout_error.log` in the system temp directory — `entrypoints.py`.
 - Very large plants use fast geometric cable **estimation** so generation
   stays quick.
-- Status line after a run reports plant count, total acres, and more —
-  `MW:3259`.
+- **Progress:** *"Calculating layout…"* with the overlay *Generating Layout…*;
+  then *"Calculating cable routes…"* / *Calculating Cable Routes…* — *"The
+  calculation is going on, please wait."*; then *Rendering Layout on Canvas…*
+  — *"Large plants may take a few minutes — please wait."*
+- **After a run** the status line reads **"Layout ready"** followed by notes
+  as they apply: *"| n water bodies excluded"*, *"| n tables cleared for
+  building shadows"* (*trackers* on a tracker), *"| MV cable: n m"*, the DC
+  target note (§10.1). The totals are in the plant chips, not the status line.
+- **Closing while a calculation runs** asks **Calculation in progress** — *"A
+  layout, cable or weather calculation is still running. Wait for it to finish
+  (the window closes by itself when it does), or quit now and discard the
+  result?"* — **Wait** / **Quit now**.
 
 ## 18. Known stale sources — do not repeat these
 
@@ -1256,6 +1623,17 @@ user account on the same PC shares the same Device ID.
 | Image scale example "1000 m = 10 mm" | `image_boundary_parser.py` docstring | Dialog default is 100 m / 10 mm |
 | A 15 m TL setback is fixed | `README.md`, `layout_engine.py:29` | Default 15 m per side, reader-editable 0–500 |
 | Flat `core/` `gui/` `models/` project layout, `main.py` | `README.md` | Restructured into `packages/` + `apps/` — irrelevant to readers either way |
+| A four-card start-up window with **Select** buttons | older docs pages, screenshots before 2026-09-21 | Two segmented controls (MOUNTING, INVERTER), a summary card, **Continue** (§2) |
+| One long input panel with **Generate Layout** at the bottom | older docs, F1 help | A pinned **Generate Layout** above five stage tabs: Site · Array · Electrical · Yield · Tools (§4.0) |
+| A plot toolbar with 💾 Save(Project) · ⛶ Expand Plot · 🛰 Satellite · ▢ Wireframe · 📍 Piles · ✏ Sketch Mode · 📋 BOM · ⚡ SLD, and a block of ON/OFF view switches | older docs | View tabs Layout · Summary · Energy · BOM · SLD with a tools row; the switches live in the **Layers ▾** popover (§6.1, §6.2) |
+| A **Layout & Energy Summary** table under the plot with a **⛶ Maximize** button | older docs, F1 help, the SLD/BOM checkbox label *Hide Layout & Energy Summary* | The **Summary** view and **Open in window**; under every view sits the plant chip row (§6.3, §6.4) |
+| **Export PDF (Layout + Summary)** and an export button block under the inputs | older docs, F1 help | **Export ▾** menu; the report is **Export Detailed Project Report**, a Word `.docx`; PDF only as **Export PDF (with Piles)** (§13.1) |
+| *"Calculate the number of modules in series automatically?"* Auto / Manual prompt after loading a module file | older docs | Removed; the **Size…** button opens string sizing (§4.8a) |
+| **Calculate Cables for PV Power Plant** in the inverter group | older docs | **Calculate cables** in the **Cables** card, with three DC allowances (§4.8b) |
+| **⊕ Move to String / Central Window** button under the inputs | older docs | The ribbon design chip and File ▸ Move to String / Central Window… (§2) |
+| Dialogs titled *DXF Site Coordinates*, *Image Boundary — Scale & Coordinates*, *Boundary Validation Issues* | older docs | **Site reference** and **Check boundaries** (§3) |
+| Back / Forward arrows on the plot toolbar; *"Pro Plus"* energy pages; a visible Device ID | F1 help | Home · Pan · Zoom only; no tiers; the Device ID sits behind **Having trouble?** (§6.1, §15) |
+| Legend ON by default | older docs | OFF, folded behind the **Legend ▾** chip (§6.2) |
 
 ## 19a. Resolved queries — behaviours that are easy to get wrong
 
@@ -1328,11 +1706,25 @@ or an automatic one deleted, the flag that freezes cable routing is set and
 assignment back to false exists anywhere). The route back is a fresh layout or a
 new project. Tell the reader that plainly rather than implying a toggle exists.
 
-**Arresters on the exported drawing ignore the on-screen switch.** The PDF
-export forces the arrester rectangles and labels **visible** and forces the
+**Arresters on the exported drawing ignore the on-screen switch.** Both
+report exports force the arrester rectangles and labels **visible** and forces the
 protection circles **hidden**, then restores the previous state —
 `MW:4266-4280`. So arresters always appear on the drawing page and the coverage
 circles never do, whatever the **Lightning Arresters** switch is set to.
+
+**MV cables are routed on the next Generate, not when the MCR is placed.**
+After **Place MCR** the hint reads *"MCR placed. Enable 'Cable Calc' and
+regenerate layout to route MV cables."* (`MW:7638-7640`); the MV row of the
+Layers popover has nothing to show, and the Summary's *MV cable (m)* reads `—`,
+until the reader generates again with cables on. Then the status line adds
+*"| MV cable: n m"*.
+
+**A hand-drawn obstruction (Tools tab) re-places inverters without
+re-measuring cables.** `_on_road_drawn` calls `_refresh_inverters` and rebuilds
+the summary (`MW:5332-5352`); the DC and AC **trench** rows keep their figures
+but *String DC cable (m)* and *AC cable to ICR (m)* read **0** until the next
+Generate re-runs the cable worker. Tell the reader to generate again after
+drawing obstructions before quoting cable lengths.
 
 **The Symbol Editor's buttons are labelled `Accept` and `Reject`** —
 `sld_symbol_editor.py:57-59`.
