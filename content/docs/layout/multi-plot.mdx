@@ -1,19 +1,25 @@
 ---
 title: Multi-plot sites
-description: One boundary file can hold several separate plant boundaries. Each becomes its own plant, with its own row in the summary and its own unit substation.
+description: One boundary file can hold several separate plant boundaries. Each becomes its own plant, with its own column in the Summary view and its own unit substation.
 ---
 
 A boundary file may contain more than one plant boundary. Each one becomes a
 separate plant: it is laid out on its own, gets its own tables, control rooms,
-lightning arresters and cables, and gets its own row in the summary table. This
-is how a site split by a road, a canal or a change of ownership is designed in
-one run rather than as several projects.
+lightning arresters and cables, and gets its own column in the Summary view.
+This is how a site split by a road, a canal or a change of ownership is designed
+in one run rather than as several projects.
 
 Nothing about the inputs changes. The module, table, spacing, site and equipment
 settings apply to every plant in the file, so the plants share a design and
 differ only in the ground they stand on.
 
-<Screenshot id="layout-multi-plot" />
+<Screenshot id="multi-plot-loaded" />
+
+Once a file is read, the line under the boundary field reports how many
+boundaries it found, and after **Generate Layout** every plot is laid out in a
+colour of its own and labelled.
+
+<Screenshot id="multi-plot" />
 
 ## What counts as a plant
 
@@ -60,7 +66,7 @@ Two consequences are worth knowing before you read the numbers:
 
 The practical reading of that table: you cannot give one plant a different row
 pitch, a different table configuration or a different road width. If two parcels
-genuinely need different designs, design them in separate sessions from separate
+genuinely need different designs, design them in separate windows from separate
 files.
 
 ## Preparing the file
@@ -79,47 +85,66 @@ read as water, a canal or a transmission line, are on
 [Boundary file requirements](/docs/inputs/kmz-requirements).
 
 <Callout type="warn">
-If any ring is open or invalid, a **Boundary Validation Issues** window lists
-each problem boundary with a checkbox to exclude it and carry on with the rest.
-Excluding a boundary means that plant is not designed at all and does not appear
-in the summary. Cancel instead and fix the file if you need every plant.
+If any ring is open, the **Check boundaries** window lists each problem boundary
+with a **Leave out** tick, ticked by default, and a **Continue without n**
+button. A boundary left out is not designed at all and does not appear in the
+Summary view; an unticked one is kept as it is and may produce a wrong layout.
+Use **Fix in Google Earth first** and reload the file if you need every plant.
 </Callout>
 
-## The summary gains a row per plant
+## The Summary view gains a column per plant
 
-The summary table under the plot carries **one row per plant**, plus a
-**TOTAL** row that aggregates every plant on the site. The columns are the same
-in both: area, boundary length, table counts, modules, capacity, control rooms,
-inverters, cable lengths, arresters and — once energy has been calculated — the
-yield figures.
+The **Summary** view — the second view tab, which replaced the table that used
+to sit under the plot — turns the figures on their side: a **Metric** column,
+then **one column per plant**, then a **Total** column that aggregates every
+plant on the site. The rows are the same for every column, grouped under SITE,
+ARRAY, ELECTRICAL, CABLES and — once energy has been calculated — ENERGY.
 
-Read a multi-plot summary row by row before reading the total. A plant with a
-poor area-to-capacity ratio is visible immediately next to its neighbours, and
-it is usually a plant whose shape or corridors are costing it ground. Every
-column is defined in
-[Summary table columns](/docs/reference/summary-columns).
+<Screenshot id="summary-multi-plot" />
 
-The table is wide, and with several plants it is also tall. Use the **⛶
-Maximize** button on the summary header to read it in a window of its own.
+Each plant's column header carries the plant's name with a **›**; clicking it
+shows that plant on the Layout view. Read a multi-plot summary column by column
+before reading the total. A plant with a poor area-to-capacity ratio is visible
+immediately next to its neighbours, and it is usually a plant whose shape or
+corridors are costing it ground. Every row is defined in
+[Summary rows](/docs/reference/summary-columns).
+
+With several plants the sheet is wide. **Open in window** in the view's tools
+puts it in a window of its own, and **Copy** puts it on the clipboard as
+tab-separated text for a spreadsheet.
+
+### The Plants chip
+
+The row of plant chips under every view gains a **Plants** chip on a multi-plot
+site, carrying the number of plants laid out; the other chips — DC capacity,
+site area, tables, modules, ICR blocks — are site totals. Water-body results are
+left out of the totals. Clicking any chip opens the Summary view.
+
+<Screenshot id="kpi-strip-multi" />
 
 ## The main control room and unit substations
 
-The **main control room (MCR)** is placed by hand, once, anywhere inside a
-boundary — see [Site equipment](/docs/layout/site-equipment). On a multi-plot
-site, placing it does something extra.
+The **main control room (MCR)** is placed by hand, once — see
+[Site equipment](/docs/layout/site-equipment). On a multi-plot site, placing it
+does something extra.
 
-**Place MCR** drops a **unit substation (USS)** into **every plot except the one
-holding the main control room**. Each plot's control rooms then route their
-medium-voltage cables to the substation in their own plot, rather than across
-open ground to a building in a different plot. That mirrors how the site would
-actually be built: collection stays inside the parcel it belongs to, and only
-one circuit leaves each parcel.
+Click **Place MCR** on the **Tools** tab and the hint reads *"n plots — click
+INSIDE each plot to drop a USS (Unit Substation). The LAST unassigned plot you
+click gets the MCR. Each plot's ICRs route to its own USS/MCR."* Click inside
+each plot in turn: every plot you click receives a **unit substation (USS)**,
+and the last plot receives the main control room. Each plot's control rooms then
+route their medium-voltage cables to the building in their own plot, rather than
+across open ground to a building in a different plot. That mirrors how the site
+would actually be built: collection stays inside the parcel it belongs to, and
+only one circuit leaves each parcel.
 
-<Screenshot id="layout-uss-multiplot" />
+<Screenshot id="uss-multiplot" />
 
-The substation is drawn and cleared at the size set for **USS** in the
-**Structures & Shadow** group, and like every other structure it has a height
-that casts a shadow.
+The substation is drawn and cleared at the size set for **USS** on the
+**Structures & Shadow** card, and like every other structure it has a height
+that casts a shadow. The medium-voltage cables themselves are routed on the
+next **Generate Layout** with **Calculate cables** on, not when the buildings
+are dropped.
 
 ### The link that is not routed for you
 
@@ -130,9 +155,10 @@ application.
 
 <Callout type="warn">
 Because that link is not routed, its length is **not** included in the reported
-medium-voltage cable lengths. The figures in the summary cover the runs from the
-control rooms to their own plot's substation only. Add the substation-to-main-room
-lengths yourself before using the cable totals in an estimate.
+medium-voltage cable lengths. The figures in the Summary view cover the runs
+from the control rooms to their own plot's substation only. Add the
+substation-to-main-room lengths yourself before using the cable totals in an
+estimate.
 </Callout>
 
 The routed portion still merges sensibly: within a plot, control rooms whose
@@ -145,36 +171,40 @@ See [Cable routing](/docs/layout/cables).
 Every export covers the whole site in one file, and each handles the split
 differently:
 
-- **The PDF report** draws the site as one drawing and carries the per-plant
-  rows and the total in its summary, so the report is the document to hand over
-  for the site as a whole.
+- **The project report** — the Word document from **Export ▾ Export Detailed
+  Project Report** — draws the site as one drawing and carries the per-plant
+  figures and the total in its design summary, so it is the document to hand
+  over for the site as a whole. See
+  [The project report](/docs/exports/project-report).
 - **The Google Earth file** gets one folder per plant, named after that plant,
-  plus an overall summary folder aggregating every plant. That is the export to
-  use when a reviewer wants to look at one plot at a time.
+  plus an **Overall Summary** folder aggregating every plant. That is the export
+  to use when a reviewer wants to look at one plot at a time.
 - **The CAD drawing** has one layer per feature type — boundaries, tables,
   control rooms, cables — not one layer per plant, so every plant's features
-  share the same layers. See [The CAD drawing](/docs/exports/dxf).
+  share the same layers. See [CAD export](/docs/exports/dxf).
 
 ## Naming the plants
 
-Each plant appears in the summary under the name its boundary carries in the
-file, and the exported Google Earth file uses the same name for that plant's
+Each plant appears in the Summary view under the name its boundary carries in
+the file, and the exported Google Earth file uses the same name for that plant's
 folder. See [Google Earth export](/docs/exports/kmz).
 
 Name the boundaries for the people who will read the report. `Plot A`,
 `Plot B`, `Plot C` is enough to be unambiguous; the parcel or survey numbers
 the landowner and the authority use are better, because a reviewer can then
-match a summary row to a document without asking you which plot was which.
+match a summary column to a document without asking you which plot was which.
 Rename them in Google Earth before loading the file — the names come from the
 file and are not editable in the application.
 
 ## Reading a multi-plot layout on screen
 
-- **Home (⌂)** fits the view to the whole site, every plot included, which is
-  the view to check that no plot was missed.
-- **⛶ Expand Plot** gives the drawing its own window, which is usually
-  necessary before individual plots are legible.
-- **🛰 Satellite** is worth a look on a multi-plot site in particular. It shows
+- **Home** in the Layout view's tools fits the view to the whole site, every
+  plot included, which is the view to check that no plot was missed. The mouse
+  wheel then zooms at the cursor into any one plot.
+- The **expand** button at the right of the tools gives the drawing its own
+  window — **SolarLayout — Expanded View** — which is usually necessary before
+  individual plots are legible.
+- **Satellite** is worth a look on a multi-plot site in particular. It shows
   the ground between the plots — the road, the canal, the neighbouring parcel —
   and that is where the link between the substations and the main control room
   will have to run.
@@ -188,9 +218,9 @@ file and are not editable in the application.
     description="Closed rings, containment and the naming rules every feature follows"
   />
   <Card
-    title="Summary table columns"
+    title="Summary rows"
     href="/docs/reference/summary-columns"
-    description="Every column in the per-plant rows and the total row"
+    description="Every row of the per-plant columns and the Total column"
   />
   <Card
     title="Site equipment"

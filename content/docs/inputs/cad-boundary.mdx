@@ -1,15 +1,17 @@
 ---
 title: CAD drawing boundaries
-description: Using a DXF or DWG as the plant boundary, and why the site latitude and longitude decide whether energy can be calculated.
+description: Using a DXF or DWG as the plant boundary, what the Site reference window asks for, and why the site latitude and longitude decide whether energy can be calculated.
 ---
 
 A CAD drawing can be used as the boundary input: pick a `.dxf` or `.dwg` file
-with **Browse…** and the application reads the site outline from it, along with
-the closed shapes drawn inside that outline, which become obstacles.
+with **Browse…** on the **Site** tab and the application reads the site outline
+from it, along with the closed shapes drawn inside that outline, which become
+obstacles.
 
 What a CAD drawing does not carry is a position on the earth. Its coordinates
 are drawing coordinates. That single gap is what this page is about, because it
-decides whether the design gets an energy estimate.
+decides whether the design gets an energy estimate — and, less obviously,
+whether the automatic tilt and row pitch are right.
 
 ## What is extracted
 
@@ -17,8 +19,8 @@ decides whether the design gets an energy estimate.
 only where the ring is closed. That is the whole of what the application looks
 for, for the boundary and for the shapes inside it alike:
 
-- **The boundary** — the site outline, as a closed polyline.
-- **Interior obstacles** — closed polylines inside that outline. Each is
+- **The boundary** — the largest closed polyline in the drawing.
+- **Interior obstacles** — closed polylines fully inside that outline. Each is
   subtracted from the usable area, exactly as an obstruction polygon from a
   Google Earth file would be.
 
@@ -55,27 +57,60 @@ file instead — see
 [Boundary file requirements](/docs/inputs/kmz-requirements) for what that buys
 you.
 
-## The site coordinates
+A `.dwg` file needs the free ODA File Converter installed. Without it, save the
+drawing as `.dxf` from your CAD program and load that.
 
-Choosing a `.dxf` or `.dwg` file opens the **DXF Site Coordinates** window,
-which asks for the site latitude and longitude. They are optional: the window
-also lets you continue without them.
+## The Site reference window
 
-<Screenshot id="dxf-latlon-dialog" />
+Choosing a `.dxf` or `.dwg` file opens the **Site reference** window. It has one
+card, **LOCATION**, and a footer.
 
-Enter them. The best source is the same one you would use for any site record —
-a coordinate off the survey, or a point read from Google Earth at the centre of
-the site. What depends on the value is the sun's position and the weather
-record, not the geometry, so a centre-of-site coordinate is what the field wants
-rather than a surveyed monument.
+<Screenshot id="dxf-site-coordinates" />
+
+| Control | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **I know the site coordinates** | ticked | — | Unticking it greys out the two fields and changes the primary button to **Continue without coordinates** |
+| **Latitude** | 20.000000 °N | −90 to 90 | The site's latitude, in decimal degrees; north positive |
+| **Longitude** | 78.000000 °E | −180 to 180 | The site's longitude, in decimal degrees; east positive |
+
+A banner under the fields states the consequence of the choice as you make it:
+*With coordinates: layout, row pitch from latitude, and energy yield.* while the
+box is ticked, and *Without coordinates: layout only. Energy yield is disabled.*
+when it is not. The footer repeats the short form — *Without coordinates you get
+the layout only.* — beside two buttons:
+
+| Button | What it does |
+| --- | --- |
+| **Layout only** | Loads the drawing without a position. Energy yield is disabled for this file |
+| **Use this location** | Loads the drawing positioned at the latitude and longitude entered. Reads **Continue without coordinates** when the checkbox is unticked, and then does the same as **Layout only** |
+
+Enter the coordinates. The best source is the same one you would use for any
+site record — a coordinate off the survey, or a point read from Google Earth at
+the centre of the site. What depends on the value is the sun's position and the
+weather record, not the geometry, so a centre-of-site coordinate is what the
+fields want rather than a surveyed monument.
 
 ### What is lost without them
 
 **Energy calculation is unavailable.** The layout is still generated — tables
 placed, control rooms sited, cables routed, quantities counted — and the whole
-plant appears in the summary table, the CAD export and the report. But there is
-no yield, no capacity factor and no exceedance probability, because two things
-that the estimate depends on come from latitude and longitude:
+plant appears in the Summary view, the CAD export and the report. But there is
+no yield, no capacity factor and no exceedance probability. **Calculate Energy**
+on the Yield tab is disabled, and its tooltip says why and tells you to load the
+file again with coordinates; the Energy view says the same in place of a result.
+No wrong energy figure is ever produced.
+
+<Callout type="warn">
+**Skipping the coordinates does not stop the layout — it silently positions the
+site at a fallback of 20° N, 78° E**, which is also what the two fields show
+before you touch them. The layout is generated normally, but the automatic tilt
+angle and row pitch are derived from that fallback latitude, not from your site.
+Nothing on screen flags it, because the figures look entirely reasonable. On a
+site far from that latitude they are wrong. Either load the file again with the
+coordinates, or tick both overrides in
+[Spacing and tilt](/docs/inputs/spacing-and-tilt) and enter the tilt angle and
+row pitch yourself.
+</Callout>
 
 | What needs the coordinates | Why |
 | --- | --- |
@@ -83,10 +118,8 @@ that the estimate depends on come from latitude and longitude:
 | The automatic row pitch | Pitch is the spacing at which rows do not shade each other at solar noon on the winter solstice, which depends on the sun's elevation at that latitude. |
 | The weather record | The irradiance and temperature series are fetched for a latitude and longitude. Without a point on the earth there is nothing to fetch. |
 
-You can still lay out a plant with the geometry you intend: tick both override
-boxes in [Spacing and tilt](/docs/inputs/spacing-and-tilt) and enter the tilt
-angle and row pitch yourself. That gives a correct table count and a correct
-capacity. It does not give an energy estimate — for that, supply the
+With both overrides set by hand you get a correct table count and a correct
+capacity. You still do not get an energy estimate — for that, supply the
 coordinates.
 
 ## How the drawing is placed on the ground
@@ -121,22 +154,27 @@ Two things follow:
 <Step>
 ### Pick the file with Browse…
 
-Choose the `.dxf` or `.dwg`. The **DXF Site Coordinates** window opens on its
-own straight afterwards.
+On the **Site** tab, click **Browse…** on the **Input Boundary File** card and
+choose the `.dxf` or `.dwg`. The **Site reference** window opens on its own
+straight afterwards.
 </Step>
 
 <Step>
 ### Enter the site latitude and longitude
 
-Give the coordinate for the centre of the site. The window also allows
-continuing without it, at the cost of the energy estimate.
+Leave **I know the site coordinates** ticked, give the coordinate for the centre
+of the site, and click **Use this location**. **Layout only** is there for a
+quick geometric check, at the cost of the energy estimate and the automatic tilt
+and pitch.
 </Step>
 
 <Step>
 ### Generate, then check the reported area
 
-Read the plant area in acres from the summary table and compare it against the
-survey. A drawing in millimetres comes out a thousand times too large in each
+Read the **Site area** chip under the plot, or the **Plant area (acres)** row of
+the Summary view, and compare it against the survey. It is the gross boundary
+area before the perimeter road is taken off, so it should match the survey
+directly. A drawing in millimetres comes out a thousand times too large in each
 direction; a drawing in feet a little over three times too large. Fix the units
 in the CAD program and load the file again.
 </Step>

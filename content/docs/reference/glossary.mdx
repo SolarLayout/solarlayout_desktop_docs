@@ -9,6 +9,12 @@ inside the application than in general engineering use the entry says so.
 
 ## A
 
+**Access chip** — The item in the ribbon that shows this device's access at a
+glance: **● Active — until \<date\>**, **● Access expired**, **● Access
+revoked** or **● Access status unavailable**. With no access at all the chip is
+hidden and a gold **Get Free Access** button shows instead. See
+[How access works](/docs/licence/overview).
+
 **AC circuit breaker (ACCB)** — Switchgear on the alternating-current side,
 between the inverters and the step-up transformer. It appears in the diagram
 symbol set, and an automatically built diagram groups 15 inverters to one ACCB
@@ -36,7 +42,8 @@ fraction of its front-side efficiency. Shipped at 0.70, with a typical range of
 
 **Capacity factor** — Year-one generation as a percentage of what the plant
 would produce running at its full DC capacity for all 8 760 hours of the year.
-Reported in the summary as `CUF(%)`.
+Reported as the **CUF (%)** row of the Summary view and as a tile on the Energy
+view.
 
 **Capacity utilisation factor (CUF)** — The application's name for the capacity
 factor. See **Capacity factor**.
@@ -60,10 +67,17 @@ once, as a three-phase circuit.
 ## D
 
 **DC to AC ratio** — The plant's DC capacity divided by its AC capacity,
-reported as `DC/AC`. A ratio above 1 is normal: utility inverters are routinely
-overloaded on the DC side and clip the surplus. The maximum practical design
-ratio is 1.5× for string inverters and 1.4× for central inverters. See
+reported as the **DC / AC ratio** row of the Summary view. A ratio above 1 is
+normal: utility inverters are routinely overloaded on the DC side and clip the
+surplus. The design overload limit ships at 1.5 for string inverters and 1.4
+for central inverters. See
 [Sizing from an AC capacity](/docs/simulation/ac-capacity).
+
+**Design chip** — The item in the ribbon that names the current design —
+*"Fixed tilt · String inverter ▾"*, *"Tracker · Central inverter ▾"* and so on.
+Clicking it opens the New design window and launches another window for a
+different combination; the current window stays open. See
+[Choosing a design mode](/docs/design-modes).
 
 **Degradation** — The loss of module output over time. Two separate inputs: a
 first-year figure applied once, shipped at 1.0 %, and an annual figure applied
@@ -74,7 +88,7 @@ compounding from year two, shipped at 0.4 % per year. See
 
 **Exceedance probability** — The probability that actual generation equals or
 exceeds a stated figure. Three are set, shipped at 50 %, 75 % and 90 %, and the
-three probability columns in the summary are named from them.
+three probability rows of the Summary view are named from them.
 
 ## F
 
@@ -93,8 +107,9 @@ plane before the yield is calculated. See [Weather data](/docs/energy/weather).
 
 **Ground albedo (ρ)** — The reflectance of the ground around and beneath the
 array: the higher the figure, the more light bounces back up. Shipped at 0.25 and
-accepted between 0.05 and 0.80. It feeds the ground-reflected part of the
-in-plane irradiance, and the rear-side gain of a bifacial module.
+accepted between 0.05 and 0.80. It feeds only the rear-side gain of a bifacial
+module; for a monofacial module it has no effect. See
+[Bifacial gain](/docs/energy/bifacial).
 
 **Ground clearance** — The height of a module's lower edge above the ground,
 entered as **Module ground clearance** and shipped at 0.5 m. Not the same as a
@@ -113,7 +128,7 @@ row-to-row shading loss is derived from it. See [Shading](/docs/energy/shading).
 
 **Half table** — A unit half the east–west width of a full table, carrying half
 the strings, dropped only where a full table will not fit. It is reported in its
-own summary column and counts as 0.5 wherever tables are weighted. See
+own row of the Summary view and counts as 0.5 wherever tables are weighted. See
 [Maximize placement and half tables](/docs/layout/maximize-and-half-tables).
 
 ## I
@@ -137,6 +152,11 @@ removed. See [Control rooms](/docs/layout/icr).
 **LA** — See **Lightning arrester**.
 
 **Landscape** — See **Module orientation**.
+
+**Layers popover** — The panel opened by **Layers ▾** in the view tools, with
+nine ON/OFF rows: Plant layout, Legend, Lightning arresters, ICR blocks, the
+three cable rows, Contour / terrain and Plant totals. It is where every drawing
+switch lives. See [Views](/docs/workspace/views).
 
 **Lightning arrester (LA)** — A mast providing strike termination over the
 array. Each protects a circular area of the protection radius, shipped at
@@ -190,10 +210,12 @@ fixes how many modules may be wired in series. See
 ## O
 
 **Obstruction** — Any area excluded from placement: a polygon carried in the
-boundary file, such as a building or a substation, or one you draw yourself. In
-[Sketch Mode](/docs/editing/sketch-mode) the tool that drags a rectangular one is
-labelled **🚧 Road**, but everywhere else the application calls it an
-obstruction. See [Obstructions](/docs/layout/obstructions).
+boundary file, such as a building or a substation, or one you draw yourself with
+**Draw Rectangle** or **Draw Polygon** on the Tools tab. The **🚧 Road** tool in
+[Sketch Mode](/docs/editing/sketch-mode) is different in shape: you drag a
+straight centre-line and enter a road width, and the corridor of that width is
+cleared. Every label calls the result an obstruction. See
+[Obstructions](/docs/layout/obstructions).
 
 ## P
 
@@ -225,8 +247,14 @@ in which case it ships at 7.0 m. On a tracker it is entered directly as
 **Plant boundary** — The closed polygon marking the extent of one plant. A
 polygon not contained within any other becomes a boundary; a polygon fully
 inside one becomes an obstacle. One file may carry several boundaries, and each
-becomes its own plant with its own summary row. See
+becomes its own plant with its own column in the Summary view. See
 [Boundary file requirements](/docs/inputs/kmz-requirements).
+
+**Plant chips** — The row of plant totals under every view: DC capacity, site
+area, plants (multi-plot only), tables or trackers, modules, ICR blocks,
+lightning arresters when placed, and year-one P50 energy. Clicking a chip opens
+the Summary view; the energy chip opens the Energy view. The **Plant totals**
+row of the Layers popover hides the row. See [Views](/docs/workspace/views).
 
 **Portrait** — See **Module orientation**.
 
@@ -236,14 +264,15 @@ becomes its own plant with its own summary row. See
 central estimate — half the years should beat it. P90 is the conservative case a
 lender asks for, and follows from the combined uncertainty as
 `P90 = P50 × (1 − 1.282 × σ)`; P75 uses a factor of 0.674. The application's
-three probability columns are whatever three probabilities you set, so the
-header has to be read rather than assumed.
+three probability rows are whatever three probabilities you set, so the row
+name has to be read rather than assumed. See
+[Summary view](/docs/reference/summary-columns).
 
 ## S
 
 **SAT** — See **Single-axis tracker**.
 
-**Shadow window** — The daily span of solar hours, shipped at 9.0 to 16.0, over
+**Shadow window** — The daily span of solar hours, shipped at 9.0 to 15.0, over
 which the year-round shadow footprint of the control rooms, objects and street
 lights is swept. Tables inside that footprint are cleared when the option to do
 so is on. See [Structures and shadow](/docs/inputs/structures-and-shadow).
@@ -262,6 +291,11 @@ performance-ratio input, shipped at 2.0 %.
 **Specific yield** — Annual energy per kWp installed, in kWh/kWp: the annual
 in-plane irradiance multiplied by the performance ratio. Multiplying it by the
 plant's DC capacity gives the year-one energy.
+
+**Stage tabs** — The five tabs the inputs live on, under the pinned **Generate
+Layout** button: **Site · Array · Electrical · Yield · Tools**. Every card on a
+tab is a collapsible group. Tools is locked until a layout exists. See
+[The main window](/docs/workspace/main-window).
 
 **String** — Modules wired in series so their voltages add. **In this
 application a string is one row of modules within an MMS table**, which is
@@ -283,14 +317,13 @@ inverter's capacity.
 ## T
 
 **Table** — In this application, one module mounting structure carrying its
-modules: the unit the plant is tiled from and the thing counted in the summary's
-full and half table columns. The same word also names the results table under the
-plot; context distinguishes them.
+modules: the unit the plant is tiled from and the thing counted in the Summary
+view's full and half table rows.
 
 **Tilt** — The angle of the module plane from horizontal. Derived from the site
 latitude, roughly latitude × 0.76 + 3.1°, unless you override it, in which case
-the field ships at 20.0°. A trailing asterisk in the summary means the reported
-tilt was derived rather than entered.
+the field ships at 20.0°. A trailing asterisk in the Summary view means the
+reported tilt was derived rather than entered.
 
 **Torque tube** — The beam a tracker's modules are mounted on, and which rotates
 with them. In L config the module's long edge lies along it.
@@ -327,6 +360,14 @@ the site is converted into. All internal geometry is in metres in the site's own
 zone, the CAD export is written in those coordinates, and a contour file supplied
 as a CAD drawing must be in them too. See [CAD drawing](/docs/exports/dxf).
 
+## V
+
+**Views** — The five tabs across the top of the right side — **Layout ·
+Summary · Energy · BOM · SLD** (**Ctrl+1** to **Ctrl+5**) — each showing the
+same plant a different way and each taking the whole area under the view
+header. The tools right of the tabs change with the view. See
+[Views](/docs/workspace/views).
+
 ## Where to go next
 
 <Cards>
@@ -336,9 +377,9 @@ as a CAD drawing must be in them too. See [CAD drawing](/docs/exports/dxf).
     description="The complete input reference, with the values quoted above in context"
   />
   <Card
-    title="Summary table columns"
+    title="Summary view"
     href="/docs/reference/summary-columns"
-    description="What every column of the results table reports"
+    description="What every row of the per-plant sheet reports"
   />
   <Card
     title="Shortcuts and commands"

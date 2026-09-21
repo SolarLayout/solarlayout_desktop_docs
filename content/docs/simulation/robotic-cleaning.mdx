@@ -13,11 +13,18 @@ The output is a count you can procure and price against. It reaches the bill of
 materials, so it is also the point at which a cleaning system stops being an
 assumption in the loss table and becomes a line item.
 
+## Where it is
+
+The button is the second of three in the **Studies** card on the **Tools** tab,
+between **🔆 Simulation with AC Capacity** and **🌓 Shadow View (row spacing)**.
+Like the rest of the tab it is greyed out until a layout exists, because the
+count is measured off the placed layout.
+
 ## Before you size the fleet
 
-The count is measured off the placed layout, so generate the layout first. More
-than that: settle the equipment that breaks the rows before you start ticking
-gaps, because that equipment is what creates most of them.
+More than generating the layout: settle the equipment that breaks the rows
+before you start ticking gaps, because that equipment is what creates most of
+them.
 
 | Decide first | Why it matters here |
 | --- | --- |
@@ -36,21 +43,22 @@ its track: it travels the continuous run of structure, cleaning the modules it
 passes, and it can only go where that run continues.
 
 That is why the direction of a cleaning line is not a setting but a consequence
-of the mounting type.
+of the mounting type. The window's strip states it for the design you are in.
 
 <Tabs items={["Fixed Tilt", "Single Axis Tracker"]}>
 <Tab value="Fixed Tilt">
 
-Lines run **west to east**. Rows of MMS tables run east to west, so the
-continuous run of frames along a row is the east–west direction, and a line
-follows one row of tables across the plant.
+The strip reads *robots travel west–east along each table row*. Rows of MMS
+tables run east to west, so the continuous run of frames along a row is the
+east–west direction, and a line follows one row of tables across the plant.
 
 </Tab>
 <Tab value="Single Axis Tracker">
 
-Lines run **north to south**. A tracker unit's torque tube runs north–south, and
-units are placed one behind another along that axis, so the continuous run of
-frames is the north–south direction and a line follows one tracker column.
+The strip reads *north–south along each tracker column*. A tracker unit's torque
+tube runs north–south, and units are placed one behind another along that axis,
+so the continuous run of frames is the north–south direction and a line follows
+one tracker column.
 
 </Tab>
 </Tabs>
@@ -59,17 +67,25 @@ In both cases the rule is the same — the line follows the frames — and the t
 answers differ only because the frames run differently. A robot cannot cross from
 one line to the next; each line is its own track.
 
-## The robot inputs
+## The window
 
-Four fields, in a **Robot** group. On a tracker plant the word "table" reads
-"tracker" throughout the group.
+**Robotic module cleaning** opens as one window, and it can be maximised for a
+long gap list. Across the top a strip reports **n cleaning lines**, the
+direction of travel, and a chip with the table count. The inputs and the result
+sit on the left; the gaps on the right; the action in the footer.
 
-| Field | Default | Range | What it does |
-| --- | --- | --- | --- |
-| **Travel per charge** | 0 m | 0–100 000 m | How far a robot travels on one charge. **0 means no battery limit** |
-| **To-and-fro run** — *"Robot must clean out AND return on the same charge"* | ticked | — | Requires the robot to finish its run and come back on a single charge, so the distance to be covered is twice the segment length |
-| **Standard bridge span (table gap)** | the gap already configured | 0–50 m | The widest gap a robot crosses unaided, on the plant's own standard bridge |
-| **Skip robot if line has ≤** | 0 | 0–1000, in steps of 0.5 | Segment size below which a line is too short to warrant its own robot. **0 counts every line** |
+<Screenshot id="robotic-cleaning" />
+
+### ROBOT
+
+Four fields. On a tracker plant the unit reads "trackers" instead of "tables".
+
+| Field | Default | What it does |
+| --- | --- | --- |
+| **Travel per charge** (m) | 0 — the hint reads *0 = no limit* | How far a robot travels on one charge |
+| **Standard bridge span** (m) | the gap already configured | The widest gap a robot crosses unaided, on the plant's own standard bridge |
+| **Skip lines up to** (tables or trackers, in steps of 0.5) | 0 | A line carrying this many units or fewer gets no robot |
+| **Out and back** — *must return on the same charge* | ticked | Doubles the distance a robot has to cover, because it travels its segment twice |
 
 **Travel per charge** ships at **0**, so out of the box there is no battery
 constraint at all and every cleaning segment gets one robot. That is the right
@@ -77,40 +93,67 @@ setting when you are sizing on geometry alone, or when the system you are pricin
 is continuously powered. Enter a real range and it becomes a second reason for
 the fleet to grow, on top of broken lines.
 
-**To-and-fro run** ships ticked, and it halves the effective reach, because the
+**Out and back** ships ticked, and it halves the effective reach, because the
 robot travels the segment twice. Leave it ticked unless the cleaning system
 genuinely supports a charging point or a swap at the far end of a line.
 
-**Standard bridge span (table gap)** starts from your own geometry rather than a
-constant, so it is consistent with the layout on first open. It is taken from the
-**Gap between MMS-Tables** on a fixed-tilt plant, which ships at 1.0 m — see
-[Table configuration](/docs/inputs/table) — or from the **N–S service gap between
-units** on a tracker plant, which ships at 2.0 m; see
+**Standard bridge span** starts from your own geometry rather than a constant,
+so it is consistent with the layout on first open. It is taken from the **Gap
+between MMS-Tables** on a fixed-tilt plant, which ships at 1.0 m — see
+[Table configuration](/docs/inputs/table) — or from the **N–S service gap
+between units** on a tracker plant, which ships at 2.0 m; see
 [Tracker configuration](/docs/inputs/tracker). Where that gap is zero the span
-falls back to 2.0 m. Any gap at or under the span is crossed as a matter of
-course; anything wider is a decision, which is the next section.
+starts at 2.0 m. Any gap at or under the span is crossed as a matter of course;
+anything wider is a decision, which is the next section.
 
-**Skip robot if line has ≤** ships at **0**, so nothing is discarded until you
-raise it. It steps in halves because a half unit counts as 0.5 — the section on
-short segments below covers what raising it does and does not do.
+**Skip lines up to** ships at **0**, so nothing is discarded until you raise it.
+It steps in halves because a half unit counts as 0.5 — the section on short
+segments below covers what raising it does and does not do.
+
+### RESULT
+
+A verdict banner gives the answer — **n robots for m lines** — and a line under
+it explains where the count came from: *"k of them only because of unbridged
+gaps. Bridge a gap to save its robot."* when gaps are costing robots, *"One
+robot per cleaning line."* when nothing is broken, or *"No robot is lost to an
+unbridged gap."* once every wide gap has been bridged. On a plant with nothing
+placed it reads *"No tables placed"*.
+
+Four tiles sit under the banner:
+
+| Tile | What it reports |
+| --- | --- |
+| **Standard bridges** | The bridges of the standard span the lines need |
+| **Longest segment** | The longest stretch one robot serves |
+| **Cleaning segments** | How many segments the lines are broken into |
+| **One full pass** | One complete cleaning pass over the plant |
 
 ## A wide gap is a decision, not an assumption
 
 This is the part of the window that does the real work, and the reason the tool
 exists rather than a formula.
 
-Every gap in the plant too wide for a standard bridge is **listed individually,
-with its measured span and its location**, in two groups:
+The right-hand side is headed **GAPS TOO WIDE FOR A STANDARD BRIDGE · n**, and
+every such gap in the plant is listed individually, with its measured span and
+where it is:
 
-| Group | What is in it |
+| Column | What it holds |
 | --- | --- |
-| Gaps blocked by equipment | Gaps interrupted by something physically in the way — a lightning arrester, a control room or other building, an obstruction |
-| Gaps in open ground | Gaps that are wider than a standard bridge, with nothing occupying them |
+| **Bridge** | The tick box — your commitment to install a supported bridge there |
+| **Table row** | Which cleaning line the gap is on |
+| **Gap** | Its measured span |
+| **Saves** | What bridging it is worth in robots |
+| **Blocked by** | What sits in the gap — an arrester, a building, an obstruction — or nothing, for a gap in open ground |
 
-Each listed gap has a tick box, and the tick box is a commitment:
+A filter above the table narrows the list to **Inside the boundary**,
+**Crossing it** or **At equipment**, and **Bridge all n** and **None** tick or
+clear the whole list in one click.
+
+Each tick box is a commitment:
 
 - **Ticked** means you will install a supported bridge across that gap. The
-  robot drives over it, the line stays continuous, and the fleet count drops.
+  robot drives over it, the line stays continuous, and the fleet count drops by
+  the figure in **Saves**.
 - **Left unticked** means the line is broken there. The stretch on the far side
   becomes its own segment, and that segment keeps its own robot.
 
@@ -120,39 +163,41 @@ structural commitment with a cost and a design behind it, and assuming it away
 would produce a fleet count that quietly depends on structures nobody has agreed
 to build.
 
-<Screenshot id="robotic-cleaning-dialog" />
+As you tick, the bridges are drawn on the plot behind the window, so you can
+see where each one lands. A bridge that would leave the site is drawn as a
+preview only.
 
-The split into two groups is there because the two decisions are not the same
-kind of decision. A gap in open ground needs a longer span of the same idea —
-usually straightforward. A gap blocked by equipment needs a bridge that gets a
+The **Blocked by** column is there because the two kinds of gap are not the
+same kind of decision. A gap in open ground needs a longer span of the same idea
+— usually straightforward. A gap blocked by equipment needs a bridge that gets a
 robot over or around something solid, which may be expensive, may be impossible,
 and may be a reason to move the equipment instead while the layout is still
-editable.
-
-<Screenshot id="robotic-cleaning-overlay" />
+editable. The **At equipment** filter shows you only those.
 
 <Callout type="warn">
 Every tick is a structure someone has to design, buy and install. Tick the gaps
 you have decided to bridge, not the gaps that would give you a convenient fleet
-count.
+count. **Bridge all** is there for the case where you genuinely will.
 </Callout>
 
 ## How the fleet is counted
 
 Sizing starts from the simplest possible answer and grows it for two reasons.
 
-**One robot per row to start.** Each cleaning line gets one robot. On a plant of
+**One robot per line to start.** Each cleaning line gets one robot. On a plant of
 unbroken rows with no range limit — which is what the shipped **Travel per
-charge** of 0 gives you — that is the whole answer.
+charge** of 0 gives you — that is the whole answer, and the verdict says *"One
+robot per cleaning line."*
 
 **Broken lines add robots.** Every unticked wide gap splits a line into
 segments, and each segment needs its own robot, because no robot can cross the
 gap to reach the rest of the line. A line broken in two places carries three
-robots where an unbroken one carried a single robot.
+robots where an unbroken one carried a single robot. The verdict's detail line
+counts how many robots exist only for this reason.
 
 **Travel per charge adds robots.** With a range entered, a robot that cannot
 finish its segment on one charge needs company — the segment is shared between
-more than one robot. With **To-and-fro run** ticked, the distance to be covered is
+more than one robot. With **Out and back** ticked, the distance to be covered is
 the segment travelled twice, so range binds sooner.
 
 The two causes compound: a long line broken into segments may still exceed the
@@ -162,11 +207,10 @@ unreliable on a real plant, and it is why the count is worth deriving.
 ## Segments too short to be worth a robot
 
 A segment can be a stub — two tables cut off in a corner by an obstruction. A
-dedicated robot for it is not a sensible procurement, so **Skip robot if line
-has ≤** sets a threshold:
+dedicated robot for it is not a sensible procurement, so **Skip lines up to**
+sets a threshold:
 
-**A segment whose weighted table count is at or below the threshold is treated as
-too short to justify a dedicated robot, and is not counted.**
+**A line whose weighted unit count is at or below the threshold gets no robot.**
 
 - The count is **weighted**: a half unit counts as 0.5, so two half tables count
   the same as one full table. That is why the field steps in halves.
@@ -179,10 +223,10 @@ too short to justify a dedicated robot, and is not counted.**
 
 ## Live recalculation, and where the result goes
 
-Everything in the window recalculates live. Tick a gap and the fleet count moves
-immediately; change **Travel per charge** or the bridge span and it moves again. Work
-the two lists top to bottom, watching what each decision is worth, and you can
-see directly which bridges pay for themselves in robots saved.
+Everything in the window recalculates live. Tick a gap and the verdict moves
+immediately; change **Travel per charge** or the bridge span and it moves again.
+Work the list top to bottom, watching the **Saves** column, and you can see
+directly which bridges pay for themselves in robots saved.
 
 <Steps>
 <Step>
@@ -195,49 +239,54 @@ bridge is measured against.
 </Step>
 
 <Step>
-### Set the robot inputs before touching the gap lists
+### Set the robot inputs before touching the gap list
 
-**Travel per charge**, **To-and-fro run** and **Standard bridge span (table gap)**
-all change which gaps are even listed and how long a segment one robot can serve.
-Settling them first stops you re-deciding the same gaps twice.
+**Travel per charge**, **Out and back** and **Standard bridge span** all change
+which gaps are even listed and how long a segment one robot can serve. Settling
+them first stops you re-deciding the same gaps twice.
 </Step>
 
 <Step>
-### Work the open-ground list
+### Work the open-ground gaps
 
-These are the cheaper decisions — a longer span of a bridge you are already
-buying. Tick the ones you will genuinely install and watch the count fall.
+Filter to **Inside the boundary** and look at the rows with nothing in **Blocked
+by**. These are the cheaper decisions — a longer span of a bridge you are
+already buying. Tick the ones you will genuinely install and watch the count
+fall.
 </Step>
 
 <Step>
-### Work the equipment-blocked list last, and sceptically
+### Work the equipment gaps last, and sceptically
 
-Each of these needs a bridge that gets a robot past something solid. Some are
-straightforward, some are not worth building, and some are a reason to move the
-equipment while the layout is still editable.
+Filter to **At equipment**. Each of these needs a bridge that gets a robot past
+something solid. Some are straightforward, some are not worth building, and some
+are a reason to move the equipment while the layout is still editable.
 </Step>
 
 <Step>
-### Record which gaps you ticked
+### Add the fleet to the bill of materials
 
-The fleet count alone does not carry the commitments behind it. The bridges are
-a materials and civil scope item, so capture the ticked gaps with their spans and
-locations alongside the count.
+The primary button in the footer names what it will add — **Add n robots + m
+bridges to BOM**. Click it, and the count and the bridges you ticked become
+materials lines. **Close** leaves without adding anything.
 </Step>
 </Steps>
 
 The result then reaches two places:
 
-- **The summary table's robot count.** It sits with the other equipment counts —
-  see [Summary columns](/docs/reference/summary-columns).
-- **The bill of materials.** The fleet becomes a materials line, alongside the
-  rest of the plant.
+- **The Summary view.** The **Cleaning robots** row in the **SITE** group sits
+  with the other equipment counts — see
+  [Summary columns](/docs/reference/summary-columns).
+- **The bill of materials.** The fleet becomes three lines: the cleaning
+  equipment itself, the standard-span bridges, and the supported-span bridges
+  over arresters, buildings and obstructions — so the ticked gaps are carried
+  as a scope item and not only as a lower robot count.
 
-**The bill of materials never carries a fleet you did not ask for.** Robots
-appear in it only after you have run this sizing, so a materials list from a
-plant where you never opened this window contains no cleaning fleet at all — not
-a zero, not an estimate. If a bill of materials has to include the cleaning
-system, run this first and rebuild the list afterwards. See
+**The bill of materials never carries a fleet you did not ask for.** Those
+three lines appear only after you have run this study and clicked the add
+button, so a materials list from a plant where you never opened this window
+contains no cleaning fleet at all — not a zero, not an estimate. If a bill of
+materials has to include the cleaning system, run this first. See
 [Bill of materials](/docs/bom/overview).
 
 The soiling loss in the performance ratio is a separate input that you set, and
@@ -251,7 +300,7 @@ regime, and this is where the regime gets counted.
   <Card
     title="Bill of materials"
     href="/docs/bom/overview"
-    description="Where the fleet appears as a materials line, and when"
+    description="Where the fleet and its bridges appear as materials lines, and when"
   />
   <Card
     title="Table configuration"
@@ -261,11 +310,11 @@ regime, and this is where the regime gets counted.
   <Card
     title="Sizing from an AC capacity"
     href="/docs/simulation/ac-capacity"
-    description="The other simulation tool, run from a placed layout"
+    description="The first study in the same card, run from a placed layout"
   />
   <Card
     title="Summary columns"
     href="/docs/reference/summary-columns"
-    description="The robot count among every other summary column"
+    description="The robot count among every other Summary row"
   />
 </Cards>

@@ -1,6 +1,6 @@
 ---
 title: Row-to-row shading
-description: The computed row-to-row shading loss, the geometry behind it, the Shadow View cross-section, and what the model does not cover.
+description: The computed row-to-row shading loss, the geometry behind it, the Shadow View window on the Tools tab, and what the model does not cover.
 ---
 
 Row-to-row shading is the loss caused by each row of collectors casting a shadow
@@ -16,17 +16,21 @@ relationship to the pitch you have actually drawn.
 
 ## Two ways to set it
 
+Both controls sit in the **Performance-ratio losses** expander of the **Energy
+Yield** card on the **Yield** tab, alongside the other loss components — see
+[The loss breakdown](/docs/energy/losses).
+
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Shading losses** | 1.0 % | 0–20 % | The annual shading loss applied to the performance ratio. Editable only when auto-compute is off |
-| **Auto-compute (row-to-row from GCR)** | on | — | Computes the loss from the row geometry instead of taking the typed figure |
+| **Shading losses** | 1.0 % | 0–20 % | The annual shading loss applied to the performance ratio. Editable only when the auto tick is off |
+| **Auto (row-to-row, GCR)** | on | — | Computes the loss from the row geometry instead of taking the typed figure |
 
-With auto-compute on, the **Shading losses** field is greyed out and the typed
-value is not what the calculation uses. Untick auto-compute and the field
-becomes editable, and the number you type is used exactly as entered.
-
-Both fields sit in the performance ratio breakdown alongside the other loss
-components — see [Loss breakdown](/docs/energy/losses).
+With the auto tick on, the **Shading losses** field is greyed out and the typed
+value is not what the calculation uses. The line under the tick reads *"Auto
+(row-to-row, computed on Generate)"* until a layout exists, and afterwards
+reports the computed figure — *"Auto → 1.23% (row-to-row, computed)"*, for
+example. Untick it and the field becomes editable, and the number you type is
+used exactly as entered.
 
 ## The computed model
 
@@ -110,7 +114,8 @@ automatically from latitude, or by your override — on
 The computed shading percentage is produced by **Generate Layout**, not by
 **Calculate Energy**. It is derived in the same pass that fills the derived tilt
 and the derived row pitch — which is the only pass that knows the geometry it
-needs.
+needs. That is what the *"computed on Generate"* wording under the auto tick
+means.
 
 Two consequences follow, and both catch people comparing runs:
 
@@ -128,8 +133,8 @@ changed anything about the rows, generate again first.
 
 ## Overriding with your own figure
 
-Untick **Auto-compute (row-to-row from GCR)** and the typed **Shading losses**
-value is used as entered. Legitimate reasons to do it:
+Untick **Auto (row-to-row, GCR)** and the typed **Shading losses** value is used
+as entered. Legitimate reasons to do it:
 
 - Your own detailed shading study, from a tool that models the horizon and the
   terrain, gives a figure you want carried through.
@@ -146,52 +151,97 @@ plant. Find out which before reporting either.
 
 ## The Shadow View window
 
-**🌓 Shadow View (row spacing)** opens a two-dimensional cross-section of three
-adjacent rows, cut in the plane perpendicular to the row axis — the view you
-would get by standing at the end of a row and looking along it. Two sliders move
-the sun: one for the day of the year, one for the solar hour. The shaded part of
-each rear collector is highlighted live as you move them.
+**🌓 Shadow View (row spacing)** is the third button of the **Studies** card on
+the **Tools** tab. Like the rest of that tab it is greyed out until a layout
+exists, because it needs the row geometry the layout fixed. It opens a window
+titled **Shadow View** with two tabs: one for the rows, one for a single object
+on the site.
 
 <Screenshot id="shadow-view" />
 
-**It is driven by the same model as the loss number, so the picture and the
-number always agree.** The cross-section is not an illustration drawn to a
-different set of assumptions — it is the same geometry evaluated at the one sun
-position the sliders select, rather than summed over a year.
+**The picture is driven by the same model as the loss number, so the two always
+agree.** The cross-section is not an illustration drawn to a different set of
+assumptions — it is the same geometry evaluated at the one sun position the
+sliders select, rather than summed over a year. And everything in the window is
+analysis only, as its note says: *"Analysis only — the layout is unchanged"*.
+Changing an input here moves the picture and its verdict, never a table.
 
-### How to use it
+### Between rows (side view)
+
+A cross-section of three adjacent rows, cut in the plane perpendicular to the
+row axis — the view you would get by standing at the end of a row and looking
+along it — with the sun's rays drawn onto it.
+
+| Control | What it does |
+| --- | --- |
+| **Tilt angle** | The collector tilt the section is drawn at |
+| **Row pitch** | The distance between rows |
+| **Lower-edge height** | The height of each collector's lower edge above ground, which places the rows vertically. The **Module ground clearance** field on the Yield tab feeds this picture and nothing else |
+| **Day of year** slider | Which day the sun follows. Ships at day 355 — the winter solstice |
+| **Solar time** slider | The solar hour, from 5 to 19 h. Ships at 12 — solar noon |
+
+Above the picture a verdict answers the question the tab is for. When the rear
+row is clear it reads along the lines of *"The rear row is shade-free …"* with
+a tick; when it is not, *"n % of the rear row is shaded …"*. A detail line
+under it gives the sun elevation, the profile angle, and how far up the
+collector's slope the shadow reaches — *"lower s m of the L m slope"*.
+
+### Object shadow (plan / keep-clear)
+
+The second tab is the plan view of one object — a building, a pole, a tank —
+and the ground its shadow sweeps over the course of a solar-time window.
+
+| Control | What it does |
+| --- | --- |
+| **Object length (E–W)** | The object's footprint along the east–west axis |
+| **Width (N–S)** | Its footprint along the north–south axis |
+| **Height** | Its height, which sets how far the shadow reaches |
+| **Solar time from … to …** | The window of solar hours the shadow is swept over |
+
+The verdict states the ground to keep clear: *"Keep a m² clear — the shadow
+reaches up to r m"*, or *"This object casts no shadow in the chosen window"*
+when nothing falls inside it. It is the same idea as the keep-clear footprints
+placed structures get on the Site tab — see
+[Structures and shadow](/docs/inputs/structures-and-shadow) — applied to an
+object of your own dimensions without placing it.
+
+### How to use the row view
 
 <Steps>
 <Step>
 ### Open it on a generated layout
 
-The window needs the row geometry, so generate the layout first. The tilt and
-pitch it draws are the ones in force, whether derived or overridden.
+Generate the layout, then open the **Tools** tab and click **🌓 Shadow View
+(row spacing)** in the **Studies** card. The tilt and pitch it opens with are
+the ones in force, whether derived or overridden.
 </Step>
 
 <Step>
 ### Go to the worst case first
 
-Drag the day slider to midwinter and the hour slider to early morning. That is
-when the sun is lowest and furthest round in azimuth, the profile angle is at its
-smallest, and the shadow reaches furthest across the pitch. If the rear
-collector is still substantially clear there, the design has real margin.
+The window opens on the winter solstice at solar noon. Drag **Solar time**
+towards the early morning. That is when the sun is lowest and furthest round in
+azimuth, the profile angle is at its smallest, and the shadow reaches furthest
+across the pitch. If the verdict still reads shade-free there, the design has
+real margin.
 </Step>
 
 <Step>
 ### Sweep the day at a fixed hour, then the hour at a fixed day
 
-Sweeping the day slider at a fixed early hour shows the seasonal swing.
-Sweeping the hour slider at the winter solstice shows how much of that day is
-affected, which is what the annual weighting is summing up.
+Sweeping **Day of year** at a fixed early hour shows the seasonal swing.
+Sweeping **Solar time** on the solstice shows how much of that day is affected,
+which is what the annual weighting is summing up.
 </Step>
 
 <Step>
-### Change the pitch and look again
+### Try a wider pitch in the window, then make it real
 
-Widen the row pitch, generate again, and reopen the window. Comparing the two
-pictures at the same day and hour is the quickest way to see what the extra
-metre of pitch bought you, and the computed loss quantifies it.
+Raise **Row pitch** and watch the verdict change. Nothing in the layout moves
+until you set the pitch on the Array tab and generate again — the window is a
+study, not an editor. Comparing the two pictures at the same day and hour is
+the quickest way to see what the extra metre of pitch bought you, and the
+computed loss quantifies it.
 </Step>
 </Steps>
 
@@ -201,9 +251,10 @@ metre of pitch bought you, and the computed loss quantifies it.
 | --- | --- | --- | --- |
 | **Module ground clearance** | 0.5 m | 0.0–5.0 m | The height of the module's lower edge above the ground, used to draw the row cross-section |
 
-The clearance fixes where each collector sits vertically in the Shadow View
-cross-section, and that is all it does. Nothing about where tables land depends on
-it, and neither does any figure in the performance ratio.
+The field sits under the auto tick in the losses expander on the Yield tab. It
+fixes where each collector sits vertically in the Shadow View cross-section,
+and that is all it does. Nothing about where tables land depends on it, and
+neither does any figure in the performance ratio.
 
 <Callout type="warn">
 **The clearance is not an input to the computed shading loss.** The near-shading
@@ -240,13 +291,13 @@ whole scope.
   row, where a real row has no neighbour beside it to shade or be shaded by. On a
   plant of long rows that is a small effect; on a fragmented boundary with many
   short runs it is worth knowing the model does not account for it.
-- **Shading from objects you place is handled separately, and as a keep-clear
+- **Shading from structures you place is handled separately, and as a keep-clear
   zone rather than as a loss.** Control rooms, unit substations and objects you
-  place get a year-round shadow footprint, and with **Clear tables inside
-  shadows** on — its shipped state — tables falling inside that footprint are
-  removed from the layout rather than derated. The capacity goes down; the
-  shading percentage does not go up. See
-  [Structures and shadow](/docs/inputs/structures-and-shadow).
+  place get a year-round shadow footprint, and with **Clear tables in shadows**
+  on — its shipped state — tables falling inside that footprint are removed from
+  the layout rather than derated. The capacity goes down; the shading percentage
+  does not go up. The **Object shadow** tab above lets you size that footprint
+  for an object before you place it.
 
 The practical reading: the computed percentage is a defensible row-to-row
 number, and it is not a substitute for a dedicated shading study on a site with

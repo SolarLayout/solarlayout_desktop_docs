@@ -10,17 +10,18 @@ with nothing on it. Two options recover that ground, and both are off by
 default.
 
 They recover it in different ways. **Maximize placement** moves each row
-sideways until it touches the boundary. **Add half tables in leftover space**
-drops a smaller unit into the gap that is left. You can use either, or both, and
-in both cases what you buy is capacity and what you pay is regularity.
+sideways until it touches the boundary. **Add half tables** drops a smaller
+unit into the gap that is left. You can use either, or both, and in both cases
+what you buy is capacity and what you pay is regularity.
 
 | Option | Default | What it changes | What it costs |
 | --- | --- | --- | --- |
 | **Maximize placement** | Off | Each row is positioned independently, hugging the boundary edge | Table columns no longer line up across rows; longer to compute on a large site |
-| **Add half tables in leftover space** | Off | A half-size unit is dropped wherever a full one will not fit | A second unit type in the plant, counted separately |
+| **Add half tables** | Off | A half-size unit is dropped wherever a full one will not fit | A second unit type in the plant, counted separately |
 
-Both live at the bottom of the table group — or the tracker group in a Single
-Axis Tracker session — alongside the geometry they modify. See
+Both live at the bottom of the **MMS-Table Configuration** card on the Array
+tab — or the **Tracker Configuration** card in a tracker design — alongside the
+geometry they modify. See
 [Table configuration](/docs/inputs/table) and
 [Tracker configuration](/docs/inputs/tracker).
 
@@ -73,7 +74,7 @@ you are producing a drawing for a bid, or when the plant will be built and
 maintained on a repeating block pattern.
 
 The honest way to decide is to run the site both ways. Generate once with the
-option off, note the table count and capacity in the summary, turn it on,
+option off, note the table count and capacity in the Summary view, turn it on,
 generate again, and compare. Nothing else in the design changes, so the
 difference is entirely the option.
 
@@ -95,21 +96,21 @@ one cannot.
 The tracker equivalent is a **half tracker**, and it is halved along the other
 axis. A tracker unit is long north to south, because the strings run along the
 torque tube, so halving the strings halves the **north–south length**. The
-option reads **Add half trackers in leftover space** and is off by default, like
-its fixed-tilt counterpart.
+option reads **Add half trackers** and is off by default, like its fixed-tilt
+counterpart.
 
 The place a half tracker earns its keep is the north and south ends of a
 column, where a full-length unit runs out of ground before the boundary does.
 
 ### How half units are counted
 
-Half units are never mixed into the full-unit count. The summary table reports
-them in their own column, and wherever a count feeds another calculation the
+Half units are never mixed into the full-unit count. The Summary view reports
+them in their own row, and wherever a count feeds another calculation the
 half unit is weighted at **half**:
 
 | Where it appears | How half units are treated |
 | --- | --- |
-| The summary table | Two separate columns — full units and half units |
+| The Summary view | Two separate rows — **Full tables** and **Half tables** (**Full trackers** and **Half trackers** on a tracker plant) |
 | Plant capacity and module count | A half unit contributes its own modules, so it lifts capacity by less than a full one |
 | Sizing the plant to a target capacity | Counted as 0.5 of a unit throughout |
 | Cleaning fleet sizing | Counted as 0.5 when a line's length is judged too short to justify a robot |
@@ -127,26 +128,27 @@ a second bill-of-materials line, a second set of piles, and a second erection
 method on site, for a capacity contribution that is by definition small.
 
 You can also place a half unit by hand. Sketch Mode's **➕ Half Table** tool
-drops one anywhere you click, which is the better route when you want two or
-three of them in specific places rather than every one the application can find.
-See [Editing by hand](/docs/editing/sketch-mode).
+(**➕ Half Tracker** on a tracker plant) drops one anywhere you click, which is
+the better route when you want two or three of them in specific places rather
+than every one the application can find. See
+[Sketch Mode](/docs/editing/sketch-mode).
 
 ## Reading the result
 
-The summary table reports full and half units in **separate columns** — labelled
-for tables in a fixed-tilt session and for trackers in a tracker session — so
+The Summary view reports full and half units in **separate rows** — labelled
+for tables in a fixed-tilt design and for trackers in a tracker design — so
 you can see at a glance how much of the plant came from infill. A plant with a
 large half count on a small full count is a plant whose capacity is leaning on
 the awkward edges of the site, which is worth knowing before you commit to it.
 
 Read them together with the plant area and the module count. The three figures
 tell you what the plant is: how much ground, how many structures of each kind,
-and how much capacity came out. Every column is listed in
-[Summary table columns](/docs/reference/summary-columns).
+and how much capacity came out. Every row is listed in
+[Summary rows](/docs/reference/summary-columns).
 
 <Callout type="warn">
 Both options make the plant less regular, and regularity has a value that does
-not appear in any column of the summary. A bid drawing, a construction sequence
+not appear in any row of the Summary view. A bid drawing, a construction sequence
 and a maintenance plan are all easier to defend on a plant whose rows line up.
 It is entirely reasonable to ship the regular version at lower capacity.
 </Callout>
@@ -169,8 +171,8 @@ meaningful:
   clear.
 - **The equipment stages are unchanged.** More tables mean more capacity, which
   can mean an extra control room and more arresters — and those clear tables in
-  turn. The extra capacity you read in the summary is the figure after all of
-  that, not before it.
+  turn. The extra capacity you read in the Summary view is the figure after all
+  of that, not before it.
 
 ## Using both together
 

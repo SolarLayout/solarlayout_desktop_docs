@@ -9,23 +9,27 @@ and under the rows, so the gain it produces is a property of the site as much as
 of the module: the same module over dry sand and over dark wet soil does not
 give the same answer.
 
-Two inputs control it, and they sit in two different places. The module's own
-bifaciality lives in **Module Specifications**; the ground reflectance lives with
-the energy settings. Both are needed before any rear-side energy is counted.
+Two inputs control it, and they sit on two different tabs. The module's own
+bifaciality lives in **Module Specifications** on the **Array** tab; the ground
+reflectance lives in the **Energy Yield** card on the **Yield** tab. Both are
+needed before any rear-side energy is counted.
 
 ## Turning it on
+
+The two module-side fields are in the **Module Specifications** card on the
+**Array** tab, under the module dimensions and wattage.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Bifacial module** | off | — | Counts rear-side generation in the yield. With it off the module is treated as monofacial, whatever it actually is |
-| **Bifaciality factor (φ)** | 0.70 | 0.50–0.95 | Rear-side efficiency as a fraction of front-side efficiency. Editable only when **Bifacial module** is ticked |
+| **Bifaciality factor (φ)** | 0.70 | 0.50–0.95 | Rear-side efficiency as a fraction of front-side efficiency. Greyed out until **Bifacial module** is ticked |
 
 Tick **Bifacial module** by hand, or let a module file do it for you. **Load
 .PAN** reads the manufacturer's `.PAN` file, and when that file declares the
-module bifacial it ticks the checkbox and fills **Bifaciality factor (φ)** with
-the manufacturer's value. You therefore do not have to know whether a given part
-number is bifacial to get the rear side modelled — see
-[Module specifications](/docs/inputs/module).
+module bifacial it ticks the box and fills **Bifaciality factor (φ)** with the
+manufacturer's value; the file row's tooltip then notes the detected φ. You
+therefore do not have to know whether a given part number is bifacial to get
+the rear side modelled — see [Module specifications](/docs/inputs/module).
 
 Neither field moves a single table. Turning bifaciality on changes the energy
 calculation only; the placed layout, the module count and the DC capacity are
@@ -45,8 +49,8 @@ landing on the back is worth 0.70 of the same unit landing on the front.
   power ratio, usually as a percentage with a tolerance — 70 % ± 5 % is a
   common form. Divide by 100 before entering it.
 - It is a property of the module and nothing else. Take it from the datasheet or
-  from the module file. Do not tune it to reach a target yield; the site inputs
-  below are where a design legitimately differs from another.
+  from the module file. Do not tune it to reach a target yield; the site input
+  below is where a design legitimately differs from another.
 
 ## Ground albedo
 
@@ -60,18 +64,22 @@ reviewer will ask about first.
 | --- | --- | --- | --- |
 | **Ground albedo (ρ)** | 0.25 | 0.05–0.80 | Ground reflectance used to estimate the light reaching the module's rear face |
 
-<Screenshot id="energy-bifacial-albedo" maxWidth={420} />
+It is the last plain field of the **Energy Yield** card on the **Yield** tab,
+under its own **Bifacial Ground Albedo** heading — after the weather source,
+the irradiance figures and the ambient temperature, mounting type and wind
+speed, and just above the **ADVANCED** expanders.
 
 With **Bifacial module** off there is no rear-side term at all, so raising the
-albedo changes no rear-side figure. The field is live in the panel either way,
+albedo changes no rear-side figure. The field is live on the tab either way,
 which is the first thing that catches people out.
 
-The second is where it lives. Albedo is set with the energy settings, several
-groups below the module fields it works with, so a reader who ticks
-**Bifacial module** and stops there has accepted 0.25 without deciding on it.
-The split is deliberate — bifaciality is a module property and albedo is a
-ground property — but it does mean the two halves of the same calculation are
-never on screen together. Set both in one pass.
+The second is where it lives. Albedo is on a different tab from the module
+fields it works with, so a reader who ticks **Bifacial module** on the Array
+tab and stops there has accepted 0.25 without deciding on it. The split is
+deliberate — bifaciality is a module property and albedo is a ground property,
+and the Yield tab is where the site's conditions are gathered — but it does
+mean the two halves of the same calculation are never on screen together. Set
+both in one pass.
 
 <Callout type="warn">
 Albedo is a measured site property, not a default to leave alone. It varies
@@ -113,13 +121,13 @@ Every term:
 | Term | What it is |
 | --- | --- |
 | `GTI_rear` | Estimated annual irradiance reaching the module's rear face, in kWh/m²/yr |
-| `GHI` | Global horizontal irradiance — the annual irradiation falling on a horizontal surface at the site, in kWh/m²/yr. Fetched or read from your weather data, not entered as part of the bifacial settings |
+| `GHI` | Global horizontal irradiance — the annual irradiation falling on a horizontal surface at the site, in kWh/m²/yr. The **GHI** field on the Yield tab, fetched or read from your weather data |
 | `ρ` | Ground albedo, the field above |
 | `F_ground_rear` | The ground-to-rear view factor — the fraction of the rear face's field of view that is occupied by ground rather than sky |
 | `tilt` | The module tilt angle from horizontal, either derived from latitude or overridden by you |
 | `GCR` | Ground coverage ratio — the collector width as a fraction of the row pitch. The application reports it as table height divided by row pitch |
 | `1 − GCR` | The fraction of the ground left uncovered by collectors, and therefore able to be lit and to reflect |
-| `GTI_front` | Global tilted irradiance on the front face — the in-plane annual irradiation the front side receives, in kWh/m²/yr |
+| `GTI_front` | Global tilted irradiance on the front face — the **GTI (in-plane)** field, in kWh/m²/yr |
 | `φ` | Bifaciality factor |
 | `bifacial_gain` | The rear-side contribution as a fraction of the front-side in-plane irradiation |
 
@@ -169,20 +177,20 @@ a row pitch that does not match the design being priced.
 The gain is an energy effect, so it appears inside the energy figures and
 nowhere else:
 
-- The first-year and lifetime energy figures, and the three exceedance
-  probability columns at the right-hand end of the summary table, all carry it.
-- The capacity factor carries it, because the capacity factor is computed from
-  first-year energy over the same installed DC capacity.
-- The layout columns — table counts, modules, DC capacity — do not change at
-  all. There is no bifacial column in the summary table.
-- The gain itself is computed as a percentage, and it is printed on the **energy
-  pages of the exported report**, beside the inputs and the performance ratio
-  breakdown that produced the figures. See
-  [The PDF report](/docs/exports/pdf-report).
+- The **Year-1 energy** and **Specific yield** tiles on the Energy view, the
+  **ENERGY** rows of the Summary view — the three exceedance probabilities and
+  the lifetime total — and the **Year-1 P50 energy** chip all carry it.
+- The **CUF** tile and row carry it, because the capacity factor is computed
+  from first-year energy over the same installed DC capacity.
+- The layout rows — table counts, modules, DC capacity — do not change at
+  all. There is no bifacial row in the Summary view.
+- The gain itself is computed as a percentage, and it is printed on the energy
+  pages of the exported report, beside the inputs and the loss analysis that
+  produced the figures. See [Project report](/docs/exports/project-report).
 
-**There is no separate on-screen readout of the gain.** Nothing in the panel or
-the summary table shows it as its own percentage, so if you need the figure
-itself, take it from the report's energy pages.
+**There is no separate on-screen readout of the gain.** Nothing on the Yield
+tab, the Energy view or the Summary view shows it as its own percentage, so if
+you need the figure itself, take it from the report's energy pages.
 
 Failing that, the cleanest way to see the effect on a design you have already run
 is to calculate energy with **Bifacial module** off, note the first-year figure,
@@ -195,7 +203,7 @@ the difference is the rear-side contribution and nothing else.
   <Card
     title="Module specifications"
     href="/docs/inputs/module"
-    description="Where the bifacial checkbox and the bifaciality factor live"
+    description="Where the bifacial tick and the bifaciality factor live"
   />
   <Card
     title="Row-to-row shading"

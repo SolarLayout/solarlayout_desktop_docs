@@ -3,32 +3,43 @@ title: Topography
 description: Keeping tables off ground that is inside the boundary but too steep, too uneven or too low-lying to carry a structure.
 ---
 
-**Topography** keeps tables off ground that lies inside the boundary but cannot
-carry them. On sloping ground the two are not the same thing: a stretch of
-hillside can be clear of every obstruction and still be unbuildable — the pitch
-direction runs the wrong way, the cross-fall twists the torque tube, or the
-ground drops so far under one table that the piles cannot make up the
-difference. The group measures the ground against limits you set and excludes
-what fails, so those tables are never placed in the first place.
+**Topography (slope-aware exclusion)** keeps tables off ground that lies inside
+the boundary but cannot carry them. On sloping ground the two are not the same
+thing: a stretch of hillside can be clear of every obstruction and still be
+unbuildable — the pitch direction runs the wrong way, the cross-fall twists the
+torque tube, or the ground drops so far under one table that the piles cannot
+make up the difference. The card measures the ground against limits you set and
+excludes what fails, so those tables are never placed in the first place.
 
 It changes the **usable area**, exactly as the perimeter road and the
 obstructions do. The excluded ground is subtracted before the table grid is
 laid out, and the capacity, module count and bill of materials all report the
 smaller figure.
 
-<Screenshot id="topography-group" maxWidth={420} />
+The card is the last one on the **Site** tab.
+
+<Screenshot id="topography" maxWidth={420} />
+
+<Callout type="warn">
+Nothing on this card is kept in a project file — not the tick, not the limits,
+not the path of a contour file. The terrain result itself is saved with the
+layout, so a reopened project still shows its contours and exclusions, but the
+card comes back at the defaults below. Set it again before you generate.
+</Callout>
 
 ## Turning it on
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Avoid steep / unsuitable ground** | off | — | Enables the whole group. With it off, no elevation data is read and nothing is excluded for slope or relief. |
+| **Avoid steep ground** | off | — | Enables the whole card. With it off, no elevation data is read and nothing is excluded for slope or relief. |
 
 Off by default, and deliberately so: an elevation model costs time to fetch or
 read, and on genuinely flat ground it changes nothing. Turn it on when the site
 has real relief — a site you would walk before believing a contour drawing.
 
-The rest of the group is inactive until this is ticked.
+The rest of the card is inactive until this is ticked.
+
+<Screenshot id="topography-enabled" maxWidth={420} />
 
 Terrain exclusions are applied **after** the perimeter road band, the water
 bodies, the corridors and the obstructions have been taken out, and **before**
@@ -40,17 +51,18 @@ removed.
 
 <Steps>
 <Step>
-### Tick Avoid steep / unsuitable ground
+### Tick Avoid steep ground
 
-Nothing else in the group responds until you do.
+Nothing else on the card responds until you do.
 </Step>
 
 <Step>
 ### Point at a survey file, or leave the automatic fetch on
 
-Browse to a contour or spot-level file if you have one — it is the more accurate
-of the two sources by a wide margin. With no file, leave **Fetch from satellite
-if no file (SRTM 30 m)** on and make sure the machine is online.
+Click **Load contour / levels…** and pick a contour or spot-level file if you
+have one — it is the more accurate of the two sources by a wide margin. With no
+file, the label beside the button reads *Auto (satellite DEM)*; leave
+**Satellite DEM if no file** ticked and make sure the machine is online.
 </Step>
 
 <Step>
@@ -64,16 +76,17 @@ pile reveals. Defaults are a starting point, not a recommendation.
 <Step>
 ### Decide whether depressions matter on this site
 
-Tick **Exclude depressions / water-pooling cells** if standing water is a design
-case here. It is off unless you ask for it.
+Tick **Exclude depressions** if standing water is a design case here. It is off
+unless you ask for it.
 </Step>
 
 <Step>
 ### Generate, then read the excluded area
 
-Generate the layout, check the excluded area reported in acres, and turn the
-**Terrain** switch on to see the contours and the excluded ground against the
-array.
+Generate the layout, open **Layers ▾** above the plot, and switch the
+**Contour / terrain** row on to see the contours and the excluded ground
+against the array. The row's readout gives the reduced-level range and the
+excluded area.
 </Step>
 </Steps>
 
@@ -84,8 +97,8 @@ is the fallback.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Contour data** | Auto (satellite elevation model) | — | The contour or spot-level file to read heights from. Leave it unset to use the automatic fetch. |
-| **Fetch from satellite if no file (SRTM 30 m)** | on | — | When no file is supplied, builds the elevation model from public satellite elevation data. Needs an internet connection. |
+| **Contour data** | *Auto (satellite DEM)*, with a **Load contour / levels…** button | — | The contour or spot-level file to read heights from. Leave it unset to use the automatic fetch. |
+| **Satellite DEM if no file** | on | — | When no file is supplied, builds the elevation model from public satellite elevation data. Needs an internet connection. |
 
 ### A file you supply
 
@@ -93,7 +106,8 @@ Use this whenever you have a survey. It is the only way to get the accuracy a
 detailed design needs, and it is the only source that reflects work already done
 on the ground.
 
-The file chooser accepts `.dxf`, `.dwg`, `.csv` and `.txt`. Two shapes of data
+**Load contour / levels…** opens the **Select contour / spot-level file**
+dialog, which accepts `.dxf`, `.dwg`, `.csv` and `.txt`. Two shapes of data
 are read:
 
 - **A CAD contour file.** Contour lines or spot levels, drawn in the
@@ -103,7 +117,7 @@ are read:
   any further alignment. A drawing in an arbitrary local grid, or in a national
   grid, does not: shift it into the project's coordinates before loading it. If
   your boundary came from a CAD drawing rather than a mapping file, see
-  [CAD boundary files](/docs/inputs/cad-boundary) for how the site is
+  [CAD drawing boundaries](/docs/inputs/cad-boundary) for how the site is
   positioned.
 - **A comma-separated file** of **longitude, latitude and elevation** — one
   point per line. This is the shape a GPS survey, a drone photogrammetry export
@@ -112,10 +126,9 @@ are read:
 
 ### Automatic satellite elevation data
 
-With no file supplied and **Fetch from satellite if no file (SRTM 30 m)** left
-on, heights come from public satellite elevation data. This needs an internet
-connection, and it is the only part of this group that reaches outside your
-machine.
+With no file supplied and **Satellite DEM if no file** left on, heights come
+from public satellite elevation data (SRTM). This needs an internet connection,
+and it is the only part of this card that reaches outside your machine.
 
 It is a screening tool, not a survey. It is right for the question *does this
 site have a slope problem at all, and roughly where?* — early feasibility, a
@@ -182,7 +195,7 @@ you will place tables the civil contractor comes back on.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Exclude depressions / water-pooling cells** | off | — | Also excludes low-lying ground where water would collect, on top of the slope tests. |
+| **Exclude depressions** | off | — | Also excludes low-lying ground where water would collect, on top of the slope tests. |
 
 Off by default. The three limits above ask whether the ground is *too steep* or
 *too uneven*. This asks the opposite question: whether it is *too low* — a hollow
@@ -191,20 +204,26 @@ with no outfall, where water collects after rain and stands.
 Turn it on for a site with visible depressions, on black cotton soil, or
 anywhere the monsoon is a design case. Flat ground passes every slope test by
 definition, so on a site whose problem is drainage rather than gradient this is
-the only test in the group that will exclude anything at all.
+the only test on the card that will exclude anything at all.
 
 ## What you see after a run
 
-Generate the layout as usual. Three things then report what the terrain did:
+Generate the layout as usual. The terrain result is a layer of the plot, off
+until you ask for it.
+
+<Screenshot id="terrain" />
 
 - **Coloured contour lines** over the plot, running **green at the low
   elevations through blue to red at the high ones** — so the ramp reads as a
   height scale without a legend.
-- **The Terrain switch**, which shows and hides those contours. Leave them off
-  while you read the array, and on while you are arguing about the exclusions.
-- **The excluded area, reported in acres.** This is the number to check.
+- **The Contour / terrain row of the Layers ▾ popover** shows and hides those
+  contours. Leave them off while you read the array, and on while you are
+  arguing about the exclusions.
+- **The row's readout** — *RL: min – max m · Excluded: x ac / v m³* — gives the
+  range of reduced levels (RL) the model found across the site and the excluded
+  area in acres. The excluded area is the number to check.
 
-<Screenshot id="layout-terrain" />
+<Screenshot id="layers-popover-terrain" maxWidth={320} />
 
 The contour lines are carried into the CAD drawing on their own layer, so the
 ground model the exclusions came from travels with the layout. See
@@ -215,8 +234,9 @@ ground model the exclusions came from travels with the layout. See
 <Callout type="warn">
 Any terrain failure is **not fatal**. If there is no network connection, or the
 file cannot be read, the layout proceeds **without terrain exclusion** — you get
-a complete layout that silently ignored the ground. Always check that an
-excluded area has been reported before assuming the limits were applied.
+a complete layout that silently ignored the ground. Always check that the
+Contour / terrain readout reports an excluded area before assuming the limits
+were applied.
 </Callout>
 
 Being clear about the boundaries of this feature:
@@ -230,9 +250,8 @@ Being clear about the boundaries of this feature:
   place. See [Shading losses](/docs/energy/shading).
 - It does **not model a distant horizon.** No horizon profile is read or
   applied.
-- It does **not perform a cut-and-fill or earthworks calculation.** There is no
-  volume of soil to move, no balance of cut against fill, no grading design.
-  Ground is either within your limits or excluded.
+- It does **not produce a grading design.** There is no balance of cut against
+  fill and no levelling plan. Ground is either within your limits or excluded.
 - It is **not a substitute for a geotechnical investigation.** The relief limit
   is a geometric test on an elevation model. It says nothing about what the soil
   under a pile will hold.
@@ -261,8 +280,8 @@ ground.
     description="The order the usable area is built up and the tables are placed"
   />
   <Card
-    title="Boundary file requirements"
-    href="/docs/inputs/kmz-requirements"
-    description="What the boundary file must contain before any of this runs"
+    title="Views and layers"
+    href="/docs/workspace/views"
+    description="The Layers popover the terrain row lives in"
   />
 </Cards>

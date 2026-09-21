@@ -12,10 +12,9 @@ If you are not sure whether your PC has the Store, start at the download page,
 [solarlayout.app/downloads/solarlayout](https://solarlayout.app/downloads/solarlayout).
 It asks one question about your PC and takes you to the right place.
 
-Installation does not need access. The application opens, and every panel,
-field and menu is there to look at. Generating a layout, every export, and the
-SLD and BOM tools are the things that need it, so activation is the step that
-follows this page.
+Installation does not need access. The application opens, and every tab,
+field and menu is there to look at. Generating a layout and every export are
+the things that need it, so activation is the step that follows this page.
 
 ## What the Store gives you
 
@@ -49,9 +48,9 @@ application at all — you will see no **Get** button rather than a failed insta
 
 Beyond that, what matters is the screen rather than the processor:
 
-- A display **wide enough to show the input panel and the plot side by side**.
-  The window is built around that arrangement — the panel of settings on the
-  left, the plant drawing on the right — and a narrow screen makes both
+- A display **wide enough to show the input tabs and the plot side by side**.
+  The window is built around that arrangement — the stage tabs of settings on
+  the left, the plant drawing on the right — and a narrow screen makes both
   cramped. A wide or high-resolution monitor is worth more here than a fast
   processor.
 - An **internet connection only for weather data and elevation data**. Both are
@@ -88,8 +87,6 @@ Type the application name into the Store's search box. Nothing else is needed
 
 The publisher name sits under the application name on the listing page,
 alongside the install button.
-
-<Screenshot id="store-listing" />
 </Step>
 
 <Step>
@@ -99,8 +96,6 @@ Click **Get** or **Install**. The Store downloads and installs the
 application; there are no options to choose and no components to select.
 
 When it finishes, the button on the listing changes to **Open**.
-
-<Screenshot id="store-installed" />
 </Step>
 
 <Step>
@@ -108,58 +103,55 @@ When it finishes, the button on the listing changes to **Open**.
 
 Use **Open** on the listing, or find the application in the Start menu — press
 Start and type the first few letters of its name.
-
-<Screenshot id="start-menu-entry" />
 </Step>
 
 </Steps>
 
 ## The first launch
 
-The application does not open straight into the main window. A window appears
-first, offering four cards, and you pick one before anything else happens. It
-appears at **every** launch, not only the first.
+The application does not open straight into the main window. The
+**SolarLayout · New design** window appears first, and you answer two
+questions before anything else happens. It appears at **every** launch, not
+only the first.
 
-The four cards are the two mounting types crossed with the two electrical
-topologies:
-
-| Mounting | Electrical | Equipment chain on the card |
-| --- | --- | --- |
-| Fixed Tilt | String Inverter | Modules → MMS-Table → String Inverter → ICR |
-| Fixed Tilt | Central Inverter | Modules → MMS-Table → SMB → Central Inverter |
-| Single Axis Tracker | String Inverter | Modules → Tracker MMS → String Inverter → ICR |
-| Single Axis Tracker | Central Inverter | Modules → Tracker MMS → SMB → Central Inverter |
-
+Two segmented controls — **MOUNTING** (**Fixed tilt** or **Single-axis
+tracker**) and **INVERTER** (**String inverter** or **Central inverter**) —
+with a summary card that names the combination and shows its equipment chain,
+from the modules through the mounting and the inverter to the control room.
 MMS is the module mounting structure; SMB is a string monitoring box; ICR is an
-inverter control room. The choice decides which input groups you are shown and
+inverter control room. The choice decides which input cards you are shown and
 how the plant is put together, so it is a design decision rather than a
 preference — [Choosing a design mode](/docs/design-modes) covers which to pick.
+Click **Continue**.
 
-If you chose wrongly, you do not need to restart: **File ▸ Move to String /
-Central Window…** moves the session to the other electrical topology.
+If you chose wrongly, you do not need to restart: the design chip in the
+ribbon, or **File ▸ Move to String / Central Window…**, opens a second window
+for a different design.
 
-Once you have picked a card, the main window opens: the input panel on the
-left, an empty plot area on the right, the toolbar above it and an empty
-summary table below. The toolbar also carries an access-status chip — on a
-fresh install it reads "● No active access" with a **Get Free Access** button
-right beside it, so you can activate without opening a menu — plus a **Docs**
-button, and the app version is shown in the status bar at the bottom of the
-window. See [The main window](/docs/getting-started) for what each part of it
-is.
+The main window then opens. Across the top runs the navy **ribbon**, with the
+design chip, the access chip and the **Docs** and **Support** buttons — on a
+fresh install the access chip gives way to a gold **Get Free Access** button,
+so you can activate without opening a menu. Down the left sits the pinned
+**Generate Layout** button over the five stage tabs — **Site · Array ·
+Electrical · Yield · Tools**; on the right, the view tabs — **Layout · Summary ·
+Energy · BOM · SLD** — over an empty plot; and the application version is shown
+at the right of the status bar at the bottom of the window. See
+[The main window](/docs/workspace/main-window) for what each part of it is.
 
 ## What to do next
 
 <Callout type="warn">
-**Generate Layout** does nothing until this device has active access — and
-neither do the exports, the SLD or the BOM tools. Everything else — loading a
-boundary file, reading and changing every input, opening the menus — works
-without it. Activate the device before you plan to design anything.
+**Generate Layout** opens the License / Subscription window instead of
+generating until this device has active access — and so does every export.
+Everything else — loading a boundary file, reading and changing every input,
+opening the menus, the SLD and BOM views — works without it. Activate the
+device before you plan to design anything.
 </Callout>
 
 Activation happens online, once per device, and there is **no licence file** at
 any point — nothing to request, receive, load or keep safe. Open **Help ▸
 License / Subscription…** and click **Get Free Access**; the same button sits
-beside the access-status chip in the toolbar. Your browser opens on the
+in the ribbon where the access chip will be. Your browser opens on the
 activation page for this device. Finish there, switch back, and the window
 confirms it by itself.
 

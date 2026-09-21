@@ -13,7 +13,12 @@ Two of them — the perimeter road width and the transmission line corridor —
 decide how much ground is available before a single table is placed. The rest
 decide what equipment is then placed on the ground that remains.
 
-<Screenshot id="site-group" maxWidth={420} />
+The card is the second one on the **Site** tab, between the Input Boundary File
+card and the two keep-clear cards, Structures & Shadow and Topography.
+
+<Screenshot id="tab-site" />
+
+<Screenshot id="site-parameters" maxWidth={420} />
 
 ## At a glance
 
@@ -76,13 +81,16 @@ in the perimeter road band, in a water body or on excluded ground.
 
 Because arresters cost capacity on a fixed-tilt plant, the usual sequence is to
 generate the layout with the option off, agree the field, and then turn it on
-for the run you issue. You can also leave it off and add arresters one at a
+for the run you issue. The tick itself is not kept in a project file — the
+radius is — so a reopened project comes back with the option off. You can also leave it off and add arresters one at a
 time by hand in [Sketch Mode](/docs/editing/sketch-mode) — the plant totals are
 recomputed when you leave it, so a hand-placed arrester clears tables and
 changes the capacity exactly as an automatic one does.
 
-The placed count appears in the summary's `LA` column. The arresters themselves
-are hidden on the plot until you turn the **Lightning Arresters** switch on.
+The placed count appears on the **Lightning arresters** row of the Summary view
+and, once any are placed, on a **Lightning arresters** chip in the row of plant
+chips under the plot. The arresters themselves are hidden on the plot until you
+switch the **Lightning arresters** row on in the **Layers ▾** popover.
 [Lightning arresters](/docs/layout/lightning-arresters) covers the grid, the
 coverage circles and the footprints in full.
 
@@ -144,13 +152,13 @@ Choosing the block size is a cabling trade-off:
 | More ground lost to building footprints | Less ground lost |
 | More medium-voltage circuits back to the main control room | Fewer, larger circuits |
 
-In Central Inverter mode there is a second constraint worth knowing before you
-set the block: a maximum of **4** central inverters are housed in one control
-room building. See [Inverters and cable calculation](/docs/inputs/inverter).
+In a central-inverter design there is a second constraint worth knowing before
+you set the block: a maximum of **4** central inverters are housed in one
+control room building. See [Inverter settings](/docs/inputs/inverter).
 
 The footprint and height of the room itself are not set here — they are in the
-**Structures & Shadow** group below. How the rooms are placed, and how to move
-one, is in [Control rooms](/docs/layout/icr).
+**Structures & Shadow (keep-clear)** card below. How the rooms are placed, and
+how to move one, is in [Control rooms](/docs/layout/icr).
 
 ## Transmission line corridor
 

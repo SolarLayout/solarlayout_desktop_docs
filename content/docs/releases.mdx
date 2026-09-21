@@ -42,7 +42,64 @@ Each entry names a version and its release date, and the newest carries a
 called out inside the entry it shipped in, because those are the changes that
 alter results between runs.
 
-<Release version="1.0.0" date="2026-08-18" tag="current">
+<Release version="1.2.0" date="2026-09-21" tag="current">
+
+### A rebuilt interface
+
+The window has been reorganised around the way a design is worked through.
+Nothing about placement, routing or the energy model changed in this release;
+what changed is where things are and what they are called. Older screenshots
+and the in-app guide describe the previous arrangement.
+
+- **The New design window** replaces the four start-up cards. Two segmented
+  controls — **MOUNTING** and **INVERTER** — with a live summary card and one
+  **Continue** button. The ribbon's **design chip** and **File ▸ Move to
+  String / Central Window…** open a second window for a different design.
+- **The ribbon** across the top carries the brand, the design chip, the access
+  chip, and **Docs** and **Support** buttons.
+- **Five stage tabs** — **Site · Array · Electrical · Yield · Tools** — replace
+  the single long input panel, with **Generate Layout** (**F5**) pinned above
+  them and a hint line saying why it is disabled. Every card is collapsible.
+  The **Tools** tab, which holds obstructions, the main control room and the
+  three studies, is locked until a layout exists.
+- **Five views** of the plant on the right — **Layout · Summary · Energy · BOM
+  · SLD** (**Ctrl+1** to **Ctrl+5**) — with the current view's tools beside the
+  tabs. The **Summary** view shows the per-plant figures as a sheet turned on
+  its side, grouped under SITE, ARRAY, ELECTRICAL, CABLES and ENERGY, with
+  **Copy** and **Open in window**; the **Energy** view shows the yield result
+  with tiles, the monthly table and charts.
+- **The Layers popover** gathers the drawing's ON/OFF rows — plant layout,
+  legend, arresters, ICR blocks, the three cable layers, contours and plant
+  totals. The legend is folded behind a **Legend ▾** chip on the plot.
+- **Plant chips** under every view carry the totals — DC capacity, site area,
+  tables, modules, ICR blocks, arresters and year-one P50 energy — and open the
+  Summary or Energy view when clicked.
+- **Three navigation tools** — **Home**, **Pan** and **Zoom** — and the mouse
+  wheel zooms at the cursor. The view you set persists across redraws until
+  Home, a new layout or a new boundary file.
+- **The Cables card** on the Electrical tab holds **Calculate cables** and
+  three DC allowances: inter-module lead, the string return run and DC cable
+  slack.
+- **String sizing** opens from a **Size…** button beside **Modules per row** or
+  **Modules per string (N–S)** — the Auto / Manual prompt after loading a
+  module file is gone.
+- **The Export menu** beside **Save project**: **Export KMZ**, **Export DXF**,
+  **Export ICR-Block DXF** (one sheet per control-room block), **Export Cable
+  Schedule (Excel)**, **Export Detailed Project Report**, and **Export Image
+  (PNG)** for the plot. **Export PDF (with Piles)** appears while the pile
+  overlay is on.
+- **The report is now a Word document** — cover page, methodology, design
+  basis, results, energy yield and the drawing annexures — in place of the
+  PDF layout-and-summary export.
+- **Rebuilt dialogs.** Site reference for CAD and image boundaries, Check
+  boundaries, String sizing, Simulation with AC Capacity, Robotic module
+  cleaning, Shadow View and the Pile layout editor follow one pattern: inputs
+  on one side, the answer on the other as it updates, and one primary button
+  that names its effect.
+
+</Release>
+
+<Release version="1.0.0" date="2026-08-18">
 
 ### The first documented release
 

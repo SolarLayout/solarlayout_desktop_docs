@@ -9,19 +9,21 @@ automatic fetch over the internet, or a full-year hourly file of your own — an
 the choice between them is the single largest decision in the yield estimate.
 It is a larger lever than any loss component you might argue about afterwards.
 
-The two options are mutually exclusive, and both feed the same pair of
-irradiance fields further down the panel.
+The choice is made at the top of the **Energy Yield** card on the **Yield**
+tab, under **Weather Data Source**. The two options are mutually exclusive
+tick boxes, and both feed the same pair of irradiance fields directly below
+them.
 
-<Screenshot id="energy-weather-source" />
+<Screenshot id="yield-group" />
 
 ## The two sources
 
 | Option | What it gives you | What it needs |
 | --- | --- | --- |
-| **PVGIS API (auto-fetch on Calculate)** | In-plane irradiance for your position, tilt and orientation, fetched when you calculate | An internet connection. No key, no account. |
+| **PVGIS API (auto-fetch)** | In-plane irradiance for your position, tilt and orientation, fetched when you calculate | An internet connection. No key, no account. |
 | **Hourly GHI file (CSV)** | A full year of your own hourly data, and optionally its own in-plane column and its own temperatures | A file you supply |
 
-**PVGIS API (auto-fetch on Calculate)** is the shipped default.
+**PVGIS API (auto-fetch)** is the shipped default.
 
 Two abbreviations appear throughout, on the option labels and on the fields.
 **GHI** is global horizontal irradiance — what a sensor lying flat on the ground
@@ -33,9 +35,11 @@ weather records contain.
 ## The automatic service
 
 Selecting the automatic option means nothing is fetched until you click
-**Calculate Energy**. At that moment the application asks the service for the
-irradiance at your site latitude and longitude, at the array's tilt and
-orientation, and fills the irradiance fields with what comes back.
+**Calculate Energy** on the Yield tab, or **Calculate energy** on the Energy
+view. At that moment the application asks the service for the irradiance at
+your site latitude and longitude, at the array's tilt and orientation, and
+fills the irradiance fields with what comes back. The status line under the
+run buttons reads *"Fetching irradiance from PVGIS…"* while it waits.
 
 The service is the EU Joint Research Centre's PVGIS. It needs an internet
 connection and nothing else — there is no API key to obtain and no account to
@@ -63,29 +67,46 @@ an isotropic tilt correction is the crudest of the tilt models — it treats
 diffuse light as arriving equally from every part of the sky, so it does not
 capture the circumsolar brightening a better model does.
 
-Neither service is silent about which one you got. The source is reported on
-screen with the irradiance figures, so you always know which of the two
-produced your number before you quote it.
+### The source line
 
-<Screenshot id="energy-irradiance-fetched" maxWidth={340} />
+Neither service is silent about which one you got. A source line sits under
+the two irradiance fields and names where the current values came from:
 
-If neither service returns data, the irradiance fields stay at zero and the
-source reads as unavailable. That is a visible failure, not a silent fallback
-to a default irradiance — a zero irradiance produces a zero yield, and you will
-see it immediately.
+| Source line | Meaning |
+| --- | --- |
+| *Source: —* | Nothing fetched or loaded yet |
+| *Source: PVGIS (EU JRC) — auto fetched* | The primary service answered |
+| *Source: NASA POWER — auto fetched* | The primary service had no data and the fallback answered |
+| *Source: Auto-fetch failed — switch to GHI file* (in red) | Neither service returned data |
+
+Read it before quoting any energy number. The service named on the line is
+whichever one answered for your site — the sample site below, for instance,
+was served by the fallback.
+
+<Screenshot id="irradiance-fetched" />
+
+If neither service returns data, the irradiance fields stay at zero, the
+source line turns red, and the status line under the run buttons reads *"PVGIS
+fetch failed — check your internet connection, or switch to 'Hourly GHI file
+(CSV)' and load a local file."* That is a visible failure, not a silent
+fallback to a default irradiance — a zero irradiance produces a zero yield, and
+you will see it immediately.
 
 ## Your own hourly file
 
-Selecting **Hourly GHI file (CSV)** reveals a **Browse…** row and shows a
-format reminder straight away.
+Ticking **Hourly GHI file (CSV)** does two things at once: it reveals the row
+**GHI file (CSV):**, reading *"No file loaded"* beside a **Browse…** button,
+and it shows a format reminder titled **Hourly GHI File — Required Format**.
 
-<Screenshot id="energy-ghi-file-format" />
+<Screenshot id="weather-source-file" />
+
+<Screenshot id="ghi-file-format" />
 
 The reminder asks for **exactly three columns, in this order**:
 
 | Position | Column | Unit |
 | --- | --- | --- |
-| 1 | An hourly timestamp | — |
+| 1 | An hourly timestamp, such as `2023-01-01 00:30` | — |
 | 2 | Global horizontal irradiance | W/m² |
 | 3 | Ambient temperature | °C |
 
@@ -98,6 +119,21 @@ per square metre**, one value per hour — not an hourly energy in Wh/m², and n
 a daily or monthly total. The two are numerically equal for hourly data, but
 they are not the same quantity, and the row interval this input expects is one
 hour.
+
+### After the file is read
+
+The file row stops saying *"No file loaded"* and summarises what it found —
+the file name, the number of hours, the annual GHI, where the in-plane figure
+will come from, the average temperature, and a tick confirming that
+temperature data was loaded. The source line under the irradiance fields
+reads along the lines of *"Source: Hourly file (8760 h) | GTI calculated
+after layout | Monthly T from file"*.
+
+Two phrases on that line matter. *GTI calculated after layout* means the
+in-plane figure is derived from your horizontal column once the layout has
+fixed the tilt, so the **GTI (in-plane)** field fills in when you calculate,
+not when you browse. *Monthly T from file* confirms the temperature column has
+replaced the seasonal model, which the next section explains.
 
 ### What the application actually accepts
 
@@ -121,8 +157,6 @@ plane-of-array pyranometer — that column is used as it stands. No transpositio
 is performed, and none of the modelling assumptions in the next section apply
 to your numbers.
 
-<Screenshot id="energy-ghi-file-loaded" />
-
 ### Why the temperature column earns its place
 
 The third column is easy to dismiss as optional detail. It is not.
@@ -135,8 +169,8 @@ latitude — a reasonable generic shape, but a generic one.
 That matters because monthly performance ratio moves with module temperature,
 and module temperature is driven by ambient temperature. A monthly PR series
 built on measured ambient temperatures is defensible in a way that one built on
-a latitude-derived sine wave is not, and the monthly table is exactly the part
-of the output a technical reviewer reads line by line. See
+a latitude-derived sine wave is not, and the monthly table on the Energy view
+is exactly the part of the output a technical reviewer reads line by line. See
 [Temperature loss](/docs/energy/temperature) for the thermal model the
 temperatures feed.
 
@@ -186,7 +220,7 @@ GTI = Gb·Rb + Gd·(1+cos β)/2 + ρ·GHI·(1−cos β)/2
 | `Rb` | The geometric ratio of beam irradiance on the tilted plane to beam irradiance on the horizontal plane |
 | `Gd` | The diffuse component on the horizontal plane |
 | `β` | The module tilt angle from horizontal |
-| `ρ` | The ground reflectance used inside the transposition — a fixed value of 0.20, **not** the **Ground albedo (ρ)** field in the panel |
+| `ρ` | The ground reflectance used inside the transposition — a fixed value of 0.20, **not** the **Ground albedo (ρ)** field on the card |
 | `GHI` | The measured horizontal irradiance |
 
 The three terms are, in order: beam projected geometrically onto the plane,
@@ -194,9 +228,9 @@ sky diffuse seen by the fraction of the sky the tilted plane faces, and light
 reflected from the ground into the plane.
 
 Note which `ρ` this is. The transposition holds its own fixed ground reflectance
-of 0.20 and is never handed the panel's **Ground albedo (ρ)** field, so editing
+of 0.20 and is never handed the card's **Ground albedo (ρ)** field, so editing
 that field does not move the in-plane figure. It changes the rear-side gain on a
-bifacial plant and nothing else — see [Bifacial gain](/docs/energy/bifacial).
+bifacial plant and nothing else — see [Bifacial modules](/docs/energy/bifacial).
 </Step>
 </Steps>
 
@@ -218,9 +252,10 @@ when the automatic service returns in-plane irradiance directly.
 
 ## The irradiance fields
 
-Two fields hold the annual figures the calculation actually uses. Both are
-filled automatically — by the fetch, or from the file — and both remain
-editable, so you can type a figure from a source the application never saw.
+Two fields under **Irradiance** hold the annual figures the calculation
+actually uses. Both are filled automatically — by the fetch, or from the file
+— and both remain editable, so you can type a figure from a source the
+application never saw.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
@@ -231,10 +266,10 @@ editable, so you can type a figure from a source the application never saw.
 by hand from a purchased study, that is the field to enter it in — putting an
 in-plane figure into the horizontal field will not produce the yield you expect.
 
-A source label accompanies the pair, naming where the current values came from.
-Read it before quoting any energy number. The **Ground albedo (ρ)** field sits in
-the same group but belongs to the rear-side model rather than to these two
-figures; the ambient temperature and wind fields belong to the thermal model on
+The source line described above accompanies the pair. The **Ground albedo (ρ)**
+field further down the card belongs to the rear-side model rather than to
+these two figures; the ambient temperature, mounting type and wind speed
+between them belong to the thermal model on
 [Temperature loss](/docs/energy/temperature).
 
 ## Which source to use
@@ -252,10 +287,10 @@ same site — where both estimates share the same irradiance and the comparison
 is unaffected by its absolute accuracy.
 
 <Callout type="warn">
-The charts and the time-series export need an hourly series. An annual total
-alone — whether typed in or from the monthly fallback — is not enough to build
-one. Load an hourly file, or fetch hourly data from the automatic service. See
-[Charts and time series](/docs/energy/timeseries).
+The chart window and the time-series export need an hourly series. An annual
+total alone — whether typed in or from the monthly fallback — is not enough to
+build one. Load an hourly file, or fetch hourly data from the automatic
+service. See [Charts and time series](/docs/energy/timeseries).
 </Callout>
 
 ## Where to go next
@@ -274,10 +309,10 @@ one. Load an hourly file, or fetch hourly data from the automatic service. See
   <Card
     title="Charts and time series"
     href="/docs/energy/timeseries"
-    description="The hourly and monthly charts, and what the export needs"
+    description="The chart window, and what the export needs"
   />
   <Card
-    title="Bifacial gain"
+    title="Bifacial modules"
     href="/docs/energy/bifacial"
     description="Ground albedo and the rear-side irradiance model"
   />

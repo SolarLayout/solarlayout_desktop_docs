@@ -4,9 +4,9 @@ description: What an inverter control room is, how many the plant gets, where th
 ---
 
 An **inverter control room (ICR)** is the building where the plant's collection
-cables terminate and its medium-voltage export begins. In a String Inverter
+cables terminate and its medium-voltage export begins. In a string-inverter
 plant the inverters stand out in the field and run their AC cables into it. In a
-Central Inverter plant the central inverters themselves stand inside it.
+central-inverter plant the central inverters themselves stand inside it.
 
 The application places the rooms for you. It works out how many the plant needs
 from the capacity block you set, groups the tables around them, and clears the
@@ -16,7 +16,8 @@ does not suit it.
 ## The footprint
 
 A control room is drawn and cleared as a rectangle with a height, and all three
-dimensions are yours to set in the **Structures & Shadow** group.
+dimensions are yours to set on the **Structures & Shadow (keep-clear)** card of
+the Site tab.
 
 | Dimension | Default | What it is |
 | --- | --- | --- |
@@ -25,7 +26,7 @@ dimensions are yours to set in the **Structures & Shadow** group.
 | Height | 5.0 m | Drives the shadow the building casts |
 
 Length is always the east–west side and width the north–south side, for the
-control room and for every other structure in that group. Enter the building
+control room and for every other structure on that card. Enter the building
 you are actually going to build: the footprint is what clears tables, and the
 height is what casts the shadow. See
 [Structures and shadow](/docs/inputs/structures-and-shadow).
@@ -65,7 +66,20 @@ follow. A position that would put part of the building in the perimeter road
 band, in a water body, in a transmission line corridor or on excluded ground is
 not used. See [How placement works](/docs/layout/how-placement-works).
 
-<Screenshot id="layout-icr-detail" />
+<Screenshot id="icr-detail" />
+
+## Seeing the blocks
+
+Which tables belong to which room is a layer of its own. Open **Layers ▾** in
+the Layout view's tools and switch **ICR blocks** on: each block's area is
+filled in its own colour and outlined, so the grouping the room count produced
+is visible at a glance. The row is off by default.
+
+<Screenshot id="icr-blocks" />
+
+The block colouring is the quickest way to judge whether a plant has overshot
+a block boundary. A small block in a corner of the site, in a colour of its own,
+is the extra room a marginal capacity produced.
 
 ## The tables a room clears
 
@@ -79,32 +93,33 @@ the capacity **before** the removal. So the count is **re-checked against the
 new, lower capacity** once the footprints have been cleared. If the reduced
 capacity no longer justifies the last room, the plant does not carry it.
 
-This is why the room count and the table count in the summary are consistent
-with each other rather than with a figure you would get by dividing the site
-area by the block size.
+This is why the room count and the table count in the Summary view are
+consistent with each other rather than with a figure you would get by dividing
+the site area by the block size.
 
 ## Moving a control room by hand
 
 The automatic position is derived from the tables. It knows nothing about where
 the site road reaches, where the ground is firm enough for a building, where the
 existing site access is, or where the owner will allow a structure. When one of
-those decides the position, move the room.
+those decides the position, move the room. The Tools tab carries the reminder
+*"Tip: Click and drag a blue ICR to reposition it."*
 
 <Steps>
 <Step>
-### Leave the pan and zoom tools inactive
+### Leave Pan and Zoom inactive
 
-Dragging a room only works when no navigation tool is holding the mouse. If pan
-or zoom is active, switch it off first — otherwise the click pans the plot
-instead of picking up the building.
+Dragging a room only works when neither **Pan** nor **Zoom** in the Layout
+view's tools is holding the mouse. If one of them is active, click it off first
+— otherwise the drag moves the view instead of picking up the building.
 </Step>
 
 <Step>
 ### Click and hold the room
 
 Click the dark blue rectangle and keep the button down. Fit the view first with
-**Home (⌂)**, then zoom into the room you want, so you are picking up a building
-and not a table beside it.
+**Home**, then roll the mouse wheel over the room you want, so you are picking
+up a building and not a table beside it.
 </Step>
 
 <Step>
@@ -125,15 +140,13 @@ tables at the new position go away.
 </Step>
 </Steps>
 
-<Screenshot id="layout-icr-drag" />
-
 <Callout type="warn">
 Moving a room away from the centre of its group of tables lengthens every AC run
 from that group. If cable lengths matter to your estimate, re-check the cable
-columns in the summary after the move rather than assuming they are unchanged.
+rows of the Summary view after the move rather than assuming they are unchanged.
 </Callout>
 
-## In Central Inverter mode
+## In a central-inverter design
 
 The building's role changes with the electrical topology, and so does what it
 contains.
@@ -175,7 +188,7 @@ medium-voltage cables to a unit substation in their own plot instead. See
 A 5 m building next to a row of modules shades it. The application computes the
 year-round shadow footprint of every control room, main control room and placed
 object over the **Shadow Window** — the band of solar hours you care about,
-9.0 to 16.0 by default — and, with **Clear tables inside shadows** on, removes
+9.0 to 15.0 by default — and, with **Clear tables in shadows** on, removes
 the tables that fall inside it.
 
 That option is **on** by default, so a first run already keeps tables out of
@@ -185,13 +198,14 @@ the room's height and the shadow footprint changes with it.
 
 ## The fields that decide a control room
 
-Four fields, in two groups, decide everything about the rooms in a plant:
+Four fields, on two cards of the Site tab, decide everything about the rooms in
+a plant:
 
-| Field | Group | What it decides |
+| Field | Card | What it decides |
 | --- | --- | --- |
 | **ICR Block** | Site Parameters | How many rooms the plant carries, and therefore how the tables are grouped around them |
 | **ICR** length, width and height | Structures & Shadow | The footprint that clears tables, and the height that casts the shadow |
-| **Clear tables inside shadows** | Structures & Shadow | Whether the tables inside a room's year-round shadow are removed |
+| **Clear tables in shadows** | Structures & Shadow | Whether the tables inside a room's year-round shadow are removed |
 | **Shadow Window** | Structures & Shadow | The band of solar hours the shadow footprint is accumulated over |
 
 Nothing else moves a room. In particular, the perimeter road width and the
@@ -201,33 +215,45 @@ obstructions change **where** a room may stand, but never how many there are.
 
 Four things are worth a look before you accept a layout:
 
-- **The count against your electrical concept.** The `ICR` column is the number
-  the capacity block produced. If it is one more than your single-line concept
-  expects, the plant has overshot a block boundary — adjust the block size, or
-  accept the extra building.
-- **Where each room landed.** Zoom into each one. A room at the centre of its
-  group of tables is what you want; a room pushed to one side of its group is
-  usually a room that had nowhere else to fit, and it is the first candidate for
-  a hand move.
+- **The count against your electrical concept.** The **ICR blocks** chip under
+  the view is the number the capacity block produced. If it is one more than
+  your single-line concept expects, the plant has overshot a block boundary —
+  adjust the block size, or accept the extra building.
+- **Where each room landed.** Zoom into each one with the mouse wheel. A room
+  at the centre of its group of tables is what you want; a room pushed to one
+  side of its group is usually a room that had nowhere else to fit, and it is
+  the first candidate for a hand move. The **ICR blocks** layer shows the
+  groups.
 - **Whether the ground is buildable.** The application knows the boundary, the
   exclusions and the slope limits. It does not know where the site access road
   will run, or where the ground is firm. Those are yours to check.
-- **The gap the room left.** Turn on **▢ Wireframe** and look at the cleared
+- **The gap the room left.** Turn on **Wireframe** and look at the cleared
   footprint. If it is much larger than the building you intend, the length and
   width fields are set to something you did not mean.
 
-## What the summary reports
+## What the outputs report
 
-The `ICR` column carries the count of rooms for each plant, and the TOTAL row
-carries the count for the site. In String Inverter mode the AC cable column is
-the total length of the runs from the inverters into the rooms; in Central
-Inverter mode it is replaced by the DC trunk length into them. Every column is
-listed in [Summary table columns](/docs/reference/summary-columns).
+The **ICR blocks** row of the Summary view carries the count of rooms for each
+plant, with a Total column on a multi-plot site; the **ICR blocks** chip under
+every view carries the same figure for the site. In a string-inverter design the
+**AC cable to ICR (m)** row is the total length of the runs from the inverters
+into the rooms; in a central-inverter design it is replaced by **DC cable to
+central inverter (m)**. Every row is listed in
+[Summary rows](/docs/reference/summary-columns).
 
-The exported PDF report goes further than the summary table: its inverter and
-cable page breaks the cable lengths down **per control room**, which is the view
-to take to a cable schedule. See
-[The PDF report](/docs/exports/pdf-report).
+Three exports go further than the Summary view and break the cabling down
+**per control room**, which is the form to take to a cable schedule — all under
+**Export ▾** in the view header:
+
+- **Export Detailed Project Report** — the Word document, whose design summary
+  carries the inverter and cable figures by control room. See
+  [The project report](/docs/exports/project-report).
+- **Export Cable Schedule (Excel)** — a workbook with one sheet per ICR block:
+  the DC strings from each table row to its inverter or monitoring box, and the
+  AC or DC-trunk feeders, with recommended conductor sizes. Calculate cables
+  first, or the lengths are not real.
+- **Export ICR-Block DXF** — one drawing set with the whole plant on the first
+  sheet and then one sheet per ICR block. See [CAD export](/docs/exports/dxf).
 
 ## Where to go next
 
@@ -250,6 +276,6 @@ to take to a cable schedule. See
   <Card
     title="Design modes"
     href="/docs/design-modes"
-    description="What changes between String and Central Inverter plants"
+    description="What changes between string- and central-inverter plants"
   />
 </Cards>

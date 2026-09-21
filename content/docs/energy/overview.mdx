@@ -1,17 +1,18 @@
 ---
 title: How yield is calculated
-description: The full energy model — in-plane irradiance, performance ratio, specific yield, degradation, capacity factor — and where each result appears.
+description: The energy model — in-plane irradiance, performance ratio, specific yield, degradation, capacity factor — the Yield tab that runs it, and the Energy view that shows the result.
 ---
 
 The energy calculation turns one irradiance figure and one performance ratio
 into an annual generation number, then degrades that number across the plant
 lifetime and reports it at three exceedance probabilities. Every step is a
 single explicit relation, and every input to those relations is either a field
-you can see or a value fetched and displayed on screen. Nothing in the chain is
-hidden, which is what makes the output defensible.
+you can see on the **Yield** tab or a value fetched and displayed on screen.
+Nothing in the chain is hidden, which is what makes the output defensible.
 
-This page is the whole chain in order. The sub-pages hold the detail behind
-each link in it.
+This page is the whole chain in order, the controls that run it, and every
+place the result appears. The sub-pages hold the detail behind each link in
+the chain.
 
 ## What the calculation needs before it can run
 
@@ -30,29 +31,91 @@ drawing and a raster image do not.
 <Callout type="warn">
 A CAD or image boundary loaded without a site latitude and longitude still
 produces a layout — the geometry is complete and the summary fills in — but
-**energy calculation is unavailable**. Enter the coordinates when the
-application asks for them. See [CAD boundary](/docs/inputs/cad-boundary) and
+**energy calculation is unavailable**, and the Energy view says so in place of
+its **Calculate energy** button. Enter the coordinates when the application
+asks for them. See [CAD boundary](/docs/inputs/cad-boundary) and
 [Image boundary](/docs/inputs/image-boundary).
 </Callout>
 
-## The controls
+## The Yield tab
 
-Three controls sit together in one block, and they become available once a
-layout exists.
+Everything the calculation reads sits on the **Yield** tab of the inputs, in
+two cards. The first runs the calculation; the second holds its inputs.
+
+<Screenshot id="tab-yield" />
+
+### Run Energy Calculation
+
+The card is greyed out until a layout exists.
 
 | Control | What it does |
 | --- | --- |
 | **Calculate Energy** | Runs the whole chain below. With the automatic weather source selected, this is also the moment the irradiance is fetched. |
-| **📊 Show Energy Chart** | Opens the hourly and monthly charts built from the same series the calculation used. See [Charts and time series](/docs/energy/timeseries). |
-| **Export TMY data CSV** | Writes a full-year time series of horizontal irradiance, in-plane irradiance and energy, at the interval chosen in the selector beside it. |
+| **📊 Show Energy Chart** | Opens the hourly and monthly chart window built from the same series the calculation used. See [Charts and time series](/docs/energy/timeseries). |
+| **Interval:** | The time step of the export beside it: **1 min**, **10 min**, **15 min**, **30 min** or **1 hour**. Ships at **15 min**. |
+| **Export TMY data CSV** | Writes a full-year time series of horizontal irradiance, in-plane irradiance and energy at the chosen interval. |
 
-The interval selector offers **1 / 10 / 15 / 30 / 60 min** and ships at
-**15 min**. TMY is a typical meteorological year — a single representative
-year rather than a specific calendar year. The export needs an hourly series
-to work from, which means either a loaded hourly file or an hourly fetch from
-the automatic service; an annual total on its own is not enough.
+Under the buttons a status line reports what the run is doing and, when it has
+finished, what it found.
 
-<Screenshot id="energy-buttons" maxWidth={380} />
+<Screenshot id="run-section" />
+
+TMY is a typical meteorological year — a single representative year rather
+than a specific calendar year. The export needs an hourly series to work from,
+which means either a loaded hourly file or an hourly fetch from the automatic
+service; an annual total on its own is not enough.
+
+### Energy Yield
+
+The second card holds the inputs, top to bottom: the weather source and the
+irradiance figures, the site conditions the thermal model needs, the ground
+albedo, and then an **ADVANCED** block of three expanders. The expanders are
+collapsed when the tab opens, and each header carries a live one-line summary
+of what is inside it, so the defaults are visible without opening anything.
+
+| Expander | Header summary on the defaults | Detail |
+| --- | --- | --- |
+| **Performance-ratio losses** | ≈ 19.0 % combined | [The loss breakdown](/docs/energy/losses) |
+| **Degradation & lifetime** | 0.40 %/yr · 30 yr | [Lifetime, degradation and P-values](/docs/energy/lifetime-and-p-values) |
+| **Uncertainty & exceedance** | P50 / P75 / P90 | [Lifetime, degradation and P-values](/docs/energy/lifetime-and-p-values) |
+
+The weather source and the irradiance fields are on
+[Weather data](/docs/energy/weather); the ambient temperature, mounting type
+and wind speed on [Temperature loss](/docs/energy/temperature); the albedo on
+[Bifacial modules](/docs/energy/bifacial).
+
+## Running it
+
+<Steps>
+<Step>
+### Generate the layout
+
+Capacity comes from the placed modules, so **Generate Layout** comes first.
+The computed shading loss is also produced in that pass — see
+[Row-to-row shading](/docs/energy/shading).
+</Step>
+
+<Step>
+### Click Calculate Energy
+
+On the **Yield** tab, or on the **Energy** view, whose gold **Calculate
+energy** button is the same action. With the automatic source selected the
+status line reads *"Fetching irradiance from PVGIS…"* and then reports what
+came back, or *"PVGIS fetch failed — check your internet connection, or switch
+to 'Hourly GHI file (CSV)' and load a local file."*
+</Step>
+
+<Step>
+### Read the status line
+
+When the run finishes the line under the buttons reports the performance
+ratio, the year-one energy, the capacity factor and the lifetime total, and
+notes that the monthly table has been updated. The full result is on the
+**Energy** view.
+</Step>
+</Steps>
+
+<Screenshot id="run-section-done" />
 
 ## The chain, in order
 
@@ -98,8 +161,9 @@ because it is independent of how big the plant is.
 Year 1 energy = capacity_kWp × specific yield
 ```
 
-`capacity_kWp` is the plant's installed DC capacity — the `DC(MWp)` column of
-the summary table, in kWp. The product is in kWh; the summary reports MWh.
+`capacity_kWp` is the plant's installed DC capacity — the **DC capacity (MWp)**
+row of the Summary view and the **DC capacity** chip, in kWp. The product is in
+kWh; the application reports MWh.
 
 This figure is the plant before any degradation has been applied. It is not a
 number you will see reported on its own; it is the base the next two relations
@@ -117,7 +181,7 @@ principally **LID**, light-induced degradation. It is separated from the
 annual figure because it is a one-off step, not a rate.
 
 `Year 1 (actual)` is the year-one energy every reported figure is built from:
-the three probability columns, the capacity factor, and the lifetime total.
+the three probability rows, the capacity factor, and the lifetime total.
 
 ### 6. Every year after the first
 
@@ -173,8 +237,8 @@ ships at 0.0 until a weather source fills it, and capacity comes from your own
 placed layout — so any absolute MWh example would be an invented site, not a
 default. Run the chain on your own site instead.
 
-See [Lifetime and P-values](/docs/energy/lifetime-and-p-values) for how the
-same series is turned into the exceedance probabilities.
+See [Lifetime, degradation and P-values](/docs/energy/lifetime-and-p-values)
+for how the same series is turned into the exceedance probabilities.
 
 ## Monthly figures
 
@@ -212,28 +276,84 @@ for the month then follows the Sandia relation on
 shows its lowest monthly PR in the hottest months, which is the behaviour a
 reviewer expects to see.
 
-<Screenshot id="energy-monthly-table" />
+## The Energy view
 
-## Where the results appear
+The result lives on the **Energy** view, one of the five view tabs on the right
+of the window — see [Views](/docs/workspace/views) for the tabs and the tools
+beside them. If the result lands while another view is showing, the tab reads
+**Energy •** until you open it.
 
-Five columns at the right-hand end of the **Layout & Energy Summary** table
-carry the energy result, one row per plant plus a **TOTAL** row:
+### Before a run
+
+The view opens with the title **No energy result yet** and a note that says
+what is missing. Before a layout it reads *"Generate a layout first. Energy is
+calculated for the generated layout."*; once a layout exists it reads *"Uses
+the weather source and losses set on the Yield tab. With PVGIS selected,
+irradiance is fetched for the site (needs internet)."*, over a gold
+**Calculate energy** button that does what the Yield tab's button does.
+
+<Screenshot id="energy-view-empty" />
+
+### After a run
+
+Four tiles across the top carry the annual answer:
+
+| Tile | Unit | What it is |
+| --- | --- | --- |
+| **Year-1 energy** | MWh | `Year 1 (actual)` from step 5 |
+| **Specific yield** | kWh/kWp | Step 3 |
+| **Performance ratio** | % | Step 2 |
+| **CUF** | % | Step 7 |
+
+Under them is the monthly table, titled *"Monthly Energy Breakdown — IEC
+61724-1 — Year 1 (all plants combined)"*: twelve rows and a **TOTAL / Annual**
+row, in these columns:
 
 | Column | What it holds |
 | --- | --- |
-| `P50Yr1(MWh)` | Year-one energy at the first exceedance probability |
-| `P75Yr1(MWh)` | Year-one energy at the second |
-| `P90Yr1(MWh)` | Year-one energy at the third |
-| `CUF(%)` | The capacity factor from the relation above |
-| `25yrP50(MWh)` | The **lifetime** total — every year from 1 to **Plant lifetime**, summed, at the first probability. The "25yr" in the header is fixed text and does not follow the setting. |
+| **Month** | January to December |
+| **GHI (kWh/m²)** | Horizontal irradiation for the month |
+| **H_i (kWh/m²)** | In-plane irradiation for the month |
+| **T_amb (°C)** | The month's ambient temperature, from the seasonal model or your file |
+| **T_cell (°C)** | The month's module temperature from the Sandia relation |
+| **Y_r (h)** | Reference yield — equivalent full-sun hours |
+| **Y_f (kWh/kWp)** | Final yield — the month's specific yield |
+| **PR (%)** | The monthly performance ratio |
+| **Energy (MWh)** | The month's generation |
+| **CUF (%)** | The month's capacity factor |
 
-<Screenshot id="energy-summary-columns" />
+Two charts complete the view: **In-plane irradiation (kWh/m², bars) and
+performance ratio (%, line)** under the table, and **Monthly energy, Year 1
+(MWh)** on the right. On a short window the irradiation chart steps aside to
+keep the table readable.
 
-The three probability headers are **built from your own settings**. They read
-`P50` / `P75` / `P90` because **Exceedance prob. 1**, **2** and **3** ship at
-50.0, 75.0 and 90.0 %. Change any of them and the header changes with it. Two
-reports are therefore only comparable column for column if both were run with
-the same three probabilities — check the headers, not the position.
+<Screenshot id="energy-view" />
+
+The view's tools, right of the view tabs, are **Copy** and **Open in window**.
+The second opens **SolarLayout — Summary**, a separate window whose **Monthly
+energy (Year 1)** tab holds the same table and follows the layout as it
+changes, so it can sit beside the plot on a second screen.
+
+<Screenshot id="summary-window-monthly" />
+
+## Where else the result appears
+
+**The Summary view.** Its **ENERGY** group carries five rows, one column per
+plant. Before a run they read `—`.
+
+| Row | What it holds |
+| --- | --- |
+| **P50 energy, year 1 (MWh)** | Year-one energy at the first exceedance probability |
+| **P75 energy, year 1 (MWh)** | Year-one energy at the second |
+| **P90 energy, year 1 (MWh)** | Year-one energy at the third |
+| **CUF (%)** | The capacity factor from the relation above |
+| **P50 energy, 25 years (MWh)** | The **lifetime** total — every year from 1 to **Plant lifetime**, summed, at the first probability. The "25 years" in the name is fixed text and does not follow the setting. |
+
+The three probability rows are **named from your own settings**. They read
+P50 / P75 / P90 because **Exceedance prob. 1**, **2** and **3** ship at 50.0,
+75.0 and 90.0 %. Change any of them and the row name changes with it. Two
+results are therefore only comparable row for row if both were run with the
+same three probabilities — check the names, not the position.
 
 The two lower probabilities are derived from the first through the combined
 uncertainty:
@@ -248,19 +368,30 @@ P90 = P50 × (1 − 1.282 × σ)
 exceedance levels.
 
 <Callout type="warn">
-**The last column's header is mislabelled — the figure is not a 25-year one.**
-`25yrP50(MWh)` reads as fixed text whatever the lifetime is set to, while the
-value under it is the sum of every year from 1 to **Plant lifetime**, scaled to
-the first exceedance probability. On the shipped default lifetime of **30**
-years, the column headed "25yr" therefore reports a **30-year** total. Unlike the
-three probability headers, this one does not follow its own setting. Quote the
-figure as the lifetime total and state the lifetime you used alongside it.
+**The last row is mislabelled — the figure is not a 25-year one.** The row
+reads **P50 energy, 25 years (MWh)** whatever the lifetime is set to, while the
+value beside it is the sum of every year from 1 to **Plant lifetime**, scaled
+to the first exceedance probability. On the shipped default lifetime of **30**
+years, the row named "25 years" therefore reports a **30-year** total. Unlike
+the three probability rows, this one does not follow its own setting. Quote
+the figure as the lifetime total and state the lifetime you used alongside it.
 </Callout>
 
-The full column list, including everything to the left of these five, is on
-[Summary columns](/docs/reference/summary-columns). The monthly IEC 61724-1
-table and the multi-year forecast are written to the energy pages of the
-exported report — see [PDF report](/docs/exports/pdf-report).
+**The plant chips.** The row under every view carries a **Year-1 P50 energy**
+chip — `—` before a run — which opens the Energy view when clicked. It is the
+only place the total is shown outside the views; the status bar never carries
+it.
+
+**The Yield tab's status line.** After a run it reports the performance ratio,
+the year-one energy, the capacity factor and the lifetime total in one line —
+the same lifetime figure as the Summary row, labelled with the same fixed
+"25yr".
+
+**The Word report.** **Export ▾ Export Detailed Project Report** writes an
+**Energy Yield & Loss Analysis** section and an **Energy Yield — Drawings**
+annex, present only when energy has been calculated. See
+[Project report](/docs/exports/project-report). The full Summary row set is on
+[Summary columns](/docs/reference/summary-columns).
 
 ## What this model is and is not
 
@@ -279,14 +410,15 @@ replace one.
 The near-shading loss is computed from your own row geometry, and tables
 falling inside the year-round shadow of a structure you place are cleared from
 the layout. Distant horizon profiles and shading from the site's own relief are
-not part of the model. See [Shading loss](/docs/energy/shading).
+not part of the model. See [Row-to-row shading](/docs/energy/shading).
 
 **The result is only as good as the weather data behind it.** Every number on
 this page is downstream of one irradiance figure. A monthly climatology
 average and a purchased site-specific typical meteorological year will not give
 the same answer, and the difference between them is larger than most of the
 loss components you might argue about. Check which source produced your
-irradiance before quoting the yield — the application reports it on screen.
+irradiance before quoting the yield — the source line on the Yield tab names
+it.
 
 ## The energy pages
 
@@ -307,24 +439,24 @@ irradiance before quoting the yield — the application reports it on screen.
     description="The thermal model, the four mounting types, and why this loss is computed rather than assumed"
   />
   <Card
-    title="Shading loss"
+    title="Row-to-row shading"
     href="/docs/energy/shading"
-    description="Row-to-row near-shading from your own geometry, and the shadow view"
+    description="Near-shading from your own geometry, and the Shadow View"
   />
   <Card
-    title="Bifacial gain"
+    title="Bifacial modules"
     href="/docs/energy/bifacial"
     description="Ground albedo and how rear-side irradiance is estimated"
   />
   <Card
-    title="Lifetime and P-values"
+    title="Lifetime, degradation and P-values"
     href="/docs/energy/lifetime-and-p-values"
     description="Degradation, plant lifetime, uncertainty and the exceedance probabilities"
   />
   <Card
     title="Charts and time series"
     href="/docs/energy/timeseries"
-    description="The hourly and monthly charts, and the time-series export"
+    description="The chart window, and the time-series export"
   />
 </Cards>
 
@@ -332,18 +464,18 @@ irradiance before quoting the yield — the application reports it on screen.
 
 <Cards>
   <Card
+    title="Views"
+    href="/docs/workspace/views"
+    description="The Layout, Summary, Energy, BOM and SLD tabs and their tools"
+  />
+  <Card
     title="Summary columns"
     href="/docs/reference/summary-columns"
-    description="Every column in the summary table, in order"
+    description="Every row of the Summary view, in order"
   />
   <Card
-    title="Every parameter and its default"
-    href="/docs/reference/parameters"
-    description="The complete input reference in one table"
-  />
-  <Card
-    title="PDF report"
-    href="/docs/exports/pdf-report"
-    description="Where the loss breakdown and the monthly table are written"
+    title="Project report"
+    href="/docs/exports/project-report"
+    description="Where the energy analysis and the monthly table are written"
   />
 </Cards>

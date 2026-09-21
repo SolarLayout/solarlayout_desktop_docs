@@ -13,10 +13,9 @@ That makes file preparation the highest-leverage half hour in the whole design.
 A correct file lays out in one run. A file with a pond named `P3` lays out with
 module tables in the water.
 
-The same rules are available inside the application, from the **ⓘ** button next
-to **Browse…**.
-
-<Screenshot id="kmz-help-dialog" />
+The same rules are available inside the application, from the **ⓘ** button
+beside **Browse…** on the **Input Boundary File** card — see
+[The preparation guide inside the application](#the-preparation-guide-inside-the-application).
 
 ## The plant boundary
 
@@ -24,7 +23,7 @@ to **Browse…**.
 | --- | --- |
 | Geometry | A **closed polygon**. Not a line, not a path, not an unclosed ring. |
 | Closure | The first and last coordinate of the ring must be identical. |
-| Name | Anything you can recognise. Each boundary becomes one plant, with its own row in the summary table. |
+| Name | Anything you can recognise. Each boundary becomes one plant, with its own column in the Summary view. |
 | Position | Top level. A polygon that is not contained inside another polygon is a boundary. |
 | Count | One or many. Several boundaries in one file are laid out as a multi-plot site in a single run. |
 
@@ -34,7 +33,10 @@ becomes an obstacle in that boundary. A polygon outside every boundary is not
 subtracted from anything, and the layout will happily cover the ground it sits
 on.
 
-<Screenshot id="kmz-in-google-earth" />
+In Google Earth that means one filled shape for the fence line, drawn with the
+polygon tool, and every pond, building and line placed visibly inside it before
+you save. A shape that shows only an outline and no fill is a path, not a
+polygon, and is not read as a boundary.
 
 ### Preparing the file
 
@@ -65,9 +67,9 @@ keyword from the lists below, plus whatever identifier you like around it —
 <Step>
 ### Save the file and load it
 
-Save as `.kmz` or `.kml`, then load it with **Browse…**. If a ring is not
-closed, the **Boundary Validation Issues** window opens — see
-[When a boundary fails validation](#when-a-boundary-fails-validation).
+Save as `.kmz` or `.kml`, then load it with **Browse…** on the **Site** tab. If
+a ring is not closed, the **Check boundaries** window opens — see
+[When a boundary fails the check](#when-a-boundary-fails-the-check).
 </Step>
 </Steps>
 
@@ -226,9 +228,9 @@ inside the plot they belong to on a multi-plot site.
 One file can carry as many plant boundaries as the site has plots, and all of
 them are laid out in a single run.
 
-- **Each boundary becomes its own plant.** It gets its own row in the summary
-  table, its own area and capacity, and its own folder in the Google Earth
-  export. A **TOTAL** row aggregates every plant.
+- **Each boundary becomes its own plant.** It gets its own column in the
+  Summary view, its own area and capacity, and its own folder in the Google
+  Earth export. A **Total** column aggregates every plant.
 - **A feature belongs to the boundary that contains it.** Water bodies,
   obstructions and lines are read per boundary, so a pond drawn inside plot 3 is
   subtracted from plot 3.
@@ -275,7 +277,7 @@ overhanging the real obstacle, and a polygon drawn generously does not. See
 
 | Mistake | What happens | Fix |
 | --- | --- | --- |
-| The boundary ring is not closed | The **Boundary Validation Issues** window opens and that boundary cannot be laid out | Repeat the first coordinate as the last, or redraw the polygon with the drawing tool's own close action |
+| The boundary ring is not closed | The **Check boundaries** window opens with that boundary ticked to be left out | Repeat the first coordinate as the last, or redraw the polygon with the drawing tool's own close action |
 | An obstruction sits outside the boundary | It is silently ignored. Tables are placed over that ground | Move the polygon inside the boundary, or extend the boundary to contain it |
 | Two boundaries overlap | The overlapped ground is claimed by both plants, so area and capacity are counted twice | Edit the polygons so they touch at most along an edge |
 | A water body has no water keyword in its name | It is kept clear, but as a generic obstruction — not identified, labelled or exported as water | Rename it to include a water keyword |
@@ -286,37 +288,74 @@ Two of these are worth expanding.
 
 **Overlapping boundaries** are the most expensive mistake in the list, because
 nothing fails. Each boundary is laid out as its own plant, the overlapped strip
-gets tables from both, and the total row of the summary table reports a capacity
-the site cannot physically hold. It is easiest to catch by area: check each
-plant's acreage in the summary against the survey before you trust the total.
+gets tables from both, and the **Total** column of the Summary view reports a
+capacity the site cannot physically hold. It is easiest to catch by area: check
+each plant's **Plant area (acres)** row against the survey before you trust the
+total.
 
 **A boundary drawn as a line** is the most common export mistake, because some
 drawing tools default to a path when you click around a shape and only close it
 if you use the polygon tool explicitly. Check in Google Earth that the shape has
 a fill, not only an outline, before saving.
 
-## When a boundary fails validation
+## When a boundary fails the check
 
-If a ring is not closed, or is otherwise not a usable polygon, loading the file
-opens the **Boundary Validation Issues** window. It lists every problem
-boundary with a description of what is wrong and a checkbox against each.
+If a ring is not closed, loading the file opens the **Check boundaries**
+window. A warning banner at the top reads *2 of 4 boundaries have a problem* —
+or *1 boundary has a problem* — with the detail *Leave them out and continue
+with the others, or fix them in Google Earth and load the file again.*
 
-<Screenshot id="boundary-validation-dialog" />
+<Screenshot id="boundary-validation" />
 
-You have two choices:
+Under the banner is a table with the columns **Leave out**, **Boundary** and
+**Problem**. Each problem is spelled out with its size, for example
+*Ring is NOT CLOSED (gap between first and last point ≈ 42.7 m)* — a small gap
+is a drawing tool that did not snap back to the first point; a large one is a
+boundary that was never closed at all. **Leave out** is **ticked by default on
+every row**, and the note under the table says what an untick means: *An
+unticked boundary is kept as it is and may produce a wrong layout.*
 
-- **Exclude the problem boundaries and proceed.** Tick the boundaries you want
-  to drop and continue. The remaining boundaries are laid out as usual. Useful
-  when one plot of a twelve-plot file is malformed and you want to see the other
-  eleven now.
-- **Cancel and fix the file.** Nothing is loaded. Correct the geometry in Google
-  Earth, save, and load again.
+The footer offers four buttons:
+
+| Button | What it does |
+| --- | --- |
+| **All** | Ticks **Leave out** on every problem boundary |
+| **None** | Unticks every row, so every boundary is kept as drawn |
+| **Fix in Google Earth first** | Closes the window without loading the file. Correct the geometry in Google Earth, save, and load again |
+| **Continue without 2** | Loads the file with the ticked boundaries left out. The number follows the ticks; when nothing is ticked the button reads **Continue with all boundaries** |
+
+Leaving the problem boundaries out is the right answer when one plot of a
+twelve-plot file is malformed and you want to see the other eleven now.
+Keeping an open ring is the right answer only when you know the gap is
+harmless — the application does not repair it, and a ring that does not close
+is laid out as whatever polygon can be made of it.
 
 <Callout type="warn">
-An excluded boundary is not a deferred boundary. It contributes no area, no
-capacity and no row to the summary table, and it does not appear in any export.
-If you exclude one and then read the total capacity, you are reading the total
-for a smaller plant than the one you intend to build.
+A boundary left out is not a deferred boundary. It contributes no area, no
+capacity and no column to the Summary view, and it does not appear in any
+export. If you leave one out and then read the total capacity, you are reading
+the total for a smaller plant than the one you intend to build.
+</Callout>
+
+## The preparation guide inside the application
+
+The **ⓘ** button beside **Browse…** opens the **KMZ File Preparation Guide**:
+an introductory paragraph, then the sections *1 ▸ Plant / Site Boundary*,
+*2 ▸ Water Bodies (Ponds, Lakes, Canals …)*, *3 ▸ Transmission Lines (TL) /
+Canals / Roads*, *4 ▸ Buildings / Obstruction Areas* and *5 ▸ Common Mistakes to
+Avoid*, and a **Quick Reference** table with the columns *Feature*, *KML type*,
+*Name rule* and *Colour on map*. One **Close** button returns you to the Site
+tab.
+
+<Screenshot id="boundary-guide" />
+
+<Callout>
+The guide's text is fixed, and it lags behind the application in two places.
+It lists the water keywords as *pond lake reservoir river canal water wetland
+swamp tank*, and it says a 15 m setback is applied automatically on each side
+of every line. The keyword lists on this page are the ones the application
+matches against, and the setback is the editable **Transmission line
+corridor** field on the Site tab, not a fixed 15 m.
 </Callout>
 
 ## Where to go next

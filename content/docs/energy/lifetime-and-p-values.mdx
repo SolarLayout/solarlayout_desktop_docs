@@ -1,6 +1,6 @@
 ---
 title: Lifetime, degradation and P-values
-description: First-year and annual degradation, the plant lifetime, combined uncertainty, and how the exceedance probability columns are derived.
+description: First-year and annual degradation, the plant lifetime, combined uncertainty, and how the exceedance probability rows are derived.
 ---
 
 Everything on this page turns a single first-year energy figure into the numbers
@@ -12,9 +12,25 @@ three exceedance probabilities set the confidence band.
 None of it changes the layout. These are all post-processing on the energy
 result, so a change here needs the energy calculation run again and nothing more.
 
-<Screenshot id="energy-degradation-pvalues" maxWidth={360} />
+## Where the fields live
+
+The inputs are the second and third of the three **ADVANCED** expanders at the
+bottom of the **Energy Yield** card on the **Yield** tab. Both are collapsed
+when the tab opens, and each header carries a live summary of its contents, so
+the values in force are readable without opening either:
+
+| Expander | Header summary on the defaults | Holds |
+| --- | --- | --- |
+| **Degradation & lifetime** | 0.40 %/yr · 30 yr | First-year degradation, annual degradation, plant lifetime |
+| **Uncertainty & exceedance** | P50 / P75 / P90 | Combined uncertainty and the three exceedance probabilities |
+
+Click a header to open it. The summaries follow the fields: change the annual
+rate or the lifetime and the first header changes; change an exceedance
+probability and the second one does.
 
 ## Degradation
+
+<Screenshot id="degradation-expander" />
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
@@ -55,7 +71,7 @@ Year n  (n ≥ 2)     = Year 1 (actual) × (1 − annual_deg%)^(n−1)
 | `specific yield` | Annual energy per kWp installed, in kWh/kWp, computed as the in-plane annual irradiation multiplied by the performance ratio |
 | `Year 1 energy` | First-year output before the first-year step is taken off |
 | `first_year_deg%` | **1st year degradation**, as a fraction: 1.0 % is 0.01 |
-| `Year 1 (actual)` | The first-year output actually reported — the figure the exceedance probabilities and the capacity factor are both built on |
+| `Year 1 (actual)` | The first-year output actually reported — the **Year-1 energy** tile, and the figure the exceedance probabilities and the capacity factor are both built on |
 | `annual_deg%` | **Annual degradation**, as a fraction: 0.4 %/yr is 0.004 |
 | `n` | The year number, counting from 1 |
 | `n − 1` | The exponent: year 2 has had one year of annual decline, year 30 has had 29 |
@@ -88,31 +104,35 @@ nothing else. It ships at 30 years and accepts 1 to 50.
 
 It has no effect on the first-year figure, on the capacity factor, or on any
 exceedance probability — those are all year-one quantities. What it does control
-is the length of the year-by-year table carried into the report's energy pages,
-and therefore the lifetime energy total. Match it to the term the project is
-being modelled over: the tariff term, the debt tenor, or the module warranty
-period, whichever the report is answering.
+is the length of the year-by-year series behind the lifetime energy total, and
+therefore that total. Match it to the term the project is being modelled over:
+the tariff term, the debt tenor, or the module warranty period, whichever the
+report is answering.
 
-### The summary header says 25yr whatever the lifetime is
+### The Summary row says 25 years whatever the lifetime is
 
-The lifetime total reaches the summary table in a column headed `25yrP50(MWh)`,
-and **that header is fixed text.** Unlike the three probability headers, which are
-generated from the fields behind them, this one does not follow **Plant
-lifetime**. The value under it is the sum of every year from 1 to **Plant
-lifetime**, scaled to the first exceedance probability — so on the shipped
-lifetime of 30 years, the column headed "25yr" holds a **30-year** total.
+The lifetime total reaches the **ENERGY** group of the Summary view in a row
+named **P50 energy, 25 years (MWh)**, and **that name is fixed text.** Unlike
+the three probability rows, which are named from the fields behind them, this
+one does not follow **Plant lifetime**. The value beside it is the sum of every
+year from 1 to **Plant lifetime**, scaled to the first exceedance probability —
+so on the shipped lifetime of 30 years, the row named "25 years" holds a
+**30-year** total. The Yield tab's status line after a run reports the same
+lifetime figure under the same fixed "25yr" label.
 
-Two things follow. Read the column as *the lifetime total at the first exceedance
+Two things follow. Read the row as *the lifetime total at the first exceedance
 probability*, not as a 25-year figure — it is only a 25-year figure when the
-lifetime is actually set to 25. And when the number leaves the application, state
-the lifetime beside it, because the header will otherwise misreport it to whoever
-receives the table.
+lifetime is actually set to 25. And when the number leaves the application,
+state the lifetime beside it, because the name will otherwise misreport it to
+whoever receives the table.
 
 ## Probabilistic yield
 
 A single energy figure is a central estimate, and a lender does not finance a
 central estimate. Probabilistic yield restates the same result as the output the
 plant will beat with a stated probability.
+
+<Screenshot id="uncertainty-expander" />
 
 ### Exceedance probability
 
@@ -149,7 +169,7 @@ belongs in the report alongside the figure.
 
 <Callout type="warn">
 The uncertainty figure does more to move a P90 than most engineering decisions
-on the page. At 5 % the P90 sits about 6.4 % below the P50; at 10 % it sits
+on the tab. At 5 % the P90 sits about 6.4 % below the P50; at 10 % it sits
 about 12.8 % below. Do not leave it at the default without deciding it is right
 for the resource data behind the run.
 </Callout>
@@ -184,7 +204,7 @@ P75 = P50 × (1 − 0.674 × 0.05) = P50 × 0.9663
 P90 = P50 × (1 − 1.282 × 0.05) = P50 × 0.9359
 ```
 
-The P50 column takes no multiplier, because the deviate at 50 % exceedance is
+The P50 row takes no multiplier, because the deviate at 50 % exceedance is
 zero.
 
 ## The three exceedance fields
@@ -199,22 +219,31 @@ All three are yours to set. There is no fixed P50/P75/P90 triple in the
 application — 50, 75 and 90 are the shipped values, and each field accepts
 anything from 1.0 to 99.9.
 
-**The summary column headers are built from these values, so they rename
-themselves when you change them.** Set the third field to 95 and the third
-column reports at 95 % exceedance under a heading that says so. Nothing else in
-the summary announces the change.
+**The Summary view's row names are built from these values, so they rename
+themselves when you change them.** Set the third field to 95 and the third row
+reports at 95 % exceedance under a name that says so. The expander's header
+summary changes with it; nothing else announces the change.
 
 <Callout type="warn">
-Because the headings are generated from the fields, a reader of your report must
-check the column heading rather than assume the third column is a P90. A
-screenshot, a pasted table or a summary passed on second-hand is only
-interpretable together with its heading. Say in the report body which
-exceedance probabilities the columns carry.
+Because the row names are generated from the fields, a reader of your report
+must check the name rather than assume the third row is a P90. A screenshot, a
+pasted table or a summary passed on second-hand is only interpretable together
+with its row names. Say in the report body which exceedance probabilities the
+rows carry.
 </Callout>
 
-The columns sit at the right-hand end of the summary table, alongside the
-capacity factor and the lifetime energy total — see
-[Summary columns](/docs/reference/summary-columns).
+## Where the figures appear
+
+| Place | What it shows |
+| --- | --- |
+| The **Energy** view | The **Year-1 energy** tile — the P50 first-year figure — with specific yield, performance ratio and CUF beside it |
+| The **Summary** view, **ENERGY** group | **P50 energy, year 1 (MWh)** · **P75 energy, year 1 (MWh)** · **P90 energy, year 1 (MWh)** · **CUF (%)** · **P50 energy, 25 years (MWh)**, the lifetime total. All read `—` before a run |
+| The **Year-1 P50 energy** chip | The first-year figure at the first probability, under every view; `—` before a run |
+| The Yield tab's status line | The performance ratio, year-one energy, CUF and the lifetime total in one line after a run |
+| The Word report | The **Energy Yield & Loss Analysis** section and the **Energy Yield — Drawings** annex, written by **Export ▾ Export Detailed Project Report** only when energy has been calculated |
+
+See [Summary columns](/docs/reference/summary-columns) for the full row set and
+[Project report](/docs/exports/project-report) for the document.
 
 ## Capacity factor
 
@@ -241,17 +270,15 @@ Two things to hold on to when quoting it:
 
 | Use | Figure |
 | --- | --- |
-| Base-case generation, internal comparison of two designs, tender responses asking for expected output | The median column — the P50 first-year energy |
-| Debt sizing, a lender's base case, any downside case | The conservative column — the highest exceedance probability you have set, conventionally P90 |
+| Base-case generation, internal comparison of two designs, tender responses asking for expected output | The median row — the P50 first-year energy |
+| Debt sizing, a lender's base case, any downside case | The conservative row — the highest exceedance probability you have set, conventionally P90 |
 | Comparing this plant against another site or another size | The capacity factor |
-| Tariff or debt modelling over the project term | The year-by-year forecast to the plant lifetime, in the report's energy pages |
+| Tariff or debt modelling over the project term | The lifetime total, quoted with the lifetime it was summed over |
 
 Quote the exceedance probability with the number every time, and quote the
 uncertainty that produced it. A P90 without its σ is not a checkable figure —
 the same plant yields a different P90 at 5 % and at 10 % uncertainty, and the
-reader has no way to tell which they have been handed. See
-[The PDF report](/docs/exports/pdf-report) for where these figures land in the
-document you issue.
+reader has no way to tell which they have been handed.
 
 ## Where to go next
 
@@ -269,7 +296,7 @@ document you issue.
   <Card
     title="Summary columns"
     href="/docs/reference/summary-columns"
-    description="Every column in the summary table, including the generated headings"
+    description="Every row of the Summary view, including the generated names"
   />
   <Card
     title="Energy charts and time-series export"

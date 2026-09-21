@@ -15,32 +15,49 @@ it from the components below, which means a PR you report is always traceable
 to a component you set — and a PR someone challenges can be answered
 component by component instead of defended as a single number.
 
-<Screenshot id="energy-losses-group" maxWidth={360} />
+## Where the rows live
+
+The components sit in the **Performance-ratio losses** expander, the first of
+the three **ADVANCED** expanders at the bottom of the **Energy Yield** card on
+the **Yield** tab. The expander is collapsed when the tab opens; its header
+carries a live summary, reading **≈ 19.0 % combined** on the shipped defaults,
+so you can see at a glance whether anything has been changed without opening
+it. Click the header to open it.
+
+<Screenshot id="tab-yield-advanced-open" />
+
+The header figure is a headline for the collapsed state. The performance ratio
+that enters the calculation is the product set out under
+[How the components combine](#how-the-components-combine), and it is reported
+as its own tile — **Performance ratio** — on the Energy view after a run.
 
 ## The full breakdown
 
-Rows in the order they appear in the panel.
+Rows in the order they appear in the expander.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **String Inverter efficiency** | 97.0 % | 50–100 % | DC to AC conversion efficiency of the inverter. A **factor**, not a loss — a higher number is better. Reads **Central Inverter efficiency** in Central Inverter mode. |
+| **String Inverter efficiency** | 97.0 % | 50–100 % | DC to AC conversion efficiency of the inverter. A **factor**, not a loss — a higher number is better. Reads **Central Inverter efficiency** in a central-inverter design. |
 | **String DC cable losses** | 1.0 % | 0–20 % | Resistive loss on the DC conductors between the module tables and the equipment that collects them. |
-| **AC cable losses (Str. Inv. → ICR)** | 1.0 % | 0–20 % | Resistive loss on the run from the inverter to the inverter control room. Relabelled in Central Inverter mode — see below. |
+| **AC cable losses (Str. Inv. → ICR)** | 1.0 % | 0–20 % | Resistive loss on the run from the inverter to the inverter control room. Relabelled in a central-inverter design — see below. |
 | **Soiling losses** | 2.0 % | 0–20 % | Light blocked by dust, dirt and bird droppings on the glass. |
 | **Temperature losses** | 6.0 % | 0–20 % | Power lost because modules run hotter than their rating condition. **Computed**, not assumed, once a module file is loaded. |
+| ↳ **Module temp. (Sandia)** | — | read-only | The computed module operating temperature behind the row above, with the irradiance and wind speed it was worked out at. Reads *"—"* until a module file is loaded. |
 | **Module mismatch** | 1.0 % | 0–10 % | Loss from modules in one string not being electrically identical. |
-| **Shading losses** | 1.0 % | 0–20 % | Row-to-row near-shading. **Computed by default.** Editable only when auto-compute is switched off. |
-| **Auto-compute (row-to-row from GCR)** | on | — | When ticked, the shading figure is derived from your own row geometry rather than taken from the field above. |
-| **Module ground clearance** | 0.5 m | 0.0–5.0 m | Height of the module's lower edge above ground. Drawing input for the shadow view only — it is not a loss and it does not change the computed shading figure. |
+| **Shading losses** | 1.0 % | 0–20 % | Row-to-row near-shading. **Computed by default.** Greyed out, and not used, while the auto tick below is on. |
+| ↳ **Auto (row-to-row, GCR)** | on | — | When ticked, the shading figure is derived from your own row geometry rather than taken from the field above. The line under it reads *"Auto (row-to-row, computed on Generate)"* before a layout and reports the computed percentage after one. |
+| ↳ **Module ground clearance** | 0.5 m | 0.0–5.0 m | Height of the module's lower edge above ground. Drawing input for the Shadow View only — it is not a loss and it does not change the computed shading figure. |
 | **Availability** | 99.0 % | 50–100 % | Fraction of the year the plant is available to generate. A **factor**, like inverter efficiency. |
 | **Transformer losses** | 1.0 % | 0–10 % | Copper and iron loss in the step-up transformer. |
 | **Other losses** | 2.0 % | 0–10 % | Monitoring, auxiliary consumption and anything not covered above. |
 
-Two rows are stated as efficiencies and eight as losses; the auto-compute
-option and the ground clearance are neither. Read the units before changing
-anything: entering 97 in a loss field and 3 in an efficiency field describe the
-same physical inverter, and getting them the wrong way round moves the yield by
-a factor you will not notice in the summary.
+<Screenshot id="losses-expander" />
+
+Two rows are stated as efficiencies and eight as losses; the temperature
+readout, the auto tick and the ground clearance are neither. Read the units
+before changing anything: entering 97 in a loss field and 3 in an efficiency
+field describe the same physical inverter, and getting them the wrong way round
+moves the yield by a factor you will not notice in the summary.
 
 ### How the components combine
 
@@ -64,24 +81,27 @@ not to the full nameplate figure.
 
 The **monthly** performance ratio is built the same way, with one substitution —
 the annual temperature loss is left out and a month-specific temperature loss
-put in its place, which is why monthly PR moves through the year while the other
-nine components stay put.
+put in its place, which is why the **PR (%)** column of the monthly table on
+the Energy view moves through the year while the other nine components stay
+put.
 
-### What changes with the electrical mode
+### What changes with the inverter design
 
-Two labels follow the choice you made at launch, because the equipment the
+Three labels follow the choice you made at launch, because the equipment the
 cables run between is different:
 
-| Row | String Inverter mode | Central Inverter mode |
+| Row | String-inverter design | Central-inverter design |
 | --- | --- | --- |
 | Inverter efficiency | **String Inverter efficiency** | **Central Inverter efficiency** |
-| First cable row | **String DC cable losses** | Relabelled to read MMS → SMB |
-| Second cable row | **AC cable losses (Str. Inv. → ICR)** | Relabelled to read SMB → Central Inv. |
+| First cable row | **String DC cable losses** | Labelled for the **MMS → SMB** run |
+| Second cable row | **AC cable losses (Str. Inv. → ICR)** | **DC cable losses (SMB → Central Inv.)** |
+
+<Screenshot id="yield-group-central" />
 
 Three abbreviations run through those labels. **MMS** is the module mounting
 structure — the table the modules are bolted to. **SMB** is the string
-monitoring box, which collects strings in Central Inverter mode. **ICR** is the
-inverter control room, the building the collected power is brought back to.
+monitoring box, which collects strings in a central-inverter design. **ICR** is
+the inverter control room, the building the collected power is brought back to.
 
 The defaults and ranges are identical either way. See
 [Choosing a design mode](/docs/design-modes) for what else the choice changes.
@@ -111,9 +131,9 @@ the curve, and type it in yourself.
 
 ### The two cable losses
 
-Both are resistive losses, and what each one covers depends on the electrical
-mode. The routing behind them, and the lengths reported in the summary, are on
-[Cable routing](/docs/layout/cables).
+Both are resistive losses, and what each one covers depends on the inverter
+design. The routing behind them, and the lengths reported in the Summary view,
+are on [Cable routing](/docs/layout/cables).
 
 <Tabs items={["String Inverter", "Central Inverter"]}>
 <Tab value="String Inverter">
@@ -129,15 +149,17 @@ string inverter to the nearest inverter control room.
 </Tab>
 <Tab value="Central Inverter">
 
-**String DC cable losses** covers the DC run from each module table to the
-string monitoring box collecting it, again over both conductors.
+The first cable row, labelled for the **MMS → SMB** run, covers the DC run
+from each module table to the string monitoring box collecting it, again over
+both conductors.
 
-The second row covers the **DC trunk from the string monitoring box to the
-control room**, not an AC run. In this mode the central inverter sits inside
-the control room building, so there is no AC leg out on the field at all — the
-conversion happens where the trunk terminates. The loss is still resistive and
-still on both conductors, but it is DC loss on a trunk carrying many combined
-strings, which is a different sizing exercise from a string cable.
+The second row, **DC cable losses (SMB → Central Inv.)**, covers the **DC
+trunk from the string monitoring box to the control room**, not an AC run. In
+this design the central inverter sits inside the control room building, so
+there is no AC leg out on the field at all — the conversion happens where the
+trunk terminates. The loss is still resistive and still on both conductors, but
+it is DC loss on a trunk carrying many combined strings, which is a different
+sizing exercise from a string cable.
 
 </Tab>
 </Tabs>
@@ -152,15 +174,17 @@ a soiling loss that no default can represent, and cleaning frequency changes
 the answer as much as the site does.
 
 If the design includes robotic cleaning, this is the row that should reflect it
-— see [Robotic module cleaning](/docs/simulation/robotic-cleaning).
+— see [Robotic cleaning fleet](/docs/simulation/robotic-cleaning).
 
 ### Temperature
 
 The one row that is a calculation rather than an assumption, as soon as a module
 file is loaded. It needs the module's temperature coefficient of maximum power,
-which is read from the file and typed nowhere in the panel. The computed module
-operating temperature is displayed beside the row and the working is shown
-underneath the inputs.
+which is read from the file and typed nowhere on the tab. The computed module
+operating temperature is shown on the **Module temp. (Sandia)** readout under
+the row, and the working — the relation with your own values substituted into
+it — appears as a formula trace under the site-condition fields higher up the
+card.
 
 Without a module file it stays at 6.0 % and is an assumption like any other.
 The model, the four mounting configurations and the inputs that drive it are on
@@ -177,17 +201,17 @@ tight power bins.
 ### Shading
 
 Row-to-row near-shading: the shadow the row in front casts onto the row behind
-when the sun is low. **Auto-compute (row-to-row from GCR)** ships **on**, so by
-default this figure is derived from your own geometry — the ground coverage
-ratio (GCR) and the tilt — rather than taken from the field. GCR is the
-collector area divided by the ground area it occupies: here, the table height
-divided by the row pitch.
+when the sun is low. **Auto (row-to-row, GCR)** ships **on**, so by default this
+figure is derived from your own geometry — the ground coverage ratio (GCR) and
+the tilt — rather than taken from the field, which is greyed out while the tick
+is on. GCR is the collector area divided by the ground area it occupies: here,
+the table height divided by the row pitch.
 
-Switch auto-compute off and the field becomes editable, which is what you want
-when you are entering a figure from a dedicated shading study instead. Note
-that the automatic figure covers row-to-row shading only; terrain and horizon
-shading are not modelled. The full model and the shadow view that visualises it
-are on [Shading loss](/docs/energy/shading).
+Untick it and the field becomes editable, which is what you want when you are
+entering a figure from a dedicated shading study instead. Note that the
+automatic figure covers row-to-row shading only; terrain and horizon shading
+are not modelled. The full model, and the **Shadow View** on the **Tools**
+tab that draws it, are on [Row-to-row shading](/docs/energy/shading).
 
 ### Availability
 
@@ -218,16 +242,17 @@ auxiliaries, put the itemised total here and note what it contains.
 the ground — not the height of the torque tube, the top edge, or the pile
 reveal. It ships at 0.5 m and accepts 0.0–5.0 m.
 
-It sits among the loss rows but it is not a loss. Nothing is subtracted for it,
-and it does not appear anywhere in the performance ratio as a percentage.
+It sits under the shading rows but it is not a loss. Nothing is subtracted for
+it, and it does not appear anywhere in the performance ratio as a percentage.
 
 <Callout type="warn">
 **The clearance does not enter the computed shading loss at all.** The
 near-shading calculation is given the latitude, the tilt, the ground coverage
 ratio, the surface orientation and whether the plant is a tracker — and no
-clearance. Its only consumer is the cross-section drawn in the
-**🌓 Shadow View (row spacing)** window. Changing it redraws that picture and
-leaves the **Shading losses** figure exactly where it was.
+clearance. Its only consumer is the row cross-section drawn by
+**🌓 Shadow View (row spacing)** in the **Studies** card of the **Tools** tab.
+Changing it redraws that picture and leaves the **Shading losses** figure
+exactly where it was.
 </Callout>
 
 So treat it as what it is: a drawing input that makes the cross-section match
@@ -254,26 +279,28 @@ move, because the ground coverage ratio moved.
 So when you compare two runs of the same site, expect eight rows to match and
 two not to. If all ten match after a geometry change, the design has not been put
 through the chain that derives them: the shading figure is produced when you
-**Generate Layout**, so generate again first and then click **Calculate Energy**.
-And when you hand a loss
-schedule to a third party, mark those two rows as computed rather than assumed,
-because they will not reconcile against a generic loss table and they are not
-meant to.
+**Generate Layout**, so generate again first and then click **Calculate
+Energy**. And when you hand a loss schedule to a third party, mark those two
+rows as computed rather than assumed, because they will not reconcile against a
+generic loss table and they are not meant to.
 
 ## Where the breakdown is reported
 
-The components are not only an input screen. When an energy calculation has been
-run, the exported report carries an energy section whose first page holds the
-energy inputs and this performance-ratio breakdown, component by component,
-beside the yield figures they produced. That page is the one to attach to a loss
-schedule, because it fixes which assumptions produced which number for a
-specific run rather than leaving the two to be matched up later. See
-[PDF report](/docs/exports/pdf-report).
+The components are not only an input screen. After a run the **Performance
+ratio** tile on the Energy view shows the combined figure, and the monthly
+table under it shows the month-by-month ratio — see
+[How yield is calculated](/docs/energy/overview#the-energy-view).
 
-<Screenshot id="energy-pr-breakdown-report" />
+When the plant leaves the application, the Word report written by **Export ▾
+Export Detailed Project Report** carries an **Energy Yield & Loss Analysis**
+section, present only when energy has been calculated, beside the yield figures
+the losses produced. That is the section to attach to a loss schedule, because
+it fixes which assumptions produced which number for a specific run rather than
+leaving the two to be matched up later. See
+[Project report](/docs/exports/project-report).
 
-The performance ratio itself is not a summary-table column. What the summary
-carries is the result of applying it — the three probability columns, the
+The performance ratio itself is not a Summary view row. What the Summary
+carries is the result of applying it — the three probability rows, the
 capacity factor and the lifetime figure. See
 [Summary columns](/docs/reference/summary-columns).
 
@@ -286,9 +313,9 @@ capacity factor and the lifetime figure. See
     description="The thermal model behind the computed temperature row"
   />
   <Card
-    title="Shading loss"
+    title="Row-to-row shading"
     href="/docs/energy/shading"
-    description="How the row-to-row figure is derived, and the shadow view"
+    description="How the row-to-row figure is derived, and the Shadow View"
   />
   <Card
     title="How yield is calculated"

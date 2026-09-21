@@ -46,8 +46,6 @@ Press Start, type *Microsoft Store*, and open it.
 
 It is in the left-hand navigation. The Library lists the applications installed
 on this machine and any updates waiting for them.
-
-<Screenshot id="store-updates" />
 </Step>
 
 <Step>
@@ -69,8 +67,9 @@ first — an update does not preserve an unsaved session.
 
 ## Which version you have
 
-**The application shows its version in the status bar at the bottom of the
-main window** (for example **v1.1.0**) — that is the quickest place to check.
+**The application shows its version at the right of the status bar at the
+bottom of the main window** (for example **v1.2.0**) — that is the quickest
+place to check.
 The **Help** menu still carries only two items — **How to Use This Tool** and
 **License / Subscription…** — and there is no About window, so the status bar
 is the one place the version is named.
@@ -89,34 +88,30 @@ SolarLayout's server. Updating or reinstalling the application changes
 neither that identifier nor the server-side record it is checked against, so
 a launch after either one shows the same status as before.
 
-An access-status chip in the top toolbar always shows this at a glance —
-**● Active — until \<date>** when active, **● No active access** with a
-**Get Free Access** button when not, **● Access expired** or **● Access
-revoked** with a **Contact Us** button otherwise, or **● Access status
-unavailable** — so checking status no longer requires opening a window.
+The access chip in the ribbon always shows this at a glance —
+**● Active — until \<date>** when active, **● Access expired** or **● Access
+revoked** with a **Contact Us** button, or **● Access status unavailable** —
+and with no access at all the chip gives way to a gold **Get Free Access**
+button, so checking status never requires opening a window.
 
 Help ▸ **License / Subscription…** opens the window that shows it in full: a
-large status headline reading **✓ Active** with the date you have access
-until, **✗ No access** with the reason and a note that layout generation is
-disabled, or — right after clicking **Get Free Access** — **⏳ Waiting for
-activation** — plus a read-only **Your Device ID** field with a **Copy**
-button.
-
-<Screenshot id="licence-valid" />
+headline reading **✓ Active — until \<date>**, **Start your free trial**,
+**Access expired**, **Access revoked**, or — right after clicking **Get Free
+Access** — **⏳ Waiting for activation** — with your Device ID and its **Copy**
+button folded behind **Having trouble?**.
 
 If the application cannot reach the server, a good check made earlier is
-cached and it keeps working for a three-day offline grace window. Only once
-that window has passed does it report *"Could not verify access — connect to
-the internet and try again."*
+cached and it keeps working for a three-day offline grace window, the chip
+reading *(offline)* meanwhile.
 
 If a launch after an update or reinstall shows no access, the Device ID has
 not changed and neither has the server record — see
 [Licence problems](/docs/licence/troubleshooting).
 
 <Callout type="info">
-Only **Generate Layout**, every export, and the SLD and BOM tools need this
-device's access to be active. Reading and changing inputs, and opening a
-project, work regardless of status.
+Only **Generate Layout** and every export need this device's access to be
+active. Reading and changing inputs, opening a project, and the SLD and BOM
+views work regardless of status.
 </Callout>
 
 ## Reinstalling
@@ -144,10 +139,11 @@ the application, check the publisher reads **Rensaar**, and install.
 <Step>
 ### Launch it and check access
 
-The main window opens directly, the same as any launch. Check **Help ▸
-License / Subscription…** to confirm the status still reads **✓ Active** —
-it is checked against the server by Device ID, not restored from anything
-the previous installation left behind.
+The **New design** window appears and then the main window, the same as any
+launch. Check the access chip in the ribbon, or **Help ▸ License /
+Subscription…**, to confirm the status still reads **Active** — it is checked
+against the server by Device ID, not restored from anything the previous
+installation left behind.
 </Step>
 
 </Steps>
@@ -158,8 +154,8 @@ Removing the application removes the application. It does **not** remove the
 work you have done with it:
 
 - **Project files** (`.slp`) sit wherever you saved them and are untouched.
-- **Exported PDFs, drawings and mapping files** sit wherever you exported them
-  and are untouched.
+- **Exported reports, drawings, schedules and mapping files** sit wherever you
+  exported them and are untouched.
 
 <Callout type="warn">
 A different machine has its own Device ID, so it needs its own activation —

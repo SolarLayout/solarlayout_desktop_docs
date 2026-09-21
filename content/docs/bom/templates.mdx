@@ -1,173 +1,161 @@
 ---
 title: Materials list templates
-description: The four built-in reference materials lists, how to open one beside the computed list, and the action that replaces the computed list with it.
+description: The built-in reference materials list offered for your design, how to open it in its own window, and the action that replaces the computed list with it.
 ---
 
 A template is a complete materials list for a reference plant, written out in
-full and shipped with the application. You load one into a window of its own,
+full and shipped with the application. You load it into a window of its own,
 edit it, and — if you want to — put it in place of the list computed from your
 layout.
 
 Templates exist because the two lists know different things. The computed list
 knows the plant: how many tables were placed, how many control rooms, how long
-the cable runs are. A template knows the procurement detail a real materials list
-needs and a layout cannot infer.
+the cable runs are. A template is a written-out list for a plant of the same
+kind, whose rows and quantities you correct against yours rather than typing a
+list into an empty table.
 
-## Why a template is worth starting from
+## The template offered for your design
 
-The computed list carries what the layout can measure. It cannot carry the rest,
-because nothing in a boundary file or a set of layout parameters implies it:
+The **BOM Template:** selector on the BOM TOOLS panel offers two entries:
+**Plant (auto-computed)** — the list computed from the layout — and **the one
+built-in template that matches the current design**. Four templates ship, one
+per combination of mounting and inverter; you see only the one for the
+combination you chose at launch. See
+[Choosing a design mode](/docs/design-modes).
 
-- **Connector types** — what mates with what at each junction.
-- **Cable specifications** — the detail behind a length: what the conductor is,
-  how it is sized, how it is insulated and protected.
-- **Earthing** — the earthing material a plant needs, none of which the layout
-  places.
-- **Conduit** — protection and routing material for the cable runs.
-
-A template already has lines of that kind written, described and unitised.
-Starting from one and correcting its quantities is faster and less error-prone
-than typing a procurement-grade list into an empty table.
-
-## The four built-in templates
-
-Pick one from the **BOM Template** selector. Each name states the plant it was
-written for: its DC and AC capacity, its inverter topology, and its mounting
-type.
-
-| Template | Capacity | Inverter topology | Mounting type |
-| --- | --- | --- | --- |
-| **30MWp_20MW_Central_FT** | 30 MWp DC, 20 MW AC | Central Inverter | Fixed Tilt |
-| **30MWp_20MW_String_FT** | 30 MWp DC, 20 MW AC | String Inverter | Fixed Tilt |
-| **26.65MWp_20MW_Central Inverter_SAT** | 26.65 MWp DC, 20 MW AC | Central Inverter | Single Axis Tracker |
-| **26.65MWp_20MW_String Inverter_SAT** | 26.65 MWp DC, 20 MW AC | String Inverter | Single Axis Tracker |
+| Design | Template offered |
+| --- | --- |
+| Fixed tilt, string inverter | **30MWp_20MW_String_FT** |
+| Fixed tilt, central inverter | **30MWp_20MW_Central_FT** |
+| Single-axis tracker, string inverter | **26.65MWp_20MW_String Inverter_SAT** |
+| Single-axis tracker, central inverter | **26.65MWp_20MW_Central Inverter_SAT** |
 
 Read the name and you know what is inside. **FT** is fixed tilt, **SAT** is a
 single-axis tracker, and the two capacities are the DC and AC ratings of the
 reference plant the list was written for.
 
-Three things follow from the naming, and all three matter when you choose:
+Offering only the matching template is the point: the inverter topology
+decides which line items exist at all (a string-inverter list carries string
+inverters and the AC side that follows them; a central-inverter list carries
+string monitoring boxes and DC trunks instead), and the mounting type decides
+the structural lines. The capacity is the one thing that will not match your
+plant — and it only decides the quantities, which you correct against your own
+plant anyway.
 
-- **The topology decides which line items exist at all.** A String Inverter list
-  carries string inverters and the AC side that follows them; a Central Inverter
-  list carries string monitoring boxes and DC trunks instead, because the central
-  inverter sits inside the control room and there is no distributed AC leg. The
-  two lists are not versions of each other.
-- **The mounting type decides the structural lines.** Fixed-tilt racking and a
-  single-axis tracker are different structures with different material behind
-  them, so the structural part of the list does not carry over between the two.
-- **The capacity only decides the quantities.** Those you correct against your
-  own plant anyway, so a capacity that does not match your design is the least
-  important of the three mismatches.
-
-## Loading one
+## Loading it
 
 <Steps>
 <Step>
-### Switch **📋 BOM** on
+### Open the BOM view
 
-The materials list mode has to be open, because a template is loaded beside the
-computed list rather than instead of it. See
-[Bill of materials](/docs/bom/overview).
+Click the **BOM** tab (**Ctrl+4**). The BOM TOOLS panel takes over the left
+column. See [Bill of materials](/docs/bom/overview).
 </Step>
 
 <Step>
-### Choose a template from **BOM Template**
+### Choose the template in **BOM Template:**
 
-Pick the one whose topology and mounting type match your design.
+Pick the template entry rather than **Plant (auto-computed)**.
 </Step>
 
 <Step>
 ### Click **📥 Load Template**
 
-The template opens in a **separate window** of its own, next to the computed
-list.
+The template opens in a **separate window** of its own, titled
+**BOM template —** followed by the template's name, beside the main window.
 </Step>
 </Steps>
 
 <Screenshot id="bom-template-window" />
 
-The template window is not modal. The main window stays live behind it, so you
-can move between the two, scroll each independently, and read a computed quantity
-straight across into the template. Arrange them side by side and the comparison
-is the whole point of the design: nothing you do in the template window touches
-the computed list until you explicitly ask for it.
+The template window is not modal. The main window stays live behind it, so
+you can move between the two, scroll each independently, and read a computed
+quantity straight across into the template. Arrange them side by side and the
+comparison is the whole point of the design: nothing you do in the template
+window touches the computed list until you explicitly ask for it.
 
 ## Editing the template
 
-The template window holds the same five columns as the computed list — **S.No**,
-**Material Description**, **Quantity**, **Unit**, **Remark** — and edits the same
-way. Click a cell and type.
+The template window holds the same five columns as the computed list —
+**S.No**, **Material Description**, **Quantity**, **Unit**, **Remark** — with
+**+ Add row** and **Delete row** buttons for the rows, and edits the same way.
 
 What you normally change:
 
 - **Quantities**, corrected against the computed list. This is the main work.
   The template's figures belong to its reference plant, not to yours.
 - **Descriptions and remarks**, where your specification differs from the
-  template's — a different cable size, a different structure grade, a make your
-  organisation is standardised on.
+  template's — a different cable size, a different structure grade, a make
+  your organisation is standardised on.
 - **Line items**, added or removed where your scope differs. A plant without
   street lighting does not need those lines; anything in your scope that the
   reference plant did not have is a line you add.
 
-Everything the computed list can tell you is one window away while you do it: the
-table count, the control room count, the inverter or string monitoring box count,
-the arrester count, the pile count, and the cable and trench lengths.
+Everything the computed list can tell you is one window away while you do it:
+the table count, the control room count, the inverter or string monitoring box
+count, the arrester count, the pile count, and the cable and trench lengths.
 
 ## Applying it to the plant
 
-**Overlap into Plant BOM** is the consequential step on this page. Read this
-section before you click it.
+**Replace plant BOM with this template** is the primary button of the template
+window, and the consequential step on this page. Read this section before you
+click it.
 
-After a confirmation, **Overlap into Plant BOM** **replaces** the computed list
-with the template's contents. The computed rows are gone — not merged, not kept
-alongside, not appended to.
+The button asks for confirmation in a **Replace plant BOM** box, then
+**replaces** the computed list with the template's contents. The computed rows
+are gone — not merged, not kept alongside, not appended to. The status line
+confirms it: *"Plant BOM replaced with the template (n rows). It will appear on
+the PDF Bill of Material page."*
 
 <Callout type="warn">
-**Overlap into Plant BOM** replaces the computed materials list, and the computed
-list is what prints in the report. After overlapping, the **Bill of Material**
-pages of the exported PDF carry the template's rows and quantities — including
-any quantity you have not yet corrected. Correct the template first, overlap
-second, export third.
+**Replace plant BOM with this template** replaces the computed materials list,
+and the list on screen is what prints in the report. After replacing, the
+**Bill of Materials** pages of the Detailed Project Report carry the
+template's rows and quantities — including any quantity you have not yet
+corrected. Correct the template first, replace second, export third.
 </Callout>
+
+If you close the template window after editing without replacing, it asks
+*"You edited the template. Replace the plant BOM with it before closing?"* —
+so edits are not lost by accident, but they are not applied by accident
+either.
 
 The full chain of consequence, so none of it is a surprise:
 
-| After overlapping | State |
+| After replacing | State |
 | --- | --- |
 | The materials list on screen | The template's rows |
-| **⬇ Export BOM to Excel** / **⬇ Export BOM to PDF** | Writes the template's rows |
-| The report's **Bill of Material** pages | Carry the template's rows |
-| The plant, the layout, the summary table | Unchanged — only the list is replaced |
+| **⬇ Export BOM to Excel** / **⬇ Export BOM to PDF** | Write the template's rows |
+| The report's **Bill of Materials** pages | Carry the template's rows |
+| The plant, the layout, the Summary view | Unchanged — only the list is replaced |
 
 ## Getting the computed list back
 
-**⚙ Rebuild from Layout** discards whatever is in the list and computes a fresh
-one from the plant. That is how you undo an overlap.
+**⚙ Rebuild from Layout** discards whatever is in the list and computes a
+fresh one from the plant. That is how you undo a replacement.
 
 It is a full recompute rather than an undo, so it takes your edits with it as
-well as the template's rows. If there is anything in the current list you want to
-keep, export it to a spreadsheet before you rebuild.
+well as the template's rows. If there is anything in the current list you want
+to keep, export it to a spreadsheet before you rebuild.
 
 ## Using a template in practice
 
 The order below is the one that wastes the least work, because it settles the
-structural choices before the arithmetic.
+counts before the arithmetic.
 
 <Steps>
 <Step>
 ### Finish the layout and rebuild the computed list
 
-You need real counts to correct a template against, so generate the plant, turn
-cable calculation on for the final run, and rebuild the computed list once. See
-[Cable routing](/docs/layout/cables).
+You need real counts to correct a template against, so generate the plant,
+turn cable calculation on for the final run, and rebuild the computed list
+once. See [Cable routing](/docs/layout/cables).
 </Step>
 
 <Step>
-### Load the template that matches your topology and mounting type
+### Load the template
 
-Topology and mounting type first — those decide which line items exist. Capacity
-is the least important match of the three.
+Choose it in **BOM Template:** and click **📥 Load Template**.
 </Step>
 
 <Step>
@@ -184,19 +172,20 @@ Then remove the lines your scope does not include.
 </Step>
 
 <Step>
-### Overlap into the plant list, then export
+### Replace the plant list, then export
 
-Only once the template reads correctly for your plant. Everything downstream —
-the spreadsheet, the standalone PDF, the report's materials pages — follows from
-this list. See [The PDF report](/docs/exports/pdf-report).
+Click **Replace plant BOM with this template** only once the template reads
+correctly for your plant. Everything downstream — the spreadsheet, the
+standalone PDF, the report's materials pages — follows from this list. See
+[The Detailed Project Report](/docs/exports/project-report).
 </Step>
 </Steps>
 
 A last check worth making before you circulate the result: the template is a
-starting point, not a validated schedule of material for your plant. Nothing in
-the application checks a template's line items against your design, so a line
-the template carries and your plant does not need will sit there quietly until
-somebody reads it.
+starting point, not a validated schedule of material for your plant. Nothing
+in the application checks a template's line items against your design, so a
+line the template carries and your plant does not need will sit there quietly
+until somebody reads it.
 
 ## Where to go next
 
@@ -207,14 +196,14 @@ somebody reads it.
     description="The computed list, its columns, and the rebuild control"
   />
   <Card
-    title="The PDF report"
-    href="/docs/exports/pdf-report"
+    title="The Detailed Project Report"
+    href="/docs/exports/project-report"
     description="Where the materials list prints, and what else the report carries"
   />
   <Card
     title="Choosing a design mode"
     href="/docs/design-modes"
-    description="The topology and mounting choices a template has to match"
+    description="The mounting and inverter choices that decide which template you see"
   />
   <Card
     title="Projects"

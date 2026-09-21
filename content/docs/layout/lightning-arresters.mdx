@@ -1,6 +1,6 @@
 ---
 title: Lightning arresters
-description: How arresters are placed on a coverage grid, what each one clears from the layout, and the settings that control the radius and the footprint.
+description: How arresters are placed on a coverage grid, what each one clears from the layout, the settings that control the radius and the footprint, and where they show up.
 ---
 
 An LA — lightning arrester — is a mast that protects a circular area of ground
@@ -15,7 +15,7 @@ which is why the decision belongs to you rather than to a default.
 
 ## Turning arresters on
 
-Both settings live in the **Site Parameters** group of the input panel. They
+Both settings live on the **Site Parameters** card of the **Site** tab. They
 are read when you click **Generate Layout**; arresters are placed near the end
 of the run, after the module tables and the inverter control rooms are already
 down.
@@ -25,20 +25,25 @@ down.
 | **Place Lightning Arresters** | off | — | Turns arrester placement on for the run. The radius field below stays greyed out until this is ticked. |
 | **LA protection radius** | 100.0 | 10.0–500.0 | The radius, in metres, of the circle a single arrester protects. It also sets the spacing of the grid the arresters sit on. |
 
-See [Site parameters](/docs/inputs/site) for the rest of that group.
+<Screenshot id="site-parameters-la-on" />
+
+See [Site parameters](/docs/inputs/site) for the rest of that card. The tick is
+**not** kept in a project file, so a reopened project comes back with arresters
+off.
 
 ## What happens when arresters are off
 
 No arresters are placed, no ground is reserved for them, and module tables fill
 the whole usable area — the plant boundary shrunk inward by the perimeter road
-width, with obstructions and terrain exclusions subtracted. The summary's
-**LA** column reads zero.
+width, with obstructions and terrain exclusions subtracted. The Summary view's
+**Lightning arresters** row reads zero and the **Lightning arresters** chip does
+not appear under the view.
 
 You can still add arresters individually by hand. In Sketch Mode the **➕ LA**
-tool drops one wherever you click, and it clears the tables under its footprint
-exactly as an automatic one does. Leaving Sketch Mode recomputes the plant's
-module count, capacity and arrester count, so the summary follows your edits.
-See [Sketch Mode](/docs/editing/sketch-mode).
+tool in the **PLANT OBJECTS** group drops one wherever you click, and it clears
+the tables under its footprint exactly as an automatic one does. Leaving Sketch
+Mode recomputes the plant's module count, capacity and arrester count, so the
+Summary view follows your edits. See [Sketch Mode](/docs/editing/sketch-mode).
 
 ## The coverage model
 
@@ -96,7 +101,7 @@ rectangular site the second pass adds nothing. On a long, thin or awkwardly
 notched site it adds the handful of arresters the regular grid could not reach,
 and those are the ones you will see sitting off the grid lines.
 
-<Screenshot id="layout-arresters" />
+<Screenshot id="arresters" />
 
 ## The footprint, and what it clears
 
@@ -114,8 +119,10 @@ and DC capacity are recomputed afterwards from what survives.
 So on a fixed-tilt plant, arresters cost capacity. How much depends on how many
 positions the grid produces, which depends on the protection radius and the
 size and shape of the site. Generate once without arresters and once with them,
-and compare the **DC(MWp)** column in the summary to see the exact figure for
-your site rather than an estimate.
+and compare the **DC capacity (MWp)** row of the Summary view to see the exact
+figure for your site rather than an estimate.
+
+<Screenshot id="arresters-detail" />
 
 </Tab>
 <Tab value="Single Axis Tracker">
@@ -131,10 +138,10 @@ at most half a tracker pitch.
 
 Capacity is therefore the same with arresters on as with them off.
 
+<Screenshot id="arresters-tracker" />
+
 </Tab>
 </Tabs>
-
-<Screenshot id="layout-arresters-sat" />
 
 <Callout type="warn">
 Because arresters clear tables on a fixed-tilt plant and clear nothing on a
@@ -164,15 +171,15 @@ Two things to hold in mind:
 
 ## Arrester height and pile
 
-Two further arrester fields sit in the **Structures & Shadow** group, alongside
-the building footprints:
+Two further arrester fields sit on the **Structures & Shadow (keep-clear)**
+card of the Site tab, alongside the building footprints:
 
 | Field | Default | Range | Unit |
 | --- | --- | --- | --- |
-| **LA height** | 9.0 | 0.0–100.0 | m |
-| **LA pile Ø** | 0.3 | 0.0–5.0 | m |
+| **LA** height | 9.0 | 0.0–100.0 | m |
+| **LA** pile Ø | 0.30 | 0.0–5.0 | m |
 
-**Neither field feeds anything.** They are read from the panel and go no further:
+**Neither field feeds anything.** They are read from the card and go no further:
 the height does not size the footprint, cast a shadow or clear a table; the pile
 diameter does not reach the pile count, the materials list or any export; and
 neither value is kept when the project is saved, so both come back at the figures
@@ -180,7 +187,7 @@ above. Enter the mast you intend to build if it helps you keep track, and carry
 the real figures in your structural and civil documents.
 
 The arrester is also **not** one of the structures whose shadow clears tables.
-The **Clear tables inside shadows** option in the same group names the ICR, the
+The **Clear tables in shadows** option on the same card names the ICR, the
 MCR and placed objects, and nothing else — so a taller mast never costs you a
 module. What clears tables is the arrester's own footprint, above. See
 [Structures and shadow](/docs/inputs/structures-and-shadow) for the shadow
@@ -188,16 +195,23 @@ window and what it does.
 
 ## Reading arresters on the plot and in the outputs
 
-- **On the plot.** The **Lightning Arresters** switch is **OFF** by default,
-  even on a run that placed them — switch it on to see the masts and their
-  protection circles. Arresters are drawn dark red.
-- **In the summary.** The **LA** column reports the arrester count for each
-  plant, and the **TOTAL** row aggregates it. Because arresters are placed
-  after the tables, the module and capacity columns on the same row already
-  account for the tables the arresters cleared.
+- **On the plot.** The **Lightning arresters** row of the **Layers ▾** popover
+  is **OFF** by default, even on a run that placed them — switch it on to see
+  the arrester rectangles, their labels and their protection circles, which are
+  drawn orange-red. See [Views](/docs/workspace/views) for the popover.
+- **In the Summary view.** The **Lightning arresters** row reports the count
+  for each plant, with a Total column on a multi-plot site, and the
+  **Lightning arresters** chip under every view appears once some are placed.
+  Because arresters are placed after the tables, the module and capacity rows
+  already account for the tables the arresters cleared.
+- **On the report drawing.** The site layout plan in the Word report — and the
+  PDF with piles — **always draws the arresters and their labels, and never the
+  protection circles**, whatever the Layers row is set to. The on-screen state
+  is restored after the export. See
+  [The project report](/docs/exports/project-report).
 - **In the CAD drawing.** The arrester symbols are written to their own `LA`
   layer, present only when arresters were actually placed. See
-  [CAD drawing export](/docs/exports/dxf).
+  [CAD export](/docs/exports/dxf).
 - **In the Google Earth file.** Arresters are exported with the rest of the
   plant.
 
@@ -225,20 +239,23 @@ Hand placement acts on an existing layout, so generate first.
 <Step>
 ### Switch Sketch Mode on
 
-The **✏ Sketch Mode** button on the plot toolbar reveals the tool palette.
+Click **Sketch** in the Layout view's tools. The left column changes to the
+tool palette under an orange **● Sketch Mode** banner.
 </Step>
 
 <Step>
 ### Pick ➕ LA and click a position
 
-Each click places one arrester and clears the tables under its footprint.
+**➕ LA** is in the **PLANT OBJECTS** group. Each click places one arrester and
+clears the tables under its footprint.
 </Step>
 
 <Step>
 ### Leave Sketch Mode
 
-The plant totals — modules, capacity and the arrester count — are recomputed on
-the way out, so the summary matches what is on the plot.
+Click **Exit Sketch Mode — apply edits, recalc totals** in the banner. The
+plant totals — modules, capacity and the arrester count — are recomputed on
+the way out, so the Summary view and the chips match what is on the plot.
 </Step>
 </Steps>
 
@@ -265,7 +282,7 @@ afterwards is yours to position.
     description="Every kind of ground kept clear of modules, and how the usable area is built"
   />
   <Card
-    title="Editing by hand"
+    title="Sketch Mode"
     href="/docs/editing/sketch-mode"
     description="Placing, moving and deleting equipment on a generated layout"
   />
