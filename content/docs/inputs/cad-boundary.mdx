@@ -1,9 +1,9 @@
 ---
 title: CAD drawing boundaries
-description: Using a DXF or DWG as the plant boundary — which layer names mark water, obstructions and line corridors, what the Site reference window asks for, and why the site latitude and longitude decide whether energy can be calculated.
+description: Using a DXF as the plant boundary — which layer names mark water, obstructions and line corridors, what the Site reference window asks for, and why the site latitude and longitude decide whether energy can be calculated.
 ---
 
-A CAD drawing can be used as the boundary input: pick a `.dxf` or `.dwg` file
+A CAD drawing can be used as the boundary input: pick a `.dxf` file
 with **Browse…** on the **Site** tab and the application reads the plant
 boundary from it — or several boundaries, for a multi-plot site — along with
 the water bodies, obstructions and line corridors drawn inside them. Which is
@@ -92,12 +92,14 @@ closure while you are there. Anything else in the drawing is ignored rather than
 misread, so dimensions, text, title blocks and hatching do no harm and a busy
 drawing does not need cleaning up first.
 
-A `.dwg` file needs the free ODA File Converter installed. Without it, save the
-drawing as `.dxf` from your CAD program and load that.
+Save the drawing as `.dxf` from your CAD program. The file picker also lists
+`.dwg`, but a `.dwg` opens only if the free ODA File Converter is already
+installed on the machine — the application does not include it — and that
+route is not one the documentation covers.
 
 ## The Site reference window
 
-Choosing a `.dxf` or `.dwg` file opens the **Site reference** window. It has one
+Choosing a `.dxf` file opens the **Site reference** window. It has one
 card, **LOCATION**, and a footer.
 
 <Screenshot id="dxf-site-coordinates" />
@@ -190,7 +192,7 @@ Two things follow:
 ### Pick the file with Browse…
 
 On the **Site** tab, click **Browse…** on the **Input Boundary File** card and
-choose the `.dxf` or `.dwg`. The **Site reference** window opens on its own
+choose the `.dxf`. The **Site reference** window opens on its own
 straight afterwards.
 </Step>
 

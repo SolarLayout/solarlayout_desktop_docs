@@ -60,7 +60,7 @@ What happens next depends on the kind of file:
 | File | What you are asked |
 | --- | --- |
 | `.kmz` or `.kml` | Nothing. The boundaries, obstacles and line features are read straight from the file, and the site's position comes with them. |
-| `.dxf` or `.dwg` | The **Site reference** window asks for the site latitude and longitude. **Layout only** skips them — the layout is still generated, but energy calculation is unavailable. |
+| `.dxf` | The **Site reference** window asks for the site latitude and longitude. **Layout only** skips them — the layout is still generated, but energy calculation is unavailable. |
 | An image | The same **Site reference** window, with a **SCALE** card first: how a real site distance maps to a distance on the drawing. The largest closed outline in the image becomes the boundary. |
 
 Once the file is read, the line under the field becomes the boundary summary —
