@@ -56,27 +56,13 @@ chain is printed on bigger paper rather than being squeezed into A3.
 
 ## A CAD drawing
 
-**⬇ Export SLD to DWG** writes the sheet as a drawing file for a drafting
-team.
-
-### Which format you actually get
-
-A `.dxf` file is always written. It is converted to `.dwg` **only when the ODA
-File Converter is installed on the machine**; with no converter present, the
-export stays `.dxf`.
-
-So expect one of two outcomes, and check which one you got:
-
-| On the machine | What you get |
-| --- | --- |
-| The ODA File Converter is installed | A `.dwg` file |
-| It is not installed | A `.dxf` file |
-
-Neither is a failure. `.dxf` is a CAD interchange format that every serious
-CAD program reads, so a `.dxf` export is usable as it stands — and if your
-drawing office wants `.dwg` specifically, converting one file at their end is a
-smaller job than debugging an export. Look at the extension of the file you
-produced before sending it, so that nobody downstream is surprised.
+**⬇ Export SLD to DWG** writes the sheet as a `.dxf` drawing file for a
+drafting team. Despite the button's name, expect a `.dxf`: it is the CAD
+interchange format every CAD program reads, and it is usable as it stands. If
+your drawing office wants `.dwg` specifically, open the `.dxf` in the CAD
+program and save it as `.dwg` there. (The export produces a `.dwg` directly
+only when the free ODA File Converter happens to be installed on the machine,
+which the application does not include.)
 
 ### The symbols come across as geometry, not as a picture
 

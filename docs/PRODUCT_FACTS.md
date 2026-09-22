@@ -264,7 +264,15 @@ list (above) and the editable corridor field (§4.5) are the truth.
   boundary as a closed `LWPOLYLINE` or `POLYLINE`.
 - ⛔ The image-boundary path is unchanged: kinds default to normal, so an
   image gives one boundary and nothing else.
-- `.dwg` needs the free ODA File Converter installed (the formats line's tooltip).
+- `.dwg` needs the free ODA File Converter installed (the formats line's
+  tooltip). ⛔ **The converter is NOT bundled** — nothing in
+  `specs/solarlayout_desktop*.spec` ships it; `dxf_parser.py:325-348`,
+  `terrain.py:128-132` and `dxf_sld_import.py:56-68` call
+  `ezdxf.addons.odafc`, which shells out to an `ODAFileConverter.exe` the user
+  installed separately, and raise if it is absent. **DWG is not a tested
+  route (Arun, 2026-09-22): the docs name `.dxf` only and mention `.dwg` in
+  one sentence per input page.** Quoted UI strings (the formats line, the
+  file-picker filters, the **⬇ Export SLD to DWG** button) stay verbatim.
 
 ### 3.3 Raster image
 

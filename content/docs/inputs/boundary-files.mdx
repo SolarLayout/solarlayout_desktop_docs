@@ -20,7 +20,7 @@ raster image carries an outline and nothing else.
 | Input | What it carries | Obstructions come across automatically | Energy can be calculated with no extra input | Choose it when |
 | --- | --- | --- | --- | --- |
 | **Google Earth file** (`.kmz`, `.kml`) | The plant boundary — or several, for a multi-plot site — plus water bodies, buildings and other obstructions, and transmission lines, canals and roads. Positioned on the earth, so the site's latitude and longitude are already known. | Yes | Yes | Always, unless you have no way to produce one. |
-| **CAD drawing** (`.dxf`, `.dwg`) | The plant boundary — or several — plus water bodies, obstructions and line corridors, each identified by the name of the layer it is drawn on. No geographic position. | Yes, by layer name | No — you must type the site latitude and longitude | The survey exists only as a drawing and redrawing the boundary in Google Earth is not practical. |
+| **CAD drawing** (`.dxf`) | The plant boundary — or several — plus water bodies, obstructions and line corridors, each identified by the name of the layer it is drawn on. No geographic position. | Yes, by layer name | No — you must type the site latitude and longitude | The survey exists only as a drawing and redrawing the boundary in Google Earth is not practical. |
 | **Raster image** (`.jpg`, `.png`, and the other formats below) | One boundary outline, traced from the image at a scale you state. No geographic position. | No | No — you must type the site latitude and longitude | All you have is a scan, a screenshot or an exported picture of the site plan. |
 
 ## Why a Google Earth file
@@ -65,12 +65,13 @@ The **Select boundary file** dialog accepts, under its *Boundary Files* filter:
 | Kind | Extensions |
 | --- | --- |
 | Google Earth | `.kmz` `.kml` |
-| CAD drawing | `.dxf` `.dwg` |
+| CAD drawing | `.dxf` |
 | Raster image | `.jpg` `.jpeg` `.png` `.gif` `.bmp` `.tif` `.tiff` |
 
-A `.dwg` file needs the free ODA File Converter installed; without it, save
-the drawing as `.dxf` instead. The supported-formats line on the card says the
-same when you hover over it.
+Save a CAD drawing as `.dxf` from your CAD program. The file picker also
+lists `.dwg`, but a `.dwg` opens only if the free ODA File Converter is
+already installed on the machine — the application does not include it — and
+that route is not one the documentation covers. Use `.dxf`.
 
 ## Loading the file
 
@@ -169,7 +170,7 @@ See [How placement works](/docs/layout/how-placement-works).
   <Card
     title="CAD drawing boundaries"
     href="/docs/inputs/cad-boundary"
-    description="Using a DXF or DWG, and why the site coordinates matter"
+    description="Using a DXF, and why the site coordinates matter"
   />
   <Card
     title="Image boundaries"
