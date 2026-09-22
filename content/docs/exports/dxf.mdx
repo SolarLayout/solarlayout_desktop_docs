@@ -280,14 +280,28 @@ with *"ICR-block DXF exported (n block sheets + plant): …"*.
 ## The cable schedule
 
 **Export ▾ ▸ Export Cable Schedule (Excel)** writes a workbook with **one
-sheet per ICR block**. Each sheet lists the **DC strings** — table and row to
-inverter or string monitoring box — and the **AC feeders** (or the DC-trunk
-feeders in a central-inverter design), with **recommended conductor sizes**.
+sheet per ICR block**, named after the block (prefixed `P1-`, `P2-`… on a
+multi-plot site). Each sheet carries up to three tables:
 
-It is available after a layout, but the lengths are only real when cable
-calculation was on for the run; export it after the final run with
-**Calculate cables** ticked. The status line confirms with *"Cable schedule
-exported (n ICR-block sheets): …"*. See
+| Table | One row per | Columns |
+| --- | --- | --- |
+| **DC String Schedule** | string | String number, the table or tracker it comes from (grid code `R{row}-C{col}`), row, column, modules per string, the inverter or string monitoring box it lands on (`ICR{b}-INV-{k}` / `ICR{b}-SMB-{k}`), cores, +ve, −ve and total length, string current, recommended size in mm², and voltage drop in % |
+| **AC Cable Schedule** (string inverter) or **DC Trunk Schedule** (central inverter) | inverter or monitoring box | Cable number, from, to, type, cores, current, length, size, voltage drop |
+| **MV Collection Schedule** | ICR block | The run from the AC combiner or central inverter through the inverter-duty transformer to the main control room — voltage, cores, parallel runs, current, length, size, voltage drop. Present only when a main control room or a unit substation has been placed |
+
+Every conductor is the **smallest standard size that meets both the derated
+ampacity and the voltage-drop limit**, from 1.5 mm² up to 630 mm². The basis
+the sizes were computed on — module wattage, Vmp and Imp, modules per string,
+string voltage, conductor materials, the voltage-drop limits, the derating
+factor, the minimum DC string size and the transformer voltages — is printed
+on line 2 of every sheet, so the workbook can be audited without the
+application. Module Vmp and Imp come from your loaded `.PAN` file when there
+is one, and the inverter output voltage from your `.OND` file.
+
+It is available after a layout with cable calculation on: without **Calculate
+cables** ticked for the run there are no ICR blocks to schedule, and the
+export says so. Export it after the final run. The status line confirms with
+*"Cable schedule exported (n ICR-block sheets): …"*. See
 [Cable routing](/docs/layout/cables).
 
 ## Limits

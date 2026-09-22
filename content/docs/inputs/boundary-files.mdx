@@ -11,15 +11,16 @@ work is left for you to do by hand afterwards.
 
 **Prepare a Google Earth file.** It is the only input that carries the plant
 boundary, the water bodies, the obstructions and the transmission lines
-together in one file, already positioned on the earth. A CAD drawing and a
-raster image carry geometry and nothing else.
+together in one file, already positioned on the earth. A CAD drawing carries
+the same features, identified by layer name, but no position on the earth. A
+raster image carries an outline and nothing else.
 
 ## The three input types
 
 | Input | What it carries | Obstructions come across automatically | Energy can be calculated with no extra input | Choose it when |
 | --- | --- | --- | --- | --- |
 | **Google Earth file** (`.kmz`, `.kml`) | The plant boundary — or several, for a multi-plot site — plus water bodies, buildings and other obstructions, and transmission lines, canals and roads. Positioned on the earth, so the site's latitude and longitude are already known. | Yes | Yes | Always, unless you have no way to produce one. |
-| **CAD drawing** (`.dxf`, `.dwg`) | The boundary outline and any interior obstacles drawn as closed shapes. No geographic position. | Only the closed shapes; nothing is identified as water | No — you must type the site latitude and longitude | The survey exists only as a drawing and redrawing the boundary in Google Earth is not practical. |
+| **CAD drawing** (`.dxf`, `.dwg`) | The plant boundary — or several — plus water bodies, obstructions and line corridors, each identified by the name of the layer it is drawn on. No geographic position. | Yes, by layer name | No — you must type the site latitude and longitude | The survey exists only as a drawing and redrawing the boundary in Google Earth is not practical. |
 | **Raster image** (`.jpg`, `.png`, and the other formats below) | One boundary outline, traced from the image at a scale you state. No geographic position. | No | No — you must type the site latitude and longitude | All you have is a scan, a screenshot or an exported picture of the site plan. |
 
 ## Why a Google Earth file
@@ -50,12 +51,12 @@ Four things follow from the file being a Google Earth file, and only from that:
   asks for the site latitude and longitude, and if you continue without them
   the layout is still generated geometrically but **energy calculation is
   unavailable**.
-- **Nothing is identified by name.** Water bodies cannot be distinguished from
-  any other closed shape, so a pond is treated as a plain obstruction.
-- **Line features and setbacks are yours to add.** Transmission line and canal
-  corridors are drawn and buffered from line features in a Google Earth file.
-  With the other two inputs you draw the equivalent exclusions by hand in
-  Sketch Mode. See [Obstructions and exclusions](/docs/layout/obstructions).
+- **A CAD drawing is read by layer name, an image by nothing.** A CAD drawing
+  identifies water, obstructions and line corridors from the names of the
+  layers they sit on, so the layers have to be named before you export — see
+  [CAD drawing boundaries](/docs/inputs/cad-boundary). A traced image carries
+  only the outline: every exclusion is yours to draw by hand afterwards. See
+  [Obstructions and exclusions](/docs/layout/obstructions).
 
 ## Accepted file extensions
 

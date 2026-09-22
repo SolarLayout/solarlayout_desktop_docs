@@ -234,15 +234,36 @@ list (above) and the editable corridor field (§4.5) are the truth.
   - **Calculate Energy is properly disabled** in this case, with a tooltip
     explaining why and telling the reader to reload with coordinates. So no
     wrong energy figure is produced — the exposure is limited to tilt and pitch.
-- **Every interior ring becomes a hard obstacle.** Water bodies cannot be
-  distinguished, because there are no feature names to classify on —
-  `dxf_parser.py:268-272`. The largest closed ring is the boundary; anything
-  fully inside it is an obstacle.
-- **Only `LWPOLYLINE` and `POLYLINE` entities are read** —
-  `dxf_parser.py:64-69, 171-172`. Circles, splines, arcs, hatches and plain
-  lines are ignored, for both the boundary and interior obstacles. The
-  application's own error text tells the reader to draw the boundary as a
-  closed `LWPOLYLINE` or `POLYLINE` — `dxf_parser.py:281`.
+- **Import is layer-aware** (PVlayout_Advance 61db8c9 + 6dc4cd7, 2026-09-16;
+  `tests/test_dxf_layers.py`). The layer NAME classifies each polyline —
+  `dxf_parser.py:57-87` (`_WATER_WORDS` / `_LINE_WORDS` / `_OBSTACLE_WORDS`,
+  case-insensitive substring; `tl` whole-token only):
+  - water: pond, water, lake, reservoir, lagoon, tank → `water_obstacles` (blue)
+  - line: tl, transmission, power line, powerline, ht line, ht_line, road,
+    canal, river, highway, railway, nala, drain → a CLOSED ring is an
+    obstacle; an OPEN polyline or a `LINE` is a corridor appended to
+    `line_obstructions`, buffered by `tl_setback_m` per side like a KMZ line
+    (`dxf_parser.py:242-253, 526-548`)
+  - obstruction: obstruction, obstacle, keep out, keepout, keep-out,
+    exclusion, building, sand dune, sand, dune, structure, tower, forest,
+    graveyard, temple → `obstacles`
+  - water is tested first, then line, then obstruction.
+- **Boundaries:** every closed ring on a NON-keep-clear layer that is not
+  contained in another such ring is a plant boundary — multi-boundary works
+  across one layer or several — `dxf_parser.py:425-441`. Keep-clear areas
+  attach to the boundary containing them (`_parent_boundary`, 482-524). If
+  nothing qualifies, the largest ring is the boundary (471-478). Any closed
+  ring inside a boundary on an unnamed layer is a generic obstacle
+  (unchanged behaviour).
+- **`INSERT` blocks on a keep-clear layer are exploded** (recursively) and
+  inherit the layer kind; blocks on neutral layers (title blocks, north
+  arrows, legends) are NOT exploded — `dxf_parser.py:229-241`.
+- **Entities read: `LWPOLYLINE`, `POLYLINE`, and `LINE` only on a line
+  layer** — `dxf_parser.py:242-253`. Circles, splines, arcs and hatches are
+  ignored. The application's own error text tells the reader to draw the
+  boundary as a closed `LWPOLYLINE` or `POLYLINE`.
+- ⛔ The image-boundary path is unchanged: kinds default to normal, so an
+  image gives one boundary and nothing else.
 - `.dwg` needs the free ODA File Converter installed (the formats line's tooltip).
 
 ### 3.3 Raster image
@@ -1363,7 +1384,7 @@ ON — double-click any cell to edit. It prints on its own page in the PDF."*
 | **Export KMZ** | the Google Earth file (§13.2) | after a layout |
 | **Export DXF** | the layered CAD drawing (§13.3) | after a layout |
 | **Export ICR-Block DXF** | one DXF drawing set: sheet 1 the whole plant, then one sheet per ICR block | after a layout |
-| **Export Cable Schedule (Excel)** | a workbook with one sheet per ICR block: DC strings (table/row → inverter/SMB) and AC / DC-trunk feeders, with recommended conductor sizes | after a layout (cables calculated for real lengths) |
+| **Export Cable Schedule (Excel)** | a workbook with one sheet per ICR block (`P{n}-` prefix on multi-plot): DC String Schedule (string no, `R{row}-C{col}` source, `ICR{b}-INV/SMB-{k}` target, cores, +ve/−ve/total m, I, mm², %VD), AC Cable Schedule (string) / DC Trunk Schedule (central), and an MV Collection Schedule (ACCB/CINV → IDT → MCR) only when an MCR/USS is placed; sizes = smallest of `_SIZES` 1.5…630 mm² meeting derated ampacity AND %VD; basis line printed at A2 (Vmp/Imp from `.PAN`, LV voltage from `.OND` VOutConv else 800 V string / 690 V central) — `cable_schedule.py:37-128, 496-600`, `main_window.py:_on_export_cable_xlsx` | after a layout; needs ICRs — with no blocks the export shows *"No ICR blocks to schedule…"* |
 | — | | |
 | **Export Detailed Project Report** | a **Word document (.docx)** — cover page, site layout plan, design summary, single line diagram, bill of materials and energy yield (§13.1a) | after a layout |
 | **Export PDF (with Piles)** | the PDF report including the pile drawing and coordinates | only while **Piles** is on |

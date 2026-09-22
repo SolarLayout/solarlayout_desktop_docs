@@ -1,12 +1,14 @@
 ---
 title: CAD drawing boundaries
-description: Using a DXF or DWG as the plant boundary, what the Site reference window asks for, and why the site latitude and longitude decide whether energy can be calculated.
+description: Using a DXF or DWG as the plant boundary — which layer names mark water, obstructions and line corridors, what the Site reference window asks for, and why the site latitude and longitude decide whether energy can be calculated.
 ---
 
 A CAD drawing can be used as the boundary input: pick a `.dxf` or `.dwg` file
-with **Browse…** on the **Site** tab and the application reads the site outline
-from it, along with the closed shapes drawn inside that outline, which become
-obstacles.
+with **Browse…** on the **Site** tab and the application reads the plant
+boundary from it — or several boundaries, for a multi-plot site — along with
+the water bodies, obstructions and line corridors drawn inside them. Which is
+which is decided by the **name of the layer** each shape sits on, in the same
+way a Google Earth file is read by the names of its features.
 
 What a CAD drawing does not carry is a position on the earth. Its coordinates
 are drawing coordinates. That single gap is what this page is about, because it
@@ -15,47 +17,80 @@ whether the automatic tilt and row pitch are right.
 
 ## What is extracted
 
-**Only closed polylines are read** — `LWPOLYLINE` and `POLYLINE` entities, and
-only where the ring is closed. That is the whole of what the application looks
-for, for the boundary and for the shapes inside it alike:
+The application reads **polylines** — `LWPOLYLINE` and `POLYLINE` entities —
+and sorts them by the layer they are drawn on:
 
-- **The boundary** — the largest closed polyline in the drawing.
-- **Interior obstacles** — closed polylines fully inside that outline. Each is
-  subtracted from the usable area, exactly as an obstruction polygon from a
-  Google Earth file would be.
+- **A plant boundary** is any closed polyline on a layer whose name matches
+  none of the keep-clear keywords below, and that is not drawn inside another
+  such polyline. Several of them make a multi-plot site, each with its own
+  column in the Summary view — the boundaries may sit on one layer or on
+  several. See [Multi-plot sites](/docs/layout/multi-plot).
+- **A keep-clear area** is a closed polyline on a layer whose name matches one
+  of the keywords. No module table or tracker is placed on it. Water is drawn
+  in blue and exported on the water layer; everything else is a hard
+  obstruction. Each area belongs to the boundary that contains it.
+- **A line corridor** is an **open** polyline, or a plain `LINE`, on a layer
+  named for a transmission line, road, canal or similar. It is buffered by the
+  **Transmission line corridor** setback on each side, exactly as a line
+  feature in a Google Earth file is. See
+  [Site parameters](/docs/inputs/site).
+- **Any other closed polyline inside a boundary** — on a layer with no keyword
+  in its name — is a generic obstruction: kept clear, but not identified as
+  water and not given a corridor.
 
-<Callout type="error">
-A circle, a spline, an arc, a hatch or a plain line is **not read at all** —
-neither as the boundary nor as an obstacle. A site outline drawn as a spline or a
-chain of lines is not found, and the application asks you to draw the boundary as
-a closed `LWPOLYLINE` or `POLYLINE`. A pond drawn as a circle is not kept clear,
-and nothing warns you: the layout simply covers it.
-</Callout>
+A shape placed as a **block** (an `INSERT`) on a keep-clear layer is read too:
+a building or a pond drawn as a block is exploded and kept clear. Blocks on
+other layers — title blocks, north arrows, legends, key plans — are left alone,
+so their line-work is never mistaken for a boundary or an obstruction.
 
-Convert everything you need read into a closed polyline before exporting, and
-check closure while you are there. Anything else in the drawing is ignored rather
-than misread, so dimensions, text, title blocks, hatching and layers do no harm
-and a busy drawing does not need cleaning up first.
+If no closed polyline qualifies as a boundary at all — every ring in the file
+is on a keep-clear layer — the largest ring is taken as the boundary so a
+layout can still run.
+
+### Layer names
+
+Classification is **by layer name keyword**, and the match is
+**case-insensitive**: the keyword can sit anywhere in the layer name, with
+anything around it. Water keywords are checked first, then line keywords, then
+obstruction keywords.
+
+| Class | Layer-name keywords |
+| --- | --- |
+| **Water body** | pond, water, lake, reservoir, lagoon, tank |
+| **Line corridor** | tl, transmission, power line, powerline, ht line, ht_line, road, canal, river, highway, railway, nala, drain |
+| **Obstruction** | obstruction, obstacle, keep out, keepout, keep-out, exclusion, building, sand dune, sand, dune, structure, tower, forest, graveyard, temple |
+
+`tl` has to stand on its own — `TL`, `TL_ROUTE` and `tl-33kv` match, while
+`settlement` and `control_panel` do not.
+
+| Layer name | Read as |
+| --- | --- |
+| `PLANT_BOUNDARY`, `0`, `SITE` | Boundary (closed) or ignored (open) |
+| `POND`, `Water_Body`, `OHT tank` | Water body |
+| `TL`, `Transmission Line`, `ROAD`, `Canal-2` | Corridor if open, obstruction if closed |
+| `BUILDING`, `Sand Dune`, `obstruction-1` | Obstruction |
+| `settlement`, `Excl-04`, `Feature 12` | No keyword — a closed shape inside a boundary is a generic obstruction |
 
 <Callout type="warn">
-Feature classification by name is not available for a CAD drawing. Names and
-layer names are not inspected, so a pond and a building are the same thing to
-the application: ground to keep clear. Water bodies cannot be distinguished, and
-so are not labelled, coloured or exported as water anywhere.
+It is the **layer** name that is read, not the entity's own name, text label or
+colour. A pond drawn on layer `0` with a text label reading "Pond" is a generic
+obstruction: kept clear, but not water. Put each kind of feature on a layer
+named for it before exporting.
 </Callout>
 
-Two consequences worth planning around:
+<Callout type="error">
+A circle, a spline, an arc or a hatch is **not read at all** — neither as the
+boundary nor as a keep-clear area, whatever layer it is on. A site outline drawn
+as a spline is not found, and the application asks you to draw the boundary as
+a closed `LWPOLYLINE` or `POLYLINE`. A pond drawn as a circle is not kept
+clear, and nothing warns you: the layout simply covers it. A plain `LINE` is
+read only on a line-corridor layer.
+</Callout>
 
-- Anything you want kept clear must be a **closed** polyline inside the
-  boundary. An open outline is not subtracted from anything.
-- Transmission line and canal corridors have to be added by hand after the
-  layout is generated, because there is no line-plus-setback rule to apply. See
-  [Obstructions and exclusions](/docs/layout/obstructions).
-
-If either of those matters on your site, trace the boundary into a Google Earth
-file instead — see
-[Boundary file requirements](/docs/inputs/kmz-requirements) for what that buys
-you.
+Convert everything you need read into a polyline before exporting, and check
+closure while you are there. Anything else in the drawing is ignored rather than
+misread, so dimensions, text, title blocks and hatching do no harm and a busy
+drawing does not need cleaning up first.
 
 A `.dwg` file needs the free ODA File Converter installed. Without it, save the
 drawing as `.dxf` from your CAD program and load that.
@@ -180,10 +215,13 @@ in the CAD program and load the file again.
 </Step>
 
 <Step>
-### Add the exclusions the drawing could not carry
+### Add anything the drawing did not carry
 
-Water bodies, transmission line corridors and anything else that needs keeping
-clear goes on by hand, in Sketch Mode.
+A feature drawn as a circle or a spline, or on a layer with no keyword in its
+name, was not kept clear or was kept clear as a plain obstruction. Either fix
+the layer name in the CAD program and load the file again, or add the exclusion
+by hand from the **Tools** tab. See
+[Obstructions and exclusions](/docs/layout/obstructions).
 </Step>
 </Steps>
 
@@ -206,7 +244,7 @@ type in. Do not use the same file for both purposes unless it genuinely is both.
   <Card
     title="Boundary file requirements"
     href="/docs/inputs/kmz-requirements"
-    description="What a Google Earth file carries that a CAD drawing cannot"
+    description="The feature-name keywords — a CAD drawing's layer names follow the same idea"
   />
   <Card
     title="Spacing and tilt"

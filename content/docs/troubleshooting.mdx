@@ -114,6 +114,18 @@ and choose **Use this location** with the coordinates filled in. See
 carries its own coordinates and never has this problem.
 
 </Accordion>
+<Accordion title="A pond or a transmission line in my CAD drawing was not kept clear, or was treated as a plain obstruction">
+
+A CAD drawing is classified by **layer name**, not by the entity's own name or
+a text label beside it. A pond drawn on layer `0` is a generic obstruction —
+kept clear, but not water; a transmission line drawn as an open polyline on a
+layer with no line keyword in its name is ignored altogether, because only
+closed shapes are read on an unnamed layer. Rename the layers in the CAD
+program — `POND`, `TL`, `ROAD`, `BUILDING` — and load the file again. A circle,
+a spline or an arc is never read, whatever the layer. The keyword lists are in
+[CAD drawing boundaries](/docs/inputs/cad-boundary).
+
+</Accordion>
 </Accordions>
 
 ## The layout
