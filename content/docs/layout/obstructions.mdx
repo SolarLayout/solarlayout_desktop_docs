@@ -54,7 +54,7 @@ must be named and drawn.
 
 ### Classification is by name
 
-The application decides what a polygon is from its **name**, matching keywords
+The application decides what a feature is from its **name**, matching keywords
 case-insensitively — words for ponds, lakes, reservoirs and wetlands for water;
 words for canals, drains, nalas and rivers for a channel; words for transmission
 and power lines and their voltages for an overhead line.
@@ -128,8 +128,9 @@ found something the survey missed, or when you want to reserve ground for
 something the application does not model — a laydown area, a construction
 compound, a future extension.
 
-The **Obstructions** card is the first card of the **Tools** tab, which is
-locked until a layout exists — the tools act on the layout already on screen.
+The **Obstructions** card is the first card of the **Tools** tab. Its buttons
+are greyed out until a layout exists — the tools act on the layout already on
+screen.
 
 <Screenshot id="obstruction-controls" />
 
@@ -149,12 +150,21 @@ once: *"Obstruction added — n tables | m modules | x MWp"*. After **Clear All*
 the status line reads *"All roads cleared."* — the same thing under an older
 name.
 
+Each draw, **Undo Last** and **Clear All** places the inverters again and, with
+**Calculate cables** on, routes their cables again. One cable run happens at a
+time: while it runs, the **Obstructions** and **Main Control Room & Objects**
+cards are disabled, and their tooltip and the status bar read *"Cables are
+being routed… Obstruction, MCR and object tools and ICR dragging are back when
+they finish."* A change you make meanwhile waits, and runs as soon as the
+current routing finishes.
+
 <Callout type="warn">
-Drawing an obstruction re-places the inverters but does **not** re-measure the
-cables. After a hand-drawn obstruction the **String DC cable (m)** and **AC
-cable to ICR (m)** rows of the Summary view read **0** — while the trench rows
-keep their old figures — until you click **Generate Layout** again with
-**Calculate cables** on. Generate again before quoting cable lengths.
+After a hand-drawn obstruction the **String DC cable (m)** and **AC cable to
+ICR (m)** rows of the Summary view are re-measured, but the **DC trench (m)**
+and **AC trench (m)** rows keep their previous figures, and the bill of
+materials is not rebuilt, until the next full cable run — **Generate Layout**,
+or leaving Sketch Mode after a change. Generate again before quoting trench
+lengths.
 </Callout>
 
 ### The obstruction tools in Sketch Mode
@@ -197,10 +207,8 @@ the test every other placement decision is made against, which is why a large
 exclusion changes the plant in ways that are not obvious from the table grid
 alone:
 
-- **Cable routes.** Every candidate route is checked against the usable area
-  before it is accepted, so cables detour around water bodies, corridors,
-  obstructions and excluded terrain. A big exclusion in the middle of a plant
-  lengthens the runs around it. See
+- **Cable routes.** DC string runs are clipped to the usable area, so they stay
+  off the ground an exclusion takes. See
   [Cable routing and trenches](/docs/layout/cables).
 - **Lightning arrester positions.** Only grid positions whose centre falls inside
   the usable area are kept, so an obstruction thins the arrester grid locally and

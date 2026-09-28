@@ -1,6 +1,6 @@
 ---
 title: Cable routing and trenches
-description: How DC, AC and medium-voltage runs are routed, what the conductor and trench totals mean, where they are reported, and how hand-drawn trenches change later runs.
+description: How DC, AC and medium-voltage runs are routed, what the conductor and trench totals mean, the cable schedule, and how edits and hand-drawn trenches change the cabling.
 ---
 
 Cable routing turns a placed layout into cable lengths you can cost: string
@@ -10,15 +10,16 @@ reports **trench** lengths, which are a different quantity from conductor
 lengths and are reported separately.
 
 None of it happens unless you ask for it. **Calculate cables** is **off** by
-default, and with it off no route is computed at all.
+default, and with it off the string cables and the feeders are not routed.
 
 ## Turning cable calculation on
 
 The option is the first row of the **Cables** card on the **Electrical** tab —
-see [Cables](/docs/inputs/cables) for the card. Ticking it raises the **Cable
-Calculation — Performance Notice**: cable calculation can take a long time on
-large or complex layouts. The buttons are **Enable Now** and **Not Now
-(Recommended)**, and the recommended one is the default.
+see [Cables](/docs/inputs/cables) for the card and its three DC allowances.
+Ticking it raises the **Cable Calculation — Performance Notice**: cable
+calculation can take a long time on large or complex layouts. The buttons are
+**Enable Now** and **Not Now (Recommended)**, and the recommended one is the
+default.
 
 Take the recommendation. The useful sequence is:
 
@@ -43,9 +44,8 @@ work thrown away.
 ### Tick the option and run once more
 
 With the layout settled, enable cable calculation for the final run and read the
-lengths. Cable routing is the slow step on a large plant; on very large plants
-the application switches to a fast geometric estimate so that generation stays
-workable.
+lengths. Cable routing is the slow step on a large plant, and every plant is
+routed — none is skipped for its size.
 </Step>
 </Steps>
 
@@ -54,18 +54,6 @@ those come from the string arithmetic, not from routing — and every cable and
 trench row of the Summary view reads a dash. See
 [Inverter settings](/docs/inputs/inverter) for the string limits that set those
 counts.
-
-### The three DC allowances
-
-Under the tick, the same card carries three allowances that turn a routed
-string-cable length into the figure a bill of quantities expects. All three
-apply to fixed-tilt tables only, and none of them is kept in a project file.
-
-| Field | Default | Range | What it adds |
-| --- | --- | --- | --- |
-| **Inter-module lead** | 0.5 | 0.0–2.0 m/module | The string cable between neighbouring modules, counted once per string |
-| **String return run along table** | on | — | One conductor running back along the table so both leads exit at the same end. Untick for U-wired strings whose leads already exit the same end |
-| **DC cable slack** | 10.0 | 0.0–30.0 % | Slack and wastage added to the DC string-cable total |
 
 ## What is routed in each electrical design
 
@@ -79,11 +67,11 @@ not the same as the cable you buy.
 | Leg | Route | Counted | Why |
 | --- | --- | --- | --- |
 | **String cables** | Each table to its inverter | **× 2** | A DC string needs a positive and a negative conductor over the same path |
-| **AC cables** | Each inverter to the nearest ICR | **× 1** | A three-phase AC feeder is counted once along its route |
+| **AC cables** | Each inverter to its ICR | **× 1** | A three-phase AC feeder is counted once along its route |
 
 **ICR** is the inverter control room — the building the AC feeders terminate in.
-Each inverter is routed to the **nearest** one, so the ICR positions influence
-the AC total as much as the inverter positions do.
+Which ICR an inverter feeds is decided as described under
+[Which control room each device feeds](#which-control-room-each-device-feeds).
 
 Summary rows: **String DC cable (m)** for the string cables and **AC cable to
 ICR (m)** for the AC feeders.
@@ -94,7 +82,7 @@ ICR (m)** for the AC feeders.
 | Leg | Route | Counted | Why |
 | --- | --- | --- | --- |
 | **String cables** | Each table to its SMB | **× 2** | A DC string needs a positive and a negative conductor over the same path |
-| **DC trunk** | Each SMB to the ICR | **× 2** | The trunk is DC as well, so it too needs both poles |
+| **DC trunk** | Each SMB to its ICR | **× 2** | The trunk is DC as well, so it too needs both poles |
 
 **SMB** is the string monitoring box, which collects the strings; **ICR** is the
 control room. There is **no AC leg on the plot** in this design, because the
@@ -109,8 +97,9 @@ central inverter (m)** for the trunks.
 </Tab>
 </Tabs>
 
-Both designs then have medium-voltage cables from the control rooms onward,
-which work the same way in either.
+**Every inverter or SMB gets its own routed feeder** to its control room, on
+every plant, drawn and counted in full. Both designs then have medium-voltage
+cables from the control rooms onward, which work the same way in either.
 
 ## Where the inverters go
 
@@ -129,34 +118,54 @@ routing.
 
 <Screenshot id="cables-dc-ac" />
 
-## How a route is found
+### Which control room each device feeds
 
-Three properties describe the routing, and the third one has a consequence worth
-being honest about.
+Each inverter or SMB starts on the control room **nearest along the plant** —
+measured over the ground inside the boundary, not in a straight line — up to
+that building's **rating**: the **ICR Block** capacity divided by the capacity
+of one inverter or SMB, rounded up. On a plot with a single control room every
+device feeds it.
+
+A building over its rating hands devices on to a neighbour, in short hops: each
+device may move only to one of its five nearest control rooms, and only to one
+no more than one and a half control-room spacings further away than its
+nearest. When no such hop finds room, the excess is shared across the lighter
+buildings. A building still over its rating afterwards is reported as the
+design warning **ICR over rating**. See
+[Design warnings](/docs/reference/design-warnings).
+
+So the ICR positions shape the AC total as much as the inverter positions do.
+
+## How a route is found
 
 **Right angles only.** Every route is made of horizontal and vertical segments.
 There are no diagonals, because a cable trench across a solar plant follows the
-row and column grid the plant is built on — that is how it is dug and that is how
-it is cabled.
-
-**Every candidate is checked against the usable area.** A route is only accepted
-if it stays on ground that is actually available: it may run inside the perimeter
-road band, but it never leaves the plant fence, and it does not cross a water
-body, a line corridor, an obstruction or excluded terrain. See
-[Obstructions](/docs/layout/obstructions).
+row and column grid the plant is built on — that is how it is dug and that is
+how it is cabled.
 
 **A series of routing patterns is tried in turn.** The application works through
 a fixed sequence of right-angled path shapes between the two endpoints and takes
-the first one that validates against the usable area. If none of them validates,
-it falls back to a last-resort route that is guaranteed to return something
+the first one that stays on available ground. If none does, a bounded search
+looks for a way round, and a last-resort route always returns something
 connected.
 
+**What each run is kept to:**
+
+- **DC string cables** are clipped to the usable area, so they stay off the
+  perimeter road band and out of the excluded ground.
+- **AC feeders**, and the **DC trunks** of a central-inverter design, are held
+  inside the plant boundary wherever a route can be found. A run that cannot be
+  re-routed inside keeps its original path — in the drawing, the CAD export and
+  the quantities — and is reported as the design warning **Trench outside
+  plant**. A run that still crosses a table is reported as **Trench under a
+  table**. These checks need **Calculate cables** on.
+
 <Callout type="warn">
-Because the fallback always succeeds, **a route is always produced**. On an
-awkward boundary — a narrow waist, a deep notch, a corridor cutting the plant in
-two — that last-resort route can be considerably longer than the run an engineer
-would draw, and it is still counted in the totals. Switch the cable layers on
-and look at the long runs before you cost them.
+Because the last-resort route always succeeds, **a route is always produced**.
+On an awkward boundary — a narrow waist, a deep notch, a corridor cutting the
+plant in two — that route can be considerably longer than the run an engineer
+would draw, and it is still counted in the totals. Read the design warnings,
+switch the cable layers on and look at the long runs before you cost them.
 </Callout>
 
 Segments that several inverters share through the same corridor are **counted
@@ -165,6 +174,26 @@ on a common path for the last stretch, and that stretch is one trench, not one
 per inverter.
 
 <Screenshot id="cables-dc-ac-detail" />
+
+### Very large plots
+
+On a plot with **more than 200** inverters or SMBs, the devices are clustered
+per ICR block and each is set at a gap corner, but every cable is still routed,
+drawn and counted in full.
+
+On a plot that also has **more than 30,000 tables**, the DC string cabling —
+the comb of runs from the tables to each inverter or SMB — is drawn for a
+**sample of eight clusters per ICR block**. Only those clusters appear on the DC
+cable layer and in the drawing. The DC string cable total is worked out from a
+model calibrated on the sample, and the DC trench is the drawn trench scaled up
+by all the plot's tables over the tables drawn. The feeders from each device to
+its control room are still routed in full.
+
+That scaled DC trench is labelled **(est.)**: the bill of materials row reads
+**DC String Trench (est.)** with the remark *drawn for a sample of clusters,
+scaled to all tables*, and the PDF summary page and the Word report's trench
+row mark the figure the same way. On such a plot, treat both the DC string cable
+and the DC trench as estimates.
 
 ## Medium-voltage cables
 
@@ -220,45 +249,119 @@ The **CABLES** group of the Summary view carries them together:
 | **AC trench (m)** | AC trench length, de-duplicated |
 | **MV trench (m)** | Medium-voltage trench length, de-duplicated |
 
-Every row is defined in [Summary rows](/docs/reference/summary-columns).
+Every row is defined in [Summary rows](/docs/reference/summary-columns). The
+Detailed Project Report carries the inverter and cable summary on its design
+summary page, broken down per control room; its layout drawing hides the
+cables. See [The project report](/docs/exports/project-report).
 
-### The exports that carry the cabling
+## The cable schedule
 
-Two items of the **Export ▾** menu go further than the Summary view:
+**Export ▾ ▸ Export Cable Schedule (Excel)** writes the cabling as a workbook to
+issue to a contractor: every DC string, every feeder and every collection run,
+with its length, its current and a conductor size. It is available after any
+layout that is up to date and has control rooms. **Calculate cables is not
+required**: without it the lengths are straight lines between the ends,
+increased by 15 %, and the sheet says so. Like the other layout exports, it is
+refused while the layout is out of date. See
+[Out-of-date results](/docs/workspace/out-of-date-results).
 
-- **Export Cable Schedule (Excel)** is the document to issue to a contractor: a
-  workbook with one sheet per ICR block, listing the DC strings from each table
-  row to its inverter or monitoring box and the AC or DC-trunk feeders, with
-  recommended conductor sizes. It is available after any layout, but the lengths
-  are only real when cables were calculated.
-- **Export Detailed Project Report** — the Word document — carries the inverter
-  and cable summary on its design summary page, broken down per control room.
-  The layout drawing in the report hides the cables. See
-  [The project report](/docs/exports/project-report).
+Choose a name in the **Save Cable Schedule (Excel)** dialog; the file is an
+Excel workbook (`.xlsx`). The status line then reads *"Cable schedule exported
+(n ICR-block sheets): …"*.
 
-## The inputs that move the cable totals
+### One sheet per ICR block
 
-Cable lengths are an output, but they are an output of a small number of
-decisions. If a total looks wrong, these are the fields to look at rather than
-the routing:
+The workbook has one sheet for each ICR block, named **ICR-1**, **ICR-2** and so
+on. On a site with several plots each sheet name starts with the plot, **P1-**,
+**P2-** and so on. Every sheet opens with three lines:
+
+| Row | What it carries |
+| --- | --- |
+| 1 | The title, naming the sheet |
+| 2 | The **basis** in grey italics: the module wattage, Vmp, Imp, modules per string and string voltage; the conductor materials; the drop limits; how the AC feeder current was found; the derating; whether the lengths come from the routed layout or a straight line × 1.15; the transformers' LV voltage; and the MV cable sizes at 33 kV |
+| 3 | *String-inverter sheets only.* The low-voltage AC drop: the plant average against the 1.5 % budget, and how many feeders are above 2.5 % — in bold red when the plant is over budget or any feeder is flagged, grey otherwise |
+
+The plant average on row 3 is weighted by current over **every AC feeder in the
+workbook**, all plots included, so it is the same figure on every sheet.
+
+Under them sit three tables, each with a title row and a header row:
+
+| Table | Columns | One row per |
+| --- | --- | --- |
+| **DC String Schedule** | String No · From Table/Tracker · Row · Col · Modules/String · To Inverter/SMB · Cores · +ve (m) · -ve (m) · Total (m) · String I (A) · Size (mm2) · %VD | String, named such as `R4-C12-S1`, to its inverter or SMB, such as `ICR1-INV-07` |
+| **AC Cable Schedule (Inverter - ICR ACCB)** — or **DC Trunk Schedule (SMB - Central Inverter)** in a central-inverter design | Cable No · From · To · Type · Cores · Current (A) · Length (m) · Size (mm2) · %VD · Flag | Inverter feeder to its ACCB (3 cores), or SMB trunk to the central inverter (2 cores) |
+| **Collection Schedule (ACCB/CINV - IDT - MCR)** | Cable No · From · To · Type · kV · Cores · Runs · Current (A) · Length (m) · Size (mm2) · %VD | Each ACCB or central inverter to its transformer; then one medium-voltage row from the block's transformers to the main control room, or to the plot's unit substation |
+
+The collection table follows the grouping on the
+[ACCB & Transformer card](/docs/inputs/accb-and-transformers): its low-voltage
+rows appear for every block that has transformers, each 20.0 m long, and its
+medium-voltage row only once the plot holds a main control room or a unit
+substation. The medium-voltage row uses the routed length where there is one.
+
+### How the conductors are sized
+
+The schedule sizes each kind of run by its own rule:
+
+| Run | Conductor | How the size is chosen |
+| --- | --- | --- |
+| **DC strings** | Copper | The smallest size, from 4 mm², that carries the derated current and keeps the drop within 1.5 % |
+| **DC trunks** *(central)* | Copper | The smallest size that carries the current and keeps the drop within 1.5 % |
+| **AC feeders** *(string)* | Aluminium, 3 cores | One run of **300 mm²**, stepped up to 400, 500 or 630 mm² **only when 300 mm² cannot carry the current**. The drop never changes the size; it is reported and flagged instead |
+| **Collection runs** | Aluminium | Parallel runs of 300 or 400 mm², the fewest runs that carry the current and keep the drop within 2.0 % |
+
+The string current comes from the module file (Vmp and Imp); without one the
+schedule assumes 42 V and works the current out from the wattage. The AC feeder
+current is the inverter file's maximum AC current; failing that, its maximum AC
+power at the LV voltage; and with no inverter file, each inverter's DC capacity.
+The LV voltage is the inverter file's output voltage, or 800 V (string) / 690 V
+(central) without one. The derating factor is 0.9, the power factor 1.0, and
+medium voltage is **33 kV** in the schedule whatever the card's **MV voltage**
+says.
+
+The **Flag** column of the AC table marks the feeders to look at:
+*stepped up to … mm2*, *no single run carries … A* (the size is then
+630 mm²), and *drop … % &gt; 2.5 %*. The same sizing drives the feeder and drop
+checks among the design warnings.
+
+## Changing the layout after a run
+
+Cable lengths are an output of a small number of decisions. If a total looks
+wrong, these are the fields to look at rather than the routing:
 
 | Input | What it changes | Effect on the cabling |
 | --- | --- | --- |
-| **ICR Block** | The number of inverter control rooms | More, smaller rooms shorten the AC feeders — each inverter routes to the nearest room — and add branches to the medium-voltage network, each with its own termination allowance |
+| **ICR Block** | The number of control rooms and each one's rating | More, smaller rooms shorten the AC feeders and add branches to the medium-voltage network, each with its own termination allowance |
 | **Max strings per inverter** *(or per SMB)* | The number of inverters or monitoring boxes | Fewer, larger units mean longer string runs to reach each one; more, smaller units mean shorter string runs and more collection points |
 | **Row pitch** | The spacing of the rows | Routes run along and across the row grid, so a wider pitch tends to lengthen the north–south legs of the runs |
 | **The main control room position** | The destination of the medium-voltage network | Sets the whole medium-voltage length. Place it where the export actually leaves the site |
 | **The three DC allowances** | The string-cable total only | Lead, return run and slack are added to the routed string length; they never touch the AC, trunk or MV figures |
 
-Because all of these are settled before routing runs, this is another reason to
-review the layout first and enable cable calculation last.
+Edits on the canvas — drawing an obstruction, **Undo Last**, **Clear All**,
+dragging an ICR — re-place the inverters and, with **Calculate cables** on,
+route the cables again.
 
 <Callout type="warn">
-A hand-drawn obstruction from the Tools tab re-places the inverters but does
-not re-measure the cables: the **String DC cable (m)** and **AC cable to ICR
-(m)** rows read **0** until the next Generate. Generate again before quoting
-lengths.
+Trench totals are worked out at the end of a full cable run — **Generate
+Layout**, or leaving Sketch Mode after a change. After a canvas edit the cable
+rows of the Summary view are measured again, but the **DC / AC trench** rows
+still show the figures from the last full run. Generate again before quoting
+trench lengths.
 </Callout>
+
+### One cable run at a time
+
+While an edit's cables are being routed, the **Obstructions** and **Main Control
+Room & Objects** cards on the Tools tab are unavailable, and the status line
+reads *"Cables are being routed… Obstruction, MCR and object tools and ICR
+dragging are back when they finish."* Dragging an ICR does nothing while any
+cable run is going, including the one that follows a Generate.
+
+A change you make meanwhile — another edit, **Generate Layout**, leaving Sketch
+Mode — is not lost: the status reads *"Cables are being routed… Your change will
+be applied as soon as they finish."*, and waiting changes run in order once the
+current run ends. A second move of the same object replaces the waiting one.
+Closing the window during an edit's cable run waits for it too, and the window
+closes itself when the routing finishes.
 
 ## Drawing and deleting trenches by hand
 
@@ -269,36 +372,27 @@ or the crossing you have already agreed with a landowner. Sketch Mode's
 | Tool | What it does |
 | --- | --- |
 | **🟢 DC Trench** | Click vertices, right-click to finish: a DC trench |
-| **🔴 AC Trench** | Click vertices, right-click to finish: an AC trench |
+| **🔴 AC Trench** | Click vertices, right-click to finish: an AC trench — in a central-inverter design, the DC trunk from the SMBs to the central inverter |
 | **🟩 MV Trench** | Click vertices, right-click to finish: a medium-voltage trench |
-| **✂ Del Trench** | Click any cable trench — automatic or hand-drawn — to delete it; the untouched trenches stay as the automatic routing |
+| **✂ Del Trench** | Click any cable trench — automatic or hand-drawn — to delete it |
 
 Switch **🧲 Snap** and **⊾ Ortho** on in the contextual bar before drawing a
 trench you intend to build from. See [Sketch Mode](/docs/editing/sketch-mode).
 
-### What manual editing does to the next run
+### How long a trench edit lasts
 
-The moment you delete an automatic trench or draw one by hand, the layout's
-cabling becomes **yours**. From then on, **Generate Layout keeps the current
-cables instead of re-routing them** — on Generate the cable follows your
-trenches — so your edits survive the next run rather than being overwritten.
+- **A drawn trench replaces every automatic run of its type** in the plot, and
+  both the cable and the trench totals for that type then come from what you
+  drew.
+- **It survives leaving Sketch Mode**, and is saved with the project.
+- **It does not survive Generate Layout.** Generate lays the plant out and
+  routes every cable afresh, and the hand-drawn trenches are dropped.
+- **Deleting an automatic run does not last.** With **Calculate cables** on,
+  leaving Sketch Mode routes every cable again, and the deleted run comes back.
 
-<Callout type="warn">
-The consequence, plainly: once you have edited the trenches, a later change to an
-input **will not re-route the cables**. Change the row pitch or move a control
-room after hand-editing, and the tables move while the cabling stays where you
-put it.
-</Callout>
-
-**There is no control that undoes this.** Nothing clears manual trench edits and
-hands the cabling back to automatic routing — not deleting the trenches you drew,
-not generating again. The one route back to automatically routed cables is to lay
-the plant out afresh: a new layout, or **File ▸ New Project**.
-
-The rule is not a defect; it is the only behaviour that makes hand-editing
-worthwhile. But it does make the order of work matter. Do the hand-editing
-**last**, after the inputs have stopped moving, and save the project first so the
-automatically routed design survives as a file of its own.
+No control switches trench edits on or off. Draw trenches **last**, after the
+final Generate, and save the project first so the automatically routed design
+survives as a file of its own.
 
 ## Seeing cables on the plot
 
@@ -337,9 +431,9 @@ trenches alike. Cables are exported to the Google Earth file as well. See
     description="The Calculate cables option, the performance notice and the three allowances"
   />
   <Card
-    title="Main control room and site equipment"
-    href="/docs/layout/site-equipment"
-    description="Placing the destination every medium-voltage run needs"
+    title="ACCB and transformers"
+    href="/docs/inputs/accb-and-transformers"
+    description="The grouping the collection table of the cable schedule follows"
   />
   <Card
     title="Inverter control rooms"
@@ -347,8 +441,8 @@ trenches alike. Cables are exported to the Google Earth file as well. See
     description="How many there are, where they sit, and moving one"
   />
   <Card
-    title="Summary rows"
-    href="/docs/reference/summary-columns"
-    description="Every row of the Summary view, group by group"
+    title="Design warnings"
+    href="/docs/reference/design-warnings"
+    description="The cable and control-room checks run on every layout"
   />
 </Cards>

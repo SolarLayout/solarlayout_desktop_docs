@@ -9,8 +9,11 @@ probability a lender will accept. Two degradation inputs set the decline, one
 lifetime input sets how far the forecast runs, and one uncertainty figure plus
 three exceedance probabilities set the confidence band.
 
-None of it changes the layout. These are all post-processing on the energy
-result, so a change here needs the energy calculation run again and nothing more.
+None of it changes where a table goes. These are all post-processing on the
+energy result, but they are inputs to the run like any other: change one after
+a run and the layout is marked
+[out of date](/docs/workspace/out-of-date-results), so generate the layout
+again and then calculate energy again.
 
 ## Where the fields live
 
@@ -71,7 +74,7 @@ Year n  (n ≥ 2)     = Year 1 (actual) × (1 − annual_deg%)^(n−1)
 | `specific yield` | Annual energy per kWp installed, in kWh/kWp, computed as the in-plane annual irradiation multiplied by the performance ratio |
 | `Year 1 energy` | First-year output before the first-year step is taken off |
 | `first_year_deg%` | **1st year degradation**, as a fraction: 1.0 % is 0.01 |
-| `Year 1 (actual)` | The first-year output actually reported — the **Year-1 energy** tile, and the figure the exceedance probabilities and the capacity factor are both built on |
+| `Year 1 (actual)` | The first-year output actually reported — the figure the exceedance probabilities and the capacity factor are both built on |
 | `annual_deg%` | **Annual degradation**, as a fraction: 0.4 %/yr is 0.004 |
 | `n` | The year number, counting from 1 |
 | `n − 1` | The exponent: year 2 has had one year of annual decline, year 30 has had 29 |
@@ -236,13 +239,13 @@ rows carry.
 
 | Place | What it shows |
 | --- | --- |
-| The **Energy** view | The **Year-1 energy** tile — the P50 first-year figure — with specific yield, performance ratio and CUF beside it |
+| The **Energy** view | The **Year-1 energy** tile — the first-year figure, after first-year degradation — with specific yield, performance ratio and CUF beside it |
 | The **Summary** view, **ENERGY** group | **P50 energy, year 1 (MWh)** · **P75 energy, year 1 (MWh)** · **P90 energy, year 1 (MWh)** · **CUF (%)** · **P50 energy, 25 years (MWh)**, the lifetime total. All read `—` before a run |
 | The **Year-1 P50 energy** chip | The first-year figure at the first probability, under every view; `—` before a run |
 | The Yield tab's status line | The performance ratio, year-one energy, CUF and the lifetime total in one line after a run |
 | The Word report | The **Energy Yield & Loss Analysis** section and the **Energy Yield — Drawings** annex, written by **Export ▾ Export Detailed Project Report** only when energy has been calculated |
 
-See [Summary columns](/docs/reference/summary-columns) for the full row set and
+See [the Summary view reference](/docs/reference/summary-columns) for the full row set and
 [Project report](/docs/exports/project-report) for the document.
 
 ## Capacity factor
@@ -294,7 +297,7 @@ reader has no way to tell which they have been handed.
     description="The performance ratio behind the specific yield"
   />
   <Card
-    title="Summary columns"
+    title="Summary view"
     href="/docs/reference/summary-columns"
     description="Every row of the Summary view, including the generated names"
   />

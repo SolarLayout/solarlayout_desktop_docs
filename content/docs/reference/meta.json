@@ -1,4 +1,10 @@
 {
   "title": "Reference",
-  "pages": ["parameters", "summary-columns", "keyboard-and-commands", "glossary"]
+  "pages": [
+    "parameters",
+    "summary-columns",
+    "design-warnings",
+    "keyboard-and-commands",
+    "glossary"
+  ]
 }

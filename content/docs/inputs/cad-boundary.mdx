@@ -1,6 +1,6 @@
 ---
 title: CAD drawing boundaries
-description: Using a DXF as the plant boundary — which layer names mark water, obstructions and line corridors, what the Site reference window asks for, and why the site latitude and longitude decide whether energy can be calculated.
+description: Using a DXF as the plant boundary — which layer names mark water, obstructions and line corridors, and how the Site reference window says where the drawing sits.
 ---
 
 A CAD drawing can be used as the boundary input: pick a `.dxf` file
@@ -10,10 +10,14 @@ the water bodies, obstructions and line corridors drawn inside them. Which is
 which is decided by the **name of the layer** each shape sits on, in the same
 way a Google Earth file is read by the names of its features.
 
-What a CAD drawing does not carry is a position on the earth. Its coordinates
-are drawing coordinates. That single gap is what this page is about, because it
-decides whether the design gets an energy estimate — and, less obviously,
-whether the automatic tilt and row pitch are right.
+What a CAD drawing does not reliably carry is a position on the earth. Its
+coordinates may be UTM metres, or they may be local drawing coordinates with no
+link to the ground. So every drawing is loaded through the **Site reference**
+window, which asks where it sits: at its own UTM coordinates, at a latitude and
+longitude you type, or nowhere in particular — **Layout only**. That answer
+decides whether the design gets an energy estimate, a Google Earth export and
+automatic tilt and row pitch. The drawing's own coordinates are never changed:
+the exported drawings come back in them.
 
 ## What is extracted
 
@@ -83,7 +87,7 @@ A circle, a spline, an arc or a hatch is **not read at all** — neither as the
 boundary nor as a keep-clear area, whatever layer it is on. A site outline drawn
 as a spline is not found, and the application asks you to draw the boundary as
 a closed `LWPOLYLINE` or `POLYLINE`. A pond drawn as a circle is not kept
-clear, and nothing warns you: the layout simply covers it. A plain `LINE` is
+clear, and nothing warns you: the layout covers it. A plain `LINE` is
 read only on a line-corridor layer.
 </Callout>
 
@@ -99,91 +103,145 @@ route is not one the documentation covers.
 
 ## The Site reference window
 
-Choosing a `.dxf` file opens the **Site reference** window. It has one
-card, **LOCATION**, and a footer.
+Choosing a `.dxf` opens the **Site reference** window before the file is
+taken. It asks one question — where the drawing sits — and **nothing in it is
+pre-filled**. **Cancel** closes it without loading the file; whatever file was
+loaded before stays loaded.
+
+A navy strip at the top names the file and describes what the application
+found in it:
+
+| Drawing | The strip's second line, for example |
+| --- | --- |
+| Coordinates that look like UTM metres | *"Drawing 1.03 × 4.42 km · centre E 632,996 · N 2,995,328"* |
+| Local drawing coordinates | *"Drawing 0.60 × 0.50 km · centre x 300 · y 250 (local)"* |
+| Coordinates that cannot be read | *"Couldn't read the drawing's coordinates. Place it by latitude and longitude."* |
+
+Under it, the **LOCATION** card offers up to three answers as a segmented
+control. The first one offered is selected when the window opens.
+
+| Mode | Offered | What it means |
+| --- | --- | --- |
+| **Drawing's coordinates** | Only when every coordinate of the boundary looks like UTM metres — eastings between 100 000 and 900 000 m, northings between 0 and 10 000 000 m. Such a drawing opens in this mode | The drawing's numbers **are** UTM metres; you say which zone |
+| **Place by latitude and longitude** | Always; it is the first mode for a drawing in local coordinates | You say where the centre of the site is |
+| **Layout only** | Always | The site's location stays unknown |
+
+A banner under the card states what the choice gives. The footer holds
+**Cancel** and the primary button, whose label follows the mode, and gives the
+reason when the primary button is not yet available.
+
+### Drawing's coordinates
+
+<Screenshot id="dxf-site-utm" />
+
+When the drawing declares its coordinate system — a WGS 84 / UTM zone stored
+in the file — the card shows it, for example *"WGS 84 / UTM zone 42N ·
+EPSG:32642"*, with the note *"Declared in the drawing (GEODATA). The
+coordinates are used as they are."* The primary button reads **Use the
+drawing's coordinates**.
+
+When it does not, pick the zone yourself: a **UTM zone** list (*Pick a zone*,
+*Zone 1* to *Zone 60*) and a **North** / **South** switch. No zone is ever
+pre-selected; once you have picked one, a **Last used** button (for example
+**Last used: 42N**) offers it again, in this and later sessions. The note reads
+*"The coordinates look like UTM metres. Pick the zone the drawing was made in;
+the readout shows where that puts the site."* Until a zone is picked the readout
+reads *"Pick a zone to see where the site lands."* and the primary button,
+**Use UTM zone …**, waits with the reason *"Pick the zone the drawing uses."*
+
+Once the zone is known the readout gives the site centre — *"Site centre:
+27.0710° N, 70.3387° E"* — with a **Check on Google Maps ↗** link to confirm it
+lands where the site is. The banner reads **Located from the drawing**:
+*"Drawings and the DXF keep the drawing's own coordinates. KMZ, automatic tilt
+and row pitch, and energy yield are available."* The primary button names the
+zone, for example **Use UTM zone 42N**.
+
+Two checks guard the zone. A site put beyond 60° latitude gets a warning —
+*"Check the hemisphere. A plant this far north is unlikely."* — but can still
+be used. A site outside the range UTM covers, 80° S to 84° N, cannot: the
+reason reads *"Pick a zone that puts the site on the map."*
+
+### Place by latitude and longitude
 
 <Screenshot id="dxf-site-coordinates" />
 
-| Control | Default | Range | What it does |
+| Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **I know the site coordinates** | ticked | — | Unticking it greys out the two fields and changes the primary button to **Continue without coordinates** |
-| **Latitude** | 20.000000 °N | −90 to 90 | The site's latitude, in decimal degrees; north positive |
-| **Longitude** | 78.000000 °E | −180 to 180 | The site's longitude, in decimal degrees; east positive |
+| **Latitude** | empty (placeholder *e.g. 27.0739*) | −90 to 90 | The latitude of the centre of the site boundary, in decimal degrees — *"° N (negative for south)"* |
+| **Longitude** | empty (placeholder *e.g. 70.3413*) | −180 to 180 | The longitude of the same point — *"° E (negative for west)"* |
 
-A banner under the fields states the consequence of the choice as you make it:
-*With coordinates: layout, row pitch from latitude, and energy yield.* while the
-box is ticked, and *Without coordinates: layout only. Energy yield is disabled.*
-when it is not. The footer repeats the short form — *Without coordinates you get
-the layout only.* — beside two buttons:
+The note reads *"Latitude and longitude of the centre of the site boundary. In
+Google Earth or Google Maps, right-click the middle of the site to copy
+them."* A minus sign typed as "−" is accepted. The readout says *"Both values
+are needed."* until both are valid, then *"The boundary centre goes to
+27.0739° N, 70.3413° E"*, with **Check on Google Maps ↗** to open Google Maps
+at that point. A value out of range outlines its field, and the reason reads
+*"Fix the highlighted value."*
 
-| Button | What it does |
-| --- | --- |
-| **Layout only** | Loads the drawing without a position. Energy yield is disabled for this file |
-| **Use this location** | Loads the drawing positioned at the latitude and longitude entered. Reads **Continue without coordinates** when the checkbox is unticked, and then does the same as **Layout only** |
+The primary button is **Place the drawing here**. The banner reads **Placed by
+hand**: *"Drawings and the DXF keep the drawing's own coordinates. KMZ, tilt,
+row pitch and energy use this location."*
 
-Enter the coordinates. The best source is the same one you would use for any
-site record — a coordinate off the survey, or a point read from Google Earth at
-the centre of the site. What depends on the value is the sun's position and the
-weather record, not the geometry, so a centre-of-site coordinate is what the
-fields want rather than a surveyed monument.
+### Layout only
 
-### What is lost without them
+<Screenshot id="dxf-site-layout-only" />
 
-**Energy calculation is unavailable.** The layout is still generated — tables
-placed, control rooms sited, cables routed, quantities counted — and the whole
-plant appears in the Summary view, the CAD export and the report. But there is
-no yield, no capacity factor and no exceedance probability. **Calculate Energy**
-on the Yield tab is disabled, and its tooltip says why and tells you to load the
-file again with coordinates; the Energy view says the same in place of a result.
-No wrong energy figure is ever produced.
+**Layout only** loads the drawing without saying where on the earth it is. The
+card holds one optional field, **Latitude** — *"° N, for tilt and row pitch"* —
+and the note *"Longitude isn't needed for tilt and row pitch. Without a
+latitude, set them by hand under Array."* The primary button is **Continue with
+layout only**; it waits only when the latitude you typed is out of range.
+
+The banner spells out the cost: no Google Earth export and no energy yield,
+and — until you give a latitude — no automatic tilt, row pitch or
+building-shadow clearance. With a latitude it ends *"Tilt and row pitch use
+27.0739° N."*
+
+## What each choice gives
+
+| | Drawing's coordinates | Placed by latitude and longitude | Layout only |
+| --- | --- | --- | --- |
+| Where the site is | At the drawing's own numbers, read as UTM metres in the zone chosen | The centre of all the boundaries together is put at the typed point; the drawing is moved, never scaled or rotated | Unknown |
+| Automatic tilt and row pitch | From the site | From the typed latitude | From the typed latitude, if you gave one |
+| Building-shadow clearance | On | On | Skipped without a latitude |
+| Automatic shading value (Yield tab) | Computed | Computed | Without a latitude it reads *"Auto → — (needs the site's latitude)"* |
+| Energy yield | Yes | Yes | Off — **Calculate Energy** is disabled, and its tooltip, the Yield tab's status line and the Energy view read *"Energy yield is off: the site's location is unknown (layout only)."* |
+| Google Earth export | Yes | Yes | Disabled; the menu item reads **Export KMZ — location unknown** |
+| Satellite image | Yes | Yes | Refused — *"Satellite imagery needs the site's location."* |
+| Shadow View | Yes | Yes | Without a latitude, refused — *"Shadow view needs the site's latitude: pick the boundary file again and enter one."* |
+| Units note, axis ticks, cursor position, pile labels | UTM, e.g. *"UTM 42N · metres"* | The drawing's own coordinates — *"Drawing coordinates · metres"* | The drawing's own coordinates |
+| The CAD drawing and the ICR-block drawing set | UTM — the same coordinates as the input | The drawing's own coordinates, so the export lies exactly over the source drawing | The drawing's own coordinates |
+| Pile coordinates workbook | **Easting (m)** and **Northing (m)**, with longitude and latitude | **X drawing (m)** and **Y drawing (m)**, with longitude and latitude | **X drawing (m)** and **Y drawing (m)**; longitude and latitude blank |
 
 <Callout type="warn">
-**Skipping the coordinates does not stop the layout — it silently positions the
-site at a fallback of 20° N, 78° E**, which is also what the two fields show
-before you touch them. The layout is generated normally, but the automatic tilt
-angle and row pitch are derived from that fallback latitude, not from your site.
-Nothing on screen flags it, because the figures look entirely reasonable. On a
-site far from that latitude they are wrong. Either load the file again with the
-coordinates, or tick both overrides in
-[Spacing and tilt](/docs/inputs/spacing-and-tilt) and enter the tilt angle and
-row pitch yourself.
+With **Layout only** and no latitude, the automatic tilt and row pitch have
+nothing to work from. Give a latitude in the window, or tick both overrides
+under [Spacing and tilt](/docs/inputs/spacing-and-tilt) and set the tilt angle
+and row pitch by hand before generating.
 </Callout>
 
-| What needs the coordinates | Why |
-| --- | --- |
-| The automatic tilt angle | Tilt is derived from latitude. The application's rule of thumb is `tilt ≈ latitude × 0.76 + 3.1°`. |
-| The automatic row pitch | Pitch is the spacing at which rows do not shade each other at solar noon on the winter solstice, which depends on the sun's elevation at that latitude. |
-| The weather record | The irradiance and temperature series are fetched for a latitude and longitude. Without a point on the earth there is nothing to fetch. |
+**Placing a drawing distorts nothing.** Its shape and area are kept exactly: a
+400 m edge in the drawing is 400 m on the ground, and an outline enclosing 120
+acres still encloses 120 acres. The point you type is the **centre** of the
+site — the centre of all the boundaries together — not a corner. A corner
+coordinate shifts the whole plant by half its own width, which matters for the
+aerial imagery, the Google Earth export and anything you compare against the
+real site.
 
-With both overrides set by hand you get a correct table count and a correct
-capacity. You still do not get an energy estimate — for that, supply the
-coordinates.
+## Changing the location later
 
-## How the drawing is placed on the ground
+The choice is saved in the project and reused at every **Generate Layout**
+without asking again. The window opens only from **Browse…**, and picking the
+file again replaces the layout with a preview of the boundary, so changing the
+location means **picking the file again, answering the window, and generating
+again**. When that Generate finds the boundary has moved, it carries your
+obstructions, main control room, unit substations, objects and sketch
+annotations to the new position, and the status line says so — for example
+*"Kept your obstructions, MCR, …, moved to the drawing's new location."*
 
-Geo-referencing a CAD drawing distorts nothing. The drawing's own shape and
-area are preserved exactly:
-
-1. The centroid of the drawing is taken as its origin.
-2. The latitude and longitude you entered are converted to metres in the site's
-   local UTM zone. That becomes the reference point.
-3. Every point in the drawing is treated as a **metre offset from the drawing
-   centroid**, and that offset is added to the reference point.
-
-So the drawing is translated onto the earth, not stretched onto it. A 400 m
-edge in the drawing is 400 m on the ground, an outline enclosing 120 acres still
-encloses 120 acres, and the site lands centred on the coordinate you gave.
-
-Two things follow:
-
-- **The drawing must already be in metres.** A drawing in millimetres or in feet
-  is read as though those numbers were metres, and the plant comes out the wrong
-  size. Check the area the application reports for the plant against the survey
-  before going further.
-- **The coordinate you enter is the centre of the site, not a corner.** Entering
-  a corner coordinate shifts the whole plant by half its own width — which
-  matters for the aerial imagery backdrop and for anything you compare against
-  the real site, though not for the layout itself.
+A project that holds a CAD or image boundary but no saved answer opens the
+window at its first Generate. **Cancel** there leaves the layout ungenerated:
+*"Layout not generated: say where the drawing sits first."*
 
 ## Loading a drawing
 
@@ -192,17 +250,17 @@ Two things follow:
 ### Pick the file with Browse…
 
 On the **Site** tab, click **Browse…** on the **Input Boundary File** card and
-choose the `.dxf`. The **Site reference** window opens on its own
-straight afterwards.
+choose the `.dxf`. The **Site reference** window opens straight afterwards.
 </Step>
 
 <Step>
-### Enter the site latitude and longitude
+### Say where the drawing is
 
-Leave **I know the site coordinates** ticked, give the coordinate for the centre
-of the site, and click **Use this location**. **Layout only** is there for a
-quick geometric check, at the cost of the energy estimate and the automatic tilt
-and pitch.
+For a drawing made in UTM, check the zone the window shows, or pick it, and
+click **Use UTM zone …** (or **Use the drawing's coordinates**). For a drawing
+in local coordinates, type the latitude and longitude of the centre of the site
+and click **Place the drawing here**. Use **Layout only** for a quick geometric
+check, and give it a latitude if you want the automatic tilt and pitch.
 </Step>
 
 <Step>
@@ -211,9 +269,7 @@ and pitch.
 Read the **Site area** chip under the plot, or the **Plant area (acres)** row of
 the Summary view, and compare it against the survey. It is the gross boundary
 area before the perimeter road is taken off, so it should match the survey
-directly. A drawing in millimetres comes out a thousand times too large in each
-direction; a drawing in feet a little over three times too large. Fix the units
-in the CAD program and load the file again.
+directly. If it does not, check the drawing before going further.
 </Step>
 
 <Step>
@@ -231,9 +287,11 @@ by hand from the **Tools** tab. See
 
 A DXF can also be supplied as **contour data** in
 [Topography](/docs/inputs/topography), which is an entirely different input from
-the boundary. A contour file must already be in the project's UTM coordinates,
-whereas a boundary drawing is positioned by the latitude and longitude you
-type in. Do not use the same file for both purposes unless it genuinely is both.
+the boundary. With a CAD boundary, a contour drawing must be drawn in the same
+coordinates as the boundary drawing. On a site loaded as layout only, only a
+contour DXF is accepted: a CSV of longitude, latitude and elevation is refused,
+and no satellite elevation data is fetched. Do not use the same file for both
+purposes unless it genuinely is both.
 
 ## Where to go next
 
@@ -251,11 +309,11 @@ type in. Do not use the same file for both purposes unless it genuinely is both.
   <Card
     title="Spacing and tilt"
     href="/docs/inputs/spacing-and-tilt"
-    description="Overriding tilt and row pitch when there is no latitude"
+    description="Setting tilt and row pitch by hand when there is no latitude"
   />
   <Card
-    title="Obstructions and exclusions"
-    href="/docs/layout/obstructions"
-    description="Adding water, corridors and keep-clear areas by hand"
+    title="The CAD drawing export"
+    href="/docs/exports/dxf"
+    description="The layered drawing, in the same coordinates as your input"
   />
 </Cards>

@@ -45,10 +45,12 @@ rooms and arresters follow from its own capacity. See
 
 Two consequences are worth knowing before you read the numbers:
 
-- **The capacity block applies per plant.** The number of control rooms is
-  worked out from each plant's own capacity, rounded up — so three plants of
-  modest capacity can carry three rooms between them where one combined plant of
-  the same total capacity would have carried fewer. See
+- **The capacity block applies per plant — and within a plant, per piece of
+  land.** The number of control rooms is worked out from each plant's own
+  capacity, rounded up, and inside a plant from each separate piece of land
+  (tables more than 300 m from the rest form a piece of their own). So three
+  plants of modest capacity can carry three rooms between them where one
+  combined plant of the same total capacity would have carried fewer. See
   [Inverter control rooms](/docs/layout/icr).
 - **Every plant gets its own perimeter road.** The road band is taken off the
   inside of each boundary, so splitting one parcel into two plants costs you two
@@ -94,11 +96,12 @@ Use **Fix in Google Earth first** and reload the file if you need every plant.
 
 ## The Summary view gains a column per plant
 
-The **Summary** view — the second view tab, which replaced the table that used
-to sit under the plot — turns the figures on their side: a **Metric** column,
+The **Summary** view — the second view tab — turns the figures on their side:
+a **Metric** column,
 then **one column per plant**, then a **Total** column that aggregates every
 plant on the site. The rows are the same for every column, grouped under SITE,
-ARRAY, ELECTRICAL, CABLES and — once energy has been calculated — ENERGY.
+ARRAY, ELECTRICAL, CABLES and ENERGY; the energy rows read `—` until energy
+has been calculated.
 
 <Screenshot id="summary-multi-plot" />
 
@@ -111,7 +114,9 @@ corridors are costing it ground. Every row is defined in
 
 With several plants the sheet is wide. **Open in window** in the view's tools
 puts it in a window of its own, and **Copy** puts it on the clipboard as
-tab-separated text for a spreadsheet.
+tab-separated text for a spreadsheet. When the design has warnings, each line of
+the warnings banner above the sheet starts with the name of the plant it
+concerns.
 
 ### The Plants chip
 
@@ -182,6 +187,12 @@ differently:
 - **The CAD drawing** has one layer per feature type — boundaries, tables,
   control rooms, cables — not one layer per plant, so every plant's features
   share the same layers. See [CAD export](/docs/exports/dxf).
+- **The ICR-block PDF and the ICR-block drawing set** cover the blocks of every
+  plant. Where more than one plot has control rooms, each block's name carries
+  its plot's number — `P1-ICR-1`, `P2-ICR-1` — because every plot numbers its
+  own rooms from 1. See [ICR blocks](/docs/layout/icr-blocks).
+- **The cable schedule** has one sheet per ICR block, and on a multi-plot site
+  each sheet name carries the same plot prefix.
 
 ## Naming the plants
 

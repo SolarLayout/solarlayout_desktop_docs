@@ -41,9 +41,8 @@ can be folded with the button in its header.
 Above the fields, the file row reads *No .PAN file loaded* beside two buttons,
 **Load .PAN** and **View**; **View** is enabled once a file has been read.
 
-All internal geometry is held in metres, projected to the site's own UTM zone,
-so the two dimensions are metres regardless of what the manufacturer's
-datasheet uses.
+The two dimensions are in metres, whatever unit the manufacturer's datasheet
+uses.
 
 ## Length is the long side, width the short side
 
@@ -136,6 +135,12 @@ is read from the file rather than typed anywhere. The module operating
 temperature it derives is displayed next to the loss row, with the working
 shown underneath it — see
 [Temperature losses](/docs/energy/temperature).
+
+The file's path is saved with the project. If the file has moved or gone when
+you reopen the project, the row reads *"Not found: &lt;file&gt;"* (or *"Could
+not load: &lt;file&gt;"* if it cannot be read), the path is kept for the next
+save, and the layout opens
+[out of date](/docs/workspace/out-of-date-results).
 
 ### The nominal operating cell temperature comes from the file too
 
@@ -232,10 +237,12 @@ have already reviewed, know what else changes with it.
 | **Wattage** | Plant DC capacity, and therefore the number of inverter control rooms — one per capacity block — and the DC / AC ratio |
 | **Bifacial module**, **Bifaciality factor (φ)** | Energy yield only. Neither field moves a single table; the layout is identical with the checkbox on or off |
 
-A module dimension change is a layout change, so the layout has to be generated
-again before any figure in the Summary view is trustworthy. A bifacial change
-is an energy change, so the energy calculation has to be run again, but the
-placed layout stands.
+Every field on the card is an input to the layout run, so changing one after a
+run marks the layout out of date: the Summary figures are greyed and the
+exports refused until you generate again.
+That holds for a bifacial change too — it moves no table, but energy cannot be
+calculated again until you regenerate, and regenerating clears the previous
+energy result.
 
 ## If you have no module file
 

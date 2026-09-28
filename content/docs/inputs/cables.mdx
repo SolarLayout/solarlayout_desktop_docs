@@ -1,12 +1,15 @@
 ---
 title: Cables
-description: The Cables card on the Electrical tab — whether cable runs are routed and measured, the performance notice, and the three allowances added to the DC string-cable total.
+description: The Cables card on the Electrical tab — whether cable runs are routed and measured, and the three allowances added to the DC string-cable total.
 ---
 
-The **Cables** card, the second card on the **Electrical** tab, decides whether
-the application routes and measures the cables between the tables, the
-inverters or string monitoring boxes and the control rooms — and, when it does,
-what allowances are added to the DC string-cable total. Routing is off as
+The **Cables** card decides whether the application routes and measures the
+cables between the tables, the inverters or string monitoring boxes and the
+control rooms, and, when it does, what allowances are added to the DC
+string-cable total. It is the third card on the **Electrical** tab, after the
+inverter card and the **ACCB & Transformer** card (**Transformer** in a
+central-inverter design — see
+[ACCB and transformers](/docs/inputs/accb-and-transformers)). Routing is off as
 shipped, because it is the slow step on a large plant. The equipment is placed
 and counted whether or not the cables are traced.
 
@@ -21,15 +24,14 @@ page covers the card.
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Calculate cables** | off | — | Routes every DC and AC run on the next **Generate Layout** and reports the lengths |
-| **Inter-module lead** | 0.5 m/module | 0.0–2.0 m/module | String cable allowed per module along the table, counted once per string. Fixed-tilt tables only |
-| **String return run along table** | on | — | Adds one run back along the table per string, so both leads leave the same end. Fixed-tilt tables only |
-| **DC cable slack** | 10.0 % | 0.0–30.0 % | Slack and wastage added to the DC string-cable total |
+| **Inter-module lead** | 0.00 m/module | 0.00–2.00 m/module | Extra string cable per module for the leads between modules, counted once per string. Fixed-tilt tables only |
+| **String return run along table** | off | — | Tick for daisy-chain wiring: adds one conductor's run back along the table per string. Fixed-tilt tables only |
+| **DC cable slack** | 10.0 % | 0.0–30.0 % | Slack and wastage added to the DC string-cable total, trackers included |
 
-<Callout type="warn">
-The **Calculate cables** tick is saved in a project file; the three allowances
-are not. A reopened project shows the defaults above for the lead, the return
-run and the slack, whatever you had set when you saved it.
-</Callout>
+The tick and all three allowances are saved in the project file and come back
+when it is reopened. They are also inputs to the run: change any of them after
+generating and the layout is marked out of date until you generate again. See
+[Out-of-date results](/docs/workspace/out-of-date-results).
 
 ## Calculate cables
 
@@ -111,6 +113,9 @@ scratch.
   **CABLES** group means the value was not computed, not that it is zero.
 - **The three cable rows of the Layers popover stay disabled**, and the cable
   layers are left out of the CAD export.
+- **The cable schedule can still be exported.** Its lengths are then straight
+  lines between the ends, increased by 15 %, rather than routed lengths. See
+  [The cable schedule](/docs/layout/cables#the-cable-schedule).
 
 Everything else about the design is final. Only the cable numbers are missing,
 and one more run with the box ticked fills them in.
@@ -123,24 +128,28 @@ can order against, and they are added to the DC string-cable total only.
 
 ### Inter-module lead
 
-**Inter-module lead** is the length of string cable allowed **per module**
-along the table — the leads that join one module to the next — and it is
-counted **once per string**. It ships at 0.5 m per module, the bill-of-quantity
-convention, and applies to **fixed-tilt tables only**.
+**Inter-module lead** is extra string cable allowed **per module** for the
+leads that join one module to the next, counted **once per string**. It ships
+at **0.00 m per module**, because the module supplier normally provides these
+leads with the modules. Enter a figure only when your procurement buys that
+cable separately. It applies to **fixed-tilt tables only**.
 
 ### String return run along table
 
-A string is one row of modules across the table, so its two leads naturally end
-up at **opposite ends** of the table. **String return run along table**, on as
-shipped, adds one conductor's run back along the table per string, so that both
-leads exit beside each other at the same end. Untick it for U-wired strings
-whose leads already leave from the same end. It applies to **fixed-tilt tables
-only**.
+How much string cable a table needs depends on how its strings are wired.
+
+| Wiring | The string's two leads | Setting |
+| --- | --- | --- |
+| **Leapfrog** | Exit at the same end of the table | Leave **String return run along table** unticked — the default |
+| **Daisy-chain** | End at opposite ends of the table, so one conductor must run back along the table to exit beside the other | Tick **String return run along table**, and that run back along the table is added per string |
+
+It applies to **fixed-tilt tables only**.
 
 ### DC cable slack
 
 **DC cable slack** is the slack and wastage added to the DC string-cable total,
-as a percentage. It ships at 10 %, the bill-of-quantity convention.
+as a percentage. It ships at 10 %, the bill-of-quantity convention. Unlike the
+other two allowances it applies to every design, tracker plants included.
 
 ## Where to go next
 
@@ -161,7 +170,7 @@ as a percentage. It ships at 10 %, the bill-of-quantity convention.
     description="Placing the main control room the medium-voltage cables run to"
   />
   <Card
-    title="Summary columns"
+    title="Summary view"
     href="/docs/reference/summary-columns"
     description="The CABLES rows and what a dash means"
   />

@@ -23,11 +23,17 @@ plant capacity and sited automatically. See
 
 ## The placement card
 
-The **Tools** tab is locked until a layout exists — its tooltip reads
-*"Generate a layout first"* and its buttons are greyed out. Once a layout is on
-screen, the **Main Control Room & Objects** card offers **Place MCR**,
-**Remove MCR**, **Place Object** and **Remove Objects**, with a hint line under
-them that tells you what the next click on the plot will do.
+Until a layout exists the **Tools** tab's tooltip reads *"Generate a layout
+first"* and the card's buttons are greyed out, **Place Object** aside. Once a
+layout is on screen, the **Main Control Room & Objects** card offers **Place
+MCR**, **Remove MCR**, **Place Object** and **Remove Objects**, with a hint line
+under them that tells you what the next click on the plot will do.
+
+Placing or moving the main control room, a unit substation or an object starts
+a cable-routing run of its own. One run happens at a time: while it runs this
+card is disabled, with the **Obstructions** card beside it, and a change you
+make meanwhile waits until it finishes. See
+[Obstructions](/docs/layout/obstructions#drawing-an-obstruction-by-hand).
 
 <Screenshot id="mcr-controls" />
 
@@ -236,8 +242,7 @@ What each one changes:
   tables it clears.
 - **Pile Ø** describes the foundation.
 
-None of these settings is kept in a project file; a reopened project shows the
-defaults.
+All of them are saved with the project.
 
 ### Reading the result
 
@@ -248,10 +253,13 @@ capacity rows already account for the tables the lights cleared.
 ## If a placement does not do what you expect
 
 <Accordions>
-<Accordion title="The Tools tab is greyed out">
+<Accordion title="The buttons on the Tools tab are greyed out">
 No layout exists yet. The tab's tooltip reads *"Generate a layout first"*.
-Load a boundary file and click **Generate Layout**; only **Place Object** works
-before that, and only once the object has a size.
+Load a boundary file and click **Generate Layout**; on this card only **Place
+Object** works before that, and only once the object has a size.
+
+If a layout exists and the whole card is disabled, cables are being routed
+after an edit — the status bar says so. The card comes back when they finish.
 </Accordion>
 
 <Accordion title="Clicking the plot places nothing">
@@ -274,7 +282,8 @@ place it.
 
 <Accordion title="Street lights did not appear">
 They are not placed by clicking. Tick **Place street lights** on the Site tab
-and click **Generate Layout** again — an existing layout does not gain them.
+and click **Generate Layout** again — an existing layout does not gain them,
+and is [out of date](/docs/workspace/out-of-date-results) until you do.
 </Accordion>
 
 <Accordion title="The medium-voltage rows still read a dash">

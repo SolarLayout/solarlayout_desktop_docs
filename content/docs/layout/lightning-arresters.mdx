@@ -16,9 +16,9 @@ which is why the decision belongs to you rather than to a default.
 ## Turning arresters on
 
 Both settings live on the **Site Parameters** card of the **Site** tab. They
-are read when you click **Generate Layout**; arresters are placed near the end
-of the run, after the module tables and the inverter control rooms are already
-down.
+are read when you click **Generate Layout**; arresters are placed late in the
+run, after the module tables and the inverter control rooms are down and before
+the inverters and cables.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
@@ -27,9 +27,8 @@ down.
 
 <Screenshot id="site-parameters-la-on" />
 
-See [Site parameters](/docs/inputs/site) for the rest of that card. The tick is
-**not** kept in a project file, so a reopened project comes back with arresters
-off.
+See [Site parameters](/docs/inputs/site) for the rest of that card. Both the
+tick and the radius are kept in a project file.
 
 ## What happens when arresters are off
 
@@ -179,12 +178,14 @@ card of the Site tab, alongside the building footprints:
 | **LA** height | 9.0 | 0.0–100.0 | m |
 | **LA** pile Ø | 0.30 | 0.0–5.0 | m |
 
-**Neither field feeds anything.** They are read from the card and go no further:
-the height does not size the footprint, cast a shadow or clear a table; the pile
-diameter does not reach the pile count, the materials list or any export; and
-neither value is kept when the project is saved, so both come back at the figures
-above. Enter the mast you intend to build if it helps you keep track, and carry
-the real figures in your structural and civil documents.
+**Neither field affects the design.** The height does not size the footprint,
+cast a shadow or clear a table; the pile diameter does not reach the pile count
+or the materials list. Both are saved with the project, printed among the input
+parameters of the Word report, and — like any other input — changing one
+[marks the results out of date](/docs/workspace/out-of-date-results) until you
+generate again. Enter the mast you intend to
+build, and carry the real structural figures in your structural and civil
+documents.
 
 The arrester is also **not** one of the structures whose shadow clears tables.
 The **Clear tables in shadows** option on the same card names the ICR, the
@@ -223,6 +224,16 @@ a standard inter-table bridge, separating gaps blocked by equipment —
 arresters, buildings, obstructions — from gaps in open ground, so you can
 decide which to bridge. See
 [Robotic module cleaning](/docs/simulation/robotic-cleaning).
+
+## Earthing the arresters
+
+The earth pits under each arrester are sized in **Earthing Design** (on the
+**Tools** menu and in the **Studies** card), not here. It gives every arrester
+a ring of earth pits — at least **Min. pits per LA**, three by default — and
+adds pits until the ring meets the **LA earth pit** target, 10 Ω by default,
+following IEC 62305-3 (type A arrangement). The strip that joins the ring is
+sized there too, and its bill of quantities carries a test joint for each
+arrester's down conductor. See [Earthing design](/docs/simulation/earthing).
 
 ## Placing an arrester by hand
 
@@ -272,9 +283,9 @@ afterwards is yours to position.
     description="The perimeter road, the arrester option and the capacity block, field by field"
   />
   <Card
-    title="Inverter control rooms"
-    href="/docs/layout/icr"
-    description="How control rooms are counted, sited and moved, and what they clear"
+    title="Earthing design"
+    href="/docs/simulation/earthing"
+    description="Earth pits for every arrester, conductor sizes and the earthing BoQ"
   />
   <Card
     title="Obstructions"

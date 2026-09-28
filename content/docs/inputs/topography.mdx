@@ -20,12 +20,13 @@ The card is the last one on the **Site** tab.
 
 <Screenshot id="topography" maxWidth={420} />
 
-<Callout type="warn">
-Nothing on this card is kept in a project file — not the tick, not the limits,
-not the path of a contour file. The terrain result itself is saved with the
-layout, so a reopened project still shows its contours and exclusions, but the
-card comes back at the defaults below. Set it again before you generate.
-</Callout>
+Everything on this card is saved with the project — the tick, the limits and
+the path of a contour file — and so is the terrain result. Changing a setting
+after a run marks the layout
+[out of date](/docs/workspace/out-of-date-results) until you generate again; a
+contour file counts only while **Avoid steep ground** is on. If the contour
+file has moved or gone when you reopen the project, its row reads *"Not found:
+&lt;name&gt;"*.
 
 ## Turning it on
 
@@ -111,18 +112,22 @@ dialog, which accepts `.dxf`, `.csv` and `.txt`. Two shapes of data
 are read:
 
 - **A CAD contour file.** Contour lines or spot levels, drawn in the
-  **project's own coordinate system** — the site's local UTM zone, in metres.
-  This is the same projection the layout works in internally, so a drawing
-  taken straight from a surveyor's file registers against the boundary without
-  any further alignment. A drawing in an arbitrary local grid, or in a national
-  grid, does not: shift it into the project's coordinates before loading it. If
-  your boundary came from a CAD drawing rather than a mapping file, see
-  [CAD drawing boundaries](/docs/inputs/cad-boundary) for how the site is
-  positioned.
+  **boundary file's coordinates**: the site's UTM zone for a Google
+  Earth boundary or a CAD boundary located by its own coordinates, and the
+  boundary drawing's own coordinates for a CAD boundary placed by latitude and
+  longitude or laid out only. A contour drawing that shares the boundary's
+  coordinates registers against it without any further alignment. One in
+  another grid does not: shift it into the boundary's coordinates before
+  loading it. See [CAD drawing boundaries](/docs/inputs/cad-boundary) for how a
+  drawing is located.
 - **A comma-separated file** of **longitude, latitude and elevation** — one
   point per line. This is the shape a GPS survey, a drone photogrammetry export
   or a spot-level schedule usually comes in, and because it carries coordinates
   in degrees it needs no projection work from you.
+
+On a site laid out only — a CAD or image boundary whose location is unknown —
+only the CAD contour file works: a longitude-and-latitude file is refused, and
+no satellite elevation data is fetched.
 
 ### Automatic satellite elevation data
 
@@ -179,7 +184,7 @@ Watch the units when you compare the two figures: a slope of 15 % is a rise of
 This is the **pile-reveal differential**: the height difference the foundations
 under a single table would have to make up. The ground under one table footprint
 is checked from its lowest point to its highest, and if that difference exceeds
-the limit, the ground is excluded.
+the limit, that table is dropped.
 
 It catches what the two slope limits miss. A footprint can pass both — a modest
 average slope in each direction — and still cross a bund, a gully or a terrace

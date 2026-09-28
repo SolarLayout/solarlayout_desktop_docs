@@ -23,12 +23,9 @@ half is a grid of compact fields with the column headers **L**, **W** and
 
 <Screenshot id="structures-shadow" maxWidth={420} />
 
-<Callout type="warn">
-Nothing on this card is kept in a project file. Footprints, arrester fields, the
-shadow window, the clear-in-shadows tick and the street-light settings all come
-back at the values below when a saved project is opened, whatever you had set
-when you saved it. Record any non-default values in your own design notes.
-</Callout>
+Everything on this card is saved with the project. Changing any of it after a
+run marks the layout
+[out of date](/docs/workspace/out-of-date-results) until you generate again.
 
 ## The four structures
 
@@ -50,9 +47,10 @@ The ranges are the same for all four rows: length 0.0–500.0 m, width
 
 ### ICR — inverter control room
 
-The building that houses the inverter and switchgear equipment for one block of
-the array. One is placed automatically for each block of DC capacity, and the
-block size is set by **ICR Block** in [Site parameters](/docs/inputs/site).
+The building one block of the array is collected into — in a central-inverter
+design it also houses the central inverters. The rooms are placed
+automatically, and how many follows from **ICR Block** in
+[Site parameters](/docs/inputs/site).
 
 Control rooms are the structures that most often cost you tables, because there
 are several of them and each sits in the middle of the array it serves rather
@@ -66,7 +64,7 @@ circuit terminates at. Unlike the inverter control rooms it is **not** placed
 automatically — you place it yourself, once, from the **Main Control Room &
 Objects** card on the **Tools** tab: arm **Place MCR** and click a position on
 the plot. A position outside the boundary is refused with *Please place inside
-the boundary.* The Tools tab is unlocked once a layout exists.
+the boundary.* The buttons on that card come on once a layout exists.
 
 Its footprint is the largest of the three buildings by default, so place it
 where the array is already interrupted — beside the entrance, next to the
@@ -159,14 +157,16 @@ above.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **LA (m):** pile Ø | 0.30 m | 0.0–5.0 m | Nothing. A design figure you record, and no more. |
-| **LA (m):** height | 9.0 m | 0.0–100.0 m | Nothing. A design figure you record, and no more. |
+| **LA (m):** pile Ø | 0.30 m | 0.0–5.0 m | No effect on the design. A figure you record for the report. |
+| **LA (m):** height | 9.0 m | 0.0–100.0 m | No effect on the design. A figure you record for the report. |
 
 <Callout type="warn">
-Neither of these two fields changes any output. The mast height casts no shadow
-and clears no tables; the pile diameter reaches no quantity, no pile schedule and
-no export. Neither value is kept when the project is saved. The arrester mast and
-its foundation belong in your own structural and civil documents.
+Neither of these two fields changes the design. The mast height casts no shadow
+and clears no tables; the pile diameter reaches no quantity and no pile
+schedule. Both are saved with the project and printed among the input
+parameters of the project report, and, like any input, changing one after a run
+marks the layout out of date. The arrester mast and its foundation belong in
+your own structural and civil documents.
 </Callout>
 
 The tables cleared around an arrester come from the arrester's own keep-clear
@@ -208,11 +208,11 @@ than placing it on the pole-facing edge.
 ## Clear tables in shadows
 
 On by default. It removes every table or tracker unit falling inside the
-year-round shadow footprint of the inverter control rooms, the main control room
-and any objects you placed. The status line after a run counts them: *n tables
-cleared for building shadows*.
+year-round shadow footprint of the inverter control rooms, the main control
+room, the unit substations and any objects you placed. The status line after a
+run counts them: *n tables cleared for building shadows*.
 
-That list is exactly three structures. **Arrester masts are not in it** — no
+**Arrester masts are not in that list** — no
 arrester shadow clears a table, at any height you enter — and street-light
 shadows are handled by the street-light option rather than by this one.
 

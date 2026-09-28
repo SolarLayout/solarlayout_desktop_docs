@@ -1,14 +1,20 @@
 ---
 title: Building a diagram from the plant
-description: "Generate: Automatic draws a starter single-line diagram from the plant's own equipment counts and the materials list's ratings; Full SLD expands it to one feeder per control room."
+description: "Generate: Automatic draws a starter single-line diagram from the layout, the ACCB & Transformer grouping and the inverter file; Full SLD expands it to one row per feeder."
 ---
 
 **Generate: Automatic** on the SLD TOOLS panel draws a starter **single-line
 diagram** — SLD — from the plant you have already laid out. It reads the
-plant's own equipment counts and the bill of materials' ratings, places the
-chain from the modules through to the grid, and annotates each block with how
-many of that item there are and what it is rated at. What you get is a
-correct-by-count skeleton on the drawing sheet, which you then edit.
+layout's equipment counts, the **electrical grouping** — the combiner boxes,
+the transformers, their ratings and voltages, as the
+[ACCB & Transformer card](/docs/inputs/accb-and-transformers) produces them —
+and the inverter file, then places the chain from the modules through to the
+grid and annotates each block with how many of that item there are and what it
+is rated at. What you get is a correct-by-count skeleton on the drawing sheet,
+which you then edit.
+
+It never reads the bill of materials. Editing the materials list, rebuilding it
+or loading a template cannot change the diagram.
 
 It is a starting point, not a finished drawing. The chain it places is the
 generation-to-grid path; the protection, switching and instrumentation an
@@ -26,28 +32,40 @@ the plant has to exist first.
 ### Generate the layout
 
 The equipment counts come from the placed plant — the inverters or string
-monitoring boxes, and the control rooms they feed. With no layout there is
-nothing to count. See [Your first layout](/docs/first-layout).
+monitoring boxes, and the control rooms they feed — and the grouping is made
+when they are placed. With no layout there is nothing to count, and choosing
+**Automatic** only reports *"Generate a layout first, then choose Automatic."*
+See [Your first layout](/docs/first-layout).
 
-A generated layout is the **whole** prerequisite. The ratings come from the
-bill of materials, which is computed from the layout alone, so **no energy
-calculation is needed** — running the yield calculation first adds nothing to
-the diagram.
+**No energy calculation is needed** — running the yield calculation first adds
+nothing to the diagram.
+</Step>
+
+<Step>
+### Load the inverter file
+
+The ratings and voltages come from the inverter file loaded on the inverter
+card. Without one the diagram is still drawn, by count: the transformers read
+*rating needs OND*, the low-voltage side *LV needs OND*, and the inverter's
+rating and the plant's MW AC figure are left off. See
+[Inverter settings](/docs/inputs/inverter).
 </Step>
 
 <Step>
 ### Open the SLD view and choose Automatic
 
-Click the **SLD** tab (**Ctrl+5**). Nothing is drawn yet: the **Generate:** row
-at the top of the tools panel offers **Automatic** and **Manual**. Choose
+Click the **SLD** tab (**Ctrl+5**). Nothing is drawn on entry: the view shows
+the diagram already stored, if there is one, and the **Generate:** row at the
+top of the tools panel offers **Automatic** and **Manual**. Choose
 **Automatic**. The chain is drawn on the sheet and the status line reads
 *"Auto-built SLD (simple feeder) — edit as needed."*
 </Step>
 </Steps>
 
 <Callout type="warn">
-The automatic build reads the plant at the moment you run it. If the layout
-changes afterwards, choose **Automatic** again so that the chain and the plant
+A diagram on the sheet is never redrawn on its own. After you generate the
+layout again, change a rule on the **ACCB & Transformer** card or load an
+inverter file, choose **Automatic** again so that the chain and the plant
 describe each other — and expect the sheet to be rebuilt, not merged with your
 edits.
 </Callout>
@@ -62,42 +80,46 @@ two topologies convert the DC in different places. See
 <Tab value="String inverter">
 
 ```
-PV → String Inverter (×N) → ACCB (×n) → Transformer → MV Panel → Grid
+PV → String Inverter (×N) → ACCB (×n) → Transformer (×n) → MV Panel → Grid
 ```
 
-| Stage | What it is |
-| --- | --- |
-| **PV** | The module field feeding the inverters |
-| **String Inverter (×N)** | The string inverters placed across the plant, each converting DC to AC where it stands. `N` is how many the layout placed |
-| **ACCB (×n)** | The AC combiner boxes the inverters land on. `n` follows from the inverter count and the inverters-per-box rule |
-| **Transformer** | The machine taking the collected AC output up to medium voltage |
-| **MV Panel** | The medium-voltage switchgear the transformer feeds |
-| **Grid** | The outgoing connection |
+| Stage | What it is | What the build writes |
+| --- | --- | --- |
+| **PV** | The module field feeding the inverters | The module count and wattage, and *PV Array* with the string count |
+| **String Inverter (×N)** | The string inverters placed across the plant. `N` is how many the layout placed | The rating in kVA from the inverter file, and *String Inverter ×N* |
+| **ACCB (×n)** | The AC combiner boxes the inverters land on. `n` is the grouping's count: in each ICR block, the block's inverters ÷ **Inverters per ACCB, max**, rounded up | *ACCB ×n* |
+| **Transformer** | The inverter duty transformers taking the collected output up to medium voltage | The rating, such as *16,000 kVA* or a range *12,500–16,000 kVA*, the voltages such as *33 kV/800 V*, and *Transformer ×n (k-Wdg)* |
+| **MV Panel** | The medium-voltage switchgear the transformers feed | *33 kV Switchgear* — the card's **MV voltage** |
+| **Grid** | The outgoing connection | *GRID 33 kV* |
 
-The AC leg is what distinguishes this chain: conversion happens out in the
-field, so what arrives at the combiner box is already AC.
+The wires between the blocks carry the multiplicities: the modules and strings
+on one inverter, the most inverters on one ACCB, the most ACCBs on one
+transformer, and the transformer count.
 
 </Tab>
 <Tab value="Central inverter">
 
 ```
-PV → SMB (×N) → Central Inverter (×n) → Transformer → MV Panel → Grid
+PV → SMB (×N) → Central Inverter (×n) → Transformer (×n) → MV Panel → Grid
 ```
 
-| Stage | What it is |
-| --- | --- |
-| **PV** | The module field feeding the string monitoring boxes |
-| **SMB (×N)** | The string monitoring boxes placed across the plant, each collecting strings and passing their combined DC output on without converting it. `N` is how many the layout placed |
-| **Central Inverter (×n)** | The central inverters the DC trunks land on, inside the control rooms |
-| **Transformer** | The machine taking the inverter output up to medium voltage |
-| **MV Panel** | The medium-voltage switchgear the transformer feeds |
-| **Grid** | The outgoing connection |
+| Stage | What it is | What the build writes |
+| --- | --- | --- |
+| **PV** | The module field feeding the string monitoring boxes | The module count and wattage, and the string count |
+| **SMB (×N)** | The string monitoring boxes placed across the plant, each passing its strings' DC output on without converting it | *SMB ×N* |
+| **Central Inverter (×n)** | The central inverters inside the control rooms. `n` is the grouping's count, made per ICR block | *Central Inverter ×n*, with the SMBs per central inverter on its wire |
+| **Transformer** | The transformers the central inverters land on | The rating and voltages, the winding count, and the central inverters per transformer on its wire |
+| **MV Panel** | The medium-voltage switchgear the transformers feed | The card's **MV voltage** |
+| **Grid** | The outgoing connection | The same voltage |
 
 There is no AC leg before the inverter here, because the conversion happens
 inside the control room rather than in the field.
 
 </Tab>
 </Tabs>
+
+The sheet is headed *SINGLE-LINE DIAGRAM*, with a line giving the plant's MWp
+DC, its MW AC (with an inverter file), the topology and the number of ICRs.
 
 Both chains end the same way, and both are drawn along a horizontal bus —
 which is why the inverter and every transformer are placed already rotated to
@@ -108,45 +130,66 @@ line up with it. See [Building the single-line diagram](/docs/sld/overview).
 The build has two forms, switched by the **Full SLD (per-ICR / per-feeder)**
 checkbox on the tools panel. It applies to the automatic build only.
 
-| Full SLD | What is drawn |
-| --- | --- |
-| **Off** — the simple feeder | One annotated feeder, with each block carrying a **×N** multiplicity for how many of it the plant holds |
-| **On** | Parallel feeders, one per inverter control room, converging on per-ICR transformers |
+| Full SLD | What is drawn | Paper |
+| --- | --- | --- |
+| **Off** — the simple feeder | One annotated feeder, with each block carrying a **×N** multiplicity for how many of it the plant holds | A3 |
+| **On** | **One row per feeder** — per ACCB in a string-inverter design, per central inverter in a central-inverter design — across the whole plant, labelled **ACCB-1**, **ACCB-2** … or **C.Inv-1** … and grouped onto their transformers **TX-1**, **TX-2** …, each marked with its own winding count. The rating and voltages are written under **TX-1**; the transformers feed the MV panel and the grid | A3 up to 10 feeders, A1 up to 28, A0 beyond |
 
 <Screenshot id="sld-auto-full" />
 
-Ticking or unticking the box **rebuilds the diagram** in the other form, so
-choose the form before you start editing. The simple feeder is the readable
-one on a plant with dozens of machines; the full form is the one that shows
-every control room's feeder separately. A large plant drawn this way is where
-the physical paper size grows — see the sheet notes on
-[Building the single-line diagram](/docs/sld/overview).
+Ticking or unticking the box while **Automatic** is chosen **rebuilds the
+diagram** in the other form, and
+the status line then reads *"Auto-built SLD (full (per-ICR/feeder)) — edit as
+needed."* for the full form. Choose the form before you start editing. The
+simple feeder is the readable one on a plant with dozens of machines; the full
+form shows every feeder and every transformer separately.
 
-## The topology rules it applies
+### The transformer symbol
 
-Three rules decide how many combiner boxes and transformers the chain carries:
+The transformer symbol is chosen from the feeders on the transformer, one
+low-voltage winding each:
 
-| Rule | Value |
+| Feeders on the transformer | Symbol |
 | --- | --- |
-| Inverters per AC combiner box | 15 |
-| AC combiner boxes per inverter duty transformer | 4 |
-| Maximum inverter duty transformer capacity | 17.2 MVA |
+| 1 | 2-winding |
+| 2 | 3-winding |
+| 3 | 4-winding |
+| 4 or more | 5-winding |
 
-Read them as a cascade. Inverters are grouped fifteen to a box; boxes are
-grouped four to a transformer; and a transformer is capped at 17.2 MVA, so a
-grouping that would exceed the cap is split rather than carried.
+The simple feeder uses the most feeders on any one transformer; the full SLD
+uses each transformer's own. A transformer's winding count is its feeders plus
+one, so if your card allows more than four feeders per transformer, check the
+winding count written on the sheet against that and correct it with
+**📝 Text** where it differs.
 
-**These are the same rules the bill of materials uses.** The diagram's box and
-transformer counts therefore agree with the quantities in the materials list
-for the same plant — the two are not derived independently, so there is no
-reconciliation to do between them. See
-[Bill of materials](/docs/bom/overview).
+## The grouping it draws
+
+The counts, ratings and voltages on the chain are those of the plant's
+electrical grouping, set on the **ACCB & Transformer** card on the Electrical
+tab — **Transformer** in a central-inverter design:
+
+| Rule on the card | Default |
+| --- | --- |
+| **Inverters per ACCB, max** | 15 |
+| **ACCBs per transformer, max** *(or central inverters per transformer)* | 4 |
+| **Transformer size limit** | 17.2 MVA, but never above the largest listed rating — 16,000 kVA with the default list |
+| **Standard transformer ratings (kVA)** | `2500, 3150, 5000, 6300, 8000, 10000, 12500, 16000` |
+| **MV voltage** | 33.0 kV |
+
+The grouping is made per ICR block, and a block whose load exceeds the limit
+gets more transformers. Each transformer takes the smallest listed rating at or
+above its load. The full rules are on the card's own page.
+
+**The diagram, the bill of materials, the Summary view and the cable schedule
+all read the same grouping**, so the box and transformer counts agree between
+them — there is no reconciliation to do.
 
 <Callout>
-If your own scheme groups equipment differently — a different number of
-inverters per box, or a transformer size you have already fixed with a
-supplier — the chain will not match it. Edit the drawing to your scheme, and
-expect the materials list to still show the rule-based quantities.
+If your scheme groups equipment differently — a different number of inverters
+per box, or transformer sizes you have already fixed with a supplier — set it on
+the card: the inverters per ACCB, the ACCBs per transformer, and your own list
+of ratings. Then choose **Automatic** again, and the diagram and the materials
+list follow your scheme.
 </Callout>
 
 ## What the annotations mean
@@ -157,11 +200,13 @@ Each block on the chain is annotated with two things:
   carries. One inverter symbol carrying a multiplicity stands for every
   inverter in the plant, drawn once. That is normal single-line practice, and
   it is what keeps the sheet readable on a plant with dozens of machines.
-- **A rating**, taken from the bill of materials for that item.
+- **A rating** — for the transformers, from the grouping; for the inverter, the
+  nominal AC power in the inverter file.
 
 Both are put on the sheet by the build rather than typed by you. Where one is
 wrong — a rating that does not match the machine you are buying, or a count
-you have since revised — correct it on the sheet with the **📝 Text** tool.
+you have since revised — correct it on the sheet with the **📝 Text** tool, or
+change the card and choose **Automatic** again.
 
 ## What to do next
 
@@ -171,25 +216,25 @@ Treat the result as a first draft, in this order:
 <Step>
 ### Check every rating
 
-The ratings come from the materials list, which is itself derived from the
-layout. Read each one against the equipment you are actually procuring, and
-correct the annotation where it differs.
+The ratings come from the grouping and the inverter file. Read each one
+against the equipment you are actually procuring, and correct the annotation
+where it differs.
 </Step>
 
 <Step>
-### Add what the rules do not cover
+### Add what the build does not cover
 
-The chain carries the generation-to-grid path. Isolators, breakers other than
-the combiner boxes on the chain, instrument transformers, meters, relays,
-arresters and phase indication are all yours to place from the palette and
-wire in. See [Symbol reference](/docs/sld/symbols).
+The chain carries the generation-to-grid path. Isolators, breakers,
+instrument transformers, meters, relays, arresters and phase indication are all
+yours to place from the palette and wire in. See [Symbol reference](/docs/sld/symbols).
 </Step>
 
 <Step>
-### Fill in the legend, the notes and the title block
+### Complete the title block
 
-All three ship blank — no company name, no project name, no drawing number.
-Complete them with **📝 Text**.
+The legend lists the chain's symbols and the notes carry four standard notes,
+but nothing identifies the project — no company name, no project name, no
+document number or revision. Write them in with **📝 Text**.
 </Step>
 
 <Step>
@@ -205,6 +250,11 @@ diagram page. See [Exporting the diagram](/docs/sld/export).
 
 <Cards>
   <Card
+    title="ACCB and transformers"
+    href="/docs/inputs/accb-and-transformers"
+    description="The card whose rules set the combiner boxes, transformers and ratings on the chain"
+  />
+  <Card
     title="Symbol reference"
     href="/docs/sld/symbols"
     description="The symbols to add on top of the automatically built chain"
@@ -213,11 +263,6 @@ diagram page. See [Exporting the diagram](/docs/sld/export).
     title="Building the single-line diagram"
     href="/docs/sld/overview"
     description="The sheet, the tools, and editing what the build placed"
-  />
-  <Card
-    title="Bill of materials"
-    href="/docs/bom/overview"
-    description="Where the ratings and the matching quantities come from"
   />
   <Card
     title="Exporting the diagram"

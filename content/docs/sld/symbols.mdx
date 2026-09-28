@@ -78,7 +78,7 @@ begins.
 
 | Symbol | What it represents |
 | --- | --- |
-| **ACCB** | An AC combiner box — the breaker panel a group of inverters lands on |
+| **ACCB** | An AC combiner box — the panel a group of string inverters lands on, feeding one low-voltage winding of a transformer |
 | **MV Panel** | A medium-voltage panel, the switchgear the transformer feeds and the point the outgoing line leaves from |
 
 ## Transformers
@@ -89,15 +89,22 @@ closest.
 
 | Symbol | What it represents |
 | --- | --- |
-| **2 Wdg Tx** | A two-winding transformer — one primary, one secondary |
-| **3 Wdg Tx** | A three-winding transformer — the usual inverter duty transformer, IDT, taking the inverter output up to medium voltage with two low-voltage windings on one core |
-| **4 Wdg Tx** | A four-winding transformer, for a machine taking more low-voltage inputs onto a single core |
-| **5 Wdg Tx** | A five-winding transformer, the same arrangement extended again |
+| **2 Wdg Tx** | A two-winding transformer — one low-voltage and one medium-voltage winding |
+| **3 Wdg Tx** | A three-winding transformer — two low-voltage windings and the medium-voltage winding |
+| **4 Wdg Tx** | A four-winding transformer — three low-voltage windings |
+| **5 Wdg Tx** | A five-winding transformer — four low-voltage windings, the largest in the palette |
 
 The winding count is the whole distinction, and it is the part of an SLD an
-electrical reviewer reads first. A plant whose inverters are paired onto
-two-input machines and one whose inverters land four to a machine have the
-same capacity and different drawings.
+electrical reviewer reads first. An inverter duty transformer, IDT, takes one
+low-voltage winding per combiner box or central inverter feeding it, so a plant
+whose boxes are paired onto two-input machines and one whose boxes land four to
+a machine have the same capacity and different drawings. How many feeders share
+a transformer is set on the
+[ACCB & Transformer card](/docs/inputs/accb-and-transformers).
+
+A transformer with more than four feeders has more windings than any symbol
+here. Write its winding count — its feeders plus one — beside the symbol with
+**📝 Text**.
 
 ## Protection and switching
 
@@ -168,7 +175,7 @@ placed:
 
 | Row | Controls | What they do |
 | --- | --- | --- |
-| **Rotate** | an angle field (0–360°, steps of 15°, 90° to begin with), **⟳ Apply**, **⟲ 90°** | Turn the selection by the typed angle, or by a quarter turn |
+| **Rotate** | an angle field (0–360°, steps of 15°, 90° to begin with), **⟳ Apply**, **⟲ 90°** | Turn the selection to the typed angle, or on by a quarter turn |
 | Group | **🔗 Group**, **✂ Ungroup**, **⧉ Copy** | Bind a selection into one element, release it, or duplicate it |
 | **View** | **✋ Pan**, **🔍 Zoom**, **⤢ Fit** | Move around the sheet; turn Pan or Zoom off to edit again |
 

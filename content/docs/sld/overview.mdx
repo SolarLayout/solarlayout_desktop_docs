@@ -26,26 +26,30 @@ replaces the stage tabs and the **Generate Layout** button while the view owns
 the column; **Exit SLD** hands the column back. The view tabs and the tools
 beside them are described on [Views](/docs/workspace/views).
 
-**Nothing is drawn when you enter.** The first row of the tools panel,
+**Nothing is generated when you enter.** The view shows the diagram already
+stored with the session, if there is one. The first row of the tools panel,
 **Generate:**, asks you to choose:
 
 | Choice | What happens |
 | --- | --- |
-| **Automatic** | The diagram is built from the layout and the bill of materials. The status line reads *"Auto-built SLD (simple feeder) — edit as needed."* See [Building a diagram from the plant](/docs/sld/auto-build) |
+| **Automatic** | The diagram is built from the layout, the electrical grouping set on the **ACCB & Transformer** card, and the inverter file — never from the bill of materials. The status line reads *"Auto-built SLD (simple feeder) — edit as needed."* See [Building a diagram from the plant](/docs/sld/auto-build) |
 | **Manual** | A blank sheet, for drawing from the palette. If a diagram already exists you are asked *"Start a blank SLD for manual drawing? This clears the current diagram."* |
 
 <Screenshot id="sld-blank" />
 
-Two things are worth knowing before you choose:
+Three things are worth knowing before you choose:
 
 - **Generate the layout first if you intend to use Automatic.** The automatic
   build reads the plant that is currently placed, so it has nothing to work
   from until a layout exists. The drawing tools themselves work on whatever is
   on the sheet.
+- **A stored diagram is not redrawn on its own.** After a new layout, a change
+  on the **ACCB & Transformer** card or a newly loaded inverter file, choose
+  **Automatic** again to rebuild it.
 - **Tick Hide Layout & Energy Summary to gain height.** The option hides the
   row of plant chips under the view, so the sheet gets the full height of the
-  window. Its label is older than the interface: what it hides is the chip
-  row, not a table. Untick it and the chips come back.
+  window. Despite its label, what it hides is the chip row, not a table.
+  Untick it and the chips come back.
 
 ## The drawing sheet
 
@@ -58,26 +62,37 @@ and the frame itself is drawn for you.
 | **Outer border** | An orange rule around the whole sheet |
 | **Inner frame** | The frame the drawing area sits inside |
 | **Zone grid** | Numbers 8 down to 1 across the sheet and letters F down to A down its side, so a note or a revision can name the zone it refers to |
-| **LEGENDS** | A panel in the right-hand band, for the symbol key |
-| **NOTES** | A second panel in the right-hand band, for drawing notes |
+| **LEGENDS** | A panel in the right-hand band, keyed automatically to the symbols on the sheet |
+| **NOTES** | A second panel in the right-hand band, carrying four standard notes |
 | **Title block** | The block at the foot of the right-hand band, carrying the drawing's identity |
 
-### The title block ships blank
+### What the frame fills in, and what it leaves to you
 
-The title block is a skeleton. Nothing is filled in for you, and nothing is
-filled in from the plant. The sheet leaves your machine as your drawing, under
-your own title block: fill the fields in with the **📝 Text** tool, in the same
-way you would label anything else on the sheet, before you export.
+The frame fills in three things for you:
 
-The same applies to the two panels above it. **LEGENDS** and **NOTES** are
-empty frames waiting for the symbol key and the notes your own drawing standard
-requires.
+- **LEGENDS** lists the symbols on the sheet — the automatic build's chain, or
+  the kinds of symbol you have placed on a manual sheet — each with its
+  symbol.
+- **NOTES** carries four standard notes: the ratings are indicative and to be
+  confirmed against the final GTP and BOM, cable sizing and protection are to
+  be finalised separately, quantities marked ×N are per-plant multiplicities,
+  and any symbol or label can be edited in the SLD view.
+- **The title block** reads **DRAWING TITLE** *SINGLE LINE DIAGRAM*,
+  **SCALE : NTS** and **SHEET :** with the paper size.
+
+Nothing identifies the project, the plant or your organisation: **DOC. NO.**
+and **REV.** are empty, and there is no company or project name. The sheet
+leaves your machine as your drawing, under your own identity — write those in
+with the **📝 Text** tool, in the same way you would label anything else on the
+sheet, before you export. Notes your own drawing standard requires go on the
+same way.
 
 ### Paper size on a large plant
 
-A plant with many control rooms produces a long chain, and a long chain needs
-more paper. The **physical** paper size therefore grows — A3, then A1, then A0
-— while the drawing box keeps A3 proportions.
+The automatic build's full form draws one row per combiner box or central
+inverter, and a plant with many of them needs more paper. The **physical**
+paper size therefore grows — A3 up to 10 feeders, A1 up to 28, A0 beyond —
+while the drawing box keeps A3 proportions. The simple feeder always fits A3.
 
 The consequence is the useful part: the diagram is not re-scaled or re-flowed
 to fit A3. The geometry you drew is the geometry that prints, on a larger
@@ -115,9 +130,8 @@ to end up as a row of short segments rather than one run.
 lines — which is what makes it usable for a rating stacked under a device name,
 or for a title-block field with a value under its caption.
 
-Anything you write on the sheet yourself goes on with this tool: the legend
-entries, the notes, the title-block fields, and any annotation you want beside
-a symbol. Each one is an element you place, and **↖ Move/Select** repositions
+Anything you write on the sheet yourself goes on with this tool: extra notes,
+the title-block fields, and any annotation you want beside a symbol. Each one is an element you place, and **↖ Move/Select** repositions
 it afterwards.
 
 ## Rotating a symbol
@@ -127,7 +141,7 @@ The **Rotate** row acts on the current selection:
 | Control | What it does |
 | --- | --- |
 | **⟲ 90°** | Rotates by ninety degrees |
-| the angle field and **⟳ Apply** | Rotates by the angle in the field — 0–360°, in steps of 15°, 90° to begin with |
+| the angle field and **⟳ Apply** | Turns the selection to the angle in the field — 0–360°, in steps of 15°, 90° to begin with |
 
 Ninety degrees covers most of the work on an SLD, where symbols sit either
 along the bus or across it. The typed angle is there for the cases that do not
@@ -179,8 +193,8 @@ write.
 ## Starting over
 
 **🗑 Clear SLD** empties the sheet — every symbol, wire and label you have
-placed. The sheet frame, its zone grid and its blank title block remain,
-because they are the sheet rather than the drawing.
+placed. The sheet frame, its zone grid, the standard notes and the title
+block remain, because they are the sheet rather than the drawing.
 
 The diagram is part of the session, not a separate file. Saving the project
 saves the diagram with it, along with the inputs, the layout and the hand
@@ -201,7 +215,7 @@ needs the extra height.
 ### Choose how to start
 
 Choose **Automatic** to place the plant's own chain — modules through
-inverters, breakers, transformer and medium-voltage panel to the grid —
+inverters, combiner boxes, transformers and medium-voltage panel to the grid —
 annotated with quantities and ratings. Choose **Manual** for a blank sheet if
 the plant is not the subject of the drawing.
 </Step>
@@ -216,15 +230,16 @@ standard calls for, and wire them in with **╱ Wire**.
 <Step>
 ### Check every rating
 
-The automatic build annotates what it places from the bill of materials. Read
-each annotation against the equipment you are actually buying and correct it
-with **📝 Text** where it differs.
+The automatic build annotates what it places from the electrical grouping and
+the inverter file. Read each annotation against the equipment you are actually
+buying and correct it with **📝 Text** where it differs.
 </Step>
 
 <Step>
-### Fill in the legend, the notes and the title block
+### Complete the title block
 
-All three ship blank. Complete them with **📝 Text** before the drawing leaves
+Write the document number, the revision, the project name and anything your
+drawing standard adds to the notes with **📝 Text** before the drawing leaves
 your machine.
 </Step>
 
@@ -237,7 +252,7 @@ it to be carried into the Detailed Project Report as the report's diagram page.
 </Steps>
 
 <Callout type="warn">
-The automatic build is a starting point derived from counts and topology rules,
+The automatic build is a starting point derived from counts and grouping rules,
 not a protection design. Nothing on the sheet is checked against a standard, a
 fault level or a grid code. Read every rating and every device before the
 drawing goes to anyone.
@@ -268,7 +283,7 @@ Three routes out, covered on [Exporting the diagram](/docs/sld/export):
   <Card
     title="Building a diagram from the plant"
     href="/docs/sld/auto-build"
-    description="Generate: Automatic, the Full SLD option, and the topology rules"
+    description="Generate: Automatic, the Full SLD option, and the grouping it draws"
   />
   <Card
     title="Importing diagrams and custom symbols"

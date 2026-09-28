@@ -9,8 +9,10 @@ adds the control rooms, inverters, cables and lightning arresters, estimates
 the energy the plant will generate over its life, and produces the drawings
 and schedules an engineering team builds from.
 
-It runs entirely on your own machine. The only steps that reach the internet
-are fetching weather data and fetching elevation data, and both are optional.
+It runs entirely on your own machine. Apart from checking this device's
+access, the steps that reach the internet — fetching weather data, fetching
+elevation data and showing an aerial photograph behind the layout — are all
+optional.
 
 ## What you give it
 
@@ -25,7 +27,7 @@ One file describing where the plant goes:
   <Card
     title="A CAD drawing"
     href="/docs/inputs/cad-boundary"
-    description="DXF. Add the site latitude and longitude so energy can be calculated."
+    description="DXF. Located by its own UTM coordinates or by a latitude and longitude you give, so energy can be calculated."
   />
   <Card
     title="A scanned or exported image"
@@ -35,8 +37,8 @@ One file describing where the plant goes:
 </Cards>
 
 Everything else — module dimensions, table configuration, spacing, equipment
-sizes, loss assumptions — has a working default, so a first layout takes a few
-minutes. See [Your first layout](/docs/first-layout).
+sizes, loss assumptions — has a working default, so a first layout needs
+nothing but the boundary file. See [Your first layout](/docs/first-layout).
 
 ## What it produces
 
@@ -47,9 +49,17 @@ the equator. See [How placement works](/docs/layout/how-placement-works).
 
 **Electrical equipment.** Inverter control rooms sized to a capacity block you
 set, string inverters or string monitoring boxes clustered across the plant,
-lightning arresters on a coverage grid, and — when you ask for it — routed
-DC, AC and medium-voltage cables with lengths. See
-[Cable routing](/docs/layout/cables).
+grouped onto AC combiner boxes and transformers by rules you set, lightning
+arresters on a coverage grid, and — when you ask for it — routed DC, AC and
+medium-voltage cables with lengths. With the ICR blocks layer on, click a
+block for a summary of its capacity, equipment and cable. See
+[Cable routing](/docs/layout/cables) and [ICR blocks](/docs/layout/icr-blocks).
+
+**Design warnings.** Where a finished design falls outside the design rules —
+a control room carrying more inverters than its rating, one that found no room,
+a feeder dropping too much voltage, a trench leaving the plant — the Summary
+view says so in plain words. A warning never blocks anything. See
+[Design warnings](/docs/reference/design-warnings).
 
 **An energy estimate.** Year-one and lifetime generation from a performance
 ratio you can break down loss by loss, with degradation, a capacity factor,
@@ -60,10 +70,17 @@ and exceedance probabilities for a lender's case. See
 methodology, design basis, results, energy yield, and the drawing annexures
 with the site layout plan, design summary, single-line diagram and bill of
 materials. Beside it, from the same **Export ▾** menu: a Google Earth file, a
-layered CAD drawing, a drawing set with one sheet per ICR block, an Excel cable
-schedule, and the plot as an image. A PDF is produced only for the pile
-drawing, once a pile pattern is on. See
+layered CAD drawing, a drawing set with one sheet per ICR block as DXF or PDF,
+an Excel cable schedule, the plot as an image and, once a pile pattern is on,
+a PDF report with the pile drawing. See
 [The project report](/docs/exports/project-report).
+
+**Studies.** Size the plant from a target AC capacity, size a robotic
+module-cleaning fleet — from the layout, or from any plant layout DXF with no
+layout needed — check row spacing in a shadow view, and run a preliminary IEC
+earthing design with earth pits, conductor sizes, an earthing plan and a bill
+of quantities. See [Earthing design](/docs/simulation/earthing) and
+[Robot count from a DXF](/docs/simulation/robot-count-from-dxf).
 
 <Screenshot id="layout-fixed-tilt" />
 
@@ -98,7 +115,8 @@ changes.
   engineering checks.
 - It does **not** issue a grid connection study or a protection design. The
   single-line diagram is a drawing you build and edit, not a validated
-  electrical model.
+  electrical model, and the earthing design is a preliminary calculation, not
+  a site-specific earthing study.
 
 ## Where to go next
 

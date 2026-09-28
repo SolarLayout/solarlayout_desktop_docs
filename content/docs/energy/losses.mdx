@@ -24,6 +24,14 @@ carries a live summary, reading **≈ 19.0 % combined** on the shipped defaults,
 so you can see at a glance whether anything has been changed without opening
 it. Click the header to open it.
 
+Every row is an input to the run, not only to the energy step. Changing one
+after a run marks the layout
+[out of date](/docs/workspace/out-of-date-results), and **Calculate Energy**
+stays disabled until you generate the layout again. Two rows count only some of
+the time: **Temperature losses** while no module file is loaded, and **Shading
+losses** while its auto tick is off — otherwise the application fills the
+value in itself.
+
 <Screenshot id="tab-yield-advanced-open" />
 
 The header figure is a headline for the collapsed state. The performance ratio
@@ -144,7 +152,7 @@ conductor, which is why the summary counts the DC conductor length as twice the
 routed path.
 
 **AC cable losses (Str. Inv. → ICR)** covers the three-phase AC run from each
-string inverter to the nearest inverter control room.
+string inverter to the inverter control room it is assigned to.
 
 </Tab>
 <Tab value="Central Inverter">
@@ -302,7 +310,7 @@ leaving the two to be matched up later. See
 The performance ratio itself is not a Summary view row. What the Summary
 carries is the result of applying it — the three probability rows, the
 capacity factor and the lifetime figure. See
-[Summary columns](/docs/reference/summary-columns).
+[the Summary view reference](/docs/reference/summary-columns).
 
 ## Where to go next
 

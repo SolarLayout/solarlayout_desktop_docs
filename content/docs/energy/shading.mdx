@@ -29,8 +29,9 @@ With the auto tick on, the **Shading losses** field is greyed out and the typed
 value is not what the calculation uses. The line under the tick reads *"Auto
 (row-to-row, computed on Generate)"* until a layout exists, and afterwards
 reports the computed figure — *"Auto → 1.23% (row-to-row, computed)"*, for
-example. Untick it and the field becomes editable, and the number you type is
-used exactly as entered.
+example. On a layout-only site with no latitude it reads *"Auto → — (needs the
+site's latitude)"*. Untick it and the field becomes editable, and the number you
+type is used exactly as entered.
 
 ## The computed model
 
@@ -122,11 +123,12 @@ Two consequences follow, and both catch people comparing runs:
 - **Calculate Energy consumes the figure; it does not produce it.** By the time
   you calculate energy the shading loss is already fixed by the layout that was
   generated.
-- **Change the geometry and the figure is stale until you generate again.** A new
+- **Change the geometry and the figure waits for the next Generate.** A new
   row pitch, a new tilt or a different table geometry moves the ground coverage
   ratio, and therefore the shading loss — but only once **Generate Layout** has
-  run. Recalculating energy on its own leaves the old shading percentage in the
-  performance ratio.
+  run. Until then the layout is
+  [out of date](/docs/workspace/out-of-date-results) and **Calculate Energy**
+  is refused.
 
 So the order is always the same: generate, then calculate energy. If you have
 changed anything about the rows, generate again first.
@@ -151,11 +153,13 @@ plant. Find out which before reporting either.
 
 ## The Shadow View window
 
-**🌓 Shadow View (row spacing)** is the third button of the **Studies** card on
-the **Tools** tab. Like the rest of that tab it is greyed out until a layout
-exists, because it needs the row geometry the layout fixed. It opens a window
-titled **Shadow View** with two tabs: one for the rows, one for a single object
-on the site.
+**🌓 Shadow View (row spacing)** is the fourth of the five buttons in the
+**Studies** card on the **Tools** tab. It is greyed out until a layout exists,
+because it needs the row geometry the layout fixed. It opens a window titled
+**Shadow View** with two tabs: one for the rows, one for a single object on the
+site. On a CAD or image site loaded as layout only, with no latitude given, the
+window does not open: the application answers *"Shadow view needs the site's
+latitude: pick the boundary file again and enter one."*
 
 <Screenshot id="shadow-view" />
 

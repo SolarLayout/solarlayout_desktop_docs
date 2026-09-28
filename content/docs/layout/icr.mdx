@@ -9,9 +9,10 @@ plant the inverters stand out in the field and run their AC cables into it. In a
 central-inverter plant the central inverters themselves stand inside it.
 
 The application places the rooms for you. It works out how many the plant needs
-from the capacity block you set, groups the tables around them, and clears the
-tables each room stands on. You can then move any room by hand if the ground
-does not suit it.
+from the capacity block you set, divides the tables into that many groups,
+places a room at the centre of each and clears the tables it stands on. You can
+then move any room by hand if the ground does not suit it. The tables finally
+wired to each room form its **ICR block**.
 
 ## The footprint
 
@@ -27,21 +28,42 @@ the Site tab.
 
 Length is always the east–west side and width the north–south side, for the
 control room and for every other structure on that card. Enter the building
-you are actually going to build: the footprint is what clears tables, and the
-height is what casts the shadow. See
-[Structures and shadow](/docs/inputs/structures-and-shadow).
+you are actually going to build: the length and width are what the placement
+has to find room for and what clears tables, and the height is what casts the
+shadow. See [Structures and shadow](/docs/inputs/structures-and-shadow).
 
 ## How many the plant gets
 
 The count comes from one field. **ICR Block** on
-[Site parameters](/docs/inputs/site) is the capacity one control room serves,
-in MWp, and defaults to **18.0 MWp** with a range of 0.1 to 500.
+[Site parameters](/docs/inputs/site) is the DC capacity one control room
+serves, and defaults to **18.000 MWp** with a range of 0.1 to 500.
 
-The number of rooms is the plant's capacity divided by the block size, rounded
-**up**. A plant of any capacity therefore gets at least one room, and a plant
-that overshoots a block boundary by a small margin gets a whole extra room —
-which is worth checking against your own single-line concept before you accept
-it.
+The count is worked out **for each separate piece of land**, not for the plant
+as a whole:
+
+1. **The tables are split into separate pieces of land.** Two tables are on the
+   same piece when a chain of tables links them with no gap in the chain wider
+   than **300 m**. Internal roads, corridors and setbacks are far narrower than
+   that, so they never split a piece; a plant split by a wide water body or an
+   excluded valley can be several pieces.
+2. **Each piece gets its own rooms**: the piece's capacity divided by the ICR
+   Block, rounded **up**. A half table counts as half a table's capacity here.
+3. **The plant's count is the sum** over its pieces.
+
+On a site in one piece that is simply the plant's capacity divided by the block
+size, rounded up. On a site in several distant pieces it can be more, because
+each small far-off piece gets a room of its own rather than being cabled
+hundreds of metres to a neighbour's.
+
+Rounding up means a plant — or a piece of land — that overshoots a block
+boundary by a small margin gets a whole extra room. The capacity is then shared
+**equally** between the rooms of that piece, so every block becomes a little
+smaller; there is no small left-over block. It is worth checking the count
+against your own single-line concept before you accept it.
+
+You cannot set the count directly. It follows the capacity that is actually
+placed — so the road width, obstructions and the building-shadow keep-clear can
+all change it — and how the land splits into pieces.
 
 Set the block size to the capacity your transformer and switchgear design
 actually serves. It is the single most consequential number on this page: it
@@ -55,31 +77,47 @@ The rooms are placed after the table grid, once the plant's capacity is known,
 and their positions come from where the tables actually are rather than from a
 geometric division of the site.
 
-Tables are grouped spatially by position into blocks of roughly one
-block-size each. A control room is then placed at the centre of each group. The
-result is that every group of tables surrounds its own room, and the room sits
-near the middle of the load it serves — which is what keeps the AC runs from
-that group short.
+The tables of each piece of land are divided into exactly as many compact
+groups as the piece has rooms, balanced so that each group carries close to the
+same capacity — within about 5 % of the average. A group never reaches across
+two pieces of land. Each room is then placed at the centre of its group, so the
+room sits near the middle of the load it serves, which is what keeps the AC runs
+from that group short. If the centre itself is not free, the nearest free
+position is used, searched north and south first and then outward.
 
-Each room must fit **entirely** inside the usable area, the same rule the tables
-follow. A position that would put part of the building in the perimeter road
-band, in a water body, in a transmission line corridor or on excluded ground is
-not used. See [How placement works](/docs/layout/how-placement-works).
+Each room must fit **entirely** inside the usable area, at the length and width
+you set, the same rule the tables follow. A position that would put part of the
+building in the perimeter road band, in a water body, in a transmission line
+corridor or on excluded ground is not used. See
+[How placement works](/docs/layout/how-placement-works).
 
 <Screenshot id="icr-detail" />
+
+### A room that finds no place
+
+A room that finds no valid position anywhere near its group is **not** dropped
+silently. It is still counted as needed, and the plot is reported with the
+design warning **ICR not placed**, for example *"2 of the 6 ICRs this plot needs
+found no room in it."* The warning appears in the Summary view, on the
+**Design warnings** chip and in the PDF summary and the BOM — see
+[Design warnings](/docs/reference/design-warnings). The usual causes are a
+building too large for the gaps the site leaves, or a piece of land too narrow
+to take one; check the length and width fields first.
 
 ## Seeing the blocks
 
 Which tables belong to which room is a layer of its own. Open **Layers ▾** in
-the Layout view's tools and switch **ICR blocks** on: each block's area is
-filled in its own colour and outlined, so the grouping the room count produced
-is visible at a glance. The row is off by default.
+the Layout view's tools and switch **ICR blocks** on: each block — the tables
+wired, through their inverter or string monitoring box, to one room — is filled
+in its own colour and outlined. The row is off by default and becomes available
+once the inverters are placed.
 
 <Screenshot id="icr-blocks" />
 
-The block colouring is the quickest way to judge whether a plant has overshot
-a block boundary. A small block in a corner of the site, in a colour of its own,
-is the extra room a marginal capacity produced.
+With the layer on, clicking a block opens a window summarising it — its
+capacity, tables, inverters, transformer, cable lengths and piles. The blocks,
+that window and the ICR-block exports are covered in
+[ICR blocks](/docs/layout/icr-blocks).
 
 ## The tables a room clears
 
@@ -87,11 +125,16 @@ is the extra room a marginal capacity produced.
 wins; the ground under it and the ground its footprint touches carry no
 structures.
 
-That has a consequence the order of the pipeline has to deal with. Removing
-tables lowers the plant's capacity, and the number of rooms was worked out from
-the capacity **before** the removal. So the count is **re-checked against the
-new, lower capacity** once the footprints have been cleared. If the reduced
-capacity no longer justifies the last room, the plant does not carry it.
+Removing tables changes the capacity the count was worked out from, so the
+count is checked again:
+
+- **After the footprints are cleared**, the count is worked out afresh from the
+  tables that remain. If it differs, the rooms are placed again with the new
+  count. This check can raise the count or lower it.
+- **After the building-shadow keep-clear**, on a fixed-tilt plant, the count is
+  worked out once more. If fewer rooms would now do, the lower count is tried,
+  and kept only when the settled layout still needs no more. This check only
+  ever lowers the count.
 
 This is why the room count and the table count in the Summary view are
 consistent with each other rather than with a figure you would get by dividing
@@ -136,9 +179,14 @@ the new position.
 An invalid drop **snaps back** to where the room started, so a room that
 returns to its original position was dropped somewhere it cannot stand. A valid
 drop rebuilds the layout, so the tables the room used to clear come back and the
-tables at the new position go away.
+tables at the new position go away. The number of rooms does not change.
 </Step>
 </Steps>
+
+A drag is ignored while cables are being routed. After an edit on the plot the
+status bar reads *"Cables are being routed… Obstruction, MCR and object tools
+and ICR dragging are back when they finish."*; wait for the run to end, then
+drag.
 
 <Callout type="warn">
 Moving a room away from the centre of its group of tables lengthens every AC run
@@ -156,8 +204,11 @@ contains.
 
 String inverters stand out in the field, in the gap bands between rows. DC
 string cables run from the tables to the inverters, and each inverter's AC
-cable runs to the **nearest** control room, where the medium-voltage circuit
-that leaves the plant begins.
+cable runs to a control room, where the medium-voltage circuit that leaves the
+plant begins. An inverter starts on the room nearest to it **along the plant**,
+up to the number of inverters that room's block is rated for; a room that is
+over-full hands inverters on to a neighbouring room. A room still over its
+rating is reported as the design warning **ICR over rating**.
 
 </Tab>
 <Tab value="Central Inverter">
@@ -198,27 +249,31 @@ the room's height and the shadow footprint changes with it.
 
 ## The fields that decide a control room
 
-Four fields, on two cards of the Site tab, decide everything about the rooms in
-a plant:
+Four fields, on two cards of the Site tab, decide the rooms directly:
 
 | Field | Card | What it decides |
 | --- | --- | --- |
-| **ICR Block** | Site Parameters | How many rooms the plant carries, and therefore how the tables are grouped around them |
-| **ICR** length, width and height | Structures & Shadow | The footprint that clears tables, and the height that casts the shadow |
+| **ICR Block** | Site Parameters | How many rooms each piece of land carries, and therefore how its tables are grouped around them |
+| **ICR** length, width and height | Structures & Shadow | The footprint that has to fit and that clears tables, and the height that casts the shadow |
 | **Clear tables in shadows** | Structures & Shadow | Whether the tables inside a room's year-round shadow are removed |
 | **Shadow Window** | Structures & Shadow | The band of solar hours the shadow footprint is accumulated over |
 
-Nothing else moves a room. In particular, the perimeter road width and the
-obstructions change **where** a room may stand, but never how many there are.
+Everything that changes the placed capacity changes the count as well: the
+perimeter road width, the corridors, the obstructions and excluded terrain all
+take ground, and so tables and capacity, away. And anything that leaves parts of
+the plant more than 300 m apart — a large water body, an obstruction across a
+narrow neck of land — makes separate pieces, each with rooms of its own.
 
 ## Checking the rooms after a run
 
 Four things are worth a look before you accept a layout:
 
 - **The count against your electrical concept.** The **ICR blocks** chip under
-  the view is the number the capacity block produced. If it is one more than
-  your single-line concept expects, the plant has overshot a block boundary —
-  adjust the block size, or accept the extra building.
+  the view is the number of rooms placed. If it is more than your single-line
+  concept expects, either the plant has overshot a block boundary or the site
+  has split into separate pieces of land — adjust the block size, or accept the
+  extra building. If a design warning says a room found no place, the plant is
+  a room short.
 - **Where each room landed.** Zoom into each one with the mouse wheel. A room
   at the centre of its group of tables is what you want; a room pushed to one
   side of its group is usually a room that had nowhere else to fit, and it is
@@ -233,31 +288,42 @@ Four things are worth a look before you accept a layout:
 
 ## What the outputs report
 
-The **ICR blocks** row of the Summary view carries the count of rooms for each
-plant, with a Total column on a multi-plot site; the **ICR blocks** chip under
-every view carries the same figure for the site. In a string-inverter design the
-**AC cable to ICR (m)** row is the total length of the runs from the inverters
-into the rooms; in a central-inverter design it is replaced by **DC cable to
-central inverter (m)**. Every row is listed in
+The **ICR blocks** row of the Summary view carries the count of rooms placed in
+each plant, with a Total column on a multi-plot site; the **ICR blocks** chip
+under every view carries the same figure for the site. In a string-inverter
+design the **AC cable to ICR (m)** row is the total length of the runs from the
+inverters into the rooms; in a central-inverter design it is replaced by **DC
+cable to central inverter (m)**. Every row is listed in
 [Summary rows](/docs/reference/summary-columns).
 
-Three exports go further than the Summary view and break the cabling down
-**per control room**, which is the form to take to a cable schedule — all under
-**Export ▾** in the view header:
+For each room on its own, click its block with the **ICR blocks** layer on. The
+exports under **Export ▾** in the view header go further than the Summary view
+and break the plant down **per control room**:
 
+- **Export ICR-Block PDF** — one A3 PDF with the whole plant and a table of the
+  blocks on the first sheet, then one sheet per block with its key plan and
+  details.
+- **Export ICR-Block DXF** — one drawing set with the whole plant on the first
+  sheet and then one sheet per block, each with its summary table. Both block
+  exports are described in [ICR blocks](/docs/layout/icr-blocks#the-block-exports).
+- **Export Cable Schedule (Excel)** — a workbook with one sheet per ICR block:
+  the DC strings from each table row to its inverter or monitoring box, the AC
+  or DC-trunk feeders, and the collection runs to the transformers and the main
+  control room. It does not need cables calculated, but without them the
+  lengths are straight-line distances × 1.15. See
+  [CAD export](/docs/exports/dxf#the-cable-schedule).
 - **Export Detailed Project Report** — the Word document, whose design summary
   carries the inverter and cable figures by control room. See
   [The project report](/docs/exports/project-report).
-- **Export Cable Schedule (Excel)** — a workbook with one sheet per ICR block:
-  the DC strings from each table row to its inverter or monitoring box, and the
-  AC or DC-trunk feeders, with recommended conductor sizes. Calculate cables
-  first, or the lengths are not real.
-- **Export ICR-Block DXF** — one drawing set with the whole plant on the first
-  sheet and then one sheet per ICR block. See [CAD export](/docs/exports/dxf).
 
 ## Where to go next
 
 <Cards>
+  <Card
+    title="ICR blocks"
+    href="/docs/layout/icr-blocks"
+    description="The tables wired to each room, its summary window and the block exports"
+  />
   <Card
     title="Site parameters"
     href="/docs/inputs/site"
@@ -267,11 +333,6 @@ Three exports go further than the Summary view and break the cabling down
     title="Structures and shadow"
     href="/docs/inputs/structures-and-shadow"
     description="Footprints, heights, the shadow window and the clearing rule"
-  />
-  <Card
-    title="Site equipment"
-    href="/docs/layout/site-equipment"
-    description="Placing the main control room, objects and street lights"
   />
   <Card
     title="Design modes"

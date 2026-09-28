@@ -170,7 +170,9 @@ an hourly fetch from the automatic service, puts you at priority 1 or 2 — see
 selector beside it sets the time step and offers **1 min**, **10 min**,
 **15 min**, **30 min** and **1 hour**. It ships at **15 min**. The save window
 is titled **Export TMY Irradiance & Energy Data** and proposes
-`tmy_energy_15min.csv` on the default interval.
+`tmy_energy_15min.csv` on the default interval. Like the other exports it needs
+active access, and it is refused while the layout is
+[out of date](/docs/workspace/out-of-date-results).
 
 Pick the interval to match what the series is for, not the finest one on offer.
 A one-hour file is the smallest and is enough for an annual reconciliation; a
@@ -244,9 +246,11 @@ Typical uses:
 - **A tender or grid submission asking for sub-hourly generation.** Set the
   interval selector to whatever the request specifies and export directly,
   rather than resampling an hourly file by hand.
-- **Reconciliation.** Summing the energy column must reproduce the **Year-1
-  energy** tile on the Energy view. It is the quickest independent check that
-  the run you are reporting is the run you think it is.
+- **Reconciliation.** Summing the energy column gives a first-year total to
+  set beside the **Year-1 energy** tile on the Energy view. The file applies
+  the annual performance ratio to every interval and carries no bifacial gain,
+  while the tile sums the months with their own temperature losses, so on a
+  monofacial plant expect the two to be close rather than identical.
 
 <Callout type="warn">
 The exported series is a modelled typical year, not a forecast for any named

@@ -19,30 +19,48 @@ absent, with no placeholder.
 ## The Export menu
 
 **Export ▾** sits beside **Save project** at the right of the view tabs, in
-every view, and holds every file export. See
+every view, and holds the plant's file exports. See
 [Views](/docs/workspace/views) for the header it belongs to.
 
 <Screenshot id="export-menu" maxWidth={380} />
 
 | Item | Produces | Available |
 | --- | --- | --- |
-| **Export KMZ** | The Google Earth file — see [Google Earth export](/docs/exports/kmz) | After a layout |
+| *(amber row)* ***Inputs changed since the last run.*** *Regenerate first.* | — | Shown only while the layout is out of date; every item below it is then disabled |
+| **Export KMZ** | The Google Earth file — see [Google Earth export](/docs/exports/kmz) | After a layout whose site location is known. On a site continued as layout only the item reads **Export KMZ — location unknown** and is disabled |
 | **Export DXF** | The layered CAD drawing — see [CAD drawing export](/docs/exports/dxf) | After a layout |
-| **Export ICR-Block DXF** | One CAD drawing set: sheet 1 the whole plant, then one sheet per ICR block | After a layout |
-| **Export Cable Schedule (Excel)** | A workbook with one sheet per ICR block: the DC strings and the AC or DC-trunk feeders, with recommended conductor sizes | After a layout; cable calculation on for real lengths |
+| **Export ICR-Block DXF** | One CAD drawing set: the whole plant with a table of blocks, then one sheet per ICR block with its summary table | Once inverters are placed |
+| **Export ICR-Block PDF** | One A3 PDF: the whole plant with every block in its colour and a table, then one sheet per block with its key plan and details — see [ICR blocks](/docs/layout/icr-blocks) | Once inverters are placed |
+| **Export Cable Schedule (Excel)** | A workbook with one sheet per ICR block: the DC strings, the AC feeders or DC trunks, and the collection runs to the transformers and the main control room — see [The cable schedule](/docs/layout/cables#the-cable-schedule) | After a layout with control rooms; **Calculate cables** is not required |
 | **Export Detailed Project Report** | The Word document described on this page | After a layout |
-| **Export PDF (with Piles)** | The PDF report with the pile drawing and coordinates | Only while **Piles** is on |
+| **Export PDF (with Piles)** | The PDF report with the pile drawing and coordinates | Shown only while **Piles** is on and a pile pattern exists |
 | **Export Image (PNG)** | The plot as it is on screen, as an image file | After a layout |
 
-Every export needs active access, and all are disabled while a run is in
-progress. The status line confirms each one — *"Document exported: …"* for the
-report, *"PDF exported: …"* for the PDF with piles. See
-[Activating access](/docs/licence/activate).
+The menu's exports need active access, and all are disabled while a run is in
+progress. See [Activating access](/docs/licence/activate).
+
+**Nothing exports from a layout that is out of date.** When any input has
+changed since the layout was generated, the amber row heads the menu and every
+item is disabled, **Export Image (PNG)** included. The layout's exports
+outside the menu — the bill of materials and diagram exports, the pile Excel,
+the TMY data CSV and an ICR block window's **PDF…** — are refused the same way,
+with the status-bar message *"Inputs changed since the last run. Regenerate
+first."* Change the value back, or click
+**Regenerate Layout**, and the menu comes back. See
+[Out-of-date results](/docs/workspace/out-of-date-results).
+
+The status line confirms each export — *"Document exported: …"* for the
+report, *"PDF exported: …"* for the PDF with piles, *"ICR-block PDF exported
+(n pages): …"*, *"ICR-block DXF exported (n block sheets + plant): …"* and
+*"Cable schedule exported (n ICR-block sheets): …"*.
 
 Some exports live elsewhere because they belong to a tool: the bill of
 materials and the single-line diagram have their own buttons on their tools
-panels, the pile editor has **Export to Excel…**, and the Yield tab has
-**Export TMY data CSV**.
+panels, the pile editor has **Export to Excel…**, the Yield tab has **Export
+TMY data CSV**, and an ICR block's summary window has **PDF…** for that
+block's sheet alone. The **Earthing Design** window writes its own PDF report,
+DXF and bill-of-quantities CSV, and the **Robot count from DXF** window its own
+PDF — none of them is on this menu.
 
 ## The document
 
@@ -64,15 +82,16 @@ changes nothing, so you can export as often as you like while you work.
 | **Results & Analysis — Output** | What the layout produced — the placed plant's figures | Always |
 | **Energy Yield & Loss Analysis** | The yield, the performance ratio and its losses | Only when an energy calculation has been run |
 | **Site Layout Plan** | The engineering drawing of the plant — see below | Always |
-| **Design Summary** | The layout summary, the design parameters and the inverter and cable summary as a drawing sheet | Always |
-| **Single Line Diagram** | Your diagram on its sheet, as you built it in the SLD view | When a diagram exists |
+| **Design Summary** | The layout summary, the design parameters and the inverter and cable summary as a drawing sheet, with the design warnings when there are any | Always |
+| **Single Line Diagram** | Your diagram on its sheet, as you built it in the SLD view — or the automatic diagram when you have not built one | Always |
 | **Bill of Materials** | The materials list, paginated *(i/n)* across as many pages as it needs | Always |
 | **Energy Yield — Drawings** | Two figures when monthly data exists, otherwise one | Only when an energy calculation has been run |
 
 The design basis section is the reason the document matters even when the
 drawing is the deliverable: it records the inputs the drawing was produced
 under, so a design issued today can be reconciled with one revisited months
-later.
+later. Its structures table includes the arrester height and pile Ø, which are
+recorded but have no effect on the design.
 
 The drawing annexures are the same pages the PDF export draws, so the images
 on this page — taken from the PDF with piles — show what the Word document's
@@ -92,8 +111,7 @@ and their labels visible, draws the page, then puts your on-screen state back
 as it was. Three consequences:
 
 - **Cables are never on the drawing page.** A cable drawing comes from the
-  [CAD drawing export](/docs/exports/dxf) or the cable schedule, not from the
-  report.
+  CAD drawing export or the cable schedule, not from the report.
 - **Arresters always appear**, on any run that placed them — including a run
   where you had the **Lightning arresters** layer off and saw none on screen.
   The rectangles are their footprints, and a footprint is buildable
@@ -120,20 +138,41 @@ ticked for the run that produced the layout. With cable calculation off, the
 sheet is still written and the cable entries read as not computed.
 </Callout>
 
+**Design warnings.** When the design falls outside a design rule — the same
+warnings the Summary view's banner lists — the sheet gains a block headed
+**DESIGN WARNINGS (N)**, a table of **Plant · Check · Found**, one row per
+warning; the plant-average voltage-drop check reads *Whole site* in the plant
+column. A clean design leaves the sheet as it is. Each check is explained on
+[Design warnings](/docs/reference/design-warnings).
+
+<Screenshot id="report-page-warnings" caption="The design warnings block, as drawn by Export PDF (with Piles)" />
+
+**Estimated DC trench.** On a plot of more than 30 000 tables the DC cabling is
+drawn for a sample of clusters and the DC trench is scaled from it to every
+table. The report marks that figure *"(est.)"* — in the *DC / AC / MV trench*
+row, for example *"12,345 (est.) / … / … m"*, and in the per-plot and total
+columns of the PDF summary page. Quote it as an estimate.
+
 ### The single-line diagram
 
-Your diagram, on its sheet, exactly as you built it in the SLD view. On a
-large plant the diagram is emitted on a physically larger sheet — A3 to A1 to
-A0 — while the drawing itself keeps A3 proportions, so a dense diagram stays
-legible when printed rather than being crushed onto one A3 sheet. See
-[Exporting the diagram](/docs/sld/export).
+Your diagram, on its sheet, exactly as you built it in the SLD view; with no
+diagram stored, the report builds the automatic one for the page. A stored
+diagram is rebuilt only when you choose **Automatic** in the SLD view, so
+choose it again before exporting if the layout or the **ACCB & Transformer**
+card has changed since. On a large plant the diagram is emitted on a
+physically larger sheet — A3 to A1 to A0 — while the drawing itself keeps A3
+proportions, so a dense diagram stays legible when printed rather than being
+crushed onto one A3 sheet. See [Exporting the diagram](/docs/sld/export).
 
 ### The bill of materials
 
 The materials list, paginated across as many pages as it needs; nothing is
 truncated to fit. What is written is the list as it currently stands in the
 BOM view, edits included — and, if you have replaced it with a template, the
-template's rows. See [Bill of materials](/docs/bom/overview).
+template's rows. Rows a design warning qualifies carry its `Check:` remark.
+After a Generate, an **ACCB & Transformer** card change or a new inverter file,
+the next visit to the BOM view recomputes the list and discards hand edits, so
+make BOM edits last. See [Bill of materials](/docs/bom/overview).
 
 <Screenshot id="report-page-bom" caption="A bill of materials page, as drawn by Export PDF (with Piles)" />
 
@@ -147,20 +186,22 @@ otherwise. See [How yield is calculated](/docs/energy/overview).
 
 ## Export PDF (with Piles)
 
-The report also exists as a PDF, in one case: while the pile overlay is on,
-**Export ▾** gains **Export PDF (with Piles)**. It is the PDF report with the
-pile pattern drawn on the layout — the pattern you defined on one reference
-table, stamped onto every table in the plant — and page one is rendered at
-300 dpi so that a setting-out crew can resolve individual piles within a
-table. Expect a large file. Define the pattern first; see
-[Piles](/docs/editing/piles).
+The report itself exists as a PDF in one case: while the pile overlay is on
+and a pile pattern exists, **Export ▾** gains **Export PDF (with Piles)**. It
+is the PDF report with every table's own piles drawn on the layout — the full
+pattern on full tables, the half pattern on half tables — labelled with their
+easting and northing, and page one is rendered at 300 dpi so that a
+setting-out crew can resolve individual piles within a table. Expect a large
+file. Define the pattern first; see [Piles](/docs/editing/piles). The other
+PDF on the menu, **Export ICR-Block PDF**, is a drawing set of the blocks, not
+the report.
 
 Every page is A3 landscape, in this order:
 
 | Page | What it carries |
 | --- | --- |
 | 1 | The engineering drawing — layout, border, north arrow at the top right, title block and plant-details table — with the piles |
-| 2 | The summary: layout summary, design parameters, and the inverter and cable summary with the per-ICR breakdown |
+| 2 | The summary: layout summary, design parameters, the inverter and cable summary with the per-ICR breakdown, a **Piles** column, and the **DESIGN WARNINGS (N)** block when there are warnings |
 | 3 | The single-line diagram — skipped silently if it cannot be drawn |
 | 4… | The bill of materials, paginated |
 | last | The energy pages, only when energy was calculated: two pages with monthly data, otherwise one |
@@ -181,38 +222,41 @@ means one export rather than four.
 <Step>
 ### Generate the layout
 
-Nothing exports without a placed plant. Turn **Calculate cables** on for the
-run if you want cable lengths in the summary and the per-ICR breakdown. See
-[Cable routing](/docs/layout/cables).
+Nothing exports without a placed plant, and nothing exports while the layout
+is out of date — if the button reads **Regenerate Layout**, click it. Turn
+**Calculate cables** on for the run if you want cable lengths in the summary
+and the per-ICR breakdown.
 </Step>
 
 <Step>
 ### Calculate energy
 
 **Calculate Energy** on the Yield tab is what makes the energy sections exist.
-See [Weather data](/docs/energy/weather).
+Every Generate that replaces the layout clears the energy result, so calculate
+energy after the last Generate. See [Weather data](/docs/energy/weather).
 </Step>
 
 <Step>
 ### Build the diagram
 
 Open the **SLD** tab and choose **Automatic**, then edit it, or draw it
-yourself. See [Building a diagram from the plant](/docs/sld/auto-build).
+yourself. Choose **Automatic** again after any change to the layout or the
+transformer grouping. See
+[Building a diagram from the plant](/docs/sld/auto-build).
 </Step>
 
 <Step>
 ### Check the materials list
 
 Open the **BOM** tab, rebuild it once against the finished plant, and correct
-what needs correcting — because whatever is in it is what prints. See
-[Bill of materials](/docs/bom/overview).
+what needs correcting — because whatever is in it is what prints.
 </Step>
 
 <Step>
 ### Export
 
 Choose **Export ▾ ▸ Export Detailed Project Report** — and **Export PDF (with
-Piles)** as well if you have defined a pile pattern.
+Piles)** as well if you have defined a pile pattern and switched **Piles** on.
 </Step>
 </Steps>
 
@@ -220,12 +264,11 @@ Piles)** as well if you have defined a pile pattern.
 
 - **It does not stamp or certify anything.** The title block and the
   plant-details table identify the drawing; they are not an approval record.
-- **It does not version itself.** Two exports of the same session produce the
-  same document, and nothing tracks revisions for you. Manage that in the file
-  name and in the document after export.
+- **It does not version itself.** Nothing tracks revisions for you. Manage
+  that in the file name and in the document after export.
 - **It is not the CAD deliverable.** The drawing page is a picture of the
   layout, not a layered drawing an engineering team can work in. For that, use
-  the [CAD drawing export](/docs/exports/dxf).
+  the CAD drawing export.
 
 ## Where to go next
 

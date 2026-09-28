@@ -135,6 +135,13 @@ fixed the tilt, so the **GTI (in-plane)** field fills in when you calculate,
 not when you browse. *Monthly T from file* confirms the temperature column has
 replaced the seasonal model, which the next section explains.
 
+The file's path is saved with the project. If the file has moved or gone when
+you reopen the project, the row reads *"Not found: …"* (*"Could not load: …"*
+if it cannot be read). While **Hourly GHI file (CSV)** is selected the file is
+an input to the run, so a missing file, or one edited since the last run, marks
+the layout [out of date](/docs/workspace/out-of-date-results) until you
+generate again.
+
 ### What the application actually accepts
 
 The reminder describes the strictest form of the file. The application is more
@@ -287,10 +294,11 @@ same site — where both estimates share the same irradiance and the comparison
 is unaffected by its absolute accuracy.
 
 <Callout type="warn">
-The chart window and the time-series export need an hourly series. An annual
-total alone — whether typed in or from the monthly fallback — is not enough to
-build one. Load an hourly file, or fetch hourly data from the automatic
-service. See [Charts and time series](/docs/energy/timeseries).
+The time-series export needs an hourly series. An annual total alone —
+whether typed in or from the monthly fallback — is not enough to build one,
+and the chart window then draws a smooth reconstruction rather than real
+weather. Load an hourly file, or fetch hourly data from the automatic service.
+See [Charts and time series](/docs/energy/timeseries).
 </Callout>
 
 ## Where to go next

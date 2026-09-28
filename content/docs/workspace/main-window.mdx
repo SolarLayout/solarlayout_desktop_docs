@@ -1,6 +1,6 @@
 ---
 title: The main window
-description: The ribbon, the pinned Generate Layout button, the five stage tabs of inputs on the left, the views on the right, and the status bar.
+description: The menu bar, the ribbon, the pinned Generate Layout button, the five stage tabs of inputs on the left, the views on the right, and the status bar.
 ---
 
 The main window has three parts. A navy **ribbon** runs across the top. The
@@ -12,9 +12,27 @@ plant totals under whichever view is up.
 
 <Screenshot id="main-window-empty" />
 
-Above the ribbon sits a conventional menu bar — **File**, **Edit-Pile** and
-**Help** — for projects, the pile editor, the in-app guide and the licence
-window. Below everything, a status bar reports what the application is doing.
+Above the ribbon sits a conventional menu bar, and below everything a status
+bar reports what the application is doing.
+
+## The menu bar
+
+Four menus: **File · Edit-Pile · Tools · Help**. Every item is always enabled.
+
+| Menu | Items |
+| --- | --- |
+| **File** | **New Project** (**Ctrl+Shift+N**) · **Move to String / Central Window…** (**Ctrl+N**) · **Save Project…** (**Ctrl+S**) · **Open Project…** (**Ctrl+O**) · **Open Sample Site** · **Exit** (**Ctrl+Q**) — see [Saving and reopening projects](/docs/projects) |
+| **Edit-Pile** | **Define Pile Layout…** — see [Piles](/docs/editing/piles) |
+| **Tools** | **Robot count from DXF…** · **Earthing Design…** |
+| **Help** | **How to Use This Tool** (**F1**) · **License / Subscription…** — see [Getting help](/docs/support) |
+
+The **Tools** menu repeats two of the studies from the Tools tab.
+**Robot count from DXF…** works at any time, with or without a layout — it
+reads a plant drawing of its own. **Earthing Design…** works on the generated
+layout; before one exists it answers **Generate first** — *"Generate a layout
+first, then open Earthing Design."* Neither has a shortcut.
+
+<Screenshot id="tools-menu" />
 
 ## The ribbon
 
@@ -22,12 +40,12 @@ window. Below everything, a status bar reports what the application is doing.
 
 | Item | What it is |
 | --- | --- |
-| **SolarLayout** | The brand. The window title beside it names the design, for example *SolarLayout  [Fixed Tilt  \|  String Inverter]*. |
+| **SolarLayout** | The brand. The window's title bar names the design, for example *SolarLayout  [Fixed Tilt  \|  String Inverter]*. |
 | The **design chip** | Reads the design this window holds — *Fixed tilt · String inverter ▾*, *Tracker · Central inverter ▾* and so on. Clicking it opens the New design window and launches a second, independent window for the design you choose there; this window stays open. See [Choosing a design mode](/docs/design-modes). |
-| The status mirror | A gold italic line that repeats the status bar's message, so a result is readable without looking down. |
+| The status mirror | A gold italic line that repeats most status-bar messages, so a result is readable without looking down. It leaves out the *"Layout ready"* line, the out-of-date line and routine messages. |
 | The **access chip** | **● Active — until \<date>** when this device has access, with *(offline)* appended while a cached check is in use; **● Access expired** or **● Access revoked** in red with a **Contact Us** button; **● Access status unavailable** when the server cannot be reached. With no access at all the chip is hidden and a gold **Get Free Access** button stands in its place. See [Activate your licence](/docs/licence/activate). |
 | **Docs** | Opens this documentation site in your browser. |
-| **Support** | Opens the **Support / Feedback** window. See [Getting help](/docs/support). |
+| **Support** | Opens the **Support / Feedback** window. |
 
 ## The left column
 
@@ -39,6 +57,14 @@ it is disabled — *"Select a boundary file on the Site tab to generate a
 layout."* until a boundary file is chosen. Generating needs active access for
 this device; without it the License / Subscription window opens instead.
 
+Once a layout exists, changing any input it was built from makes it out of
+date. The button then reads **Regenerate Layout**, with a second line inside
+it naming the change — *"Module wattage changed since the last run"*, or
+*"2 inputs changed since the last run"* — and keeps its height. The changed
+fields turn amber, and a small amber dot follows the name of each stage tab
+that holds a change. Change the value back and all of it goes away. See
+[Out-of-date results](/docs/workspace/out-of-date-results).
+
 ### The five stage tabs
 
 The inputs are split across five tabs, in the order the design is normally
@@ -49,9 +75,9 @@ its header folds it away, and every card opens expanded.
 | --- | --- | --- |
 | **Site** | **Input Boundary File** · **Site Parameters** · **Structures & Shadow (keep-clear)** · **Topography (slope-aware exclusion)** | The boundary file; roads, arresters, ICR blocks and the transmission line corridor; keep-clear shadows; terrain — [Boundary files](/docs/inputs/boundary-files), [Site parameters](/docs/inputs/site) |
 | **Array** | A read-only **MOUNTING** chip · **Module Specifications** · then **MMS-Table Configuration** and **Spacing & Tilt** on a fixed-tilt design, or **Tracker Configuration** on a tracker | The module, the table or tracker geometry, tilt and pitch — [Module](/docs/inputs/module), [Table configuration](/docs/inputs/table), [Tracker](/docs/inputs/tracker) |
-| **Electrical** | **String Inverter** (or **SMB – String Monitoring Box** on a central-inverter design) · **Cables** | Strings per inverter, the inverter file, and cable calculation with its allowances — [Inverter](/docs/inputs/inverter), [Cables](/docs/inputs/cables) |
+| **Electrical** | **String Inverter** (or **SMB – String Monitoring Box** on a central-inverter design) · **ACCB & Transformer** (or **Transformer** on a central-inverter design) · **Cables** | Strings per inverter and the inverter file; how inverters group into AC combiner boxes and transformers; cable calculation with its allowances — [Inverter](/docs/inputs/inverter), [ACCBs and transformers](/docs/inputs/accb-and-transformers), [Cables](/docs/inputs/cables) |
 | **Yield** | **Run Energy Calculation** · **Energy Yield** | The energy run, the weather source, site conditions, losses, degradation and exceedance probabilities — [How yield is calculated](/docs/energy/overview) |
-| **Tools** | **Obstructions** · **Main Control Room & Objects** · **Studies** | Editing a generated layout: hand-drawn obstructions, the main control room and placed objects, and the three studies — [Obstructions](/docs/layout/obstructions), [Site equipment](/docs/layout/site-equipment), [Sizing from an AC capacity](/docs/simulation/ac-capacity) |
+| **Tools** | **Obstructions** · **Main Control Room & Objects** · **Studies** | Editing a generated layout — hand-drawn obstructions, the main control room and placed objects — and the five studies — [Obstructions](/docs/layout/obstructions), [Site equipment](/docs/layout/site-equipment) |
 
 The **MOUNTING** chip on the Array tab reads *Fixed-tilt MMS tables* or
 *Single-axis tracker*. It is a reminder, not a control: the mounting was
@@ -64,14 +90,32 @@ window.
 
 <Screenshot id="tab-yield-window" />
 
-The **Tools** tab is locked until a layout exists — its tooltip reads
-*"Generate a layout first"* and every button on it is disabled. Between the
-Obstructions card and the Main Control Room card it carries the reminder
-*"Tip: Click and drag a blue ICR to reposition it."*, which is how a control
-room is moved: with no navigation tool active, drag it to a valid spot inside
-the perimeter road and release.
+### The Tools tab
+
+The **Tools** tab opens at any time. Before a layout exists its tooltip reads
+*"Generate a layout first"*, and its buttons are greyed out — all except
+**Robot count from DXF…**, which needs no layout.
 
 <Screenshot id="tab-tools-locked" />
+
+Once a run has placed control rooms, the tip *"Tip: Click and drag a blue ICR
+to reposition it."* appears between the Obstructions card and the Main Control
+Room card. That is how a control room is moved: with no navigation tool
+active, drag it to a valid spot inside the perimeter road and release.
+
+The **Studies** card holds five buttons, in this order:
+
+| Button | What it does |
+| --- | --- |
+| **🔆 Simulation with AC Capacity** | Sizes the plant from a target AC capacity and DC/AC ratio, then rebuilds the layout at the resulting DC capacity — [Sizing from an AC capacity](/docs/simulation/ac-capacity) |
+| **🤖 Robotic Module Cleaning** | Counts the cleaning lines and sizes the cleaning-robot fleet for this layout — [Robotic module cleaning](/docs/simulation/robotic-cleaning) |
+| **Robot count from DXF…** | Sizes a cleaning-robot fleet from any plant layout drawing, with no layout needed — [Robot count from DXF](/docs/simulation/robot-count-from-dxf) |
+| **🌓 Shadow View (row spacing)** | Opens the row-spacing shadow cross-section — [Row-to-row shading](/docs/energy/shading) |
+| **⚡ Earthing Design** | The earthing calculation, plan, report and bill of quantities for this layout — [Earthing design](/docs/simulation/earthing) |
+
+All five are there from the start. The four that work on the layout enable at
+the end of a run that produced one; **Robot count from DXF…** is always
+enabled.
 
 <Screenshot id="tab-tools" />
 
@@ -104,9 +148,13 @@ and the Layers rows in full.
 
 | Left | Right |
 | --- | --- |
-| Progress and result messages — *"Calculating layout…"*, *"Layout ready"* with the notes that apply, *"KMZ exported: …"*, *"Project saved (full): …"* and the like. The ribbon's status mirror repeats them. | The live **cursor position** over the drawing, in UTM metres, and the **application version** (for example *v1.2.0*) — the number to quote when you report a problem. |
+| Progress and result messages — *"Calculating layout…"*, *"Layout ready"* with the notes that apply, *"KMZ exported: …"*, *"Project saved (full): …"* and the like. While the layout is out of date it reads *"Out of date: … Regenerate the layout to update results and exports."* | The live **cursor position** over the drawing, and the **application version** — the number to quote when you report a problem. |
 
-The status bar never carries the plant totals; those are in the plant chips.
+The cursor position is in UTM metres for a Google Earth file or a CAD drawing
+located by its own coordinates, and in the drawing's own coordinates for a CAD
+drawing or an image placed by hand or loaded as layout only — see
+[CAD drawing boundaries](/docs/inputs/cad-boundary). The status bar never
+carries the plant totals; those are in the plant chips.
 
 ## Where to go next
 
@@ -117,9 +165,9 @@ The status bar never carries the plant totals; those are in the plant chips.
     description="The five views, the tools row, the Layers popover and the plant chips"
   />
   <Card
-    title="Your first layout"
-    href="/docs/first-layout"
-    description="Boundary file in, finished layout out"
+    title="Out-of-date results"
+    href="/docs/workspace/out-of-date-results"
+    description="What Regenerate Layout, the amber fields and the tab dots mean"
   />
   <Card
     title="Every parameter and its default"

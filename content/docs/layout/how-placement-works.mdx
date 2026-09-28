@@ -1,6 +1,6 @@
 ---
 title: How placement works
-description: The order a layout is built in — usable area, table grid, control rooms, inverters, cables, arresters — and how to read the result in the Layout view.
+description: The order a layout is built in — usable area, table grid, control rooms, keep-clear, arresters, inverters and cables — and how to read the result in the Layout view.
 ---
 
 A layout is built in one pass, in a fixed order. Each stage narrows the ground
@@ -27,16 +27,19 @@ subtractions:
 | --- | --- |
 | The perimeter road band around the inside of the fence | **Perimeter road width**, on [Site parameters](/docs/inputs/site) |
 | Polygon obstructions — water bodies, buildings, substations, and anything you draw by hand | The boundary file, plus [Obstructions](/docs/layout/obstructions) |
-| Transmission line, canal and road corridors, buffered on both sides of the line | **Transmission line corridor**, per side |
+| Transmission line, canal and road corridors, buffered on both sides of the line | **Transmission line corridor**, per side; a road line its own width |
 | Ground too steep or too uneven to build on | [Topography](/docs/inputs/topography), when enabled |
 
 Everything placed later is checked against that one area. Tables, control rooms
-and lightning arresters must sit inside it, and every candidate cable route is
-validated against it before it is used.
+and lightning arresters must sit inside it.
 
-Cables are the single exception to the road band. **Cables may run inside the
-perimeter road band, but never outside the plant fence** — the road is a
-service corridor, not an electrical exclusion.
+Cables follow two rules. **DC string cables are clipped to the usable area**, so
+they stay off the perimeter road band. **AC feeders** — and, in a
+central-inverter design, the DC trunks — are held inside the plant boundary
+wherever the router can manage it. A run that cannot be re-routed inside keeps
+its original path in the drawing, the CAD export and the quantities, and is
+reported as a design warning, so a run outside the fence is never silent. See
+[Design warnings](/docs/reference/design-warnings).
 
 The road band itself is computed once, as the strip between the boundary and
 the shrunk boundary, and the same strip is used by the on-screen plot, the
@@ -82,10 +85,11 @@ reach the fence line itself.
 
 Every polygon obstacle read from the file is cut out of the area: water bodies,
 buildings, substations, and any obstruction you draw by hand. Line features are
-different — a transmission line, canal or road has no width of its own, so each
-is given a setback on **each** side of the line. The corridor cut out of the
-site is therefore twice the setback: at the default **Transmission line
-corridor** of 15.0 m per side, a 30 m corridor.
+different — a transmission line or canal has no width of its own, so each is
+given a setback on **each** side of the line. The corridor cut out of the site
+is therefore twice the setback: at the default **Transmission line corridor** of
+15.0 m per side, a 30 m corridor. A line named as a road is cleared to the road
+width the file gives it instead, 5.0 m when it gives none.
 
 Raise the setback for a higher-voltage line. The application's own tooltip
 suggests 30 m per side for a 400 kV line.
@@ -149,59 +153,97 @@ ground back — see
 ### 8. Control rooms are placed, and the count re-checked
 
 The plant's capacity is now known, so the number of inverter control rooms
-(ICRs) follows from it: one room per **ICR Block** of capacity, 18.0 MWp by
-default, rounded up. The tables are grouped spatially by position into blocks
-of roughly one block-size each, and a room is placed at the centre of each
-group, so every group of tables surrounds its own room.
+(ICRs) follows from it. The count is worked out for each **separate piece of
+land** — tables linked by gaps of no more than 300 m — as that piece's capacity
+divided by the **ICR Block**, 18.000 MWp by default, rounded up; the plant's
+count is the sum. The tables of each piece are then divided into that many
+compact groups of near-equal capacity, and a room is placed at the centre of
+each, so every group surrounds its own room.
 
-Each room must fit entirely inside the usable area, and **any table overlapping
-a room's footprint is removed**. That drops the plant's capacity — which is why
-the number of rooms is then re-checked against the new, lower capacity. See
+Each room must fit entirely inside the usable area at the length and width you
+set; a room that finds no place is reported as a design warning rather than
+dropped. **Any table overlapping a room's footprint is removed.** That changes
+the plant's capacity, so the count is worked out again from the tables that
+remain, and the rooms are placed again if it differs. See
 [Inverter control rooms](/docs/layout/icr).
 
-### 9. Inverters are placed and cables routed
+### 9. Infill and keep-clear
 
-Inverters — or string monitoring boxes (SMBs) in a central-inverter design —
-are placed from groups of tables, sited in the gap bands between rows rather
-than in the middle of one. A placed string inverter is drawn as a small marker,
-2 m east to west by 1 m north to south. Their counts are reported whether or
-not cables are routed.
+Three optional passes then adjust the table field:
 
-Routing the cables is optional, and it is the slow step on a large or complex
-plant. With **Calculate cables** off — it is on the **Cables** card of the
-Electrical tab, see [Cables](/docs/inputs/cables) — the counts still appear and
-every cable row of the Summary view reads `—`. With it on, the DC runs and the
-AC runs are routed and measured; the medium-voltage runs to the main control
-room follow once that room has been placed and the layout generated again. On a
-very large plant the application switches to fast geometric estimation so
-generation stays quick. See [Cable routing](/docs/layout/cables).
+- **Street lights**, when **Place street lights** is on, are set along the
+  perimeter, and the tables their shadow touches are cleared.
+- **Half units**, when **Add half tables** (or **Add half trackers**) is on, are
+  dropped into the gaps a full unit cannot use.
+- **Building shadows**, when **Clear tables in shadows** is on, are cleared: the
+  tables inside the year-round shadow of the buildings are removed. See
+  [Structures and shadow](/docs/inputs/structures-and-shadow).
 
-### 10. Lightning arresters are placed, and capacity recomputed
+On a fixed-tilt plant the control-room count is then checked once more. If the
+keep-clear has taken enough capacity that fewer rooms would do, the lower count
+is tried and kept only when the settled layout still needs no more. This second
+check only ever lowers the count.
+
+### 10. Your own edits are carried onto the layout
+
+The main control room, unit substations, obstructions, objects and Sketch Mode
+annotations you placed on an earlier layout are carried onto the new one, and
+the tables under them are cleared. When the
+[AC-capacity study](/docs/simulation/ac-capacity) has set a DC capacity
+target, the plant is held to it.
+
+### 11. Lightning arresters are placed
 
 With **Place Lightning Arresters** on, arresters (LAs) are laid on a coverage
 grid whose spacing is the protection radius you set, so neighbouring protection
 circles overlap and no part of the plant is further than one radius from an
 arrester. On a fixed-tilt plant an arrester has a real footprint and **the
-tables it covers are removed**, so capacity falls once more and the plant
-totals are recomputed. On a tracker plant the arrester is a slim pole placed in
-the gap between tracker columns, and no units are lost. See
-[Lightning arresters](/docs/layout/lightning-arresters).
+tables it covers are removed**, so capacity falls once more. On a tracker plant
+the arrester is a slim pole placed in the gap between tracker columns, and no
+units are lost. See [Lightning arresters](/docs/layout/lightning-arresters).
 
 With the option off, no arresters are placed at all and tables fill the whole
 usable area. You can still add them by hand later in
 [Sketch Mode](/docs/editing/sketch-mode).
 
+### 12. Inverters are placed and cables routed
+
+Inverters — or string monitoring boxes (SMBs) in a central-inverter design —
+are placed from groups of the tables that remain, sited in the gap bands
+between rows rather than in the middle of one. A placed string inverter is drawn
+as a small marker, 2 m east to west by 1 m north to south. The inverters are
+placed on every run, and their counts are reported whether or not cables are
+routed. Each inverter or SMB is then assigned to a control room — the nearest
+one along the plant, up to that room's rating.
+
+Routing the cables is optional, and it is the slow step on a large or complex
+plant. With **Calculate cables** off — it is on the **Cables** card of the
+Electrical tab, see [Cables](/docs/inputs/cables) — the counts still appear and
+every cable row of the Summary view reads `—`. With it on, every DC run and
+every inverter or SMB feeder is routed and measured, whatever the size of the
+plant. On a plot with more than 30,000 tables and more than 200 inverters, the
+DC string runs are drawn for a sample of each block and the DC trench is scaled
+up from it, marked *"(est.)"* in the BOM and the reports. The medium-voltage
+runs to the main control room follow once that room has been placed and the
+layout generated again. See [Cable routing](/docs/layout/cables).
+
+### 13. Totals are worked out and the layout drawn
+
+Finally the trench totals are measured, the bill of materials is built, the
+status line reports the result and the layout is drawn.
+
 ## Why the order matters
 
-Three of the stages remove tables that stage 6 had already placed: the control
-rooms, the arresters, and any obstruction you add by hand. Capacity is
-therefore not final until the last of them has run.
+Most of the stages after stage 7 remove tables the grid had already placed:
+the control rooms, the street lights and building shadows, your own
+obstructions and buildings, and the arresters. Capacity is therefore not final
+until the last of them has run.
 
-That is the reason for the re-check in stage 8. The number of control rooms is
-derived from capacity, and capacity is lower after their footprints have been
-cleared than it was when the count was first worked out. Re-checking against
-the reduced figure is what stops the plant carrying a room it no longer has the
-capacity to justify.
+That is the reason for the re-checks in stages 8 and 9. The number of control
+rooms is derived from capacity, and capacity is lower after their footprints
+and shadows have been cleared than it was when the count was first worked out.
+Re-checking against the reduced figure is what stops the plant carrying a room
+it does not have the capacity to justify.
 
 <Callout type="warn">
 Capacity read off the site area will always be higher than the capacity the
@@ -211,9 +253,10 @@ you control. Compare the two figures before assuming a layout is wrong.
 </Callout>
 
 The same logic explains the order of the equipment stages. Control rooms are
-placed before cables because the cables terminate at them; arresters come last
-because they are the only equipment whose position is set by coverage geometry
-rather than by the plant it serves.
+placed before the inverters and cables because the cables terminate at them.
+Arresters are placed **before** the inverters and cables, so the inverters are
+grouped from the tables that are actually left and no cable is routed to a
+table an arrester footprint then removes.
 
 ## Reading the plot
 
@@ -233,7 +276,7 @@ expand button.
 
 | Tool | Default | What it does |
 | --- | --- | --- |
-| **Satellite** | Off, and disabled until a layout exists | Draws an aerial photograph behind the layout, aligned to the file's latitude and longitude. Needs an internet connection |
+| **Satellite** | Off, and disabled until a layout exists | Draws an aerial photograph behind the layout, aligned to the file's latitude and longitude. Needs an internet connection and a site whose location is known |
 | **Wireframe** | Off — tables are drawn filled | Draws tables and tracker units as outlines only |
 | **Piles: OFF** | Off, and disabled until a layout exists | Shows the pile overlay; the first use opens the Pile layout window. See [Pile layout](/docs/editing/piles) |
 | **Layers ▾** | — | Opens the popover of on/off rows, below |
@@ -269,7 +312,7 @@ drawing.
 | **Plant layout** | ON | The tables and equipment. Off leaves only the boundary and obstacles |
 | **Legend** | OFF | The colour key on the plot — the same switch as the **Legend ▾** chip in the plot corner |
 | **Lightning arresters** | OFF | The arrester rectangles, their labels and their protection circles |
-| **ICR blocks** | OFF | Each control room's block of tables, filled in its own colour and outlined |
+| **ICR blocks** | OFF | The tables wired to each control room, filled in the block's colour and outlined; available once the inverters are placed. With it on, clicking a block opens its summary. See [ICR blocks](/docs/layout/icr-blocks) |
 | **DC string cables (Tbl→Inv)** | OFF | Enabled only when cables were calculated |
 | **AC cables (Inv→ICR)** — **DC cables (SMB→CI)** in a central-inverter design | OFF | Enabled only when cables were calculated |
 | **MV cables (ICR→MCR)** | OFF | Needs a main control room placed and cables calculated |
@@ -308,9 +351,11 @@ Contour lines, when the **Contour / terrain** row is on, run green at the
 lowest elevation through blue to red at the highest, and the excluded area is
 reported in acres.
 
-The plot also carries a units note in its bottom-left corner naming the UTM
-zone and the unit — metres — so a drawing captured from the screen says what
-its coordinates are.
+The plot also carries a units note in its bottom-left corner — *"UTM 38N ·
+metres"* for a Google Earth file or a CAD drawing located by its own
+coordinates, *"Drawing coordinates · metres"* for a CAD or image boundary
+placed by hand or laid out without a location — so a drawing captured from the
+screen says what its coordinates are.
 
 ### Moving around the plot
 
@@ -333,9 +378,10 @@ until you do, the main window says so in the plot's place.
 A row of chips under the view carries the plant totals — DC capacity, site
 area, tables or trackers, modules, ICR blocks, lightning arresters once some are
 placed, and year-one P50 energy once it has been calculated. They are the only
-place the totals appear; the status bar no longer carries them. Clicking a chip
-opens the **Summary** view, which replaced the table that used to sit under the
-plot and holds every per-plant figure. Every row of it is defined in
+place the totals appear. An **Out of date** chip leads the row while an input
+differs from the last run, and a **Design warnings** chip appears while the
+design has warnings. Clicking a chip opens the **Summary** view, which holds
+every per-plant figure. Every row of it is defined in
 [Summary rows](/docs/reference/summary-columns).
 
 ## Where to go next

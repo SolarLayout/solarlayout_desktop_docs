@@ -49,21 +49,22 @@ best fixed tilt for annual yield sits somewhat below the site latitude, and
 flattens further as you approach the equator.
 
 A KMZ or KML boundary carries its position already. A CAD drawing or an image
-does not, which is why those two inputs open the **Site reference** window when
-you load them. Supply the coordinates there and the derivation has what it
-needs.
+does not necessarily, which is why those two inputs open the **Site reference**
+window when you load them. Locate the drawing there — by its own UTM
+coordinates or by the latitude and longitude of the site's centre — and the
+derivation has what it needs.
 
 <Callout type="warn">
-Choose **Layout only** in that window and the layout is still generated, but
-the site is positioned at a fallback of 20° N, 78° E — so the tilt and pitch you
-get suit that latitude rather than your site. Nothing on screen flags it,
-because the figures look entirely reasonable. Either load the file again with
-coordinates, or override both tilt and row pitch by hand.
+Choose **Layout only** in that window and the site has no location. The
+automatic tilt and pitch then use the latitude you typed in the window, if you
+typed one. Without it they have nothing to work from: give a latitude, or tick
+both overrides here and set the tilt angle and row pitch by hand before you
+generate.
 </Callout>
 
-Energy yield is a separate matter: with no coordinates, **Calculate Energy** is
-disabled outright, so no misleading generation figure is produced. See
-[CAD drawing boundaries](/docs/inputs/cad-boundary).
+Energy yield is a separate matter: on a layout-only site **Calculate Energy**
+is disabled outright, latitude or not, so no misleading generation figure is
+produced. See [CAD drawing boundaries](/docs/inputs/cad-boundary).
 
 ### Pitch from the winter solstice
 
@@ -184,7 +185,9 @@ They are on the labels, in the same units you would type.
 ### Tick the override you want to move
 
 The field already holds the derived number, so you start from the real figure
-rather than from a guess or from the shipped default.
+rather than from a guess or from the shipped default. Ticking an override is
+itself a change to the inputs, so the pinned button reads **Regenerate
+Layout** — see [Out-of-date results](/docs/workspace/out-of-date-results).
 </Step>
 
 <Step>
@@ -240,7 +243,7 @@ both only when an external constraint gives you both numbers.
     description="Why rear-side yield falls as rows are packed closer"
   />
   <Card
-    title="Summary columns"
+    title="Summary view"
     href="/docs/reference/summary-columns"
     description="Where tilt and pitch are reported, and what the asterisk means"
   />
