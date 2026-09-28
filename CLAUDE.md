@@ -14,6 +14,13 @@ Product documentation site for **SolarLayout Desktop** (and the BESS tool under
 3. Never repeat anything in `PRODUCT_FACTS.md` §18 (known-stale sources). The
    product's in-app F1 guide is one of them.
 
+## Updating the docs after product changes
+
+Use the project skill **`/update-docs solarlayout`** or **`/update-docs bess`**
+(`.claude/skills/update-docs/`). It finds what merged in the product repo since
+the fact sheet was last verified, then audits, updates the fact sheet,
+screenshots and pages, reviews, runs the gates and opens a PR.
+
 ## Screenshots are never pending
 
 `content/screenshots.ts` is the manifest; every entry has its PNG under

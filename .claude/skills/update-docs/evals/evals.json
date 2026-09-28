@@ -1,0 +1,35 @@
+{
+  "skill_name": "update-docs",
+  "evals": [
+    {
+      "id": 1,
+      "name": "bess-plan",
+      "prompt": "/update-docs bess — the BESS app has had a pile of fixes merged since we last touched its docs (sensitivity runs side by side, Initial SOH, grid-charging backup controls, revenue labels, time conventions…). Bring the BESS docs up to date. FOR THIS TEST RUN: plan only — do the discovery and read-only investigation you need, then write the full plan to outputs/plan.md (what changed, which sources you will update in what order, how you'll audit, which pages and screenshots are affected, gates, PR). Do not edit, create or commit anything in either repo.",
+      "expected_output": "A plan that finds the BESS merges since the BESS fact sheet was last verified (noting the header has no verified commit), updates PRODUCT_FACTS.bess.md before content/bess pages, audits against apps/bess-tool code, treats screenshots as a hand-capture worklist hand-off, leaves content/docs (SolarLayout) alone, respects that the BESS release-notes page carries no version history, and includes the BESS citation check in the gates. No repo changes.",
+      "files": [],
+      "assertions": [
+        "Lists BESS product merges since the baseline, including several of #199, #205, #245–#250, #256–#263",
+        "Notes the BESS fact sheet has no verified-commit baseline and uses a date (or commit) baseline, and plans to add a verified-at line",
+        "Updates docs/PRODUCT_FACTS.bess.md before editing content/bess pages",
+        "Treats BESS screenshots as a manual capture worklist (screenshots:index:bess) rather than an automated capture tool",
+        "Keeps content/docs (SolarLayout) out of scope",
+        "Does not plan a version entry on content/bess/releases.mdx without asking (the page carries no version history)",
+        "Includes the BESS fact-citation check (BESS_REPO) among the gates",
+        "Leaves both repos unmodified (git status clean)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "solarlayout-unmerged-fixes",
+      "prompt": "we fixed the product issues from the last docs audit (#322 to #339) — update the solarlayout docs accordingly. FOR THIS TEST RUN: plan only — investigate read-only, then write your plan or findings to outputs/plan.md. Do not edit, create or commit anything in either repo.",
+      "expected_output": "Checks product main against the fact sheet's verified commit (e93f6be), finds no new product commits and that the issues are still open, and reports that there is nothing to document yet (asks the user to merge/point at the fix PRs) instead of planning page edits for fixes that are not on main. No repo changes.",
+      "files": [],
+      "assertions": [
+        "Compares product main with the fact sheet baseline commit e93f6be",
+        "Finds that no product fix for #322–#339 is on main (no new product commits, or the issues still open)",
+        "Does not plan to rewrite pages as if the fixes had shipped; tells the user what is needed (merged fix PRs / branch) before updating",
+        "Leaves both repos unmodified (git status clean)"
+      ]
+    }
+  ]
+}
