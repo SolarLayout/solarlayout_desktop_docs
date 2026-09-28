@@ -12,8 +12,9 @@ Project Report.
 It is not a separate document you keep by hand. The quantities are read out of
 the plant, so a layout that changes and is generated again produces a
 different list. What you add on top of that — extra line items, corrected
-descriptions, remarks for a procurement team — is yours, and it stays until
-you ask for the list to be rebuilt.
+descriptions, remarks for a procurement team — is yours until the list is
+rebuilt, and it is rebuilt both when you ask and after a Generate or a change
+to the plant's grouping (see [What rebuilding does](#what-rebuilding-does)).
 
 ## The BOM view
 
@@ -71,8 +72,8 @@ The hint under the buttons says what the panel is for: *"The main table is the
 automated BOM. Load Template opens it in a separate window; edit it there,
 then replace the plant BOM with it (used in the PDF)."*
 
-**Hide Layout & Energy Summary** carries a label older than the interface: what
-it hides is the chip row, not a table. Untick it and the chips come back;
+Despite its label, **Hide Layout & Energy Summary** hides the chip row, not a
+table. Untick it and the chips come back;
 nothing is discarded.
 
 ### What rebuilding does
@@ -80,18 +81,32 @@ nothing is discarded.
 **⚙ Rebuild from Layout** is not a refresh that merges. It recomputes the
 whole list from the current plant and puts that in place of what was there.
 
+The list is also rebuilt **without a button and without asking**. After any of
+these, the next time you open the BOM view the list is recomputed from the
+layout:
+
+- **Generate Layout**;
+- a change on the **ACCB & Transformer** card (**Transformer** in a
+  central-inverter design), which regroups the plant — see
+  [ACCB and transformers](/docs/inputs/accb-and-transformers);
+- loading an inverter file on a layout that already exists.
+
 <Callout type="warn">
-**⚙ Rebuild from Layout** discards your edits. Every row you added, every
-description you corrected and every remark you typed is replaced by the
-computed list. There is no merge and no partial rebuild — the plant's own
-figures are the whole of what comes back.
+A rebuild discards your edits. Every row you added, every description you
+corrected, every remark you typed, and a template you put in place of the
+computed list, are replaced by the computed list. There is no merge and no
+partial rebuild — the plant's own figures are the whole of what comes back.
+Edit the list last, once the layout, the grouping and the inverter file are
+settled.
 </Callout>
 
 That is the behaviour you want in one specific situation and not in any other:
 
-- **Rebuild** after you have changed the layout — moved a control room, drawn
-  an obstruction, added or deleted tables by hand, turned cable calculation on,
-  run the cleaning tool — and you want the quantities to match the plant again.
+- **Rebuild** after you have changed the plant without generating it again —
+  added or deleted tables by hand, run the cleaning tool — and you want the
+  quantities to match it. After drawing an obstruction or moving a control
+  room, generate again instead: trench lengths are measured afresh only by a
+  full cable run.
 - **Do not rebuild** once you have started editing the list for real. Finish
   the layout first, rebuild once, then edit. The order costs nothing and saves
   the work.
@@ -130,25 +145,26 @@ already known — the module count, the full and half tables or tracker units,
 the inverter control rooms, the string inverters or string monitoring boxes,
 the lightning arresters, the street lights, the piles, and the cable and trench
 lengths. These are the same figures the Summary view reports, so the two never
-disagree. See [Summary columns](/docs/reference/summary-columns).
+disagree. See [Summary view](/docs/reference/summary-columns).
 
-**The topology rules.** Some quantities are not placed on the ground and have
-to be derived from a rule instead. The combiner box and transformer counts are
-the clear case, and they follow three rules:
+**The electrical grouping.** Some quantities are not placed on the ground and
+are derived from rules instead: the AC combiner boxes (ACCBs), the inverter
+duty transformers (IDTs) and the power transformer at the main control room.
+The rules are yours, on the **ACCB & Transformer** card of the Electrical tab.
+In each ICR block the inverters are shared onto ACCBs — at most 15 per box by
+default — and the ACCBs onto transformers — at most 4 by default — and a block
+whose load exceeds the transformer size limit is given more transformers. Each
+transformer takes the smallest rating in your list at or above its load. The
+power transformer is the whole plant's maximum AC output × the margin ÷ the
+derating, rounded up to the next rating in its own list. The inverter file
+supplies the loads and the low-voltage side, so without one the list carries
+the counts but not the ratings.
 
-| Rule | Value |
-| --- | --- |
-| Inverters per ACCB | 15 |
-| ACCBs per IDT | 4 |
-| Maximum IDT rating | 17.2 MVA |
-
-ACCB is the AC combiner box; IDT is the inverter duty transformer. The reason
-these three numbers matter here rather than only in the electrical design is
-that **the single-line diagram's automatic build uses the same rules**. Build
-the diagram from the plant and it groups inverters into combiner boxes, boxes
-into transformers and transformers onto the medium-voltage panel by exactly the
-counts above — so the diagram and the materials list agree on how many of each
-there are. See [Building a diagram from the plant](/docs/sld/auto-build).
+The single-line diagram's automatic build, the Summary view and the cable
+schedule read the **same grouping**, so the diagram and the materials list
+agree on how many of each there are. The diagram never reads this list:
+editing it, or loading a template, does not change the diagram. See
+[Building a diagram from the plant](/docs/sld/auto-build).
 
 ### What the list contains
 
@@ -156,34 +172,51 @@ The rows come out in a fixed order. A row whose quantity would be zero is
 **left out altogether**, so a short list is not a fault — it means the plant
 has none of that item.
 
-| # | Description | Unit | What the remark column adds |
+| # | Description | Unit | Quantity and remark |
 | --- | --- | --- | --- |
-| 1 | Plant AC Capacity | MW | *"PmaxOut × no. of inverters (from OND)"*; the quantity reads `—` until an inverter file is loaded |
-| 2 | Plant DC Capacity | MWp | — |
+| 1 | Plant AC Capacity | MW | Two decimals, or `—` until an inverter file is loaded. Remark *"PmaxOut × no. of inverters (from OND)"*, or after a Simulation with AC capacity *"AC capacity requested in the AC-capacity simulation"* |
+| 2 | Plant DC Capacity | MWp | Three decimals |
 | 3 | PV Module | Nos | The wattage of each |
-| 4 | String Inverter, **or** SMB (String Monitoring Box) + Central Inverter | Nos | The capacity of each; the SMBs per central inverter |
-| 5 | MMS Table … — Full, **or** Tracker (Full) | Nos | — |
-| 6 | Half MMS Table, **or** Half Tracker | Nos | *"half length; carries half the strings"* — only when the plant has any |
+| 4 | String Inverter, **or** SMB (String Monitoring Box) | Nos | The capacity of each inverter in kWp; or the SMBs per central inverter |
+| 4b | Central Inverter | Nos | Central inverter only |
+| 5 | MMS Table (Module Mounting Structure) — Full, **or** Tracker (Full) | Nos | — |
+| 6 | Half MMS Table (Module Mounting Structure), **or** Half Tracker | Nos | *"half length; carries half the strings"* — only when the plant has any |
 | 7 | DC String Cable | m | *"incl. +ve / −ve conductors"* |
-| 8 | DC String Trench | m | Where the trench runs to — the SMB or the string inverter |
-| 9 | DC Cable (SMB → Central Inverter) | m | Central inverter only |
-| 10 | AC Cable (Inverter → ICR) | m | String inverter only |
-| 11 | AC Trench (Inverter → ICR), **or** DC Trench (SMB → Central Inverter) | m | — |
-| 12 | ACCB (AC Combiner Box) | Nos | *"≤ 15 inverters each"* |
-| 13 | Inverter Duty Transformer (IDT) | Nos | *"33 kV / 800 V"*, the units per transformer and the winding progression |
-| 14 | ICR (Inverter Control Room) | Nos | — |
+| 8 | DC String Trench — **DC String Trench (est.)** on a very large plot | m | Where the trench runs — *"MMS/Tracker → String Inverter"*, or *→ SMB* — and, when estimated, *"; drawn for a sample of clusters, scaled to all tables"* |
+| 9 | DC Cable (SMB → Central Inverter) | m | Central inverter only. A design-warning remark, if any |
+| 10 | AC Cable (Inverter → ICR) | m | String inverter only. A design-warning remark, if any |
+| 11 | AC Trench (Inverter → ICR), **or** DC Trench (SMB → Central Inverter) | m | A design-warning remark, if any |
+| 12 | ACCB (AC Combiner Box) | Nos | String inverter only. *"≤ 15 inverters each"*, following the card's **Inverters per ACCB, max** |
+| 13 | Inverter Duty Transformer (IDT) | Nos | The voltages, the ratings and the most feeders on one transformer, such as *"33 kV / 800 V; 4 × 16,000 kVA; ≤ 4 ACCB/Tx, one LV winding each"* (*C.Inv/Tx* in a central-inverter design). Without an inverter file: *"33 kV / LV from the OND; 4 · rating needs OND; ≤ 4 ACCB/Tx, one LV winding each"* |
+| 14 | ICR (Inverter Control Room) | Nos | A design-warning remark, if any |
 | 15 | MV Panel (Switchgear) | Lot | *"Inside MCR"* — only once a main control room is placed |
 | 16 | MV Cable (ICR → MCR) | m | Main control room only |
 | 17 | MV Trench (ICR → MCR) | m | Main control room only |
-| 18 | Power Transformer | MVA | *"ΣIDT × 1.2"* — main control room only |
+| 18 | Power Transformer | MVA | Main control room only. The rating, such as *63* or *2 × 80*, with its basis as the remark, such as *"Σ PMaxOut 58.1 MVA × margin 1 ÷ derating 1 = 58.1 MVA → next listed rating"*. Without an inverter file the quantity is `—` and the remark *"needs the inverter file (OND)"* |
 | 19 | MCR (Main Control Room) | Nos | Main control room only |
 | 20 | Lightning Arrester | Nos | — |
 | 21 | Street Light (perimeter) | Nos | Pole height and spacing |
 | 22 | Robotic Module Cleaning Equipment | Nos | The row count, and any robots added for broken lines or battery range |
-| 23 | Cleaning Robot Bridge (table-to-table) | Nos | The standard span |
+| 23 | Cleaning Robot Bridge (table-to-table) | Nos | *"Gaps ≤ … m"* |
 | 24 | Cleaning Robot Bridge (supported span) | Nos | *"Over arresters / buildings / obstructions"* |
+| 25 | Design warning | — | Only for a design warning whose own row is absent: a *"Check: …"* remark, with no quantity or unit |
 
-Four things change that list:
+In the IDT remark the MV figure is the card's **MV voltage** and the LV figure
+the inverter file's output voltage.
+
+### Design-warning remarks
+
+When the layout breaks a design rule, the row the warning concerns carries a
+remark starting **Check:** and is tinted in the warning colour, with the remark
+as its tooltip. Control-room warnings go on **ICR (Inverter Control Room)**;
+feeder and voltage-drop warnings on **AC Cable (Inverter → ICR)** or **DC Cable
+(SMB → Central Inverter)**; trench warnings on the AC or DC trench row. Several
+on one row are joined with a semicolon. A warning whose row is not on the list
+gets a row of its own, **Design warning**. The remarks travel into the Excel and
+PDF exports and the report. See
+[Design warnings](/docs/reference/design-warnings).
+
+Four things change which rows appear:
 
 - **A tracker plant** carries **Tracker (Full)** and **Half Tracker** in place
   of the two table rows.
@@ -191,8 +224,8 @@ Four things change that list:
   **Central Inverter** in place of **String Inverter**, adds **DC Cable (SMB →
   Central Inverter)**, and its second trench row is the DC trunk trench —
   there is no AC leg. See [Choosing a design mode](/docs/design-modes).
-- **Running without cable calculation** leaves every cable and trench row at
-  zero, so they drop out.
+- **Running without cable calculation** leaves the string, AC and DC-trunk
+  cable and trench rows at zero, so they drop out.
 - **Not placing a main control room** drops rows 15 to 19, from the switchgear
   panel down to the room itself.
 
@@ -208,6 +241,13 @@ That is deliberate. A cleaning fleet is a purchase decision with a bridge count
 attached to it, not something a layout implies, so the list never carries a
 fleet you did not ask for. See
 [Robotic module cleaning](/docs/simulation/robotic-cleaning).
+
+### What the list does not carry
+
+**Earthing materials are not in the bill of materials.** Earth pits, GI strip,
+earthing cable and the fittings that go with them come only from the
+**Earthing Design** study, whose bill of quantities exports on its own. See
+[Earthing design](/docs/simulation/earthing).
 
 ## Exporting the list
 
@@ -276,6 +316,14 @@ result to the BOM, so the fleet count is on the list before you rebuild.
 </Step>
 
 <Step>
+### Settle the grouping
+
+Load the inverter file and set the **ACCB & Transformer** card before you edit
+the list: a change to either rebuilds the list on your next visit to the BOM
+view, and your edits go with it.
+</Step>
+
+<Step>
 ### Open the BOM view and rebuild once
 
 Click the **BOM** tab, then **⚙ Rebuild from Layout** for a list that matches
@@ -310,8 +358,8 @@ rebuilding.
     description="Where the materials list appears among the report's sections"
   />
   <Card
-    title="Building a diagram from the plant"
-    href="/docs/sld/auto-build"
-    description="The topology rules this list shares with the single-line diagram"
+    title="ACCB and transformers"
+    href="/docs/inputs/accb-and-transformers"
+    description="The grouping behind the ACCB, IDT and power transformer rows"
   />
 </Cards>

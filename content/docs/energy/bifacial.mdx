@@ -33,8 +33,10 @@ the rear side modelled — see [Module specifications](/docs/inputs/module).
 
 Neither field moves a single table. Turning bifaciality on changes the energy
 calculation only; the placed layout, the module count and the DC capacity are
-identical either way. Run the energy calculation again after changing either
-one, but there is no need to generate the layout again.
+identical either way. Both are still inputs to the run, so changing either one
+after a run marks the layout
+[out of date](/docs/workspace/out-of-date-results): generate the layout again,
+then calculate energy again.
 
 ## The bifaciality factor
 
@@ -146,7 +148,7 @@ collector width as a fraction of the row pitch, so packing rows closer raises
 GCR and shrinks `1 − GCR` — there is less exposed ground left between the rows to
 catch light and bounce it under the modules.
 
-The trade is the familiar one, now with a second term in it. Reducing the row
+The trade is the familiar one, with a second term in it. Reducing the row
 pitch fits more capacity onto the same site, but it costs row-to-row shading
 *and* rear-side gain at the same time. On a bifacial plant the optimum pitch sits
 wider than the same exercise on monofacial modules would suggest. Pitch is set
@@ -194,8 +196,9 @@ you need the figure itself, take it from the report's energy pages.
 
 Failing that, the cleanest way to see the effect on a design you have already run
 is to calculate energy with **Bifacial module** off, note the first-year figure,
-then tick it and calculate again. The layout is untouched between the two runs, so
-the difference is the rear-side contribution and nothing else.
+then tick it, generate the layout again and calculate again. The tables are the
+same in both runs, so the difference is the rear-side contribution and nothing
+else.
 
 ## Where to go next
 

@@ -47,21 +47,11 @@ because the shared origin already reaches both edges.
 ### What it costs
 
 **Table columns will not be vertically aligned across rows.** That is not a
-cosmetic detail, and it is the reason the option ships off:
+cosmetic detail:
 
 - **The drawing reads as untidy.** On the layout sheet of the report, and in the
   CAD drawing, the north–south lines that a reviewer's eye follows are broken.
   Rows step in and out relative to each other.
-- **Cable runs get longer and less repeatable.** DC and AC routing uses
-  horizontal and vertical segments only. When the rows do not share a column
-  line, the runs between a table and its inverter cannot be repeated block for
-  block, and the routed lengths grow. See
-  [Cable routing](/docs/layout/cables).
-- **Cleaning lines lose their alignment.** A cleaning robot drives along the
-  module frames of one line and crosses from table to table over a bridge of a
-  standard span. Rows that step sideways create gaps that are not the standard
-  span, and each one either needs a supported bridge or breaks the line. See
-  [Robotic module cleaning](/docs/simulation/robotic-cleaning).
 - **Generation takes longer on a large site.** Every row is fitted against the
   boundary separately instead of being derived from a single grid.
 
@@ -112,8 +102,10 @@ half unit is weighted at **half**:
 | --- | --- |
 | The Summary view | Two separate rows — **Full tables** and **Half tables** (**Full trackers** and **Half trackers** on a tracker plant) |
 | Plant capacity and module count | A half unit contributes its own modules, so it lifts capacity by less than a full one |
+| The number of control rooms | Counted as 0.5 of a table, both when the rooms are counted and when the tables are divided between them. See [Inverter control rooms](/docs/layout/icr) |
 | Sizing the plant to a target capacity | Counted as 0.5 of a unit throughout |
 | Cleaning fleet sizing | Counted as 0.5 when a line's length is judged too short to justify a robot |
+| Piles | Each half unit carries the half pile pattern — derived from the full one, or your own — and counts its own piles. See [Pile layout](/docs/editing/piles) |
 
 ### When to use it
 
@@ -124,7 +116,7 @@ positions there are.
 
 Leave them off when the plant is built from a repeating block that the
 procurement and construction schedule depends on. A second structure type means
-a second bill-of-materials line, a second set of piles, and a second erection
+a second bill-of-materials line, a second pile pattern, and a second erection
 method on site, for a capacity contribution that is by definition small.
 
 You can also place a half unit by hand. Sketch Mode's **➕ Half Table** tool
@@ -182,8 +174,8 @@ behind. Expect the least regular plant the application can produce, and the
 highest table count.
 
 If you are going to run a site both ways in any case, run it three times — off,
-maximize only, and both — and compare the capacity against how the drawing
-looks. The decision is not which number is largest; it is which plant you are
+**Maximize placement** only, and both — and compare the capacity against how
+the drawing looks. The decision is not which number is largest; it is which plant you are
 prepared to build.
 
 ## Where to go next

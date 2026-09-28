@@ -1,6 +1,6 @@
 ---
 title: CAD drawing export
-description: The layered drawing export — every layer and what it carries, why coordinates are in metres, which layers are conditional, and the ICR-block drawing set and cable schedule beside it.
+description: The layered drawing export — every layer and what it carries, which coordinates it is written in, which layers are conditional, and the ICR-block drawing set beside it.
 ---
 
 The CAD drawing export writes the plant as a layered drawing: the boundary,
@@ -13,9 +13,10 @@ It is not a picture of the layout. The report's drawing page is that. This
 file is geometry a drafter can work in, at true size, with everything
 separable.
 
-Two companions sit beside it in the same menu: an **ICR-block drawing set**,
-which breaks the plant into one sheet per inverter control room, and a **cable
-schedule** as a spreadsheet. Both are covered at the end of this page.
+Beside it in the same menu sit an **ICR-block drawing set**, which breaks the
+plant into one sheet per inverter control room and is covered at the end of
+this page, and a **cable schedule** workbook. The earthing plan is a separate
+drawing again, written from the **Earthing Design** window.
 
 ## Who it is for, and what they get
 
@@ -32,27 +33,37 @@ software.
 
 ## Coordinates are real, in metres
 
-Every coordinate in the drawing is in **metres**, in the site's own projected
-coordinate zone — the local UTM zone. The application works in that zone
-internally and converts only at the edges, so nothing is scaled, fitted or
-normalised on the way out.
+Every coordinate in the drawing is in **metres**, and nothing is scaled,
+fitted or normalised on the way out. Which coordinates depends on how the site
+was located when the boundary was loaded:
+
+| Boundary | The drawing is written in |
+| --- | --- |
+| A Google Earth file (KMZ or KML) | The site's local **UTM** zone |
+| A CAD drawing located by **Drawing's coordinates** | **UTM**, the same coordinates as the drawing you loaded |
+| A CAD drawing or an image placed by **latitude and longitude** | **The drawing's own coordinates** — the layout is moved back so the export overlays the source drawing exactly |
+| A CAD drawing or an image continued as **Layout only** | **The drawing's own coordinates** |
+
+The plot's units note — *"UTM 42N · metres"* or *"Drawing coordinates ·
+metres"* — tells you which applies before you export. How the location is
+chosen is on [A CAD drawing as the boundary](/docs/inputs/cad-boundary).
 
 Three consequences, all of them the point:
 
 - **The drawing is at true size.** A distance measured in CAD is the distance
   on the ground, in metres. No drawing scale factor has to be applied or
   remembered.
-- **It can be referenced against a survey.** Open the drawing alongside survey
-  data in the same UTM zone and the two overlay directly, with no fitting
-  step.
-- **It can be set out from.** A coordinate read off the drawing is a
+- **It overlays its source.** A UTM export overlays survey data in the same
+  zone with no fitting step; an export in the drawing's own coordinates drops
+  straight back onto the CAD drawing it came from.
+- **It can be set out from.** A coordinate read off a UTM drawing is a
   coordinate a setting-out crew can use.
 
 <Callout type="info">
-Check the zone before combining the drawing with anything else. Survey data
-supplied in a different projection, in feet, or in a local site grid will not
-overlay, and the mismatch is easy to miss because both drawings look plausible
-on their own.
+Check the coordinates before combining the drawing with anything else. Survey
+data supplied in a different projection, in feet, or in a local site grid will
+not overlay, and the mismatch is easy to miss because both drawings look
+plausible on their own.
 </Callout>
 
 ## The layers
@@ -168,26 +179,29 @@ runs. The trench layers are what a civil contractor prices and excavates. See
 
 | Layer | Carries | Colour |
 | --- | --- | --- |
-| `SKETCH` | **All** Sketch Mode annotations | White |
-| `ANNOTATIONS` | Labels and text | White |
+| `SKETCH` | The dimensions drawn in Sketch Mode | White |
+| `ANNOTATIONS` | The application's own labels: the plant name, **ICR-n**, the inverter or SMB numbers, **LA-n**, **MCR**, **USS** and the object labels | White |
+| `0`, and any layer you added in Sketch Mode | Every other Sketch Mode annotation, on the layer it was drawn on | — |
 
-## Three layers that may be absent
+## Layers that may be absent
 
 Most of the layers above are written on every export, whether or not they
-have anything in them. Three are conditional, and a layer that is not in the
-file is usually a setting you chose rather than a fault in the export.
+have anything in them. Three groups are conditional, and a layer that is not
+in the file is usually a setting you chose rather than a fault in the export.
 
 | Conditional layer | Written when | Colour |
 | --- | --- | --- |
 | `DC_CABLES`, `AC_CABLES`, `MV_CABLES` | Cable calculation was **on** for the run | Orange, magenta, green |
 | `LA` | Lightning arresters were placed | Maroon |
-| `PILES` | A pile pattern has been defined | Orange |
+| `PILES` | A pile pattern exists **and** the pile overlay is on — the view header reads **Piles: ON** — when you export. A pattern alone is not enough | Orange |
 
-The first two settings are **off** by default and no pile pattern exists
-until you define one. So a first export, produced from a first run at the
-defaults, has no cable layers, no arrester layer and no pile layer — and that
-is correct behaviour rather than a missing export. Piles are defined in the
-Pile layout window; see [Piles](/docs/editing/piles).
+Cable calculation and arresters are **off** by default, no pile pattern exists
+until you define one, and the overlay is off until you switch it on. So a
+first export, produced from a first run at the defaults, has no cable layers,
+no arrester layer and no pile layer — and that is correct behaviour rather than
+a missing export. The `PILES` layer draws a circle of the pile radius at every
+pile with its easting and northing as text; each table carries its own pattern,
+so half tables carry the half pattern. See [Piles](/docs/editing/piles).
 
 If the recipient needs cable and trench routing, tick **Calculate cables** on
 the Electrical tab and generate again before exporting. Cable calculation is
@@ -198,22 +212,22 @@ run.
 ## Your annotations come across
 
 Everything you drew in Sketch Mode — the lines, polylines, rectangles,
-circles, arcs, splines, fills and dimensions — is written to the `SKETCH`
-layer, and the labels and text land on `ANNOTATIONS`.
+circles, arcs, ellipses, splines, fills and text — is written to a CAD layer
+named after the Sketch Mode layer it was drawn on, in the colour you drew it
+in. Annotations on the starting layer, *0*, land on CAD layer `0`; a layer you
+added with **＋** in the contextual bar arrives as a CAD layer of the same name.
+Dimensions go to the `SKETCH` layer.
 
-Keeping them on their own layers is deliberate, and it is worth telling the
-recipient: your working notes, sketched intent and markup are separable from
-the plant. They can switch the layers off and have the plant with none of your
-commentary on it, or leave them on and read what you were pointing out.
-Neither requires them to delete anything.
+That is worth using, and worth telling the recipient: markup drawn on layers of
+its own is separable from the plant. They can switch those layers off and have
+the plant with none of your commentary on it, or leave them on and read what
+you were pointing out. Neither requires them to delete anything.
 
 <Callout type="warn">
-**The layers you create in Sketch Mode do not become CAD layers.** The
-exported layer set is fixed to the ones listed above, so every annotation
-lands on the single `SKETCH` layer whichever in-application layer it was drawn
-on. If the recipient has to be able to separate one set of markup from
-another, distinguish them by colour or by a text label, or issue them as
-separate exports — the layer structure will not carry the distinction across.
+Layer `0` is the default layer of every CAD drawing, so markup left on the
+starting layer mixes with anything else a recipient puts there. Add a Sketch
+Mode layer for each set of markup you want kept apart — before you draw it —
+and the layer structure carries the distinction across.
 </Callout>
 
 See [Annotations](/docs/editing/annotations) for the drawing tools themselves.
@@ -230,19 +244,28 @@ trenching estimate cannot be made from the drawing.
 </Step>
 
 <Step>
-### Finish the layout edits
+### Finish the layout edits after the last Generate
 
-Hand-placed tables, deleted tables, drawn obstructions, moved control rooms
-and hand-drawn trenches all export, so make them before you write the file
-rather than after. See [Sketch Mode](/docs/editing/sketch-mode).
+Hand-placed tables, deleted tables, drawn obstructions and moved control rooms
+all export, so make them before you write the file rather than after.
+Hand-drawn trenches export too, but a Generate routes every cable afresh and
+drops them, so draw them after the last Generate. See
+[Sketch Mode](/docs/editing/sketch-mode).
 </Step>
 
 <Step>
 ### Clear the annotations you do not want issued
 
-Anything left in Sketch Mode goes into the file on the `SKETCH` layer. It is
-separable, but it is still in the drawing. **🗑 Clear Annotations** removes
+Anything left in Sketch Mode goes into the file, on the layers it was drawn
+on. It is separable, but it is still in the drawing. **🗑 Clear Annotations** removes
 it.
+</Step>
+
+<Step>
+### Switch the pile overlay on, if piles are needed
+
+With a pile pattern defined, the view header's **Piles** button must read
+**Piles: ON** for the `PILES` layer to be written.
 </Step>
 
 <Step>
@@ -251,7 +274,10 @@ it.
 Choose **Export ▾ ▸ Export DXF** — the **Export ▾** menu sits beside **Save
 project** at the right of the view tabs. Choose the folder and the file name.
 The status line confirms with *"DXF exported: …"*. The export needs active
-access; see [Activating access](/docs/licence/activate).
+access, see [Activating access](/docs/licence/activate), and a layout that is
+up to date: if an input has changed since the last run, the menu reads
+***Inputs changed since the last run.*** *Regenerate first.* and nothing
+exports until you regenerate.
 </Step>
 
 <Step>
@@ -260,7 +286,7 @@ access; see [Activating access](/docs/licence/activate).
 Open the file and read its layer list against the tables above. This one
 check catches the common surprises immediately — no cable layers because the
 run had cables off, no arrester layer because arresters were off, no pile
-layer because no pattern was defined. All three are fixed before the export,
+layer because the overlay was off. All three are fixed before the export,
 not by exporting again.
 </Step>
 </Steps>
@@ -268,50 +294,70 @@ not by exporting again.
 ## The ICR-block drawing set
 
 **Export ▾ ▸ Export ICR-Block DXF** writes the plant as a drawing set rather
-than one sheet: **sheet 1 is the whole plant, then one sheet per ICR block**.
-An ICR block is the group of tables that feeds one inverter control room — the
-grouping the **ICR blocks** row of the Layers popover colours on the plot. See
-[Inverter control rooms](/docs/layout/icr).
+than one sheet. An ICR block is one inverter control room and the tables wired
+to it through their inverters or string monitoring boxes — the blocks the
+**ICR blocks** row of the Layers popover colours on the plot. The item is
+available once inverters are placed. See [ICR blocks](/docs/layout/icr-blocks).
+
+The model space is the whole **Export DXF** drawing described above, with each
+block's tables and outline added on layers of their own. The paper space holds
+A3 landscape sheets:
+
+| Sheet | What it carries |
+| --- | --- |
+| **01 - Plant** | A viewport on the whole plant; the title *"ICR BLOCKS -"* followed by the plant names; a table of every block — area, tables or trackers, modules, DC capacity, inverters or SMBs, AC capacity and DC/AC ratio, with a total row when there are several blocks; and notes pointing to the block sheets and to the cable schedule |
+| **02 - ICR-1**, **03 - ICR-2**… | One per block: a viewport on the block, a title of the block name, *"SUMMARY -"* and the plant name, the design (*"Fixed tilt - String inverter"* and so on), an **ITEM / VALUE** table of the block's figures — area, perimeter, tables, modules, DC capacity, inverters, ACCBs or central inverters, transformer and its load, capacities, DC/AC ratio, cable lengths, arresters, piles — and the block notes |
+
+| Layer | Carries |
+| --- | --- |
+| `ICR1_TABLES`, `ICR2_TABLES`… | Each block's tables, in the block's colour |
+| `ICR1_BND`, `ICR2_BND`… | Each block's outline and label |
+| `SUMMARY_TABLE` | The tables on the sheets, as paper-space text |
+
+- Each block sheet freezes the other blocks' layers, so a sheet shows its own
+  block.
+- The tables use CAD-safe characters: dashes become `-`, `×` becomes `x`, and
+  `·` becomes a comma, so a transformer prints as `1 x 16,000 kVA, 4-winding`.
+- On a site where more than one plot has control rooms, block names carry a
+  plot prefix such as `P2-`.
+- The **Piles** row and a `PILES` layer appear under the same condition as in
+  the plain export: a pattern and the overlay on.
+- The arrester layer follows the **Lightning arresters** row of the Layers
+  popover.
 
 Use it when the plant is going to be built or reviewed one block at a time,
 with sheet 1 keeping the whole plant for orientation. The status line confirms
-with *"ICR-block DXF exported (n block sheets + plant): …"*.
+with *"ICR-block DXF exported (n block sheets + plant): …"*, or *"DXF exported
+(no ICR blocks — whole plant only): …"* when the plant has no blocks. The same
+set as a PDF is **Export ICR-Block PDF**.
 
 ## The cable schedule
 
-**Export ▾ ▸ Export Cable Schedule (Excel)** writes a workbook with **one
-sheet per ICR block**, named after the block (prefixed `P1-`, `P2-`… on a
-multi-plot site). Each sheet carries up to three tables:
+**Export ▾ ▸ Export Cable Schedule (Excel)** writes a workbook with one sheet
+per ICR block: the DC strings, the AC feeders or DC trunks, and the collection
+runs to the transformers and the main control room, with recommended conductor
+sizes and the basis they were computed on. It is not part of the drawing. What
+each table carries and how the sizes are chosen is on
+[The cable schedule](/docs/layout/cables#the-cable-schedule).
 
-| Table | One row per | Columns |
-| --- | --- | --- |
-| **DC String Schedule** | string | String number, the table or tracker it comes from (grid code `R{row}-C{col}`), row, column, modules per string, the inverter or string monitoring box it lands on (`ICR{b}-INV-{k}` / `ICR{b}-SMB-{k}`), cores, +ve, −ve and total length, string current, recommended size in mm², and voltage drop in % |
-| **AC Cable Schedule** (string inverter) or **DC Trunk Schedule** (central inverter) | inverter or monitoring box | Cable number, from, to, type, cores, current, length, size, voltage drop |
-| **MV Collection Schedule** | ICR block | The run from the AC combiner or central inverter through the inverter-duty transformer to the main control room — voltage, cores, parallel runs, current, length, size, voltage drop. Present only when a main control room or a unit substation has been placed |
+## The earthing drawing
 
-Every conductor is the **smallest standard size that meets both the derated
-ampacity and the voltage-drop limit**, from 1.5 mm² up to 630 mm². The basis
-the sizes were computed on — module wattage, Vmp and Imp, modules per string,
-string voltage, conductor materials, the voltage-drop limits, the derating
-factor, the minimum DC string size and the transformer voltages — is printed
-on line 2 of every sheet, so the workbook can be audited without the
-application. Module Vmp and Imp come from your loaded `.PAN` file when there
-is one, and the inverter output voltage from your `.OND` file.
-
-It is available after a layout with cable calculation on: without **Calculate
-cables** ticked for the run there are no ICR blocks to schedule, and the
-export says so. Export it after the final run. The status line confirms with
-*"Cable schedule exported (n ICR-block sheets): …"*. See
-[Cable routing](/docs/layout/cables).
+The earthing plan — earth pits, GI strip and copper earthing cable — is not in
+this export. **Export DXF…** in the **Earthing Design** window writes it as a
+separate drawing, in the layout's own coordinates, with a reference layer for
+the plant, a layer per strip size and duty, a layer per earthing-cable size and
+a layer per pit category. See
+[Earthing design](/docs/simulation/earthing).
 
 ## Limits
 
-- **It is geometry, not a drawing set.** There is no border, no title block,
-  no drawing number and no revision block. Those are the recipient's, in their
-  own template.
+- **It is geometry, not a drawing set.** The plain export has no border, no
+  title block, no drawing number and no revision block. Those are the
+  recipient's, in their own template.
 - **Nothing is dimensioned unless you dimensioned it.** The dimensions in the
   file are the ones you drew in Sketch Mode.
-- **It carries no quantities.** Take those from the
+- **It carries no quantities.** The plain export has none, and the ICR-block
+  set carries only its per-block tables. Take quantities from the
   [bill of materials](/docs/bom/overview) rather than counting entities in
   CAD.
 - **The single-line diagram is exported separately.** It is not part of this
@@ -321,14 +367,14 @@ export says so. Export it after the final run. The status line confirms with
 
 <Cards>
   <Card
-    title="Cable routing"
-    href="/docs/layout/cables"
-    description="What has to be switched on for the cable and trench layers to exist"
+    title="ICR blocks"
+    href="/docs/layout/icr-blocks"
+    description="What a block is, its summary window and the ICR-block PDF"
   />
   <Card
     title="Annotations"
     href="/docs/editing/annotations"
-    description="The drawing tools whose output lands on the sketch layer"
+    description="The drawing tools whose output comes across on its own CAD layers"
   />
   <Card
     title="The Detailed Project Report"

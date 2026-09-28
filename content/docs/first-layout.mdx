@@ -60,7 +60,7 @@ What happens next depends on the kind of file:
 | File | What you are asked |
 | --- | --- |
 | `.kmz` or `.kml` | Nothing. The boundaries, obstacles and line features are read straight from the file, and the site's position comes with them. |
-| `.dxf` | The **Site reference** window asks for the site latitude and longitude. **Layout only** skips them — the layout is still generated, but energy calculation is unavailable. |
+| `.dxf` | The **Site reference** window asks where the drawing sits: at its own UTM coordinates, at the latitude and longitude of the site's centre, or **Layout only** — the layout is still generated, but there is no energy calculation and automatic tilt and pitch need a latitude. |
 | An image | The same **Site reference** window, with a **SCALE** card first: how a real site distance maps to a distance on the drawing. The largest closed outline in the image becomes the boundary. |
 
 Once the file is read, the line under the field becomes the boundary summary —
@@ -100,7 +100,7 @@ is absurd for your site, and change nothing yet.
 | | | Override row pitch | off — derived |
 | **Site** | **Site Parameters** | Perimeter road width | 6.0 m |
 | | | Place Lightning Arresters | off |
-| | | ICR Block | 18.0 MWp |
+| | | ICR Block | 18.000 MWp |
 | | | Transmission line corridor | 15.0 m per side |
 | **Electrical** | **String Inverter** | Max strings per inverter | 20 |
 | | **Cables** | Calculate cables | off |
@@ -127,8 +127,9 @@ seeing what the site's latitude implies is more useful than imposing a number.
 See [Spacing and tilt](/docs/inputs/spacing-and-tilt).
 
 **ICR Block** sets the capacity each inverter control room serves — an ICR is
-the inverter control room building. The number of control rooms is the plant
-capacity divided by this block size, rounded up.
+the inverter control room building. The number of control rooms is the
+capacity divided by this block size, rounded up, for each separate piece of
+land.
 
 <Callout type="warn">
 Leave **Calculate cables** in the **Cables** card unticked for a first run.
@@ -160,15 +161,16 @@ The application works through the site in a fixed order:
    panels face the equator — south in the northern hemisphere, north in the
    southern. A table is kept only where it fits entirely inside the usable
    area.
-7. Control rooms are placed. The tables are grouped spatially into blocks of
-   roughly one capacity block each, and a control room sits at each group's
-   centre, so every group of tables surrounds its own building. Tables
-   overlapping a control room footprint are removed, and the control room
-   count is then re-checked against the reduced capacity.
-8. String inverters are placed from clusters of tables, sited in the gap bands
+7. Control rooms are placed. Each piece of land is divided into as many
+   compact blocks of near-equal capacity as it needs control rooms, and a
+   control room sits at each block's centre, so every group of tables
+   surrounds its own building. Tables overlapping a control room footprint are
+   removed, and the control room count is then re-checked against the capacity
+   left.
+8. Lightning arresters are placed, if you enabled them, and the tables under
+   them cleared.
+9. String inverters are placed from clusters of tables, sited in the gap bands
    between rows, and cables are routed if you asked for them.
-9. Lightning arresters are placed, if you enabled them, and the capacity is
-   recomputed.
 
 The status bar reads **Layout ready**, followed by any notes that apply — the
 number of water bodies excluded, tables cleared for building shadows. See
@@ -240,7 +242,9 @@ used, and those values have been pre-filled into the greyed-out fields.
 
 This is the moment to decide whether to take control. If your design fixes the
 tilt at a value the module supplier or the structure vendor has specified, tick
-**Override tilt angle**, type it, and generate again. The same applies to
+**Override tilt angle**, type it, and generate again — the pinned button then
+reads **Regenerate Layout**, because the inputs differ from the last run (see
+[Out-of-date results](/docs/workspace/out-of-date-results)). The same applies to
 **Override row pitch** when the pitch is set by the tracker or table vendor, by
 a cleaning robot's reach, or by a land constraint. Tightening the pitch below
 the derived value raises the GCR and the capacity, and raises row-to-row
@@ -250,9 +254,12 @@ shading with it.
 <Step>
 ### Calculate energy
 
-Energy is a separate step, and it needs the site's latitude and longitude —
-which a Google Earth file always carries, and a CAD drawing carries only if
-you supplied them.
+Energy is a separate step, and it needs the site's location — which a Google
+Earth file always carries, and a CAD drawing or an image has only when it was
+located in the **Site reference** window rather than loaded as layout only.
+It is calculated for the layout on screen, so generate first: any later
+**Generate Layout** clears the result, and the Energy view then reads
+**Layout regenerated** until you calculate again.
 
 Open the **Yield** tab and click **Calculate Energy** in the **Run Energy
 Calculation** card — or open the **Energy** view and click **Calculate

@@ -15,13 +15,14 @@ revoked** or **● Access status unavailable**. With no access at all the chip i
 hidden and a gold **Get Free Access** button shows instead. See
 [How access works](/docs/licence/overview).
 
-**AC circuit breaker (ACCB)** — Switchgear on the alternating-current side,
-between the inverters and the step-up transformer. It appears in the diagram
-symbol set, and an automatically built diagram groups 15 inverters to one ACCB
-and 4 ACCBs to one inverter duty transformer. See
-[Auto-build](/docs/sld/auto-build).
+**AC combiner box (ACCB)** — In a string-inverter design, the box a group of
+string inverters lands on, inside an ICR block; each ACCB takes one
+low-voltage winding of an inverter duty transformer. How many inverters share
+a box and how many boxes share a transformer are set on the **ACCB &
+Transformer** card — 15 and 4 as shipped. See
+[ACCB and transformers](/docs/inputs/accb-and-transformers).
 
-**ACCB** — See **AC circuit breaker**.
+**ACCB** — See **AC combiner box**.
 
 **Aperture** — On a tracker, the east–west width of the module array on one
 unit: the modules across the torque tube multiplied by their east–west
@@ -49,9 +50,10 @@ view.
 factor. See **Capacity factor**.
 
 **Central inverter** — A large inverter housed **inside** the control room
-building, fed by DC trunks from the string monitoring boxes out in the array. At
-most 4 are housed in one building, and because they are inside there is no AC
-cable leg. See [Choosing a design mode](/docs/design-modes).
+building, fed by DC trunks from the string monitoring boxes out in the array.
+They are counted per ICR block, and at most 4 are housed in one building;
+because they are inside there is no AC cable leg. See
+[Choosing a design mode](/docs/design-modes).
 
 **Clearness index** — The ratio of the irradiance reaching the ground to the
 irradiance arriving above the atmosphere. It is what allows a single global
@@ -73,18 +75,31 @@ surplus. The design overload limit ships at 1.5 for string inverters and 1.4
 for central inverters. See
 [Sizing from an AC capacity](/docs/simulation/ac-capacity).
 
+**Degradation** — The loss of module output over time. Two separate inputs: a
+first-year figure applied once, shipped at 1.0 %, and an annual figure applied
+compounding from year two, shipped at 0.4 % per year. See
+[Lifetime and P-values](/docs/energy/lifetime-and-p-values).
+
 **Design chip** — The item in the ribbon that names the current design —
 *"Fixed tilt · String inverter ▾"*, *"Tracker · Central inverter ▾"* and so on.
 Clicking it opens the New design window and launches another window for a
 different combination; the current window stays open. See
 [Choosing a design mode](/docs/design-modes).
 
-**Degradation** — The loss of module output over time. Two separate inputs: a
-first-year figure applied once, shipped at 1.0 %, and an annual figure applied
-compounding from year two, shipped at 0.4 % per year. See
-[Lifetime and P-values](/docs/energy/lifetime-and-p-values).
+**Design warning** — A note that the finished layout falls outside a design
+rule — a control room over its rating or not placed, a trench outside the plant
+or under a table, a feeder or a voltage drop over its limit. A warning never
+blocks anything. It shows in a banner on the Summary view, a chip under every
+view, the PDF summary page and the bill of materials. See
+[Design warnings](/docs/reference/design-warnings).
 
 ## E
+
+**Earth pit** — A maintenance-free earth electrode: a copper-bonded rod in a
+bore filled with backfill compound, bonded to the plant's earthing grid by
+galvanised-iron (GI) strip. How many the plant needs, and the strip and cable
+sizes, come from the **Earthing Design** study, not the bill of materials. See
+[Earthing design](/docs/simulation/earthing).
 
 **Exceedance probability** — The probability that actual generation equals or
 exceeds a stated figure. Three are set, shipped at 50 %, 75 % and 90 %, and the
@@ -135,6 +150,13 @@ own row of the Summary view and counts as 0.5 wherever tables are weighted. See
 
 **ICR** — See **Inverter control room**.
 
+**ICR block** — One inverter control room and the tables wired to it through
+their inverters or string monitoring boxes. The combiner boxes and transformers
+are grouped per block, and each block can be shown on the plot and opened in a
+summary window of its own. See [ICR blocks](/docs/layout/icr-blocks).
+
+**IDT** — See **Inverter duty transformer**.
+
 **In-plane irradiance (GTI)** — The annual solar energy falling on the tilted
 module plane, in kWh/m² per year. This, not GHI, is the figure the yield is
 built from. Some weather sources return it directly; otherwise it is transposed
@@ -143,9 +165,16 @@ from GHI using the site's solar geometry. See
 
 **Inverter control room (ICR)** — The building housing the inverter and
 switchgear equipment for a block of the array. One is placed per **ICR Block** of
-DC capacity, shipped at 18.0 MWp, and its footprint ships at 10.0 m east–west by
-4.0 m north–south, 5.0 m high. Every table overlapping that footprint is
-removed. See [Control rooms](/docs/layout/icr).
+DC capacity, shipped at 18.000 MWp, in each separate piece of land, and its
+footprint ships at 10.0 m east–west by 4.0 m north–south, 5.0 m high. Every
+table overlapping that footprint is removed. See [Control rooms](/docs/layout/icr).
+
+**Inverter duty transformer (IDT)** — The transformer in an ICR block that
+takes the inverters' AC output up to medium voltage, with one low-voltage
+winding per combiner box or central inverter on it. Its load is the inverters'
+maximum AC output from the inverter file, and it takes the smallest listed
+rating at or above that load. See
+[ACCB and transformers](/docs/inputs/accb-and-transformers).
 
 ## L
 
@@ -229,14 +258,15 @@ reference yield.
 **Perimeter road** — The band between the plant boundary and the usable area.
 Nothing is placed in it. It is not a road you design here — it is a setback of
 the width you enter, shipped at 6.0 m, wide enough for the ring road, the fence
-line and construction access. Cables may run inside it; nothing is ever routed
-outside the fence. See [Site parameters](/docs/inputs/site).
+line and construction access. DC string cables are kept off it; AC feeders are
+held inside the plant boundary wherever a route can be found. See
+[Site parameters](/docs/inputs/site).
 
 **Pile** — The foundation post a mounting structure stands on. In the pile
 editor each pile is a circle of a given radius, shipped at 0.15 m, placed at a
-coordinate measured from the south-west corner of one reference table; that
-pattern is then stamped onto every table in the plant. See
-[Piles](/docs/editing/piles).
+coordinate measured from the south-west corner of one reference table. Full
+tables carry that full pattern; half tables carry a half pattern, derived from
+the full one or set by you. See [Piles](/docs/editing/piles).
 
 **Pitch** — The centre-to-centre spacing between one row and the next. On fixed
 tilt it is derived from the tilt angle and the latitude unless you override it,
@@ -252,11 +282,19 @@ becomes its own plant with its own column in the Summary view. See
 
 **Plant chips** — The row of plant totals under every view: DC capacity, site
 area, plants (multi-plot only), tables or trackers, modules, ICR blocks,
-lightning arresters when placed, and year-one P50 energy. Clicking a chip opens
-the Summary view; the energy chip opens the Energy view. The **Plant totals**
-row of the Layers popover hides the row. See [Views](/docs/workspace/views).
+lightning arresters when placed, and year-one P50 energy, led by an **Out of
+date** chip while the inputs differ from the last run and a **Design warnings**
+chip while the design has warnings. Clicking a chip opens the Summary view; the
+energy chip opens the Energy view. The **Plant totals** row of the Layers
+popover hides the row. See [Views](/docs/workspace/views).
 
 **Portrait** — See **Module orientation**.
+
+**Power transformer** — The transformer at the main control room that steps
+the whole plant's output up for export. It is sized from every inverter's
+maximum AC output × a margin ÷ a derating, rounded up to the next listed MVA
+rating, and exists only once a main control room is placed and an inverter file
+loaded. See [ACCB and transformers](/docs/inputs/accb-and-transformers).
 
 **PR** — See **Performance ratio**.
 
@@ -294,8 +332,9 @@ plant's DC capacity gives the year-one energy.
 
 **Stage tabs** — The five tabs the inputs live on, under the pinned **Generate
 Layout** button: **Site · Array · Electrical · Yield · Tools**. Every card on a
-tab is a collapsible group. Tools is locked until a layout exists. See
-[The main window](/docs/workspace/main-window).
+tab is a collapsible group. The Tools tab can always be opened, but its
+buttons are greyed out until a layout exists, except **Robot count from DXF…**.
+See [The main window](/docs/workspace/main-window).
 
 **String** — Modules wired in series so their voltages add. **In this
 application a string is one row of modules within an MMS table**, which is
@@ -304,9 +343,10 @@ inverter and string monitoring box limits are counted against. A default table o
 two rows therefore carries two strings.
 
 **String inverter** — A distributed inverter serving a cluster of tables and
-feeding AC to the nearest inverter control room. Each placed inverter is drawn as
+feeding AC to an inverter control room — the nearest along the plant that has
+room within its rating. Each placed inverter is drawn as
 a 2 m east–west by 1 m north–south marker, sited in the gap band between rows.
-See [Inverters and cable calculation](/docs/inputs/inverter).
+See [Inverter settings](/docs/inputs/inverter).
 
 **String monitoring box (SMB)** — In central-inverter mode, the box out in the
 array that collects the strings from nearby tables and feeds a DC trunk back to
@@ -356,9 +396,12 @@ only where it fits **entirely** inside it. See
 **USS** — See **Unit substation**.
 
 **UTM zone** — Universal Transverse Mercator: the local metric map projection
-the site is converted into. All internal geometry is in metres in the site's own
-zone, the CAD export is written in those coordinates, and a contour file supplied
-as a CAD drawing must be in them too. See [CAD drawing](/docs/exports/dxf).
+a located site is worked in — a KMZ boundary, or a CAD drawing located by its
+own coordinates — and the coordinates its CAD export is written in. A CAD or
+image boundary placed by latitude and longitude, or laid out without a
+location, keeps the drawing's own coordinates instead. A contour file supplied
+as a CAD drawing must be in the boundary file's coordinates. See
+[CAD drawing](/docs/exports/dxf).
 
 ## V
 

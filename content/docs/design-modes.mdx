@@ -116,7 +116,8 @@ One card, **Tracker Configuration**, replaces both of the fixed-tilt cards.
 A live preview line under the card reports the unit's **Aperture (E-W)**, its
 **Length (N-S)**, the **GCR** — ground coverage ratio, the collector area as a
 fraction of the ground it occupies — and **Modules/tracker**, so the geometry
-is visible before you generate anything. The **Size…** button sits beside
+is visible before you generate anything. Treat it as indicative: it leaves the
+module gaps out of the first two figures. The **Size…** button sits beside
 **Modules per string (N–S)**. See [Tracker](/docs/inputs/tracker).
 
 </Tab>
@@ -138,9 +139,10 @@ Cabling has two legs:
 
 - **DC string cables**, table to inverter, counted twice over for the positive
   and negative conductors.
-- **AC cables**, inverter to the nearest control room, counted once as a
-  three-phase run and routed on right angles only — horizontal and vertical
-  segments, never diagonals.
+- **AC cables**, inverter to its control room — the nearest one along the
+  plant that still has room within its rating — counted once as a three-phase
+  run and routed on right angles only: horizontal and vertical segments, never
+  diagonals.
 
 **Max strings per inverter** governs how many strings one inverter accepts,
 which in turn sets how many inverters the plant needs. One string is one row of
@@ -158,8 +160,8 @@ Cabling therefore has no AC leg at all:
 - **DC string cables**, table to SMB, counted twice over.
 - **A DC trunk**, SMB to the control room, also counted twice over.
 
-Because the inverter is inside the building, everything downstream of it is
-inside the building too. **Max strings per SMB** sizes each monitoring box, and
+Because the inverter is inside the building, its AC output never crosses open
+ground. **Max strings per SMB** sizes each monitoring box, and
 **Max SMB per Central Inverter** — 10 by default — sizes the central inverter:
 its capacity is the monitoring box capacity multiplied by that number.
 
@@ -196,7 +198,8 @@ of equipment are placed.
 | Electrical card title | **String Inverter** | **SMB – String Monitoring Box** |
 | Strings field | **Max strings per inverter** | **Max strings per SMB** |
 | Extra field | — | **Max SMB per Central Inverter** |
-| Equipment rows in the Summary view | **String inverters** · **Inverter rating (kWp)** | **SMBs** · **SMB rating (kWp)** · **Central inverters** · **Central inverter rating (kWp)** |
+| Grouping card | **ACCB & Transformer** — inverters per AC combiner box (ACCB), ACCBs per transformer | **Transformer** — central inverters per transformer |
+| Equipment rows in the Summary view | **String inverters** · **Inverter rating (kWp)** · **ACCBs** | **SMBs** · **SMB rating (kWp)** · **Central inverters** · **Central inverter rating (kWp)** |
 | Cable row | **AC cable to ICR (m)** | **DC cable to central inverter (m)** |
 | Second cable row in the Layers popover | **AC cables (Inv→ICR)** | **DC cables (SMB→CI)** |
 | Loss rows | **String DC cable losses**, **AC cable losses (Str. Inv. → ICR)** | The same rows read MMS → SMB and **DC cable losses (SMB → Central Inv.)** |
@@ -206,7 +209,8 @@ of equipment are placed.
 | Default overload limit when sizing from an AC capacity | 1.5 | 1.4 |
 
 The full row list, in order, is in
-[Summary rows](/docs/reference/summary-columns).
+[Summary rows](/docs/reference/summary-columns); the grouping card is on
+[ACCBs and transformers](/docs/inputs/accb-and-transformers).
 
 ## Moving to a different design
 

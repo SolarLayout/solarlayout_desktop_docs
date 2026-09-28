@@ -27,7 +27,7 @@ card and the two keep-clear cards, Structures & Shadow and Topography.
 | **Perimeter road width** | 6.0 m | 0.0–50.0 m | Shrinks the plant boundary inward by this distance. Nothing is placed in the band that is left. |
 | **Place Lightning Arresters** | off | — | When on, arresters are placed on a coverage grid and the tables they overlap are cleared. |
 | **LA protection radius** | 100.0 m | 10.0–500.0 m | The area one arrester is taken to protect, and the spacing of the grid they sit on. Enabled only when arresters are on. |
-| **ICR Block** | 18.0 MWp | 0.1–500.0 MWp | The DC capacity one inverter control room serves. Sets how many control rooms are placed. |
+| **ICR Block** | 18.000 MWp | 0.1–500.0 MWp | The DC capacity one inverter control room serves. Sets how many control rooms each piece of land gets. |
 | **Transmission line corridor** | 15.0 m per side | 0.0–500.0 m | The setback applied to each side of a line feature, so the cleared strip is twice this figure. |
 
 ## Perimeter road width
@@ -54,9 +54,10 @@ boundary. That is worth doing only when the boundary you supplied already
 excludes the road.
 
 <Callout>
-Cables may run **inside** the perimeter road band — a trench along the ring
-road is normal and expected. Nothing is ever routed **outside** the plant
-fence.
+DC string cables are kept off the perimeter road band. AC feeders, and the DC
+trunks of a central-inverter design, are held inside the plant boundary
+wherever a route exists; a run that cannot be kept inside is reported as a
+design warning rather than hidden. See [Cable routing](/docs/layout/cables).
 </Callout>
 
 ## Place Lightning Arresters
@@ -81,11 +82,13 @@ in the perimeter road band, in a water body or on excluded ground.
 
 Because arresters cost capacity on a fixed-tilt plant, the usual sequence is to
 generate the layout with the option off, agree the field, and then turn it on
-for the run you issue. The tick itself is not kept in a project file — the
-radius is — so a reopened project comes back with the option off. You can also leave it off and add arresters one at a
-time by hand in [Sketch Mode](/docs/editing/sketch-mode) — the plant totals are
-recomputed when you leave it, so a hand-placed arrester clears tables and
-changes the capacity exactly as an automatic one does.
+for the run you issue. The tick and the radius are both kept in the project
+file.
+
+You can also leave it off and add arresters one at a time by hand in
+[Sketch Mode](/docs/editing/sketch-mode) — the plant totals are recomputed when
+you leave it, so a hand-placed arrester clears tables and changes the capacity
+exactly as an automatic one does.
 
 The placed count appears on the **Lightning arresters** row of the Summary view
 and, once any are placed, on a **Lightning arresters** chip in the row of plant
@@ -126,22 +129,39 @@ count into a design.
 
 ## ICR Block
 
-An **inverter control room** (ICR) is the building that houses the plant's
-inverter and switchgear equipment for a block of the array. **ICR Block** is
-the DC capacity, in MWp, that one such room serves.
+An **inverter control room** (ICR) is the building a block of the array is
+collected into — in a central-inverter design it also houses the central
+inverters. **ICR Block** is
+the DC capacity, in MWp, that one such room serves. The field shows three
+decimals — **18.000 MWp** as shipped — because the
+[AC-capacity study](/docs/simulation/ac-capacity) can write a block capacity
+into it to the kilowatt.
 
-The count follows directly from it: the number of control rooms is the plant's
-DC capacity divided by the block size, **rounded up** to the next whole room.
-A plant whose capacity exceeds the block size by any margin at all gets another
-room.
+The count follows from it, **for each separate piece of land**. Tables linked
+by gaps of no more than 300 m are one piece; internal roads, corridors and
+setbacks never split one. Each piece gets its capacity divided by the block
+size, **rounded up** to the next whole room, with a half table counted at half
+a table's capacity, and the plant's count is the sum over its pieces:
 
-Where the rooms go is not a grid. The placed tables are grouped spatially into
-blocks of roughly one block-size each, and a control room is put at the centre
-of each group — so every group of tables surrounds its own room rather than
-being cabled across the site to a distant one. Each room must fit entirely
-inside the usable area, and any table overlapping its footprint is removed.
-Because that removal reduces the plant's capacity, the required number of rooms
-is then re-checked against the reduced figure.
+- On a site in one piece, that is the plant's DC capacity divided by the block
+  size, rounded up. A plant whose capacity exceeds a multiple of the block size
+  by any margin at all gets another room.
+- On a site in several distant pieces it can be more, because each piece — even
+  a small one — gets a room of its own.
+
+You cannot set the count directly: it follows the capacity actually placed and
+how the land splits.
+
+Where the rooms go is not a grid. The tables of each piece are divided into
+exactly as many compact groups as the piece has rooms, each carrying close to
+the same capacity, and a control room is put at the centre of each group — so
+every group of tables surrounds its own room rather than being cabled across
+the site to a distant one. An extra room therefore makes every block a little
+smaller rather than adding one small block. Each room must fit entirely inside
+the usable area, and any table overlapping its footprint is removed. Because
+that removal reduces the plant's capacity, the required number of rooms is
+then re-checked against the reduced figure — and, on a fixed-tilt plant, once
+more after the building-shadow keep-clear, when it can only fall.
 
 Choosing the block size is a cabling trade-off:
 
@@ -158,7 +178,9 @@ control room building. See [Inverter settings](/docs/inputs/inverter).
 
 The footprint and height of the room itself are not set here — they are in the
 **Structures & Shadow (keep-clear)** card below. How the rooms are placed, and
-how to move one, is in [Control rooms](/docs/layout/icr).
+how to move one, is in [Inverter control rooms](/docs/layout/icr); the tables
+wired to each room, and the summary and exports per block, are in
+[ICR blocks](/docs/layout/icr-blocks).
 
 ## Transmission line corridor
 
@@ -169,7 +191,8 @@ supplies the width: the setback is applied to **each side** of the line, so the
 per side, a line clears a 30 m strip through the array.
 
 The same setback is applied to every line feature the boundary file carries —
-transmission lines, canals, drains and similar — so a line drawn through the
+transmission lines, canals, drains and similar, but not a line named as a road,
+which is cleared to its own width — so a line drawn through the
 middle of a plot splits the array into two blocks with a clear corridor between
 them.
 

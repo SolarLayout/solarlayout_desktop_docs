@@ -28,6 +28,13 @@ before the **Bill of Materials**. The document is A3 landscape throughout, so
 the diagram page and the layout drawing come out on the same paper. The full
 content order is on [The Detailed Project Report](/docs/exports/project-report).
 
+The report uses the diagram stored in the session — the one on the SLD sheet —
+and builds the automatic one only when there is none. A stored diagram is not
+redrawn when the layout, the **ACCB & Transformer** card or the inverter file
+changes, so choose **Automatic** again in the SLD view before you export if any
+of them has changed since the diagram was built. That rebuilds the sheet, so
+edits made on it have to be made again.
+
 While the pile overlay is on, **Export ▾ ▸ Export PDF (with Piles)** writes a
 PDF report whose third page is the same diagram sheet.
 
@@ -50,9 +57,10 @@ This is the review copy. It carries the border, the zone grid, the legend band
 and the title block, so a reviewer can mark it up against a zone reference and
 hand it back, and it needs nothing but a PDF reader at the far end.
 
-The sheet is written at A3 proportions. For a large plant the physical paper
-size grows — A3, then A1, then A0 — while those proportions hold, so a long
-chain is printed on bigger paper rather than being squeezed into A3.
+The sheet is written at A3 proportions. For a full SLD with many feeders the
+physical paper size grows — A3, then A1, then A0 — while those proportions
+hold, so a long diagram is printed on bigger paper rather than being squeezed
+into A3.
 
 ## A CAD drawing
 
@@ -90,8 +98,8 @@ top arrives as geometry.
 
 ### The sheet frame comes across too
 
-The outer border, the inner frame, the zone grid, the legend band and the
-title block are all in the CAD file, in the same positions they occupy on
+The outer border, the inner frame, the zone grid, the legend and notes band
+and the title block are all in the CAD file, in the same positions they occupy on
 screen.
 
 That matters more than it sounds. A drafting team receiving the diagram alone
@@ -130,16 +138,17 @@ builds on.
 <Step>
 ### Check the ratings and the equipment
 
-The automatic build's annotations come from the bill of materials and the
-topology rules, not from your purchase order. Read them once more. See
+The automatic build's annotations come from the grouping on the **ACCB &
+Transformer** card and the inverter file, not from your purchase order. Read
+them once more. See
 [Building a diagram from the plant](/docs/sld/auto-build).
 </Step>
 
 <Step>
-### Fill in the legend, the notes and the title block
+### Complete the title block
 
-All three ship blank. A drawing issued with an empty title block is a drawing
-nobody can file.
+The document number, the revision and the project name ship empty. A drawing
+issued without them is a drawing nobody can file.
 </Step>
 
 <Step>

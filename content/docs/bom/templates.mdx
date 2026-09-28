@@ -128,6 +128,18 @@ The full chain of consequence, so none of it is a surprise:
 | **⬇ Export BOM to Excel** / **⬇ Export BOM to PDF** | Write the template's rows |
 | The report's **Bill of Materials** pages | Carry the template's rows |
 | The plant, the layout, the Summary view | Unchanged — only the list is replaced |
+| The single-line diagram | Unchanged — the diagram never reads the materials list |
+
+### What undoes a replacement
+
+The template's rows stay in place until the list is rebuilt, and the list is
+rebuilt not only by **⚙ Rebuild from Layout**. After a **Generate Layout**, a
+change on the **ACCB & Transformer** card, or an inverter file loaded on an
+existing layout, the next visit to the BOM view recomputes the list from the
+layout and the template's rows are gone, without a prompt. Replace the plant
+list only once the layout, the grouping and the inverter file are final — or
+export the replaced list before you change any of them. See
+[What rebuilding does](/docs/bom/overview#what-rebuilding-does).
 
 ## Getting the computed list back
 
@@ -148,8 +160,10 @@ counts before the arithmetic.
 ### Finish the layout and rebuild the computed list
 
 You need real counts to correct a template against, so generate the plant,
-turn cable calculation on for the final run, and rebuild the computed list
-once. See [Cable routing](/docs/layout/cables).
+turn cable calculation on for the final run, load the inverter file, settle the
+**ACCB & Transformer** card, and rebuild the computed list once. See
+[Cable routing](/docs/layout/cables) and
+[ACCB and transformers](/docs/inputs/accb-and-transformers).
 </Step>
 
 <Step>

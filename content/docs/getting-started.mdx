@@ -18,7 +18,7 @@ photograph behind the layout — the last three are optional.
 | What you need | Why | Where |
 | --- | --- | --- |
 | The application | A Windows PC, installed from the Microsoft Store | [Install on Windows](/docs/install/windows) |
-| This device activated | The application opens without it, but **Generate Layout** and every export are blocked until access is active | [Activate your licence](/docs/licence/activate) |
+| This device activated | The application opens without it, but **Generate Layout** and the exports are blocked until access is active | [Activate your licence](/docs/licence/activate) |
 | A boundary file | The plant boundary, and any water bodies, obstructions and transmission lines inside it | [Boundary files](/docs/inputs/boundary-files) |
 
 Access is tied to this computer by a **Device ID** — the same value shown at
@@ -30,9 +30,10 @@ this device — see [Activate your licence](/docs/licence/activate).
 The boundary file can be a Google Earth file (`.kmz` or `.kml`), a CAD drawing
 (`.dxf`), or a raster image with a scale you supply. A Google Earth
 file is the recommended input, because it carries geographic position and the
-site's features in one place. A CAD drawing carries no position, so you are
-asked for the site latitude and longitude — without them the layout is still
-generated geometrically, but energy cannot be calculated.
+site's features in one place. For a CAD drawing or an image you are asked
+where it sits — by a CAD drawing's own UTM coordinates, or by the latitude and
+longitude of the site's centre. **Layout only** still generates the layout,
+but energy cannot be calculated.
 
 ## Two decisions at launch
 
@@ -51,30 +52,30 @@ means a second window, not a switch. See
 
 | Region | What it is |
 | --- | --- |
-| Menu bar | **File**, **Edit-Pile** and **Help**: projects, the pile editor, the in-app guide and the licence window. |
+| Menu bar | **File**, **Edit-Pile**, **Tools** and **Help**: projects, the pile editor, the robot count from a DXF and the earthing design, the in-app guide and the licence window. |
 | The ribbon | The **SolarLayout** brand; the **design chip** naming this window's design, which opens another window for a different one; the **access chip**; and the **Docs** and **Support** buttons. |
-| **Generate Layout**, pinned at the top of the left column | The gold button (**F5**), with a hint line under it that says why it is disabled — *"Select a boundary file on the Site tab to generate a layout."* until a file is chosen. |
+| **Generate Layout**, pinned at the top of the left column | The gold button (**F5**), with a hint line under it that says why it is disabled — *"Select a boundary file on the Site tab to generate a layout."* until a file is chosen. While an input differs from the last run it reads **Regenerate Layout**. |
 | The five stage tabs, under it | **Site · Array · Electrical · Yield · Tools** — every design input, as collapsible cards. |
 | The view tabs, across the top of the right side | **Layout · Summary · Energy · BOM · SLD** (**Ctrl+1** to **Ctrl+5**), with the current view's tools to their right. |
 | The view | The drawing, the summary sheet, the energy result, the bill of materials or the diagram — one at a time, filling the area. |
-| The plant chips, under the view | One row of plant totals — DC capacity, site area, tables, modules, ICR blocks, year-one energy — shown in every view. |
-| Status bar | Progress and result messages on the left; the cursor position in UTM metres and the application version on the right. |
+| The plant chips, under the view | One row of plant totals — DC capacity, site area, tables, modules, ICR blocks, year-one energy — shown in every view, led by an **Out of date** or **Design warnings** chip when either applies. |
+| Status bar | Progress and result messages on the left; the cursor position and the application version on the right. The position is in UTM metres, or in the drawing's own coordinates for a CAD drawing or image placed by latitude and longitude, or laid out only. |
 
 [The main window](/docs/workspace/main-window) walks through each region.
 
 ### The stage tabs
 
 The tabs run in the order you would normally work through them. Two of the
-Array cards depend on the mounting you chose at launch, and the Electrical
-card's name depends on the inverter.
+Array cards depend on the mounting you chose at launch, and the names of two
+Electrical cards depend on the inverter.
 
 | Tab | What it holds |
 | --- | --- |
 | **Site** | **Input Boundary File** — the file, a **Browse…** button, an **ⓘ** button for the preparation guide and, while empty, an **Open sample site** link; then **Site Parameters**, **Structures & Shadow (keep-clear)** and **Topography (slope-aware exclusion)** |
 | **Array** | A read-only **MOUNTING** chip, **Module Specifications**, then **MMS-Table Configuration** and **Spacing & Tilt** on a fixed-tilt design or **Tracker Configuration** on a tracker |
-| **Electrical** | **String Inverter** (or **SMB – String Monitoring Box**) and **Cables** |
+| **Electrical** | **String Inverter** (or **SMB – String Monitoring Box**), **ACCB & Transformer** (**Transformer** on a central design) and **Cables** |
 | **Yield** | **Run Energy Calculation** and **Energy Yield** |
-| **Tools** | **Obstructions**, **Main Control Room & Objects** and **Studies** — locked until a layout exists |
+| **Tools** | **Obstructions**, **Main Control Room & Objects** and **Studies** — the buttons are greyed out until a layout exists, except **Robot count from DXF…** |
 
 ### The views and their tools
 
@@ -95,14 +96,16 @@ drawn as the placement alone even where those figures have been computed.
 | --- | --- | --- |
 | 1. Load a boundary | On the **Site** tab, point **Browse…** at your file, or click **Open sample site**. The boundaries, obstacles, water bodies and line features are read from it. | [Boundary files](/docs/inputs/boundary-files) |
 | 2. Set inputs, or accept the defaults | Change what your design fixes — module, table size, road width, capacity block — and leave the rest. | [Every parameter and its default](/docs/reference/parameters) |
-| 3. Generate the layout | Click **Generate Layout**. Tables, control rooms, inverters and arresters are placed, the plant chips fill in, and the **Tools** tab unlocks. | [Your first layout](/docs/first-layout) |
-| 4. Refine | Change an input and generate again, or edit the layout by hand — move, add and delete units, draw obstructions, drag a control room. | [Editing by hand](/docs/editing/sketch-mode) |
+| 3. Generate the layout | Click **Generate Layout**. Tables, control rooms, inverters and arresters are placed, the plant chips fill in, and the **Tools** tab's buttons come on. | [Your first layout](/docs/first-layout) |
+| 4. Refine | Change an input and generate again — results show they are [out of date](/docs/workspace/out-of-date-results) until you do — or edit the layout by hand: move, add and delete units, draw obstructions, drag a control room. | [Editing by hand](/docs/editing/sketch-mode) |
 | 5. Calculate energy | Optional. Fetches irradiance for the site and reports year-one and lifetime generation against a performance ratio you control, on the **Energy** view. | [How yield is calculated](/docs/energy/overview) |
 | 6. Build the diagram and the materials list | Auto-build a single-line diagram from the plant's own counts on the **SLD** view, and rebuild the bill of materials from the layout on the **BOM** view. | [Single-line diagram](/docs/sld/overview) |
-| 7. Export or save | From **Export ▾**: the Word project report, a Google Earth file, a layered CAD drawing, an ICR-block drawing set, the cable schedule, the plot as an image — or **Save project** to reopen later. | [The project report](/docs/exports/project-report) |
+| 7. Export or save | From **Export ▾**: the Word project report, a Google Earth file, a layered CAD drawing, ICR-block drawings as DXF or PDF, the cable schedule, the plot as an image — or **Save project** to reopen later. | [The project report](/docs/exports/project-report) |
 
 Steps 3 to 6 are not one-way. Generating again after a change is the normal
-way to work, and hand edits to cable trenches are preserved when you do.
+way to work. The obstructions, main control room, objects and annotations you
+placed are carried onto the new layout; hand-placed tables and hand-drawn cable
+trenches are not, so draw trenches after the last Generate.
 
 ## Defaults mean a first run needs almost nothing
 
@@ -115,7 +118,7 @@ generate a complete layout on your first run and then decide what to change.
 | Module | 2.38 m × 1.13 m, 610 Wp, monofacial |
 | Table | Portrait, 28 modules per row, 2 rows per table |
 | Perimeter road width | 6.0 m |
-| Control-room capacity block | 18.0 MWp |
+| Control-room capacity block | 18.000 MWp |
 | Tilt angle and row pitch | Derived from the site latitude |
 | Cable calculation | Off |
 

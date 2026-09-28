@@ -8,8 +8,8 @@ is nothing to download, no installer to run, and no patch to apply by hand. In
 normal use an update installs itself and the next launch is the new version.
 
 Access to generate a layout is not stored as a file the application keeps. It
-is tied to this device via a Device ID, checked against SolarLayout's server,
-so replacing the application — an update or a full reinstall — does not
+belongs to your account and is checked against SolarLayout's server by this
+device's Device ID, so replacing the application — an update or a full reinstall — does not
 disturb it and an update never asks you to activate again.
 
 ## How updates arrive
@@ -68,21 +68,21 @@ first — an update does not preserve an unsaved session.
 ## Which version you have
 
 **The application shows its version at the right of the status bar at the
-bottom of the main window** (for example **v1.2.0**) — that is the quickest
-place to check.
-The **Help** menu still carries only two items — **How to Use This Tool** and
+bottom of the main window** — that is the quickest place to check.
+The **Help** menu carries two items — **How to Use This Tool** and
 **License / Subscription…** — and there is no About window, so the status bar
-is the one place the version is named.
+is the one place in the application the version is named.
 
 The Store's **Library** listing also shows it, and is the place to check
 whether an update is waiting.
 
 [Release notes](/docs/releases) lists what changed between versions.
 
-## Access is tied to this device, not a file
+## Access is checked online, not stored in a file
 
-There is no local licence file to lose, back up or move. Access is tied to a
-Device ID — the Windows registry MachineGuid, the same value shown under
+There is no local licence file to lose, back up or move. Access belongs to
+your account, and this device is identified by its Device ID — the Windows
+registry MachineGuid, the same value shown under
 **Settings ▸ System ▸ About ▸ Device ID** — and checked online against
 SolarLayout's server. Updating or reinstalling the application changes
 neither that identifier nor the server-side record it is checked against, so
@@ -109,7 +109,7 @@ not changed and neither has the server record — see
 [Licence problems](/docs/licence/troubleshooting).
 
 <Callout type="info">
-Only **Generate Layout** and every export need this device's access to be
+Only **Generate Layout** and the exports need this device's access to be
 active. Reading and changing inputs, opening a project, and the SLD and BOM
 views work regardless of status.
 </Callout>
@@ -158,16 +158,17 @@ work you have done with it:
   exported them and are untouched.
 
 <Callout type="warn">
-A different machine has its own Device ID, so it needs its own activation —
-moving to a new PC is not covered by this device's access. Open Help ▸
-**License / Subscription…** on the new machine and use **Get Free Access**
-there. If access has expired or been revoked instead, contact SolarLayout at
+A different machine has its own Device ID, so it needs activating as a device
+of its own. Open Help ▸ **License / Subscription…** on the new machine and use
+**Get Free Access** there. Your account covers up to three devices, and a
+replaced machine does not free its place. If access has expired or been revoked instead, contact SolarLayout at
 [sales@solarlayout.app](mailto:sales@solarlayout.app).
 </Callout>
 
 If you are moving to a different machine rather than leaving the product, copy
 your project files across first, then activate the new machine as above —
-access is tied to one computer, not to a file that travels with your data.
+access belongs to your account and each computer is activated on it; nothing
+about it travels with your data.
 See [How licensing works](/docs/licence/overview).
 
 ## Where to go next

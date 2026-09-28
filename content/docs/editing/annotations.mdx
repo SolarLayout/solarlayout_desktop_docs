@@ -56,8 +56,7 @@ the **🚧 Road** tool. It is the way to clear an irregular strip — a drain, a
 track that bends — that a straight road centre-line cannot describe.
 
 **◜ Arc takes three clicks in a specific order** — start, end, then a point the
-arc must pass through. The arc is not drawn until the third click, so nothing
-appears to happen after the first two.
+arc must pass through.
 
 **▨ Fill/Zone is a filled polygon of its own.** Click its corners and finish
 with a right-click. It is the tool for marking out a phase, a contractor's work
@@ -113,9 +112,8 @@ out — it is the number you hand to a surveyor along with the distance. The are
 is for the questions a plan view raises: how much ground a phase covers, or the
 size of the parcel a fence encloses.
 
-All internal geometry is in metres, projected to the site's local UTM zone, so
-a measurement is a ground distance, not a screen distance. Zooming does not
-change it.
+All geometry is held in metres on the ground, so a measurement is a ground
+distance, not a screen distance. Zooming does not change it.
 
 ## Dimensions
 
@@ -163,7 +161,8 @@ their own.
 
 ## Layers
 
-Layers control what is visible on screen. The three layer controls sit on the
+Layers control what is visible on screen, and they carry into the exported CAD
+drawing. The three layer controls sit on the
 contextual bar above the plot, not in the palette:
 
 | Control | What it does |
@@ -177,21 +176,18 @@ audience — dimensions on one, civil notes on another, a client's mark-ups on a
 third — because then you can show one and hide the rest instead of deleting
 anything.
 
-### Your own layers stay in the application
+### Your layers carry into the CAD drawing
 
-The exported CAD drawing separates the plant from the annotations. Boundaries,
-tables, control rooms, inverters, cables and trenches each land on their own
-layer; **every Sketch Mode annotation lands on the single `SKETCH` layer**,
-whatever in-application layer it was drawn on, and labels and text land on
-`ANNOTATIONS`. Three layers of working come out as one.
+The exported CAD drawing keeps the plant and your annotations apart.
+Boundaries, tables, control rooms, inverters, cables and trenches land on the
+application's own layers. Each Sketch Mode annotation lands on a CAD layer
+named after the layer it was drawn on — `0` for anything drawn on the starting
+layer — and permanent dimensions land on `SKETCH`.
 
-That separation is still what makes the drawing usable by somebody else. A
-civil contractor opens the file, switches off `SKETCH` and `ANNOTATIONS`, and
-has a clean plan of the plant with none of your working on it. But layers you
-create with **＋** are a tool for the screen — for hiding your own working to
-read the layout underneath, and for keeping a client's mark-ups apart from your
-dimensions — not a way to hand structured layers to somebody else. If the
-recipient needs that separation in CAD, it has to be rebuilt there. See
+That separation is what makes the drawing usable by somebody else. A civil
+contractor opens the file, switches off your annotation layers, and has a clean
+plan of the plant with none of your working on it. Create and name the layers
+before you draw, rather than leaving everything on *0*. See
 [CAD export](/docs/exports/dxf).
 
 ## Bringing an existing drawing in
@@ -203,7 +199,9 @@ importing a drawing does not create obstructions and does not move any tables.
 
 The drawing's coordinates are read **as they are, in project metres**. Nothing
 is scaled, re-centred, or fitted to the plant, so the drawing has to already be
-in the same coordinate system as the project.
+in the same coordinate system as the project — the site's UTM zone, for a
+boundary from a Google Earth file or a CAD boundary located by its own
+coordinates.
 
 <Callout type="warn">
 Import a drawing that is not georeferenced to the site — one drawn around a

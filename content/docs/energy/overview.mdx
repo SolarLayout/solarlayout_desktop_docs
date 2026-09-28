@@ -26,16 +26,26 @@ per-kWp figure that only becomes energy when it is multiplied by that capacity.
 **A site position.** Latitude and longitude decide the solar geometry, the
 irradiance the weather source returns, the automatic tilt and the automatic row
 pitch. A Google Earth boundary file carries the position inside it. A CAD
-drawing and a raster image do not.
+drawing or a raster image gets one in the **Site reference** window when it is
+loaded — from the drawing's own UTM coordinates, or from the latitude and
+longitude you type.
 
 <Callout type="warn">
-A CAD or image boundary loaded without a site latitude and longitude still
-produces a layout — the geometry is complete and the summary fills in — but
-**energy calculation is unavailable**, and the Energy view says so in place of
-its **Calculate energy** button. Enter the coordinates when the application
-asks for them. See [CAD boundary](/docs/inputs/cad-boundary) and
-[Image boundary](/docs/inputs/image-boundary).
+A CAD or image boundary loaded as **Layout only** still produces a layout — the
+geometry is complete and the summary fills in — but the site's location is
+unknown, so **energy calculation is off**. **Calculate Energy** is disabled,
+and its tooltip, the Yield tab's status line and the Energy view read *"Energy
+yield is off: the site's location is unknown (layout only)."* To get a yield,
+pick the file again and locate it. See [CAD boundary](/docs/inputs/cad-boundary)
+and [Image boundary](/docs/inputs/image-boundary).
 </Callout>
+
+The result also has to belong to the layout on screen. Energy is calculated for
+the last generated layout, so once an input changes and the layout is
+[out of date](/docs/workspace/out-of-date-results), **Calculate Energy** is
+refused with *"Regenerate the layout first: inputs changed since the last
+run."* That includes every loss on this tab: changing a loss makes the whole
+layout out of date. Regenerate, then calculate again.
 
 ## The Yield tab
 
@@ -290,9 +300,22 @@ what is missing. Before a layout it reads *"Generate a layout first. Energy is
 calculated for the generated layout."*; once a layout exists it reads *"Uses
 the weather source and losses set on the Yield tab. With PVGIS selected,
 irradiance is fetched for the site (needs internet)."*, over a gold
-**Calculate energy** button that does what the Yield tab's button does.
+**Calculate energy** button that does what the Yield tab's button does. On a
+site loaded as layout only the note reads *"Energy yield is off: the site's
+location is unknown (layout only)."*
 
 <Screenshot id="energy-view-empty" />
+
+Two other states replace the result:
+
+| State | What the view shows |
+| --- | --- |
+| The layout is out of date and no energy has been calculated | **No energy result yet**, with *"Energy calculation is not available right now."* and the button disabled |
+| A **Generate Layout** has replaced the layout the energy belonged to | **Layout regenerated**, with *"The energy result belonged to the previous layout, so it was cleared. Calculate energy again on the Yield tab for this layout."* |
+
+Every Generate that replaces a layout clears its energy result, even when no
+input changed; the Yield tab's status line then reads *"Layout regenerated:
+calculate energy again for this layout."*
 
 ### After a run
 
@@ -300,10 +323,14 @@ Four tiles across the top carry the annual answer:
 
 | Tile | Unit | What it is |
 | --- | --- | --- |
-| **Year-1 energy** | MWh | `Year 1 (actual)` from step 5 |
-| **Specific yield** | kWh/kWp | Step 3 |
-| **Performance ratio** | % | Step 2 |
-| **CUF** | % | Step 7 |
+| **Year-1 energy** | MWh | Year-one energy after first-year degradation, summed over the twelve months |
+| **Specific yield** | kWh/kWp | The year's final yield, `Y_f`, summed over the twelve months |
+| **Performance ratio** | % | The annual performance ratio from step 2 |
+| **CUF** | % | The year's energy against the DC capacity running all 8760 hours |
+
+The tiles repeat the **TOTAL / Annual** row of the monthly table below. Because
+each month carries its own temperature loss, the year-one energy and specific
+yield there can differ slightly from the annual relations in steps 3 to 5.
 
 Under them is the monthly table, titled *"Monthly Energy Breakdown — IEC
 61724-1 — Year 1 (all plants combined)"*: twelve rows and a **TOTAL / Annual**
@@ -326,6 +353,11 @@ Two charts complete the view: **In-plane irradiation (kWh/m², bars) and
 performance ratio (%, line)** under the table, and **Monthly energy, Year 1
 (MWh)** on the right. On a short window the irradiation chart steps aside to
 keep the table readable.
+
+If an input changes after the run, the result stays on screen but greyed,
+under the banner ***Out of date.*** *This energy was calculated for the last
+run, and 2 inputs have changed since. Regenerate the layout, then calculate
+energy again.*
 
 <Screenshot id="energy-view" />
 
@@ -378,9 +410,8 @@ the figure as the lifetime total and state the lifetime you used alongside it.
 </Callout>
 
 **The plant chips.** The row under every view carries a **Year-1 P50 energy**
-chip — `—` before a run — which opens the Energy view when clicked. It is the
-only place the total is shown outside the views; the status bar never carries
-it.
+chip — `—` before a run — which opens the Energy view when clicked. The status
+bar never carries it.
 
 **The Yield tab's status line.** After a run it reports the performance ratio,
 the year-one energy, the capacity factor and the lifetime total in one line —
@@ -391,7 +422,7 @@ the same lifetime figure as the Summary row, labelled with the same fixed
 **Energy Yield & Loss Analysis** section and an **Energy Yield — Drawings**
 annex, present only when energy has been calculated. See
 [Project report](/docs/exports/project-report). The full Summary row set is on
-[Summary columns](/docs/reference/summary-columns).
+[the Summary view reference](/docs/reference/summary-columns).
 
 ## What this model is and is not
 
@@ -469,7 +500,7 @@ it.
     description="The Layout, Summary, Energy, BOM and SLD tabs and their tools"
   />
   <Card
-    title="Summary columns"
+    title="Summary view"
     href="/docs/reference/summary-columns"
     description="Every row of the Summary view, in order"
   />

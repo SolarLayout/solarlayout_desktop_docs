@@ -10,8 +10,12 @@ fields follow the inverter topology you chose at launch, because the two
 topologies collect the strings in different places. See
 [Choosing a design mode](/docs/design-modes) for the choice itself.
 
-Whether the cables between the tables and the control rooms are routed and
-measured is a separate card on the same tab — see [Cables](/docs/inputs/cables).
+The Electrical tab carries three cards, in this order: this inverter card; the
+**ACCB & Transformer** card — titled **Transformer** in a central-inverter
+design — which groups the inverters onto combiner boxes and transformers, see
+[ACCB and transformers](/docs/inputs/accb-and-transformers); and the
+**Cables** card, which decides whether the cables are routed and measured, see
+[Cables](/docs/inputs/cables).
 
 One definition governs everything on this page. A **string** is **one row of
 modules within an MMS-Table** (MMS — module mounting structure). A fixed-tilt
@@ -87,7 +91,7 @@ current, which is a separate question, settled by
 The unit count and the DC capacity attached to each unit are reported in the
 Summary view's **ELECTRICAL** group — **String inverters** and **Inverter
 rating (kWp)** in a string design, **SMBs** and **SMB rating (kWp)** in a
-central design. See [Summary columns](/docs/reference/summary-columns).
+central design. See [Summary view](/docs/reference/summary-columns).
 
 ## Maximum SMBs per central inverter
 
@@ -108,9 +112,14 @@ how many of those collections one machine converts. Change either and the
 central inverter count changes with it, reported on the **Central inverters**
 and **Central inverter rating (kWp)** rows of the Summary view.
 
-**One ICR building houses up to four central inverters.** The control rooms
-themselves are sized and placed from the **ICR Block** capacity on the Site
-tab, not from this card — see [Control rooms](/docs/layout/icr).
+The central inverters are counted **per ICR block** — one control room and the
+monitoring boxes wired to it. Each block gets its SMBs ÷ **Max SMB per Central
+Inverter**, rounded up: at least one, and at most four, because **one ICR
+building houses up to four central inverters**. After a
+[Simulation with AC capacity](/docs/simulation/ac-capacity) the count is topped
+up to the study's unit count. The control rooms themselves are sized and placed
+from the **ICR Block** capacity on the Site tab, not from this card — see
+[Control rooms](/docs/layout/icr).
 
 ## Loading a manufacturer inverter file
 
@@ -124,18 +133,38 @@ and **View** becomes available.
 
 The file settles the AC side of the design:
 
-- **The maximum AC output drives the plant AC capacity.** The application takes
-  the file's maximum output power as the rating of one machine and reports the
-  plant's AC capacity from it — the **AC capacity (MWac)** and **Inverter
-  capacity (MW)** rows of the Summary view, and the *Plant AC Capacity* line of
-  the bill of materials, which reads `—` until an inverter file is loaded.
+- **The file's AC rating sets the plant AC capacity.** The application takes
+  the AC power rating of one machine from the file, multiplies it by the
+  inverter count and reports the result — the **AC capacity (MWac)** and
+  **Inverter capacity (MW)** rows of the Summary view, and the *Plant AC
+  Capacity* line of the bill of materials, which reads `—` until an inverter
+  file is loaded.
 - **The DC / AC ratio follows.** With a DC capacity from the placed modules and
   an AC capacity from the file, the ratio is reported on the **DC / AC ratio**
   row. It is the number a reviewer looks at first, and without an inverter file
   there is nothing to divide by.
-- **When the file declares no maximum output, the nominal power is used
-  instead.** Some files carry only a nominal rating; the design still sizes,
-  from that figure.
+- **The file carries two AC power figures, nominal and maximum.** When one is
+  missing the other is used, so a file with only one of them still sizes the
+  design.
+- **The transformers are sized from it.** The file's maximum AC output, summed
+  over the inverters on each transformer, is the transformer's load and decides its
+  rating, and summed over the plant it sizes the power transformer at the main
+  control room. The file's output voltage becomes the transformers'
+  low-voltage side, shown on the card's **LV voltage** line. Without the file
+  the grouping is counts only, and the card's answer line ends *ratings need the
+  OND file*. See [ACCB and transformers](/docs/inputs/accb-and-transformers).
+- **The cable schedule sizes the AC feeders from it.** Each inverter-to-ACCB
+  feeder carries the file's maximum AC current. See
+  [The cable schedule](/docs/layout/cables#the-cable-schedule).
+
+Loading an inverter file on a layout that already exists regroups the plant at
+once, and marks the layout out of date, because the inverter file is an input
+to the run — generate again before exporting. See
+[Out-of-date results](/docs/workspace/out-of-date-results).
+
+The file's location is saved in the project. If the file has moved or gone when
+the project is reopened, the row reads *Not found:* and the file name, and the
+layout opens out of date.
 
 <Callout>
 Loading an inverter file does **not** set the inverter efficiency used in the
@@ -173,9 +202,8 @@ size a string against: the **Size…** button on the Array tab asks for one
 before it opens the calculator.
 
 This is why the module file and the inverter file are usually loaded together
-at the start of a session. Both are also required by
-[Simulation with AC capacity](/docs/simulation/ac-capacity), which sizes the
-plant backwards from a target AC figure using the same two files.
+at the start of a session. Both are also required by the **Simulation with AC
+capacity** study, which sizes the plant backwards from a target AC figure using the same two files.
 
 ## Where to go next
 
@@ -186,14 +214,14 @@ plant backwards from a target AC figure using the same two files.
     description="How many modules go in series, and the three limits that decide it"
   />
   <Card
+    title="ACCB and transformers"
+    href="/docs/inputs/accb-and-transformers"
+    description="Grouping the inverters onto combiner boxes and transformers, and sizing the power transformer"
+  />
+  <Card
     title="Cables"
     href="/docs/inputs/cables"
     description="Switching cable routing on, and the allowances added to the DC string-cable total"
-  />
-  <Card
-    title="Control rooms"
-    href="/docs/layout/icr"
-    description="How the ICR block capacity sets the number and position of control rooms"
   />
   <Card
     title="Simulation with AC capacity"

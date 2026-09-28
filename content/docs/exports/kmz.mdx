@@ -70,7 +70,7 @@ Google Earth file at all**:
 
 This is worth saying to the recipient rather than leaving them to notice.
 Ground that was excluded on slope, or a corner kept clear for a lighting pole,
-simply reads as unused land here. When either of those has to be visible, send
+reads as unused land here. When either of those has to be visible, send
 the CAD drawing export or the report drawing alongside.
 
 ## The summary placemark
@@ -88,7 +88,7 @@ you send somebody the file and a separate summary sheet — the file already
 carries the headline.
 
 The same figures, with everything else, are in the **Summary** view and in the
-Detailed Project Report. See [Summary columns](/docs/reference/summary-columns).
+Detailed Project Report. See [Summary view](/docs/reference/summary-columns).
 
 ## Opening it
 
@@ -99,8 +99,11 @@ Detailed Project Report. See [Summary columns](/docs/reference/summary-columns).
 After a layout has been generated, choose **Export ▾ ▸ Export KMZ** — the
 **Export ▾** menu sits beside **Save project** at the right of the view tabs.
 Choose the folder and the file name. The status line confirms with *"KMZ
-exported: …"*. The export needs active access; see
-[Activating access](/docs/licence/activate).
+exported: …"*. The export needs active access, see
+[Activating access](/docs/licence/activate), and a layout that is up to date:
+while an input has changed since the last run the menu reads ***Inputs changed
+since the last run.*** *Regenerate first.* and nothing exports until you
+regenerate.
 </Step>
 
 <Step>
@@ -161,7 +164,8 @@ Fix the boundary file and generate again — see
 The satellite view inside the application does the same job while you work, so
 you do not have to export to make the comparison. **Satellite**, among the
 Layout view's tools, draws aerial imagery behind the layout, aligned to the
-file's coordinates. Both it and Google Earth need an internet connection.
+file's coordinates. Both it and Google Earth need an internet connection, and
+the satellite view, like this export, needs a site whose location is known.
 </Callout>
 
 ## Limits
@@ -173,11 +177,17 @@ file's coordinates. Both it and Google Earth need an internet connection.
   taken on some particular day and is registered to the ground to within a
   tolerance. Treat a small apparent offset between your boundary and a feature
   on the imagery as a question to investigate, not as proof either is wrong.
-- **A CAD or image boundary needs coordinates to land correctly.** A drawing
-  or an image carries no geographic position of its own, so unless you
-  supplied a site latitude and longitude when loading it, there is nothing to
-  place the layout against on the imagery. See
-  [CAD boundaries](/docs/inputs/cad-boundary).
+- **A CAD or image boundary lands where you located it.** A drawing located
+  by its own UTM coordinates lands where those coordinates put it; a drawing or
+  an image placed by latitude and longitude lands with its boundary centre at
+  the point you typed. Check that point over the imagery before sending the
+  file.
+- **A site continued as Layout only has no KMZ.** Its location is unknown, so
+  the menu item reads **Export KMZ — location unknown** and is disabled; its
+  tooltip reads *"The site's location is unknown (layout only), so a KMZ would
+  put the plant in the wrong place."* To export one, pick the boundary file
+  again, say where the drawing sits in the **Site reference** window, and
+  generate again. See [CAD boundaries](/docs/inputs/cad-boundary).
 
 ## Where to go next
 

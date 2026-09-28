@@ -5,7 +5,7 @@ description: Every keyboard shortcut, the typed command line in Sketch Mode, the
 
 SolarLayout Desktop is driven from buttons, and this page is the map of them:
 the keyboard shortcuts, the CAD-style aliases Sketch Mode accepts, and every
-control in the ribbon, the view header, the Export menu and the three menus.
+control in the ribbon, the view header, the Export menu and the four menus.
 The editing shortcuts need a generated layout to act on; the menus work at any
 time. The window itself is described on
 [The main window](/docs/workspace/main-window).
@@ -14,7 +14,7 @@ time. The window itself is described on
 
 | Keys | What it does | Where it works |
 | --- | --- | --- |
-| **F5** | **Generate Layout** | The main window |
+| **F5** | **Generate Layout** — **Regenerate Layout** while the layout is out of date | The main window |
 | **Ctrl+1** … **Ctrl+5** | Switches to the Layout, Summary, Energy, BOM or SLD view, in that order | The main window |
 | **Ctrl+N** | **File ▸ Move to String / Central Window…** — opens the New design window and launches another window for the chosen combination | The main window |
 | **Ctrl+Shift+N** | **File ▸ New Project** — a fresh window at defaults in the same design | The main window |
@@ -28,11 +28,20 @@ time. The window itself is described on
 | **Shift+Click** | Adds the object under the pointer to the selection | Sketch Mode |
 | **Esc** | Cancels the tool in hand; clears a measurement | Sketch Mode |
 | **Mouse wheel** | Zooms at the cursor | Every view but SLD |
+| **→** or **↓** / **←** or **↑** | Selects the next / the previous ICR block, which is outlined thickly | The Layout view, with **ICR blocks** on in the **Layers ▾** popover and the plot focused — switching the row on gives the plot the keyboard |
+| **Enter** | Opens the selected ICR block's summary window | As above |
 
 The zoom you set with the wheel persists across redraws until you click
 **Home**, generate a new layout or load a new boundary file. The nudge moves
 the whole selection 1 m per press, so eight presses is 8 m — a practical way to
 shift a run of tables by a known distance without measuring.
+
+With a block selected from the keyboard the status bar reads *"ICR-3 selected —
+press Enter to open its summary"*. Each **Enter** opens another window, so
+several blocks can be compared side by side. See
+[ICR blocks](/docs/layout/icr-blocks).
+
+<Screenshot id="icr-block-selected" />
 
 ## The typed command line
 
@@ -95,13 +104,15 @@ The navy bar across the top of every window.
 | --- | --- |
 | **SolarLayout** | The brand |
 | Design chip — *"Fixed tilt · String inverter ▾"*, *"Tracker · Central inverter ▾"* and so on | Opens the New design window and launches another window for a different combination; this window stays open. See [Choosing a design mode](/docs/design-modes) |
-| Status mirror | Repeats the status-bar message in gold |
+| Status mirror | Repeats most status-bar messages in gold — not the *"Layout ready …"* line or the out-of-date line |
 | Access chip — **● Active — until \<date\>**, **● Access expired**, **● Access revoked** or **● Access status unavailable** | Shows this device's access at a glance; the expired and revoked states carry a **Contact Us** button. With no access at all the chip is hidden and a gold **Get Free Access** button shows instead. See [How access works](/docs/licence/overview) |
 | **Docs** | Opens this documentation in your browser |
 | **Support** | Opens the **Support / Feedback** window. See [Getting help](/docs/support) |
 
 The app version is always shown at the right of the status bar, next to the
-live cursor position in UTM metres.
+live cursor position — in UTM metres for a Google Earth file or a drawing
+located by its own coordinates, in the drawing's own coordinates for a CAD or
+image boundary placed by latitude and longitude or continued as layout only.
 
 ## The view tools row
 
@@ -121,39 +132,46 @@ The tools sit right of the view tabs, and the set changes with the view. See
 | --- | --- |
 | **Save project** | Writes the session to a `.slp` file — the same as **Ctrl+S** |
 | **Export ▾** | Opens the Export menu below |
-| **Satellite** | Draws aerial imagery behind the layout, aligned to the file's coordinates. Needs an internet connection, and a layout |
+| **Satellite** | Draws aerial imagery behind the layout, aligned to the file's coordinates. Needs an internet connection, a layout and a known site location |
 | **Wireframe** | Draws tables and tracker units as outlines only |
 | **Piles: OFF** | Turns the pile overlay on; the first use opens the **Pile layout** window. Needs a layout |
 | **Layers ▾** | Opens the popover of nine ON/OFF rows: Plant layout, Legend, Lightning arresters, ICR blocks, the three cable rows, Contour / terrain, Plant totals |
 | **Sketch** | Switches Sketch Mode on; leaving the Layout view switches it off |
 | **Home** · **Pan** · **Zoom** | Fits the whole plant, drags the view, or drag-zooms a box. While Pan or Zoom is on, a drag is ignored by the sketch tool and a control room cannot be dragged |
 | **⛶** | Opens the plot in **SolarLayout — Expanded View**, a large resizable window with a full toolbar and a **⟵ Return to Main Window** button |
-| **Copy** | Puts the summary sheet on the clipboard as tab-separated text |
+| **Copy** | Puts the summary sheet on the clipboard as tab-separated text. Disabled while the layout is out of date |
 | **Open in window** | Opens **SolarLayout — Summary** with its **Summary** and **Monthly energy (Year 1)** tabs |
 
 When the window is too narrow for every tool, **Satellite**, **Wireframe** and
 **Piles** move to the top of the Layers popover as ON/OFF rows and the button
-reads **Layers ▾  +3**. Nothing is hidden without another home.
+reads **Layers ▾ +3**. Nothing is hidden without another home.
 
 ## The Export menu
 
-**Export ▾** sits beside **Save project**. Every item needs a layout and active
-access, and all are disabled while a run is in progress.
+**Export ▾** sits beside **Save project**. The exports need a layout and
+active access, and all are disabled while a run is in progress. While the
+layout is out of date an amber row heads the menu — ***Inputs changed since the
+last run.*** *Regenerate first.* — and every item under it is disabled. See
+[Out-of-date results](/docs/workspace/out-of-date-results).
 
 <Screenshot id="export-menu" />
 
 | Item | Produces |
 | --- | --- |
-| **Export KMZ** | The Google Earth file. See [KMZ export](/docs/exports/kmz) |
+| **Export KMZ** | The Google Earth file. On a site continued as layout only it reads **Export KMZ — location unknown** and is disabled. See [KMZ export](/docs/exports/kmz) |
 | **Export DXF** | The layered CAD drawing. See [CAD drawing](/docs/exports/dxf) |
-| **Export ICR-Block DXF** | One drawing set: the whole plant, then one sheet per ICR block |
-| **Export Cable Schedule (Excel)** | A workbook with one sheet per ICR block — DC strings and AC or DC-trunk feeders, with recommended conductor sizes. Calculate cables first for real lengths |
+| **Export ICR-Block DXF** | One drawing set: the whole plant with a table of blocks, then one sheet per ICR block with its summary table. Once inverters are placed |
+| **Export ICR-Block PDF** | One A3 PDF: the whole plant with every block and a table, then one sheet per block with its key plan and details. Once inverters are placed |
+| **Export Cable Schedule (Excel)** | A workbook with one sheet per ICR block — DC strings, AC feeders or DC trunks, and the collection runs to the transformers and the main control room. **Calculate cables** is not required; without it lengths are estimated from straight lines. See [The cable schedule](/docs/layout/cables#the-cable-schedule) |
 | **Export Detailed Project Report** | The Word document. See [Project report](/docs/exports/project-report) |
-| **Export PDF (with Piles)** | The PDF report with the pile drawing and coordinates. Shown only while **Piles** is on |
+| **Export PDF (with Piles)** | The PDF report with the pile drawing and coordinates. Shown only while **Piles** is on and a pile pattern exists |
 | **Export Image (PNG)** | The plot as it is on screen, as an image file |
 
 Outside the menu: **Export TMY data CSV** on the Yield tab, the two BOM exports
-and the two SLD exports below, and **Export to Excel…** in the pile window.
+and the two SLD exports below, **Export to Excel…** in the pile window,
+**PDF…** in an ICR block window, **Export PDF…** in the **Robot count from
+DXF** window, and the PDF, DXF and CSV exports of the **Earthing Design**
+window.
 
 ## The Sketch Mode contextual bar
 
@@ -178,15 +196,15 @@ no command line. See [Single-line diagram](/docs/sld/overview).
 
 | Control | What it does |
 | --- | --- |
-| **Generate:** **Automatic** / **Manual** | Builds the diagram from the layout and the bill of materials, or starts a blank sheet. Nothing is generated until you choose |
+| **Generate:** **Automatic** / **Manual** | Builds the diagram from the layout, the electrical grouping and the inverter file, or starts a blank sheet. Nothing is generated until you choose, and a stored diagram is rebuilt only when you choose **Automatic** again |
 | **↖ Move/Select** · **🗑 Delete** · **╱ Wire** · **📝 Text** | Select and drag, remove, draw a wire, place a label |
 | The symbol grid | Places a symbol on the next click. See [Symbols](/docs/sld/symbols) |
 | **🖼 Import Image Symbol** / **🗑 Delete Image Symbol** | Traces an image into a vector symbol through the **Symbol Editor**, or removes one |
-| Rotate: angle spin, **⟳ Apply**, **⟲ 90°** | Rotates the selection by the typed angle (0–360°, step 15, default 90) or by 90° |
+| Rotate: angle spin, **⟳ Apply**, **⟲ 90°** | Turns the selection to the typed angle (0–360°, step 15, default 90), or on by 90° |
 | **🔗 Group** · **✂ Ungroup** · **⧉ Copy** | Groups, breaks apart, or duplicates the selection |
 | **✋ Pan** · **🔍 Zoom** · **⤢ Fit** | Navigates the sheet; turn Pan or Zoom off to edit |
 | **🗑 Clear SLD** | Empties the sheet |
-| **Full SLD (per-ICR / per-feeder)** | Automatic only: off draws one annotated feeder with multiplicities, on draws parallel feeders converging on per-ICR transformers |
+| **Full SLD (per-ICR / per-feeder)** | Automatic only: off draws one annotated feeder with multiplicities, on draws one row per ACCB (or per central inverter) grouped by transformer |
 | **📄 Import PDF / DXF** · **✖ Remove BG** | Places the first page of a drawing as a background image to draw over, or removes it |
 | **⬇ Export SLD to DWG** · **⬇ Export SLD to PDF** | The diagram on its own. See [SLD export](/docs/sld/export) |
 | **Hide Layout & Energy Summary** | Hides the plant chip row |
@@ -210,22 +228,30 @@ The BOM view takes over the left column with the **BOM TOOLS** panel. See
 
 ## Menu map
 
-Three menus, nine items. An item ending in an ellipsis opens a window.
+Four menus, eleven items. An item ending in an ellipsis opens a window. Every
+item is always enabled.
+
+<Screenshot id="tools-menu" maxWidth={380} />
 
 | Menu | Item | What it does |
 | --- | --- | --- |
 | **File** | **New Project** — Ctrl+Shift+N | Opens a fresh window at defaults in the same design |
 | **File** | **Move to String / Central Window…** — Ctrl+N | Opens the New design window and launches a new, independent window for the chosen mounting and inverter combination; the current window stays open |
-| **File** | **Save Project…** — Ctrl+S | Writes the whole session — inputs, layout, sketch edits, diagram, bill of materials, terrain — to a `.slp` file |
+| **File** | **Save Project…** — Ctrl+S | Writes the whole session — every input, the layout, sketch edits, diagram, bill of materials, terrain and energy — to a `.slp` file |
 | **File** | **Open Project…** — Ctrl+O | Reads a saved `.slp` file back |
 | **File** | **Open Sample Site** | Loads the bundled sample: one boundary with a pond, a transmission line and an obstruction |
 | **File** | **Exit** — Ctrl+Q | Closes the application |
-| **Edit-Pile** | **Define Pile Layout…** | Opens the **Pile layout** window for the reference table |
+| **Edit-Pile** | **Define Pile Layout…** | Opens the **Pile layout** window, where the full-table pattern and, on a plant with half units, the half-table pattern are defined |
+| **Tools** | **Robot count from DXF…** | Opens the **Robot count from DXF** window, which sizes a cleaning fleet from any plant layout DXF. Works without a layout and adds nothing to the project |
+| **Tools** | **Earthing Design…** | Opens the **Earthing Design** window for the generated layout. Before a layout it shows **Generate first** — *"Generate a layout first, then open Earthing Design."* |
 | **Help** | **How to Use This Tool** — F1 | Opens the in-app guide |
 | **Help** | **License / Subscription…** | Opens the window that shows this device's access and requests it |
 
-Saving and opening are covered on [Projects](/docs/projects); the pile window
-on [Piles](/docs/editing/piles); the licence window on
+The two **Tools** items are also buttons in the **Studies** card on the Tools
+tab, and neither has a shortcut. Saving and opening are covered on
+[Projects](/docs/projects); the pile window on [Piles](/docs/editing/piles);
+the two tools on [Robot count from DXF](/docs/simulation/robot-count-from-dxf)
+and [Earthing design](/docs/simulation/earthing); the licence window on
 [Activate this device](/docs/licence/activate).
 
 ## Where to go next

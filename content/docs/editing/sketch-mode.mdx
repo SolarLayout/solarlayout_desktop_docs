@@ -34,7 +34,14 @@ from the left panel."*
 <Screenshot id="sketch-mode" />
 
 Click **Exit Sketch Mode — apply edits, recalc totals** and the inputs come
-back. The status line reads *"Sketch Mode OFF — plant totals updated."*
+back. What happens next depends on whether the plot changed:
+
+- **If nothing changed** — a line colour alone does not count — nothing is
+  recomputed, redrawn or re-routed. The status line reads *"Sketch Mode OFF."*
+- **If something changed**, the plant totals are recomputed, the inverters
+  (or SMBs) are placed again and, with **Calculate cables** on, every cable is
+  routed again. The status line reads *"Sketch Mode OFF — plant totals
+  updated."*, then the *"Layout ready …"* line once the cables are done.
 
 <Callout type="warn">
 The plant totals are recomputed when you **leave** Sketch Mode, not while you
@@ -142,7 +149,8 @@ all. With neither **Pan** nor **Zoom** active, click and hold a blue ICR on the
 plot, drag it, and release. The layout rebuilds around the new position — tables
 under the new footprint are cleared, and the tables it vacated are available
 again. A drop where the room does not fit entirely inside the usable area snaps
-back to where it started. See [Inverter control rooms](/docs/layout/icr).
+back to where it started. A drag is ignored while cables are being routed. See
+[Inverter control rooms](/docs/layout/icr).
 
 ## Moving, copying and deleting
 
@@ -215,14 +223,19 @@ knows nothing about what is already buried on the site.
 | **🟢 DC Trench** | Click vertices, right-click to finish: a DC trench |
 | **🔴 AC Trench** | Click vertices, right-click to finish: an AC trench |
 | **🟩 MV Trench** | Click vertices, right-click to finish: a medium-voltage trench |
-| **✂ Del Trench** | Click any trench — automatic or hand-drawn — to delete it; the untouched trenches stay as the automatic routing |
+| **✂ Del Trench** | Click any trench — automatic or hand-drawn — to delete it |
 
-<Callout type="info">
-Trench edits survive the next run. Once you have deleted an automatic trench or
-drawn one of your own, **Generate Layout** keeps the current cables instead of
-re-routing them — the cable follows your trenches — so your route is not
-overwritten the next time you change an input and generate again. There is no
-control that hands the cabling back to automatic routing.
+A trench you draw **replaces every automatic run of that type** in the plot,
+and the cable and trench totals then come from what you drew. In a central
+design **🔴 AC Trench** draws the trunk from the SMBs to the central inverter.
+
+<Callout type="warn">
+Trench edits are short-lived. A drawn trench survives leaving Sketch Mode but
+not a **Generate Layout**, which lays out and routes every cable afresh. A
+deleted automatic run lasts only while you are in Sketch Mode: with
+**Calculate cables** on, leaving Sketch Mode routes every cable again and the
+run comes back. Draw trenches after the last Generate, and do not rely on
+deleting automatic ones.
 </Callout>
 
 What that means for the reported cable and trench lengths — and why trench
@@ -267,9 +280,10 @@ trench tool. **↶ Undo** and **↷ Redo** step through anything that went wrong
 <Step>
 ### Exit Sketch Mode
 
-Click **Exit Sketch Mode — apply edits, recalc totals**. The plant totals are
-recomputed here. Read the module count, capacity and arrester count in the
-Summary view and confirm they moved the way you expected.
+Click **Exit Sketch Mode — apply edits, recalc totals**. If anything on the
+plot changed, the plant totals are recomputed here and the cables routed again.
+Read the module count, capacity and arrester count in the Summary view and
+confirm they moved the way you expected.
 </Step>
 
 <Step>
@@ -324,24 +338,25 @@ intuitive guess is wrong in both directions:
 2. If the layout was edited, Generate **re-places every table, tracker,
    inverter and control room from scratch** into the newly available space.
    Hand-placed and hand-deleted **tables do not survive** a Generate.
-3. The obstructions, roads, corridors and main control room you drew **do**
-   survive — they are collected and handed to the placement as ground to keep
-   clear, so the plant is rebuilt *around* your constraints rather than
-   ignoring them.
-4. Hand-drawn cable trenches also survive, by the separate rule above.
+3. The obstructions, roads, corridors, main control room, USS, objects and
+   annotations you placed **do** survive — they are carried onto the new
+   layout, and the obstructions and corridors are handed to the placement as
+   ground to keep clear, so the plant is rebuilt *around* your constraints
+   rather than ignoring them.
+4. Hand-drawn cable trenches **do not** survive: every cable is routed afresh.
+5. An energy result is cleared; calculate energy again for the new layout.
 
 <Callout type="warn">
 The re-plot is forced back to the aligned grid: **Maximize placement** is
 switched off for it, so that pile coordinates stay uniform for construction. If
-you had it on, the plant you get back is the aligned one, at a lower table
-count. The status line says *"Re-plotting the aligned grid around your sketch
+you had it on, the plant you get back is the aligned one. The status line says *"Re-plotting the aligned grid around your sketch
 edits…"* while this happens.
 </Callout>
 
 There is no "keep my layout and refresh the numbers" path. So the order of work
 matters: draw your roads and corridors and place the control room first,
-generate, and hand-edit individual tables **last** — anything you do to tables
-before a Generate is discarded by it.
+generate, and hand-edit individual tables and draw trenches **last** —
+anything you do to tables or trenches before a Generate is discarded by it.
 
 ## Where to go next
 

@@ -30,8 +30,10 @@ boundary. Crop the image down to the site before loading it.
 ## The Site reference window
 
 An image has no units and no position. Choosing one with **Browse…** on the
-**Site** tab opens the **Site reference** window with two cards: **SCALE**
-first, then **LOCATION**.
+**Site** tab opens the **Site reference** window before the image is taken,
+with two cards: **SCALE** first, then **LOCATION**. The navy strip at the top
+reads *"Image boundary · scale needed"*. **Cancel** closes the window without
+loading the image; whatever file was loaded before stays loaded.
 
 <Screenshot id="image-scale" />
 
@@ -48,8 +50,8 @@ drawing.* — and updates as you type.
 | *… is drawn as … mm* | 10.00 mm | 0.01–100 000 mm | The distance that stands for it on the drawing |
 
 Read the pair off the scale bar or the title block of the plan you are tracing,
-or measure any two points whose real separation you know. Both footer buttons
-keep the scale you entered.
+or measure any two points whose real separation you know. The scale is saved
+in the project with the rest of the inputs.
 
 #### From millimetres to pixels
 
@@ -72,25 +74,36 @@ Resolution and scale multiply. An image that declares a different dpi from the
 one you assumed changes every dimension in the plant by that ratio, and nothing
 about the layout looks wrong when it happens — the shape is right, the size is
 not. After the first run, check the **Site area** chip against the acreage you
-expect, and adjust the scale pair until they agree.
+expect, and load the image again with a corrected scale pair until they agree.
 </Callout>
 
 ### The location
 
-The **LOCATION** card, the banner and the footer are the same as for a CAD
-drawing: a ticked **I know the site coordinates** box, **Latitude** and
-**Longitude**, a **Layout only** button and the primary **Use this location**
-(which reads **Continue without coordinates** when the box is unticked). Supply
-the coordinates. Without them the layout is still generated geometrically, but
-**energy calculation is unavailable** — **Calculate Energy** is disabled — and
-the automatic tilt angle and row pitch are derived from the fallback position
-of 20° N, 78° E rather than from your site. The controls and the consequences
-are set out in full on [CAD drawing boundaries](/docs/inputs/cad-boundary).
+The **LOCATION** card works as it does for a CAD drawing, with two modes
+rather than three — an image has no coordinates of its own to use:
 
-If you have to work without coordinates, tick both override boxes in
-[Spacing and tilt](/docs/inputs/spacing-and-tilt) and enter the tilt angle and
-row pitch yourself, so at least the table count and the capacity are the ones
-you intend.
+| Mode | What you enter | Primary button |
+| --- | --- | --- |
+| **Place by latitude and longitude** — selected when the window opens | The **Latitude** and **Longitude** of the centre of the site boundary. Both start empty | **Place the drawing here** |
+| **Layout only** | Optionally a **Latitude**, for tilt and row pitch | **Continue with layout only** |
+
+**Place by latitude and longitude** is the one to use. The traced outline is
+moved so its centre sits at the point you typed — never scaled or rotated — and
+the site then has a position: automatic tilt and row pitch, energy yield, the
+Google Earth export and the satellite image all work.
+
+**Layout only** leaves the site's location unknown. The layout is still
+generated, but there is no energy yield — **Calculate Energy** is disabled —
+no Google Earth export and no satellite image. Automatic tilt and row pitch
+need a latitude: give one in the window, or set tilt and pitch by hand in
+[Spacing and tilt](/docs/inputs/spacing-and-tilt). The Shadow View needs the
+latitude too.
+
+Either way the drawing keeps its own coordinates: the plot's units note reads
+*"Drawing coordinates · metres"*, and the exported CAD drawings come back in the
+image's own frame. The fields, the banners and the full table of what each
+choice gives are on
+[CAD drawing boundaries](/docs/inputs/cad-boundary#the-site-reference-window).
 
 ## Getting a usable result
 
@@ -136,7 +149,7 @@ spending time on module, table or energy settings.
 - **No named features.** There is no classification by name, so water bodies,
   buildings and corridors cannot be described in the image at all.
 - **No interior exclusions.** Only the boundary is traced.
-- **No position**, unless you type the coordinates.
+- **No position**, unless you type the latitude and longitude of its centre.
 
 Add the exclusions after the layout is generated, by drawing them on the plot.
 See [Obstructions and exclusions](/docs/layout/obstructions).

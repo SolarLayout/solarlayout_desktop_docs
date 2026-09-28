@@ -16,10 +16,13 @@ site you should use to deliver exactly what you have sold.
 
 ## Where it is, and what it needs
 
-The button is the first of three in the **Studies** card on the **Tools** tab.
-The card is there from the start, but every button in it is greyed out until a
-layout exists — the simulation works from a placed layout, because it needs to
-know what the site can deliver before it can cap anything to a target.
+The button is the first of five in the **Studies** card on the **Tools** tab:
+**🔆 Simulation with AC Capacity**, **🤖 Robotic Module Cleaning**, **Robot
+count from DXF…**, **🌓 Shadow View (row spacing)** and **⚡ Earthing Design**.
+The card is there from the start, but every button except **Robot count from
+DXF…** is greyed out until a layout exists. The simulation works from a placed
+layout, because it needs to know what the site can deliver before it can cap
+anything to a target.
 
 <Screenshot id="studies" />
 
@@ -74,13 +77,17 @@ window can raise it.
 
 ### TARGET
 
-| Field | Default | What it does |
-| --- | --- | --- |
-| **AC capacity** | — | The AC capacity you are sizing to, in kW. The equivalent in MW is shown beside it |
-| **DC/AC ratio** | 1.30 | Installed DC divided by installed AC — the ratio you intend to build at |
-| **Overload limit** | 1.5 in a string design, 1.4 in a central design | The design overload limit: the highest DC/AC ratio the window will size at. This is a design figure, not the inverter's nameplate DC input |
-| **Modules per string** | — | The string length. **Size…** beside it opens the string-sizing window — see [String sizing](/docs/inputs/string-sizing) |
-| **Strings per SMB** | 20 | Central-inverter designs only. The window reports *"→ n SMBs per inverter"* beside it |
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **AC capacity** (kW) | The largest multiple of 100 kW that the layout holds at a ratio of 1.30 | 1.0–5,000,000 | The AC capacity you are sizing to. The equivalent in MW is shown beside it |
+| **DC/AC ratio** | 1.30 | 0.80–2.50 | Installed DC divided by installed AC — the ratio you intend to build at |
+| **Overload limit** | 1.5 in a string design, 1.4 in a central design | 1.00–2.00 | The design overload limit: the highest DC/AC ratio the window will size at. This is a design figure, not the inverter's nameplate DC input |
+| **Modules per string** | The **Array** tab's **Modules per row** (fixed tilt) or **Modules per string (N–S)** (tracker) | 1–200 | The string length. **Size…** beside it opens the string-sizing window — see [String sizing](/docs/inputs/string-sizing) |
+
+The **AC capacity** default is worked out from the first run's DC capacity:
+that DC divided by 1.30, rounded down to a whole 100 kW, so the window opens on
+**Fits this layout**. It is a starting point, not a suggestion — type the
+capacity you are contracted for over it.
 
 ### EQUIPMENT
 
@@ -107,6 +114,20 @@ sizing:
 | **DC/AC ratio** | The ratio the figures are built at |
 | **DC per inverter** | The DC behind each inverter at that sizing |
 
+Under the tiles sit two more inputs that belong to the result rather than the
+target:
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **ICR block AC** (kW) | 0, shown as **Not set** | 0–5,000,000 | The AC capacity one ICR block serves. Beside it the window answers *"→ n blocks of x.xxx MWp DC"*; while it is not set, *"keeps the input panel's x MWp blocks"*. See [ICR blocks from an AC capacity](#icr-blocks-from-an-ac-capacity) |
+| **Strings per SMB** | 20 | 1–500 | Central-inverter designs only. The window answers *"→ n SMBs per inverter"*. It can be changed only while the verdict is **Fits this layout**; otherwise its answer reads `—` |
+
+**ICR block AC** opens at **Not set** every time the window opens; it is not
+remembered between openings or saved with the project. Only its effect — the
+**ICR Block** value that a regeneration writes — is kept.
+
+<Screenshot id="ac-capacity-icr-block" />
+
 The verdicts:
 
 | Verdict | What it means | What the window offers |
@@ -114,14 +135,22 @@ The verdicts:
 | **Fits this layout** | *"Target DC uses n % of the x MWp placed. Regenerating trims the layout to y MWp."* — the site can deliver it | The primary button in the footer |
 | **Needs x MWp more than this layout holds** | The first run already used all the usable area there is | *"… Lower the target, or make room in the layout (tighter pitch, more area) and generate again."*, with fix buttons **Set AC capacity to … kW** and **Set ratio to …** |
 | **DC/AC ratio is over the inverter's limit** | *"You asked for r; the overload limit is m. DC beyond the limit is clipped. Figures below use the limit."* | **Set ratio to …** and **Raise limit to …** |
-| **Missing input** | A field the sizing needs is empty | — |
+| **Missing input** | *"Module Pmax and modules-per-string are required."* or *"Inverter rated AC power (Pac_rated) is required."* | Fill the field, or the matching value under **Override nameplate values** |
 
 ### The footer
 
 A tick box, **Let me choose where placement starts** — *"After regenerating,
 click a point on the plot; the tables nearest it are kept."* — then **Close**
-and the primary button, **Regenerate layout at x MWp**, which names the
-capacity it will trim the layout to.
+and the primary button. When the target fits, the button reads **Regenerate
+layout at x.xx MWp** and names the capacity it will trim the layout to.
+Otherwise it reads **Regenerate layout**, greyed out, and a line beside
+**Close** gives the reason:
+
+| Verdict | Reason shown |
+| --- | --- |
+| **Missing input** | *"Complete the inputs first."* |
+| **DC/AC ratio is over the inverter's limit** | *"Lower the ratio or raise the limit."* |
+| **Needs x MWp more than this layout holds** | *"Target DC exceeds the layout."* |
 
 ## How it sizes
 
@@ -208,7 +237,7 @@ actually placed — the figure in the strip.
 
 ### The target is at or below what the layout holds
 
-The verdict reads **Fits this layout**. Click **Regenerate layout at x MWp**
+The verdict reads **Fits this layout**. Click **Regenerate layout at x.xx MWp**
 and the layout is rebuilt **capped to the target**: the same site, the same
 settings, with placement trimmed so the installed DC capacity lands on your
 target instead of filling the ground. Tick **Let me choose where placement
@@ -239,6 +268,37 @@ Change those, generate again, and reopen the window.
 If a regenerated plant lands below its target, the status line says so rather
 than leaving you to spot it on the plot: *"⚠ DC x MWp is BELOW the y MWp target
 — the site has no room left; reduce the AC capacity or DC/AC ratio"*.
+
+## ICR blocks from an AC capacity
+
+The number of inverter control rooms follows the **ICR Block** field on the
+**Site** tab — the DC capacity one room serves; see
+[Site parameters](/docs/inputs/site). When the connection is specified in AC
+per block rather than DC, enter that figure in **ICR block AC** and let the
+window convert it:
+
+```
+ICR block DC = ICR block AC × DC/AC ratio
+ICR blocks   = AC capacity ÷ ICR block AC, rounded up (at least 1)
+```
+
+When the ratio is over the overload limit, the limit is used in its place, as
+it is everywhere else in the window. The answer beside the field shows both
+results before you commit to anything.
+
+**Regenerate writes the block DC into the ICR Block field**, rounded **up** to
+three decimals so that a block is never smaller than the calculation — 12,500 kW × 1.325
+= 16.5625 MWp becomes **16.563 MWp** — and held within the field's own range of
+0.1–500 MWp. The change is reported while the layout rebuilds, in the form
+*"ICR block &lt;old&gt; MWp → &lt;new&gt; MWp"*, and again on the status line after the run
+as *"| Input panel updated from the AC simulation: …"*. Leave **ICR block AC**
+at **Not set** and the field is left as it is.
+
+In a capped layout the control rooms are counted against the **DC target**,
+not against the trimmed plant, and each is placed at the ICR length and width
+you set on the **Structures & Shadow** card. See
+[Inverter control rooms](/docs/layout/icr) for how rooms are counted and sited,
+and [ICR blocks](/docs/layout/icr-blocks) for what a block contains.
 
 ## Why a capped plant has empty ground
 
@@ -286,7 +346,7 @@ was actually placed, and it is the figure that tells you the cap did what you
 asked. A delivered ratio marginally above the target is the expected result of
 rounding inverters up and landing DC just above target. The **DC capacity**
 chip under the view shows the capped figure. See
-[Summary columns](/docs/reference/summary-columns) for the full row set.
+[Summary view](/docs/reference/summary-columns) for the full row set.
 
 The capped layout carries into everything downstream unchanged — the report, the
 drawing exports, the bill of materials and the energy calculation all describe
@@ -320,7 +380,7 @@ at, and read the inverter count and target DC off the tiles.
 <Step>
 ### Regenerate at the target
 
-Click **Regenerate layout at x MWp** and review the plot. The bare ground is
+Click **Regenerate layout at x.xx MWp** and review the plot. The bare ground is
 expected; check **DC / AC ratio** on the Summary view rather than the
 appearance of the plan.
 </Step>
@@ -347,7 +407,7 @@ no longer apply. Re-run it before exporting anything.
     description="Loading an inverter file and what its ratings drive"
   />
   <Card
-    title="Summary columns"
+    title="Summary view"
     href="/docs/reference/summary-columns"
     description="The capacity and ratio rows, and every other row"
   />
