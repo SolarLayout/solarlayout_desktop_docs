@@ -2366,7 +2366,9 @@ bridge(s) to BOM** (m = standard plus supported bridges; tooltip *"Confirm this
 fleet quantity and the bridges — the robot count is added to the layout, the
 results summary, the BOM and the exported reports."*). Results feed the
 Summary's *Cleaning robots* row and the BOM, and are saved with the project;
-the window's own answers are not (§4.10).
+the window's own answers are not (§4.10). Within a session, each Generate
+re-sizes the fleet for the new layout with the answers last given
+(`_refresh_robotic_cleaning`, `MW:4508-4511, 9337`).
 
 ### 10.3 Robot count from DXF (#276, #299) — `RDD`, `RDX`, `RDR`, `RC`
 
@@ -3686,8 +3688,9 @@ Confirmed in review (2026-09-28):
 - The Word report skips the SLD annexure silently on error and adds the energy
   drawings only when energy exists (`docx_exporter.py:611-632`).
 - The License window shows **Get Free Access** and **Contact Us** in every
-  non-active state, expired and revoked included (`license_dialog.py:159-162`;
-  its module docstring at `:12-13` is stale).
+  non-active state, expired and revoked included (`license_dialog.py:159-162`).
+  That is a defect, not the intent: the module docstring (`:12-13`) and the
+  trial spec describe the intended behaviour (§20 #30, #349).
 
 ## 19. Facts we do not have
 
@@ -3716,14 +3719,17 @@ relies on them.** Where a page has to steer round one, it states only the
 correct route (as noted in the relevant section). They are reported to the
 product team; re-check before the next docs update.
 
-Filed 2026-09-28 in `PVlayout_Advance` (row → issue): #1–#2 → #322 · #3 → #323,
-#332 · #4 → #324 · #5 → #336 · #6 → #325 · #7–#8 → #326 · #9, #26 → #335 · #10 →
-#333 · #11 by design, not filed · #12–#14 → #327 · #15, #28 → #332 · #16 → #328 ·
-#17, #19 → #329 · #18, #21 → #330 · #20, #22 → #331 · #23 → #337, #338 · #24 →
-#337 · #25 → #338 · #27 → #339 · #29 → #334. Runtime repros on 2026-09-28
-confirmed #12 (a plain Generate leaves block windows open; their PDF… writes 0
-pages), #6 and #29 (Maximize placement on or off: 1,640 tables in the same 39
-columns on the sample site).
+Tracked in `PVlayout_Advance` as the **Bug Bash** epic #340 (2026-09-28), nine
+issues that each address a class of these rows; they supersede the per-row
+issues #322–#339, which are closed. Row → issue: #1–#4 → #341 · #5, #6,
+#12–#14 → #344 · #7, #8, #27 → #342 · #9, #25, #26 → #349 · #10, #15, #28 →
+#343 · #11 by design, not filed · #16–#19, #21 → #345 · #20, #22 → #346 ·
+#23 → #347 (fleet) and #349 (tracker allowances) · #24 → #347 · #29 → #348 ·
+#30 → #349. Runtime repros on 2026-09-28 confirmed #12 (a plain Generate
+leaves block windows open; their PDF… writes 0 pages), #6 and #29 (Maximize
+placement on or off: 1,640 tables in the same 39 columns on the sample site).
+When an issue closes, re-verify its rows against `main` and move what is
+fixed out of this table.
 
 | # | Issue | Evidence |
 |---|---|---|
@@ -3732,7 +3738,7 @@ columns on the sample site).
 | 3 | **Earthing Design is outside the fresh-results and access checks** — it opens and exports on an out-of-date layout, an open window keeps the layout it was opened on, and its exports are neither licence-checked nor disabled during a run. Reopening does not raise an already open window (two can show). | `MW:9130-9144`, `ED:551-572` |
 | 4 | **Earthing Design: LA pits cap at 50 per arrester silently**; *Weather stations* and *Gates* apply per plot on a multi-plot site while the report says one; the *Fence / poles* legend line appears only because of the weather-station strip. | `EA/calc.py:338-346`, `EA/layout.py:434-473` |
 | 5 | **Menu-bar tooltips are never shown** (only the Export ▾ menu shows tooltips), so the Tools ▸ Earthing Design… tooltip is invisible. Tools ▸ Earthing Design… is always enabled while the Studies button is disabled before a layout. | `MW:1315-1323, 2612` |
-| 6 | **After Open Project**, the four layout Studies buttons stay disabled and the Tools tab tooltip still says *"Generate a layout first"* until a Generate; **Remove MCR** / **Remove Objects** stay disabled even when the project has an MCR or objects; the Yield status line is blank; the AC-capacity baseline (first-run DC) is not restored. | `MW:1708, 1734, 1747, 3382, 4083-4086, 4502-4507` |
+| 6 | **After Open Project**, the four layout Studies buttons stay disabled and the Tools tab tooltip still says *"Generate a layout first"* until a Generate; **Remove MCR** / **Remove Objects** stay disabled even when the project has an MCR or objects; the Yield status line is blank; the AC-capacity baseline (first-run DC) is zeroed on open (`_on_boundary_file_changed`, `MW:9510`), so **Simulation with AC Capacity** shows a 0.0000 MWp baseline after a reopen (#344). | `MW:1708, 1734, 1747, 3382, 4083-4086, 4502-4507, 9506-9516` |
 | 7 | **A layout-only site with no latitude and automatic tilt / pitch "succeeds" with 0 tables** — the status says *"Layout ready"*, the only trace is *"[ERROR: Automatic tilt and row pitch need the site's latitude. …]"* in the plant name, and the Array tab is then overwritten with *Auto → 0.0°* / *Auto → 0.00 m* (ticking the overrides without retyping then generates at 0° and 1 m). Pages say only "give a latitude, or set tilt and pitch by hand". | `layout_engine.py:1015`, `IP:2500-2530` |
 | 8 | **Layout-only terrain and shadow messages are swallowed** — *"The site's location is unknown, so no elevation data can be fetched…"* and the skipped shadow clearance are never shown. | `GR:59-64`, `MP:861` |
 | 9 | **Site reference verdicts cite a non-existent "design report … (check C-01)".** | `SRV:22, 26` |
@@ -3749,13 +3755,14 @@ columns on the sample site).
 | 20 | **Trench totals go stale after canvas edits** (obstruction, Undo, Clear, ICR drag re-route cables but not trench totals, re-create deleted automatic runs, and do not rebuild the BOM); a drawn trench is stored on the first plot whatever plot it was drawn in (code reading only). The flashed status *"Sketch changes applied — …"* is overwritten at once. | `MW:4427, 5983, 8317-8322`, `sketch_manager.py:2389-2392` |
 | 21 | **The sampled DC string cable on a > 30 000-table plot is not marked "(est.)"**, nor is the Summary's DC trench row. | `BB:139-149`, `MW:10171` |
 | 22 | **MV cables appear to be routed with Calculate cables off** (whenever an MCR / USS exists) while the MV layer row is disabled and the hint says to enable cable calculation. Code reading only; verify with a run. | `MW:573-576, 4390-4392, 8500-8503` |
-| 23 | **A reopened robotic fleet goes stale** — the fleet is saved but the window's answers are not, so later edits never re-size it and a Generate drops it silently. The cable allowances stay enabled on a tracker design where two of them do nothing. | `MW:9307-9343` |
+| 23 | **A reopened robotic fleet goes stale.** Within a session a Generate re-sizes the fleet with the saved answers (`_refresh_robotic_cleaning`, `MW:4508-4511, 9337`) — corrected 2026-09-28 by #347; an earlier version of this row said Generate drops it. But Open Project or a boundary change clears the answers (`_robotic_params = None`, `MW:9514`) while the fleet result stays in the project, so later edits never re-size it; the window opens empty every time, even in-session (`MW:9199`); after an in-session Generate the old bridge marks are drawn on the new layout; the cable-error path skips the re-size (`MW:4641`). Separately, the cable allowances stay enabled on a tracker design where two of them do nothing (#349). | `MW:4508-4511, 9199, 9307-9343, 9506-9516, 4641` |
 | 24 | **Robot count from DXF** — the analysis notes reach only the PDF; changing a layer role or the Structure clears ticked gaps; the PDF's *"(≤ x.xx m)"* ignores the 0.25 m tolerance. The two cleaning windows present the same engine differently (verdict kind, decimals, km vs m, *row* vs *line*). | `RDD:676-686`, `RDR:309-310`, `RC:476` |
 | 25 | **AC-capacity window** — *"Enter a positive AC capacity and target DC/AC ratio."* is unreachable; the reserved fix-button row leaves a blank strip under *Fits this layout*. | `ACS:180-188`, `ACD:234-238` |
 | 26 | Cosmetic strings: *"water body(s)"*; *"Closing as soon as the cables are routed..."* (ASCII dots); **Export PDF  (with Piles)** (two spaces); the Electrical tab tooltip *"Inverter sizing and cable options"* does not mention transformers. | `MW:4457, 3619-3627, 1565`, `IP:79` |
 | 27 | **Sketch ▸ Import DXF on a placed or layout-only site** — the import takes a drawing's coordinates as the project's internal UTM with no drawing offset, so on a CAD or image site placed by latitude / longitude, or laid out only, a reference drawn in the boundary drawing's coordinates does not overlay the plant. Pages state only that the drawing must be in the project's coordinates (a KMZ site's UTM zone, or a drawing located by its own coordinates). | `sketch_manager.py:1128-1131`, `georef.py:1-19, 209-214` |
 | 28 | **Robot count from DXF and its PDF do not check access**, unlike every other export. | `MW:9206-9211` |
-| 29 | **Fixed-tilt Maximize placement vs its tooltip** — the tooltip (and §4.2) says rows hug the boundary independently so table columns will not line up; the fixed-tilt packer snaps every row to one global column grid, so columns stay aligned (`layout_engine.py:35-98`, since 2026-08-11). The tracker packer does hug per column (`tracker_layout_engine.py:39-82`). Pre-dates the 2026-09 window; **ask the product owner which is intended** before changing the pages, which still follow the tooltip. | `layout_engine.py:35-98`, `IP:723-729` |
+| 29 | **Fixed-tilt Maximize placement vs its tooltip** — the tooltip (and §4.2) says rows hug the boundary independently so table columns will not line up; the fixed-tilt packer snaps every row to one global column grid, so columns stay aligned (`layout_engine.py:35-98`, since 2026-08-11). The tracker packer does hug per column (`tracker_layout_engine.py:39-82`). Decided in #348 (2026-09-28): **aligned columns are intended** on fixed tilt (the cable routers depend on the column lanes), so the tooltip is wrong; #348 will hide the option on fixed tilt or make it hug the fence at row ends only, and will list the page changes. Until it lands, the pages keep their current wording. | `layout_engine.py:35-98`, `IP:723-729` |
+| 30 | **The License window offers Get Free Access when access has expired or been revoked.** The trial spec says only the *no trial* state offers it, and `access_view` already returns the right button, but the dialog uses `not ok` (`license_dialog.py:159-162`); the module docstring (`:12-13`) states the intended behaviour. Pages must not tell expired or revoked users to use Get Free Access; **Contact Us** / `sales@solarlayout.app` is the route. | `license_dialog.py:12-13, 159-162`, `access_chip.py:52-87` |
 
 ## 21. Release mapping
 
