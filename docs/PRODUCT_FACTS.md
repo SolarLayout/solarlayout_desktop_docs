@@ -724,11 +724,14 @@ Box** (central design).
 | OND (inverter) | *"No OND file loaded"*, buttons **Load .OND** and **View** | — | View enabled once a file loads |
 
 - **Load .OND** (file dialog **Load Inverter OND File**) parses a PVsyst
-  inverter file; the row then shows *Manufacturer Model*. **PmaxOut** drives
-  plant AC capacity, falling back to **Pnom** when absent — `IP:1560-1580`.
-  ⚠️ The button's tooltip still says *"The nominal AC power (Pnom) will be used
-  to calculate total plant AC capacity and DC/AC ratio."* (`IP:1298-1303`); the
-  code uses PmaxOut first (§18).
+  inverter file; the row then shows *Manufacturer Model* — `IP:1560-1580`.
+  **Plant AC capacity, Inverter capacity and the DC / AC ratio use the nominal
+  AC power (Pnom) first**, PmaxOut only when Pnom is missing
+  (`ac_kw = pnom or pmax`, `MW:9721`; the BOM's row-1 fallback likewise,
+  `BB:52-53`), unless an AC-capacity study set the AC target. The button's
+  tooltip *"The nominal AC power (Pnom) will be used to calculate total plant AC
+  capacity and DC/AC ratio."* (`IP:1298-1303`) is accurate. (Corrected
+  2026-09-28 in review; earlier versions of this sheet said PmaxOut first.)
 - The OND also feeds the **ACCB & Transformer** card (§4.8c): PMaxOut sets the
   transformer loads and the power transformer, VOutConv the LV voltage, IMaxAC
   the inverter → ACCB feeder current in the cable schedule (§13.6) — `EG:52-64,
@@ -976,6 +979,15 @@ grouping, so they agree.
 labels and the ICR block **Transformer load** row, but **not the cable
 schedule**, which is fixed at 33 kV (§13.6). Its tooltip's *"and the MV cables
 to the MCR"* is therefore stale (§18).
+
+Confirmed while writing the pages (2026-09-28):
+- The card's rules are part of the parameters built at Generate, so a change
+  made before the first layout is used by the next Generate
+  (`IP:1448-1466, 2655, 2698`).
+- Entering the BOM view with a rebuild pending overwrites the whole held list,
+  including a template put in with **Replace plant BOM** (`MW:8007-8012`).
+- The automatic SLD labels a transformer's voltages as, e.g., *33 kV/800 V*
+  (`SA:110-115`).
 
 ### 4.9 Energy Yield card — `IP:1247-1626` (Yield tab)
 
@@ -1712,7 +1724,7 @@ output voltage, as in the cable schedule (§13.6; `DV:196-198`).
 | **Feeder over one run** | an inverter → ACCB feeder current above the derated ampacity of one 630 mm² aluminium run | *"1 AC feeder carries 812 A, more than one 630 mm² run can."* |
 | **Feeder drop over limit** | a feeder's voltage drop above **2.5 %** (`CS:77`) | *"59 AC feeders drop more than 2.5 % (worst 4.00 %): 447–711 m (longest: ICR1-INV-113)."*; one feeder *"…: ICR2-INV-05, 910 m."*; two *"692 m and 759 m"* |
 | **Drop over budget** | the site-wide current-weighted LV AC drop above **1.5 %** (`CS:76, 194-202`) | *"The plant's LV AC drop averages 2.04 %, over the 1.5 % budget."* (plant cell empty; the PDF shows *Whole site*) |
-| **DC trunk too long** (central) | a DC trunk whose drop exceeds 2 × 1.5 % even at 630 mm² | *"1 DC trunk is too long for 1.5 % drop even as 2 parallel 630 mm² runs: SMB…, 1,234 m."* |
+| **DC trunk too long** (central) | a DC trunk whose drop exceeds 2 × 1.5 % even at 630 mm² — raised only once the trunk is already at the largest size (`design_verdict.py:162-164`) | *"1 DC trunk is too long for 1.5 % drop even as 2 parallel 630 mm² runs: SMB…, 1,234 m."* |
 
 On a multi-plot site each line starts with the plot name in bold
 (`MW:10385-10387`).
@@ -1767,7 +1779,9 @@ block (press and release on the same block, moved ≤ 4 px) opens its window; a
 double-click, a drag, or a press on the ICR building itself (which starts the
 ICR drag) does not. Nothing opens while Sketch, SLD or BOM is on, while Pan or
 Zoom is active, or while an MCR / object / AC start-point placement or an
-obstruction drawing is in progress (`MW:9876-9931`).
+obstruction drawing is in progress (`MW:9876-9931`). With the row ON each
+block is filled in its own colour and labelled **ICR-n** above its building
+(`MW:10029-10075`).
 
 - **Hover** draws nothing on the plot; the status bar reads *"ICR-3 — click to
   open its summary"* (`MW:9933-9946`).
@@ -2206,11 +2220,11 @@ simulation."*). The window **Simulation with AC Capacity** (880 px):
   | **AC capacity** (with *= x.xx MW* beside it; tooltip *"Target plant AC capacity."*) | the largest multiple of 100 kW that fits the first-run DC at ratio 1.30 — `floor(first DC MWp × 1000 ÷ 1.30 ÷ 100) × 100`, or 100,000 when that is under 100 — so the window opens on **Fits this layout** | 1.0–5,000,000 (1 dp, step 100) | kW |
   | **DC/AC ratio** (meta *target*) | **1.30** | 0.80–2.50 (3 dp, step 0.01) | — |
   | **Overload limit** (meta *typ. 1.5* / *typ. 1.4*) | **1.5** string / **1.4** central — the design overload limit, not the inverter's nameplate DC input | 1.00–2.00 (2 dp) | — |
-  | **Modules per string**, with a **Size…** button (§4.8a) | — (not verified) | 1–200 | — |
+  | **Modules per string**, with a **Size…** button (§4.8a) | the panel's **Modules per row** (fixed tilt) or **Modules per string (N–S)** (tracker) — `MW:9370-9372`, `ACD:138-139` | 1–200 | — |
 - **EQUIPMENT**: the **MODULE · PAN** and **INVERTER · OND** rows with **View**
   and **Replace…**, a one-line spec of each, and an expander **Override
-  nameplate values** (**Module Pmax** 0–2000 W, **Inverter rated AC**
-  0–100,000 kW). When a nameplate value is missing the expander opens with
+  nameplate values** (**Module Pmax** 0–2000 W, default the PAN's PNom;
+  **Inverter rated AC** 0–100,000 kW, default the OND's PNomConv — `ACD:179-188`). When a nameplate value is missing the expander opens with
   *"The PAN file has no module power (PNom). Enter it to run the simulation."*
   or *"The OND file has no rated AC power (PNomConv). Enter it to run the
   simulation."* (`ACD:497-505`).
@@ -2226,7 +2240,7 @@ simulation."*). The window **Simulation with AC Capacity** (880 px):
   Block."*; beside it *"→ {n} blocks of {x.xxx} MWp DC"* when set, *"keeps the
   input panel's {ICR Block} MWp blocks"* when not set (the panel value when the
   window opened), `—` when the inputs are invalid. A central design then adds
-  **Strings per SMB** (default 20) with *"→ n SMBs per inverter"* — in the
+  **Strings per SMB** (default 20, range 1–500, `ACD:309-311`) with *"→ n SMBs per inverter"* — in the
   RESULT column, **enabled only when the verdict fits** (its answer reads `—`
   otherwise; `ACD:292-326, 539-545`).
 - Verdicts (kind): **Fits this layout** (good) — *"Target DC uses n % of the x
@@ -2285,6 +2299,11 @@ lines**, *robots travel west–east along each table row* (tracker:
 | **Standard bridge span** (m) | the configured gap — **Gap between MMS-Tables** (1.0 m) on fixed tilt, **N–S service gap between units** (2.0 m) on a tracker; 2.0 m if that is zero | widest gap a standard bridge spans |
 | **Skip lines up to** (tables / trackers, steps of 0.5) | 0 | a line carrying this many units or fewer gets no robot |
 | **Out and back** (*must return on the same charge*) | ticked | doubles the distance to cover |
+
+Ranges: **Travel per charge** 0–100,000 m, **Standard bridge span** 0–50 m,
+**Skip lines up to** 0–1,000 (`robotic_cleaning_dialog.py:139, 155, 163`). The
+window is built afresh at every opening, so it shows none of the previous
+answers (`MW:9199-9201`).
 
 Field details (`RCD:133-186`, `RC:23-70, 443-541`): **Skip lines up to**
 applies per **segment** (a whole line, or a stretch between unbridged gaps),
@@ -2522,7 +2541,10 @@ leaves the site is never honoured (`RC:23-37, 443-541`).
 A preliminary **IEC earthing calculation** for the generated layout: how many
 earth pits, which GI strip / Cu cable size for each connection, the earthing
 plan, a calculation report and a bill of quantities. IS 3043 and IEEE 80 are
-shown alongside as cross-checks and **never govern**.
+shown alongside as cross-checks. The sizing follows IEC; the one place a
+cross-check enters the result is the plant grid resistance, which is carried
+forward as the larger of the IEC and IEEE 80 values — so IEEE 80 can only make
+it more conservative (below; `EA/report.py:19-28`).
 
 **Opening it:** **Tools ▸ Earthing Design…** (always enabled; with no usable
 layout it shows **Generate first** — *"Generate a layout first, then open
@@ -2849,8 +2871,11 @@ for manual drawing? This clears the current diagram."* when one exists) —
     else A0 (`SA:74-82, 207`).
 - The sheet is an **A3 landscape** frame (420 × 297 units) with an orange
   outer border, an inner frame, a zone grid (8..1 across, F..A down) and a
-  right-hand band carrying LEGENDS, NOTES and a blank title block —
-  `sld_sheet.py:1-21`. For a large plant the **physical** paper size grows
+  right-hand band carrying LEGENDS (listing the symbols on the sheet), NOTES
+  (four default notes) and a title block printing **DRAWING TITLE** *SINGLE LINE
+  DIAGRAM*, **SCALE : NTS** and **SHEET : A3/A1/A0**, with **DOC. NO.** and
+  **REV.** empty — `sld_sheet.py:1-21, 48-55, 115-166`, `MW:7299-7306,
+  7363-7370`. For a large plant the **physical** paper size grows
   (A3 → A1 → A0) while the drawing box keeps A3 proportions —
   `pdf_exporter.py:1468-1476`.
 - **⬇ Export SLD to DWG** writes a DXF natively and converts it to DWG when
@@ -3011,8 +3036,9 @@ drawing (§3.2; `tests/test_location_exports.py:54-66`).
 | `OBJECT_SHADOW` | the keep-clear shadow of placed objects | grey |
 | `STREET_LIGHT_SHADOW` | the keep-clear shadow of the street lights | grey |
 | `DC_TRENCH` / `AC_TRENCH` / `MV_TRENCH` | trench routes, automatic and hand-drawn | green / red / dark green |
-| `SKETCH` | **all** Sketch-Mode annotations | white |
-| `ANNOTATIONS` | labels and text | white |
+| `SKETCH` | dimensions drawn in Sketch Mode | white |
+| `ANNOTATIONS` | the application's own labels: plant name, ICR-n, I{n} / SMB{n}, LA-n, MCR, USS and object labels (`dxf_exporter.py:298-517`) | white |
+| `0` and your Sketch-Mode layers | every other Sketch-Mode element, each on the layer it was drawn on (created on first use, drawn in the element's own colour; default layer `0`) — `dxf_exporter.py:555-620`, `MP:564` | per element |
 
 **Conditional:**
 
@@ -3022,9 +3048,9 @@ drawing (§3.2; `tests/test_location_exports.py:54-66`).
 | `LA` (maroon) | arresters were placed |
 | `PILES` (orange) | a pile pattern exists **and the Piles overlay is ON at export** — a pattern alone is not enough (`MW:5639`, `dxf_exporter.py:189, 242-244`) |
 
-- ⛔ **Sketch-Mode layers do NOT become CAD layers.** The layer set is fixed;
-  every annotation lands on the single `SKETCH` layer regardless of which
-  in-application layer it was drawn on.
+- **Sketch-Mode layers become CAD layers** (corrected 2026-09-28 in review):
+  each sketch element is written on the layer named in Sketch Mode; only
+  dimensions go to `SKETCH` (`dxf_exporter.py:555-620`).
 - **Tables are written as block references**, not as individual polylines —
   every table of a given size is an insert of one shared block definition, so
   editing that block in a CAD program updates every table in the plant at once
@@ -3225,7 +3251,11 @@ block window's **Copy** and the Earthing Design window's exports do not call
 that check — §20; pages say "Generate Layout and the exports need active
 access" and do not enumerate exceptions.) When blocked, the app opens
 the **License / Subscription** window itself — there is no separate
-"Subscription Required" message. ⛔ The SLD and BOM views are **not** gated.
+"Subscription Required" message. ⛔ The SLD and BOM views are **not** gated, but their exports are: **⬇ Export
+SLD to DWG / PDF** and **⬇ Export BOM to Excel / PDF** call the access check
+(`MW:7130, 7168, 8101, 8149`), as do **Export PDF (with Piles)** and **Export
+Detailed Project Report** (shared handler, `MW:5757-5762`). **Robot count from
+DXF** and its PDF do not check access (`MW:9206-9211`; see §20).
 
 **Device ID** — `licensing.machine_id()`: on Windows the registry MachineGuid,
 the value shown under Settings ▸ System ▸ About ▸ Device ID.
@@ -3414,7 +3444,6 @@ Device ID); the docs site, not the in-app guide, is the reference.
 | The **Tools** tab is locked until a layout exists | older docs, this sheet's §4.0 before 2026-09-28 | Only its tab tooltip changes; the buttons are greyed out, except **Robot count from DXF…** (§4.0) |
 | Three studies; three menus (File · Edit-Pile · Help) | older docs, screenshots before 2026-09-28 | Five Studies buttons; four menus with **Tools** (§10, §16) |
 | Inter-module lead 0.5 m (*"BOQ convention 0.5 m"*); String return run on, *"Untick for U-wired strings"* | older docs | 0.00 m (the supplier provides the leads); return run off (leapfrog), tick for daisy-chain (§4.8b) |
-| *"The nominal AC power (Pnom) will be used to calculate total plant AC capacity and DC/AC ratio."* | **Load .OND** tooltip `IP:1298-1303` | PmaxOut first, Pnom only as fallback (§4.8) |
 | *"Generate the SLD automatically from the current layout + BOM."* | **Automatic** tooltip `MW:2302-2304`, docstring `MW:7236-7237` | Built from the layout, the electrical grouping and the OND; never the BOM (§11) |
 | Auto-build rules fixed at 15 / 4 / 17.2 MVA *"mirrored in bom_builder"*; Full SLD = one row per ICR | older docs, this sheet's §11 before 2026-09-28 | The **ACCB & Transformer** card's rules; Full SLD one row per ACCB / central inverter (§4.8c, §11) |
 | *"The transformers' MV side, and the MV cables to the MCR."* | **MV voltage** tooltip `IP:1365` | The cable schedule stays at 33 kV whatever the card says (§13.6) |
@@ -3622,6 +3651,44 @@ reader's own — and the Summary, the status line and every export count each
 unit's own piles (`SC/piles.py:31-112`; §8). ⛔ Do not repeat the old
 statement that half tables receive the full pattern and count at full weight.
 
+Confirmed in review (2026-09-28):
+- A USS casts a keep-clear shadow like the ICR and MCR, so **Clear tables in
+  shadows** covers it too (`layout_engine.py:361-365`), though the tooltip
+  names only ICR / MCR / objects (`IP:1115-1117`).
+- **Shadow View** opens with the layout's tilt, pitch and ground clearance
+  (`shadow_view_dialog.py:62-67`, `MW:9182`).
+- *"Please place inside the boundary."* leaves MCR placement armed
+  (`MW:8424-8429`); the Summary's Lightning arresters row reads `0` when none
+  are placed (`MW:10180`).
+- Earthing: the Layout legend counts pits per category (`EA/plot.py:111`); the
+  BoQ's earth-pit remark lists pits by category (`EA/layout.py:635`); the IS
+  3043 and IEEE 80 strip sizes are shown in the conductor-sizing section
+  (`EA/calc.py:261-273`, `EA/report.py:139`); the design basis includes
+  *Module / MMS bonding — IEC 62548, IEC 60364-7-712* (`EA/report.py:26`).
+- SLD: **⟳ Apply** turns the selection *to* the typed angle; **⟲ 90°** turns it
+  *by* 90° (`MW:2402-2410, 6928-6953`, `sld_manager.py:129-147`). A wire is
+  drawn by pressing at its start and releasing at its end
+  (`sld_manager.py:380-486`).
+- Sketch Mode: Ctrl+V pastes 5 m east and 5 m north (`sketch_manager.py:1256-1264`).
+- The Word report's cover carries a *Report Date* of the export day
+  (`docx_exporter.py:134`).
+- **Generate Layout** is disabled while no boundary file is selected
+  (`MW:9477-9487`). Generate resets the zoom and pan (`MW:3776`), as does
+  loading a boundary file (`MW:9497`).
+- The Energy view's tiles read the monthly table's **TOTAL / Annual** row
+  (`MW:7796-7803`, row built at `MW:5034-5048`): months summed, each with
+  first-year degradation, its own temperature loss, the bifacial gain and a
+  PVGIS correction (`energy_calculator.py:667, 780-812`) — so they can differ
+  slightly from the annual-chain figures.
+- **Show Energy Chart** turns on after any energy run; **Export TMY data CSV**
+  only when hourly data exists (`MW:4921-4926`). The TMY export uses the annual
+  PR × LID and no bifacial term (`energy_calculator.py:977-990`).
+- The Word report skips the SLD annexure silently on error and adds the energy
+  drawings only when energy exists (`docx_exporter.py:611-632`).
+- The License window shows **Get Free Access** and **Contact Us** in every
+  non-active state, expired and revoked included (`license_dialog.py:159-162`;
+  its module docstring at `:12-13` is stale).
+
 ## 19. Facts we do not have
 
 These are genuinely unknown, not merely unverified. Write around them; do not
@@ -3677,6 +3744,9 @@ product team; re-check before the next docs update.
 | 24 | **Robot count from DXF** — the analysis notes reach only the PDF; changing a layer role or the Structure clears ticked gaps; the PDF's *"(≤ x.xx m)"* ignores the 0.25 m tolerance. The two cleaning windows present the same engine differently (verdict kind, decimals, km vs m, *row* vs *line*). | `RDD:676-686`, `RDR:309-310`, `RC:476` |
 | 25 | **AC-capacity window** — *"Enter a positive AC capacity and target DC/AC ratio."* is unreachable; the reserved fix-button row leaves a blank strip under *Fits this layout*. | `ACS:180-188`, `ACD:234-238` |
 | 26 | Cosmetic strings: *"water body(s)"*; *"Closing as soon as the cables are routed..."* (ASCII dots); **Export PDF  (with Piles)** (two spaces); the Electrical tab tooltip *"Inverter sizing and cable options"* does not mention transformers. | `MW:4457, 3619-3627, 1565`, `IP:79` |
+| 27 | **Sketch ▸ Import DXF on a placed or layout-only site** — the import takes a drawing's coordinates as the project's internal UTM with no drawing offset, so on a CAD or image site placed by latitude / longitude, or laid out only, a reference drawn in the boundary drawing's coordinates does not overlay the plant. Pages state only that the drawing must be in the project's coordinates (a KMZ site's UTM zone, or a drawing located by its own coordinates). | `sketch_manager.py:1128-1131`, `georef.py:1-19, 209-214` |
+| 28 | **Robot count from DXF and its PDF do not check access**, unlike every other export. | `MW:9206-9211` |
+| 29 | **Fixed-tilt Maximize placement vs its tooltip** — the tooltip (and §4.2) says rows hug the boundary independently so table columns will not line up; the fixed-tilt packer snaps every row to one global column grid, so columns stay aligned (`layout_engine.py:35-98`, since 2026-08-11). The tracker packer does hug per column (`tracker_layout_engine.py:39-82`). Pre-dates the 2026-09 window; **ask the product owner which is intended** before changing the pages, which still follow the tooltip. | `layout_engine.py:35-98`, `IP:505-513` |
 
 ## 21. Release mapping
 
@@ -3692,8 +3762,15 @@ trailing `.0` (§6.0), so tag `solarlayout-v2.0.2.0` is the build that shows
 | **not in any tag** (unreleased as of 2026-09-28) | — | #301 (ACCB & Transformer card), #302 (results that know they are out of date; every input saved), #303 (automatic SLD without the BOM), #305 (AC feeder sizing in the cable schedule), #308 / #309 (power transformer), #310 (cable take-off catalog — no visible change), #315 (design warnings), #318 (Earthing Design), #319 (one cable run at a time) |
 
 ⚠️ Pages describe the current `main`. A release-notes entry must name only
-what its tag contains: nothing in the last row may be announced as released
-until a tag contains it.
+what its release contains.
+
+**Docs release labels (Arun, 2026-09-28).** The docs' release entries keep
+their own labels: the existing **1.0.0** and **1.2.0** entries stay as they are.
+The build carrying everything above — `main` at `e93f6be`, i.e. both tags plus
+the unreleased row — is labelled **2.1.0**: the version at which SolarLayout
+Desktop is released on the Microsoft Store and the direct-download channel. Its
+entry is dated 2026-09-28 (the docs update); correct the date if the release
+lands on another day.
 
 Merge commits on `main`, for re-checking with `git tag --contains`:
 
