@@ -42,7 +42,68 @@ Each entry names a version and its release date, and the newest carries a
 called out inside the entry it shipped in, because those are the changes that
 alter results between runs.
 
-<Release version="1.2.0" date="2026-09-21" tag="current">
+<Release version="2.1.0" date="2026-09-28" tag="current">
+
+### New studies
+
+- **Earthing Design** — **Tools ▸ Earthing Design…** or the **⚡ Earthing
+  Design** button sizes the plant's earthing for the current layout: earth pits,
+  strip and cable sizes, the plant grid resistance against your target, a
+  calculation report, a BoQ, and PDF, DXF and CSV exports.
+- **Robot count from DXF** — sizes the cleaning-robot fleet from any plant
+  drawing, with no layout needed.
+- **Simulation with AC Capacity** takes an **ICR block AC**; regenerating writes
+  the matching block size into **ICR Block**.
+
+### ICR blocks and electrical grouping
+
+- **Click an ICR block** (with the **ICR blocks** layer on) to open its
+  summary: capacity, tables, ACCBs, transformer, cable lengths, arresters and
+  piles. **Export ICR-Block PDF** draws the plant and one sheet per block;
+  **Export ICR-Block DXF** sheets carry the same summary tables.
+- **The ACCB & Transformer card** on the Electrical tab sets how inverters are
+  grouped into ACCBs and transformers, the standard transformer ratings, and the
+  power transformer. The Summary gains **ACCBs**, **Transformers (IDT)** and
+  **Power transformer (MVA)**; the automatic single-line diagram follows the
+  card, the layout and the inverter file.
+
+### Changes that alter results
+
+- **ICR count** is decided per separate piece of land, and each piece is split
+  into blocks of equal capacity; half tables count as half.
+- **Cables card defaults:** **Inter-module lead** 0.00 m/module and **String
+  return run along table** unticked.
+- **Every inverter and SMB gets a cable.** Each goes to the nearest ICR along
+  the plant that still has room within the building's rating; DC string runs
+  keep to the usable area, and AC feeders and DC trunks are kept inside the
+  plant wherever a route exists — any that are not show as design warnings. DC
+  string cables are routed in full except on a very large plot, where the DC
+  trench is marked as an estimate.
+- **The cable schedule** sizes AC feeders as one 3C × 300 mm² aluminium run on
+  the inverter's maximum AC current, steps a feeder up only when its current
+  needs it, and adds a **Flag** column (a stepped-up feeder, or a drop over
+  2.5 %), the plant's LV drop budget and a collection schedule.
+- **Half tables and half trackers get their own pile pattern**, derived from the
+  full one or your own, and every output counts each unit's own piles.
+- **A CAD drawing is never placed at an assumed location.** The Site reference
+  window starts empty: use the drawing's own coordinates, place it by latitude
+  and longitude, or choose layout only.
+
+### Working with results
+
+- **Results say when they are out of date.** Change an input after a run and
+  the layout, Summary, Energy view and block windows say so, and exports wait
+  for **Regenerate Layout**.
+- **Design warnings** — overloaded ICRs, long feeders, trenches outside the
+  plant — show in the Summary, the PDF summary page and the BOM.
+- **A project keeps every input**, and a reopened project's exports and
+  drawing tools work without a new Generate.
+- While cables are routed, the obstruction, MCR and object tools wait, and a
+  change you make meanwhile is applied when the run finishes.
+
+</Release>
+
+<Release version="1.2.0" date="2026-09-21">
 
 ### A rebuilt interface
 
