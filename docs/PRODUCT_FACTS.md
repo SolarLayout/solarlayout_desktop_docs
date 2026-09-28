@@ -526,7 +526,7 @@ Table dimensions — `MP:45-65`, also in the gap tooltips (`IP:490-495`):
 **Maximize placement** positions each row independently to hug the exact
 boundary edge, fitting extra tables near diagonal or curved fences. Table
 columns will **not** be vertically aligned across rows, and computation takes
-longer on large sites — `IP:505-513`.
+longer on large sites — `IP:720-729`.
 
 **Half tables** are half the E-W width carrying half the strings, dropped
 wherever a full table will not fit; the tooltip adds *"Half tables are also
@@ -3716,6 +3716,15 @@ relies on them.** Where a page has to steer round one, it states only the
 correct route (as noted in the relevant section). They are reported to the
 product team; re-check before the next docs update.
 
+Filed 2026-09-28 in `PVlayout_Advance` (row → issue): #1–#2 → #322 · #3 → #323,
+#332 · #4 → #324 · #5 → #336 · #6 → #325 · #7–#8 → #326 · #9, #26 → #335 · #10 →
+#333 · #11 by design, not filed · #12–#14 → #327 · #15, #28 → #332 · #16 → #328 ·
+#17, #19 → #329 · #18, #21 → #330 · #20, #22 → #331 · #23 → #337, #338 · #24 →
+#337 · #25 → #338 · #27 → #339 · #29 → #334. Runtime repros on 2026-09-28
+confirmed #12 (a plain Generate leaves block windows open; their PDF… writes 0
+pages), #6 and #29 (Maximize placement on or off: 1,640 tables in the same 39
+columns on the sample site).
+
 | # | Issue | Evidence |
 |---|---|---|
 | 1 | **Earthing Design: X/R = 0 crashes.** The field allows 0; the calculation divides by zero and shows the *"An unexpected error occurred …"* box; the window keeps showing (and exporting) the previous result, and every later opening in that session fails. | `ED:201, 495-505`, `EA/calc.py:484-486` |
@@ -3746,7 +3755,7 @@ product team; re-check before the next docs update.
 | 26 | Cosmetic strings: *"water body(s)"*; *"Closing as soon as the cables are routed..."* (ASCII dots); **Export PDF  (with Piles)** (two spaces); the Electrical tab tooltip *"Inverter sizing and cable options"* does not mention transformers. | `MW:4457, 3619-3627, 1565`, `IP:79` |
 | 27 | **Sketch ▸ Import DXF on a placed or layout-only site** — the import takes a drawing's coordinates as the project's internal UTM with no drawing offset, so on a CAD or image site placed by latitude / longitude, or laid out only, a reference drawn in the boundary drawing's coordinates does not overlay the plant. Pages state only that the drawing must be in the project's coordinates (a KMZ site's UTM zone, or a drawing located by its own coordinates). | `sketch_manager.py:1128-1131`, `georef.py:1-19, 209-214` |
 | 28 | **Robot count from DXF and its PDF do not check access**, unlike every other export. | `MW:9206-9211` |
-| 29 | **Fixed-tilt Maximize placement vs its tooltip** — the tooltip (and §4.2) says rows hug the boundary independently so table columns will not line up; the fixed-tilt packer snaps every row to one global column grid, so columns stay aligned (`layout_engine.py:35-98`, since 2026-08-11). The tracker packer does hug per column (`tracker_layout_engine.py:39-82`). Pre-dates the 2026-09 window; **ask the product owner which is intended** before changing the pages, which still follow the tooltip. | `layout_engine.py:35-98`, `IP:505-513` |
+| 29 | **Fixed-tilt Maximize placement vs its tooltip** — the tooltip (and §4.2) says rows hug the boundary independently so table columns will not line up; the fixed-tilt packer snaps every row to one global column grid, so columns stay aligned (`layout_engine.py:35-98`, since 2026-08-11). The tracker packer does hug per column (`tracker_layout_engine.py:39-82`). Pre-dates the 2026-09 window; **ask the product owner which is intended** before changing the pages, which still follow the tooltip. | `layout_engine.py:35-98`, `IP:723-729` |
 
 ## 21. Release mapping
 
@@ -3759,18 +3768,18 @@ trailing `.0` (§6.0), so tag `solarlayout-v2.0.2.0` is the build that shows
 |---|---|---|
 | `solarlayout-v2.0.1.0` (shows v2.0.1) | 2026-09-22 | #208 (every device cabled, ICR assignment, containment), #219 (leaving Sketch Mode) |
 | `solarlayout-v2.0.2.0` (shows v2.0.2) | 2026-09-25 | everything in v2.0.1.0, plus #274 (ICR count per land piece, balanced blocks), #275 (DC comb sample, "(est.)"), #276 (Robot count from DXF), #277 (headless BOM core — no visible change), #288 (piles on half tables, spec), #289 (Cables card defaults), #290 (half-table piles), #291 (ICR block window, ICR-Block PDF), #292 (ICR block AC in the AC-capacity study), #295 (location truth — the Site reference window), #296 (half-table piles follow-up), #298 (reopen enables the tools), #299 (Robot count from DXF and AC-capacity window refinements) |
-| **not in any tag** (unreleased as of 2026-09-28) | — | #301 (ACCB & Transformer card), #302 (results that know they are out of date; every input saved), #303 (automatic SLD without the BOM), #305 (AC feeder sizing in the cable schedule), #308 / #309 (power transformer), #310 (cable take-off catalog — no visible change), #315 (design warnings), #318 (Earthing Design), #319 (one cable run at a time) |
+| `solarlayout-v2.1.0.0` (shows v2.1.0) | 2026-09-28, at `e93f6be` | everything in v2.0.2.0, plus #301 (ACCB & Transformer card), #302 (results that know they are out of date; every input saved), #303 (automatic SLD without the BOM), #305 (AC feeder sizing in the cable schedule), #308 / #309 (power transformer), #310 (cable take-off catalog — no visible change), #315 (design warnings), #318 (Earthing Design), #319 (one cable run at a time) |
 
 ⚠️ Pages describe the current `main`. A release-notes entry must name only
 what its release contains.
 
 **Docs release labels (Arun, 2026-09-28).** The docs' release entries keep
 their own labels: the existing **1.0.0** and **1.2.0** entries stay as they are.
-The build carrying everything above — `main` at `e93f6be`, i.e. both tags plus
-the unreleased row — is labelled **2.1.0**: the version at which SolarLayout
-Desktop is released on the Microsoft Store and the direct-download channel. Its
-entry is dated 2026-09-28 (the docs update); correct the date if the release
-lands on another day.
+The build carrying everything above — `main` at `e93f6be` — is labelled
+**2.1.0**: the version at which SolarLayout Desktop is released on the
+Microsoft Store and the direct-download channel. Tag `solarlayout-v2.1.0.0`
+(2026-09-28) points at that commit, so the docs label and the tag agree from
+this release on; the entry is dated 2026-09-28.
 
 Merge commits on `main`, for re-checking with `git tag --contains`:
 

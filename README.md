@@ -68,7 +68,32 @@ filesystem-backed checks (page enumeration, link validation, the screenshot
 manifest) read the local content tree and will otherwise disagree with the site.
 
 These tests are **not** in CI (CI is build-only, by design). Run them before a
-deployment.
+deployment. The BESS fact-sheet citation test needs the product repo's path:
+`BESS_REPO=../PVlayout_Advance bun run test:e2e`.
+
+---
+
+## Updating the docs after a product change
+
+Use the **`update-docs`** skill in [Claude Code](https://claude.com/claude-code),
+from the repo root:
+
+```
+/update-docs solarlayout      # SolarLayout Desktop — content/docs
+/update-docs bess             # BESS Desktop — content/bess
+```
+
+It lists what merged in the product repo (`PVlayout_Advance`) since the fact
+sheet was last verified, audits it against the code, updates the fact sheet
+first, recaptures the SolarLayout screenshots (or writes BESS capture briefs),
+writes and reviews the pages, runs every gate and opens a pull request.
+
+**[`UPDATE_DOCS_USING_SKILL.md`](./UPDATE_DOCS_USING_SKILL.md)** covers the
+prerequisites (the product repo checked out beside this one, and for
+SolarLayout screenshots a Windows PC with a real display and the test
+`.PAN` / `.OND` files), what a run does, the decisions it asks you for, and
+troubleshooting. The skill itself is in
+[`.claude/skills/update-docs/`](./.claude/skills/update-docs/SKILL.md).
 
 ---
 
@@ -83,10 +108,13 @@ content/
       meta.json             ← that section's sidebar order
       <page>.mdx
   screenshots.ts            ← the screenshot manifest (see below)
+  bess/                     ← the BESS Desktop tree, served at /docs/bess (own meta.json, screenshots.ts, videos.mjs)
 docs/
   PRODUCT_FACTS.md          ← the only permitted factual source for content
+  PRODUCT_FACTS.bess.md     ← the same, for the BESS tree
   WRITING_GUIDE.md          ← voice, structure, component vocabulary
   screenshot-index.xlsx     ← generated capture worklist
+.claude/skills/update-docs/ ← the docs-update skill (see UPDATE_DOCS_USING_SKILL.md)
 ```
 
 ### Before writing or editing a page
@@ -95,7 +123,8 @@ Read **[`docs/WRITING_GUIDE.md`](./docs/WRITING_GUIDE.md)** and
 **[`docs/PRODUCT_FACTS.md`](./docs/PRODUCT_FACTS.md)**.
 
 `PRODUCT_FACTS.md` is a fact sheet built by reading the application's source
-code, re-verified against the rebuilt interface on 2026-09-21. It exists
+code; its header records the product commit it was last verified against
+(2026-09-28, `e93f6be`). It exists
 because the product's own README, code comments and in-app help contradict the
 shipping behaviour in a number of specific places — wrong footprints and
 defaults, a tier system that does not exist, features that cannot be reached,
@@ -132,14 +161,15 @@ Because both read the same rows, the worklist cannot drift from the pages.
 
 The desktop screenshots are not screen-grabs. The application renders its own
 widgets to PNG (`QWidget.render()` at 2× on a 1400 × 900 logical window;
-dialogs at their own size), driven by a script built on the product
-repository's `tools/ui_shots.py` / `tools/docs_screenshots.py` bootstrap, with
-modal dialogs rendered by patching their `exec_`. Inputs: the bundled sample
-site, a three-plot variant of it, and a test module (`.PAN`) and inverter
-(`.OND`) file. See
-[`docs/superpowers/plans/2026-09-21-desktop-docs-revamp.md`](./docs/superpowers/plans/2026-09-21-desktop-docs-revamp.md)
-for the set, and `CAPTURING_SCREENSHOTS.md` in the product repository for the
-legibility rules (fixed logical size, never the maximised window, 2×).
+dialogs at their own size), driven by the product repository's
+`tools/docs_site_shots.py`, with modal dialogs rendered by patching their
+`exec_`. It runs on Windows with a real display (offscreen rendering on Windows
+draws no text). Inputs: the bundled sample site, a three-plot variant of it,
+and a test module (`Test.PAN`) and inverter (`Test-S.ond`) file. See
+`CAPTURING_SCREENSHOTS.md` in the product repository for the legibility rules
+(fixed logical size, never the maximised window, 2×). The `update-docs` skill
+drives the whole capture. The BESS set has no capture script and is taken by
+hand from `docs/bess-screenshot-index.xlsx`.
 
 When the interface changes, recapture the affected ids and drop the files at
 `public/screenshots/<file>`; no code or content change is needed for an image

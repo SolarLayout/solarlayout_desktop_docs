@@ -61,6 +61,7 @@ export default [
     // (which reads the content tree off disk to enumerate pages).
     files: [
       "scripts/**/*.mjs",
+      ".claude/skills/**/*.mjs",
       "tests/**/*.ts",
       "*.config.mjs",
       "*.config.js",
