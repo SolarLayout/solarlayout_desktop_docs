@@ -3716,6 +3716,15 @@ relies on them.** Where a page has to steer round one, it states only the
 correct route (as noted in the relevant section). They are reported to the
 product team; re-check before the next docs update.
 
+Filed 2026-09-28 in `PVlayout_Advance` (row → issue): #1–#2 → #322 · #3 → #323,
+#332 · #4 → #324 · #5 → #336 · #6 → #325 · #7–#8 → #326 · #9, #26 → #335 · #10 →
+#333 · #11 by design, not filed · #12–#14 → #327 · #15, #28 → #332 · #16 → #328 ·
+#17, #19 → #329 · #18, #21 → #330 · #20, #22 → #331 · #23 → #337, #338 · #24 →
+#337 · #25 → #338 · #27 → #339 · #29 → #334. Runtime repros on 2026-09-28
+confirmed #12 (a plain Generate leaves block windows open; their PDF… writes 0
+pages), #6 and #29 (Maximize placement on or off: 1,640 tables in the same 39
+columns on the sample site).
+
 | # | Issue | Evidence |
 |---|---|---|
 | 1 | **Earthing Design: X/R = 0 crashes.** The field allows 0; the calculation divides by zero and shows the *"An unexpected error occurred …"* box; the window keeps showing (and exporting) the previous result, and every later opening in that session fails. | `ED:201, 495-505`, `EA/calc.py:484-486` |
