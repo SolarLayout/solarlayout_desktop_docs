@@ -31,6 +31,19 @@ export const bess = defineDocs({
   },
 })
 
+export const rooftop = defineDocs({
+  dir: "content/rooftop",
+  docs: {
+    schema: pageSchema,
+    postprocess: {
+      includeProcessedMarkdown: true,
+    },
+  },
+  meta: {
+    schema: metaSchema,
+  },
+})
+
 export default defineConfig({
   mdxOptions: {
     // Search indexes text only: headings, paragraphs, quotes and table cells, wherever they sit (inside a Callout

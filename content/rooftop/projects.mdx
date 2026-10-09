@@ -1,0 +1,69 @@
+---
+title: Your designs and the project file
+description: Where designs are kept, the cards on Home, opening, renaming, copying and deleting a design, and the project file that carries a design to another device or a colleague.
+---
+
+Your designs are kept on this device, in this browser. Nothing needs saving
+by hand, and there is no account: a design on one device is not on another
+until you carry it there in a project file.
+
+## On this device
+
+Home lists the designs kept in this browser under **On this device**, newest
+edited first: three cards to a row on a computer, two on a tablet, one on a
+phone. Each card shows a plan of the layout, the design's name, its roof in
+words, and the **Capacity** and **Energy, year 1** of its last run, or **Not
+run yet**.
+
+<Screenshot id="rooftop-home-designs" />
+
+The demo and a new design are kept from their first edit. After that, every
+change is kept a moment after you make it. The results are not kept: a design
+you open runs again, in the Studio at the lens you used last. After a reload,
+the design that was open opens again.
+
+## What a card's menu does
+
+| Item | What happens |
+| --- | --- |
+| **Open** | Opens the design in the Studio. |
+| **Rename** | The name becomes a field in place. **Enter** or leaving the field keeps it, **Escape** cancels. A name is needed, up to 200 characters. |
+| **Duplicate** | Keeps a copy named *Copy of* the design, and opens it. |
+| **Save a copy** | Downloads the design's project file (`.rtd`). |
+| **Delete** | Asks first: *"Delete* the design*?"*, *"It is kept on this device alone."* **Cancel** is the default. A deleted design is gone from this device. |
+
+A design that is open when you delete it stays open, but is not kept. Its next
+edit keeps it again, as a new design.
+
+## The project file
+
+The project file (`.rtd`) is how a design leaves this browser: to another
+device, another browser, or a colleague.
+
+| | |
+| --- | --- |
+| Save it | **Save a copy** in the card's menu on Home, in the project switcher, or as the last item of **Handover**. The browser downloads the design's `.rtd` file. |
+| What it holds | The name, the roof with its place and obstacles, the array, the losses, the module and inverter files themselves, the weather, the system voltage, your choices and your own stringing option. |
+| What it does not hold | Results: no layout, energy or handover files. They are worked out again when it opens. |
+| Open it | **Open a project** on Home or in the project switcher. Drop the file or choose it, then **Open**. It opens as a new design on this device and runs again. |
+
+<Callout type="info">
+A project file with no system voltage opens with the voltage of your
+country, set by the app, as a new design does.
+</Callout>
+
+## When a file will not open
+
+| Message | What to do |
+| --- | --- |
+| "Choose a project file (.rtd)." | The file is not a project file. Choose the `.rtd` that Rooftop saved. |
+| "This file is larger than any project this app saves, so it cannot be opened." | The file is not one Rooftop made. |
+| "The file could not be read. Choose another." | Save a fresh copy from the device that has the design, and open that. |
+| "This project file is format *n*. This version reads formats 1 and 2. Open it with a newer version of the app." | The file comes from a newer version of Rooftop. |
+
+## Next
+
+<Cards>
+  <Card title="Getting started" href="/docs/rooftop/getting-started" description="Open Rooftop, add it to the home screen, try the demo." />
+  <Card title="The workspace" href="/docs/rooftop/workspace" description="Where each part of the app is." />
+</Cards>

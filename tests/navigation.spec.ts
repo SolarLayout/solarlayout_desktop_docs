@@ -144,11 +144,13 @@ test("search returns a real result, not just an empty dialog", async ({
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
 })
 
-test("the top navigation offers the cross-surface and product-switch links", async ({ page }) => {
+test("the top navigation offers the cross-surface links, and the sidebar the product switcher", async ({ page }) => {
   await page.goto("/docs/intro")
   for (const label of ["Docs", "Install", "Release notes"]) {
     await expect(page.getByRole("link", { name: label, exact: true }).first()).toBeVisible()
   }
-  // The product switcher: a link to the BESS tree.
-  await expect(page.getByRole("link", { name: "BESS Desktop", exact: true }).first()).toBeVisible()
+  // The product switcher at the top of the sidebar: the three products, this one first in weight and ticked.
+  await page.locator("#nd-sidebar").getByRole("button", { name: /SolarLayout Desktop/ }).first().click()
+  await expect(page.getByRole("link", { name: /BESS Desktop/ }).last()).toBeVisible()
+  await expect(page.getByRole("link", { name: /SolarLayout Rooftop/ }).last()).toBeVisible()
 })

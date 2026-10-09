@@ -1,5 +1,5 @@
 import { createSearchAPI } from "fumadocs-core/search/server"
-import { source, bessSource } from "@/lib/source"
+import { source, bessSource, rooftopSource } from "@/lib/source"
 
 /**
  * Search backend for the Fumadocs search dialog (Ctrl/Cmd + K).
@@ -44,5 +44,5 @@ const toIndexes = (loader: Loader, tag: string, product: string) =>
   }))
 
 export const { GET } = createSearchAPI("advanced", {
-  indexes: [...toIndexes(source, "solarlayout", "SolarLayout Desktop"), ...toIndexes(bessSource, "bess", "BESS Desktop")] as never,
+  indexes: [...toIndexes(source, "solarlayout", "SolarLayout Desktop"), ...toIndexes(bessSource, "bess", "BESS Desktop"), ...toIndexes(rooftopSource as unknown as Loader, "rooftop", "SolarLayout Rooftop")] as never,
 })

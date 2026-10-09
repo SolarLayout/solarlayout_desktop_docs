@@ -1,5 +1,5 @@
 import { loader } from "fumadocs-core/source"
-import { docs, bess } from "collections/server"
+import { docs, bess, rooftop } from "collections/server"
 
 /**
  * Source loader for the Fumadocs MDX content tree under `content/docs/`.
@@ -14,4 +14,10 @@ export const source = loader({
 export const bessSource = loader({
   baseUrl: "/docs/bess",
   source: bess.toFumadocsSource(),
+})
+
+/** Source loader for the SolarLayout Rooftop content tree under `content/rooftop/`. */
+export const rooftopSource = loader({
+  baseUrl: "/docs/rooftop",
+  source: rooftop.toFumadocsSource(),
 })

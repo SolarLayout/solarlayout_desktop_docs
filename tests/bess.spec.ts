@@ -16,7 +16,7 @@ test("the root redirects to the index, which opens each product's docs", async (
   await expect(page).toHaveURL(/\/docs$/)
   await expect(page).toHaveTitle("SolarLayout Docs")
   const products = page.getByRole("heading", { level: 2 })
-  await expect(products).toHaveText(["SolarLayout Desktop", "BESS Desktop"])
+  await expect(products).toHaveText(["SolarLayout Desktop", "BESS Desktop", "SolarLayout Rooftop"])
   const open = page.getByRole("link", { name: /Open the docs/i })
   await expect(open.nth(0)).toHaveAttribute("href", "/docs/solarlayout")
   await open.nth(1).click()
