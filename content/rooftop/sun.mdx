@@ -98,6 +98,11 @@ Where the dashed outlines and the drawn shadows agree, the view is true. The
 outlines are asked for once the hour stands still for a moment, and are shown
 only while they belong to the hour on screen.
 
+The view, the outlines and the shade-free window place the sun by solar time
+on the day shown. The shading over the year places it at every hour of the
+weather from its exact position. The two differ by a fraction of a degree:
+the view is a close guide, and the year is counted exactly.
+
 <Screenshot id="rooftop-sun-outlines" />
 
 ## Shade map
@@ -105,7 +110,7 @@ only while they belong to the hour on screen.
 The **Shade map** tab colours each position of the layout by its near
 shading over the year, from the design run. Near shading is the light lost to
 shadows on the roof: the direct light shaded by the rows in front, the
-parapet and the obstacles, and the part of the sky hidden from the module. It
+parapet and the obstacles, and the part of the sky they hide from the module. It
 is a share of the light that gets past the horizon. Every position is
 coloured, those an option leaves unused too.
 
@@ -133,9 +138,9 @@ costs over a year of the weather.
 
 | Tile | Unit | What it counts |
 | --- | --- | --- |
-| **Near, linear** | % | The light lost to shadows on the roof, from the rows in front, the parapet and the obstacles: the shaded part of the direct light and the hidden part of the sky, as a share of the light past the horizon |
+| **Near, linear** | % | The light lost to shadows on the roof, from the rows in front, the parapet and the obstacles: the shaded part of the direct light and the part of the sky they hide, as a share of the light past the horizon |
 | **Electrical, beyond linear** | % | The energy lost on top of that, because bypass diodes and the cell layout turn a partial shadow into a larger loss, and a string (modules wired in series) runs at its weakest module. It needs strings, so until there is an option it waits and says why |
-| **Far, horizon** | % | The direct light lost while the sun is behind the distant horizon, as a share of the light with no horizon at all |
+| **Far, horizon** | % | The light the distant horizon takes: the direct light while the sun is behind it, and the part of the sky it hides, the same for every module. A share of the light with no horizon at all |
 | **Kept clear** | m² | The area inside the setback (the strip inside the roof edge kept clear of modules) that the shadows of the parapet and the obstacles cover through the shade-free window of the design day |
 
 Before there is an option, near and far shading count every position of the
@@ -163,12 +168,14 @@ middle of each hour. Weather given at shorter steps is averaged into hours.
   height and set against its footprint.
 - **The sky.** The diffuse loss is the part of the sky hidden from the
   module; a module with a row in front also loses the sky that row masks.
+  The part the far horizon hides counts as far shading, the rest as near.
 - **Electrical.** A shadow band on a portrait module costs the whole module,
   or half of a half-cell module; in landscape it costs one substring per
   bypass diode. Shaded fractions under 1 % are left out. A string runs at its
   weakest module.
 - **Far shading.** Direct light is lost while the sun is under the horizon
-  profile. Only PVGIS weather brings one.
+  profile, and the part of the sky the horizon hides is lost with it. Only
+  PVGIS weather brings one.
 
 The shade-free window shapes the layout; this count is separate from it and
 covers every hour of the year, inside the window and out.

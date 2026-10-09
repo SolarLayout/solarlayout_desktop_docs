@@ -129,7 +129,7 @@ A table of the option's lines, as the engine lists them, with **Item**,
 | PV module | Maker, model and Wp; the bifaciality for a bifacial module | Modules used |
 | String inverter | Maker, model, AC kW and MPPT count | Inverters |
 | Mounting structure | The structure, as the report's summary words it | Tables: a run of modules side by side in a row; on an east-west roof, a row in use |
-| DC cable | The cable, named by the system voltage | The schedule's lengths, summed, in metres |
+| DC cable | One line for each cable size the strings take, smallest first: its size and the system voltage, "6 mm² Cu, 1000 V DC, red + black" | The lengths of the strings of that size, summed, in metres |
 | DC connector pair | "MC4-compatible, matched to the module" | Two for each string |
 | AC cable | "Inverter to ACDB", sized for its AC current and voltage | **AC cable per inverter** × inverters |
 | AC distribution board | One incomer for each inverter, one outgoing | 1 |
@@ -150,7 +150,8 @@ One row for each string of the option, in the engine's order:
 | **Voc cold (V)** | The string's open-circuit voltage at the lowest ambient |
 | **Isc (A)** | The module's short-circuit current |
 | **DC cable (m)** | The string's cable, out and back |
-| **Cable** | The cable's specification |
+| **Drop (%)** | The voltage the cable drops, as a share of the string's voltage at its maximum power point at STC |
+| **Cable** | The cable's size and the system voltage it is rated for |
 
 Press a heading to sort by it; the caption says how it is sorted, and the
 engine's order is the default. The last row gives the number of strings and
@@ -162,6 +163,15 @@ slack. On an east-west roof, or where every module stands in one line, the
 string's own length is added once. Each inverter stands on the setback line,
 the edge of the clear margin kept inside the roof edge, at the point nearest
 the mean of its strings' starts.
+
+Each string's cable is sized for itself: the smallest of 4, 6 and 10 mm²
+copper that carries 1.25 times the module's Isc and drops no more than 1 % of
+the string's voltage at its maximum power point. The current is checked
+against the rating of PV cable (EN 50618) laid side by side on a surface at
+60 °C: 44, 57 and 79 A. The drop takes tinned copper conductor at 70 °C. A
+string that drops more than 1 % even at 10 mm² takes 10 mm², and its drop
+carries an exclamation mark: a shorter run, or the inverter nearer, brings it
+down. The DC ohmic loss in Performance stays the percentage set there.
 
 ## CAD layout
 
@@ -176,8 +186,8 @@ outline.
 | OBSTACLES | The obstacles' footprints |
 | KEEPOUT | The areas kept clear |
 | MODULES_UNUSED | Positions the option does not use |
-| INVERTERS | A mark at each inverter |
-| TEXT | Each obstacle's name and height, "h=2.5", and each inverter's name |
+| INVERTERS | Each inverter at its size on plan, width by depth, as its OND file gives it. Where the file gives none, a 2 × 1.2 m block |
+| TEXT | Each obstacle's name and height, "h=2.5", and each inverter's name; "INV-1 (symbol, not to scale)" for one drawn as a block |
 | STRING_S01 and on | One layer for each string, with its modules |
 
 The preview shows the layout page of the report and the layers.
