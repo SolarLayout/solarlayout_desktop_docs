@@ -7,7 +7,7 @@
  * the What's-new row serves the returning reader. Same parts and tokens as the product landings.
  */
 import Link from "next/link"
-import { ArrowUpRight, Download } from "lucide-react"
+import { ArrowUpRight, Download, ExternalLink } from "lucide-react"
 import { SolarLayoutLogo } from "@/components/SolarLayoutLogo"
 import { SearchField } from "@/components/SearchField"
 
@@ -45,11 +45,24 @@ const PRODUCTS: Product[] = [
     ],
     action: { label: "Download", href: "https://solarlayout.app/downloads/bess" },
   },
+  {
+    name: "SolarLayout Rooftop",
+    tags: ["Any browser"],
+    line: "Rooftop PV design in the browser: the roof on the map, layout, shading, stringing, the 8,760-hour energy yield, the design report and drawings.",
+    docs: "/docs/rooftop",
+    start: [
+      { label: "Getting started", meta: "5 min", href: "/docs/rooftop/getting-started" },
+      { label: "The workspace", meta: "5 min", href: "/docs/rooftop/workspace" },
+      { label: "Your designs and the project file", meta: "5 min", href: "/docs/rooftop/projects" },
+    ],
+    action: { label: "Open Rooftop", href: "https://rooftop.solarlayout.app" },
+  },
 ]
 
 const WHATS_NEW = [
   { product: "SolarLayout Desktop", what: "Release 2.1.0", when: "28 Sep 2026", href: "/docs/releases" },
   { product: "BESS Desktop", what: "Where updates are recorded", when: "", href: "/docs/bess/releases" },
+  { product: "SolarLayout Rooftop", what: "Where updates are recorded", when: "", href: "/docs/rooftop/whats-new" },
 ]
 
 // "A and B", "A, B and C": the products named in their order of weight.
@@ -140,7 +153,7 @@ function ProductCard({ p }: { p: Product }) {
             href={p.action.href}
             className="inline-flex items-center gap-[6px] text-[13px] text-fd-muted-foreground transition-colors hover:text-fd-foreground"
           >
-            <Download className="size-[14px]" aria-hidden />
+            {p.action.label === "Download" ? <Download className="size-[14px]" aria-hidden /> : <ExternalLink className="size-[14px]" aria-hidden />}
             {p.action.label}
           </a>
         </div>
@@ -153,7 +166,7 @@ function Products() {
   return (
     <section className="mt-[56px]">
       <Caption>Products</Caption>
-      <div className="mt-[14px] grid grid-cols-1 gap-[16px] md:grid-cols-2">
+      <div className="mt-[14px] grid grid-cols-1 gap-[16px] md:grid-cols-2 lg:grid-cols-3">
         {PRODUCTS.map((p) => (
           <ProductCard key={p.name} p={p} />
         ))}

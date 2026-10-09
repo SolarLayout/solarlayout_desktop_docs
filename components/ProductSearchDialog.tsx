@@ -31,6 +31,7 @@ const PRODUCTS = [
   { name: "All", value: "" },
   { name: "SolarLayout Desktop", value: "solarlayout" },
   { name: "BESS Desktop", value: "bess" },
+  { name: "SolarLayout Rooftop", value: "rooftop" },
 ]
 
 export function ProductSearchDialog(props: SharedProps) {
