@@ -8,10 +8,11 @@ import {
   ArrowUpRight,
   BookOpen,
   ExternalLink,
-  FolderOpen,
+  Map,
   LayoutGrid,
   LifeBuoy,
   Rocket,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react"
 import { SolarLayoutLogo } from "@/components/SolarLayoutLogo"
@@ -26,7 +27,7 @@ interface HighlightCard {
 const HIGHLIGHTS: HighlightCard[] = [
   { icon: Rocket, title: "Getting started", meta: "5 min", href: "/docs/rooftop/getting-started" },
   { icon: LayoutGrid, title: "The workspace", meta: "5 min", href: "/docs/rooftop/workspace" },
-  { icon: FolderOpen, title: "Your designs and the project file", meta: "5 min", href: "/docs/rooftop/projects" },
+  { icon: Sparkles, title: "Your first rooftop design", meta: "20 min walkthrough", href: "/docs/rooftop/first-design" },
 ]
 
 interface TopicSection {
@@ -43,8 +44,14 @@ const TOPICS: TopicSection[] = [
     links: [
       { label: "What SolarLayout Rooftop does", href: "/docs/rooftop/intro" },
       { label: "Getting started", href: "/docs/rooftop/getting-started" },
+      { label: "Your first rooftop design", href: "/docs/rooftop/first-design" },
       { label: "The workspace", href: "/docs/rooftop/workspace" },
     ],
+  },
+  {
+    icon: Map,
+    category: "The roof",
+    links: [{ label: "Find the roof", href: "/docs/rooftop/find" }],
   },
   {
     icon: BookOpen,

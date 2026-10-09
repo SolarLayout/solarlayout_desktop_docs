@@ -1,4 +1,13 @@
 {
   "title": "Documentation",
-  "pages": ["intro", "getting-started", "workspace", "projects", "whats-new", "support"]
+  "pages": [
+    "intro",
+    "getting-started",
+    "first-design",
+    "workspace",
+    "find",
+    "projects",
+    "whats-new",
+    "support"
+  ]
 }
