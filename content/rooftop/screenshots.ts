@@ -99,7 +99,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
     file: "rooftop/find/detect.jpg",
     page: "/docs/rooftop/find",
     title: "A footprint proposed",
-    alt: "A detected footprint proposed as the outline, with the callout Footprint found, its corners and area, Use this outline and Adjust.",
+    alt: "A detected footprint proposed as the outline, with the callout Footprint found, its corners and area, and Use this outline.",
     what: "Detect building, after a press inside a building with a known footprint.",
     state: "Taken from the app's own help picture of this how-to (rooftop-design-app apps/web/public/help/find), the map without imagery.",
     annotations: "",
