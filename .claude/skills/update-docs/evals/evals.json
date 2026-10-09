@@ -30,6 +30,23 @@
         "Does not plan to rewrite pages as if the fixes had shipped; tells the user what is needed (merged fix PRs / branch) before updating",
         "Leaves both repos unmodified (git status clean)"
       ]
+    },
+    {
+      "id": 3,
+      "name": "rooftop-plan",
+      "prompt": "/update-docs rooftop — Rooftop merged #172 to #178 since its fact sheet was written (Home's wording, the Sloped roof from Find, PVGIS without its horizon, help fixes, the east-west ridge line, Add your own on a small roof). Bring the Rooftop docs up to date. FOR THIS TEST RUN: plan only — do the discovery and read-only investigation you need, then write the full plan to outputs/plan.md (what changed, which sources you will update in what order, how you'll audit, which pages and screenshots are affected, gates, PR). Do not edit, create or commit anything in either repo.",
+      "expected_output": "A plan that reads the baseline commit from PRODUCT_FACTS.rooftop.md's header, lists the rooftop-design-app merges since it (product-changes.mjs --product rooftop), runs the Rooftop citation check and names the citations it finds dangling, updates the fact sheet before any content/rooftop page, treats the in-app help as a lead and its disagreements with the code as known-stale, takes screenshots itself with Playwright from the live app or the product's test stack, asks which merges are deployed before a What's new entry, leaves content/docs and content/bess alone, and gates with check-pages --product rooftop and the build. No repo changes.",
+      "files": [],
+      "assertions": [
+        "Uses the verified commit in the Rooftop fact sheet's header as the baseline",
+        "Lists #172 to #178 (or the subset touching apps/web and apps/api/src) as the changes",
+        "Runs or plans node scripts/check-rooftop-facts-citations.mjs and treats dangling citations as work",
+        "Updates docs/PRODUCT_FACTS.rooftop.md before any page under content/rooftop",
+        "Plans Rooftop screenshots taken with Playwright in a browser, not a hand-capture hand-off or a Windows capture",
+        "Asks which merges are deployed, since Rooftop has no release tags, before writing a What's new entry",
+        "Does not plan to touch content/docs or content/bess",
+        "Makes no change to either repository"
+      ]
     }
   ]
 }

@@ -2,12 +2,13 @@
 // List what changed in the product repo since the docs were last verified.
 //
 //   node .claude/skills/update-docs/scripts/product-changes.mjs \
-//     --product solarlayout|bess [--repo ../PVlayout_Advance] [--since <commit|date>] [--fetch]
+//     --product solarlayout|bess|rooftop [--repo <product repo>] [--since <commit|date>] [--fetch]
 //
 // Walks `main`'s first-parent history (merge commits and squash-merged
 // commits alike), keeps the commits that touch the product's paths, and prints
 // a Markdown table: commit, date, PR, title, files touched in the product
-// paths, and which release tags already contain it. Without --since, the
+// paths, and which release tags already contain it (SolarLayout Rooftop has no release
+// tags: it deploys from `main`). Without --since, the
 // baseline is read from the fact sheet header ("… `main` at `abc1234`") and,
 // failing that, from the date the fact sheet was last committed.
 import { execFileSync } from "node:child_process"
@@ -26,6 +27,14 @@ const PRODUCTS = {
     paths: ["apps/bess-tool/"],
     tagPrefix: "bess-v",
   },
+  rooftop: {
+    facts: "docs/PRODUCT_FACTS.rooftop.md",
+    repo: "rooftop-design-app",
+    // The browser app (its in-app help under apps/web/content/help), the API and the engine; the generated API types
+    // and the design documents follow these, so they add nothing a reader meets.
+    paths: ["apps/web/", "apps/api/src/"],
+    tagPrefix: null,
+  },
 }
 
 const args = Object.fromEntries(
@@ -36,11 +45,11 @@ const args = Object.fromEntries(
 )
 const product = PRODUCTS[args.product]
 if (!product) {
-  console.error("Usage: --product solarlayout|bess [--repo PATH] [--since COMMIT|YYYY-MM-DD] [--fetch]")
+  console.error("Usage: --product solarlayout|bess|rooftop [--repo PATH] [--since COMMIT|YYYY-MM-DD] [--fetch]")
   process.exit(2)
 }
 const docsRoot = process.cwd()
-const repo = path.resolve(args.repo || path.join(docsRoot, "..", "PVlayout_Advance"))
+const repo = path.resolve(args.repo || path.join(docsRoot, "..", product.repo || "PVlayout_Advance"))
 if (!fs.existsSync(path.join(repo, ".git"))) {
   console.error(`No git checkout at ${repo}. Pass --repo.`)
   process.exit(2)
@@ -94,7 +103,7 @@ for (const line of lines) {
   if (/^Merge pull request #\d+/.test(subject)) {
     title = git("log", "-1", "--format=%b", sha).split("\n").find((l) => l.trim()) || subject
   }
-  const tags = git("tag", "--contains", sha, "--list", `${product.tagPrefix}*`).split("\n").filter(Boolean)
+  const tags = product.tagPrefix ? git("tag", "--contains", sha, "--list", `${product.tagPrefix}*`).split("\n").filter(Boolean) : []
   const docsOnly = hit.every((f) => /\.(md|txt)$/.test(f) || f.includes("/docs/"))
   rows.push({ sha: sha.slice(0, 7), date, pr, title, n: hit.length, tags, docsOnly })
 }
@@ -103,12 +112,17 @@ console.log(`# ${args.product}: product changes since ${since} (${sinceWhy})\n`)
 console.log(`Repo: ${repo} · origin/main at ${git("rev-parse", "--short", "origin/main")} · ` +
             `paths: ${product.paths.join(", ")}\n`)
 if (!rows.length) { console.log("No product changes touch these paths. Nothing to update."); process.exit(0) }
-console.log("| Commit | Date | PR | Title | Files | In tags |")
-console.log("|---|---|---|---|---|---|")
+const tagged = Boolean(product.tagPrefix)
+console.log(`| Commit | Date | PR | Title | Files |${tagged ? " In tags |" : ""}`)
+console.log(`|---|---|---|---|---|${tagged ? "---|" : ""}`)
 for (const r of rows.reverse()) {
   const tag = r.tags.length ? r.tags[0] + (r.tags.length > 1 ? ` (+${r.tags.length - 1})` : "") : "**unreleased**"
   console.log(`| \`${r.sha}\` | ${r.date} | ${r.pr ? "#" + r.pr : "—"} | ${r.title.replace(/\|/g, "\\|")}` +
-              `${r.docsOnly ? " _(docs/specs only)_" : ""} | ${r.n} | ${tag} |`)
+              `${r.docsOnly ? " _(docs/specs only)_" : ""} | ${r.n} |${tagged ? ` ${tag} |` : ""}`)
 }
-const unreleased = rows.filter((r) => !r.tags.length).length
-console.log(`\n${rows.length} change(s); ${unreleased} not in any ${product.tagPrefix}* tag yet.`)
+if (tagged) {
+  const unreleased = rows.filter((r) => !r.tags.length).length
+  console.log(`\n${rows.length} change(s); ${unreleased} not in any ${product.tagPrefix}* tag yet.`)
+} else {
+  console.log(`\n${rows.length} change(s). ${args.product} deploys from main by hand: ask the user which are live.`)
+}
