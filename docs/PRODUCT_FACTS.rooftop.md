@@ -5,7 +5,7 @@ pages** (`/docs/rooftop`). If a number, label or behaviour is not here, do not
 state it on a page. Every value was read from the product's code in the
 `rooftop-design-app` repository and carries a `file:line` citation.
 
-**Verified against `main` at `960c4b1` on 2026-10-09** (written at `75591f2` the same day, re-verified after #172 to #178 and after #180 to #185). Where the app's own
+**Verified against `main` at `5d710ae` on 2026-10-09** (written at `75591f2` the same day, re-verified after #172 to #178, after #180 to #185, and after #186 to #192). Where the app's own
 in-app help, a code comment or a design document says something the code
 contradicts, it is listed under the area's *Known-stale* heading and must not
 be repeated. Product defects noticed while reading are listed under *Product
@@ -338,7 +338,7 @@ Panel title **Outline the roof**. The tool's lead text sits under it.
 | **Rectangle** | Lead: "Drag a box across the roof, then turn it to the building by its handle. Drag a corner to adjust it." A drag draws a box while no corners exist; it is closed when released. Its round handle ("Turn the rectangle") turns it and snaps to north within 3°. | WEB/components/find/Find.tsx:72; WEB/components/find/OutlineLayer.tsx:422-450, :923-944; WEB/lib/outline/rectangle.ts:31-39 |
 | **Detect building** (phone: **Detect**) | Lead: "Click inside the building. Where its footprint is known, it is proposed as the outline, to accept or adjust." While the tool is in hand, known footprints show faintly. A press takes the footprint under it as a closed outline and replaces any outline already drawn. A building in pieces gives its largest piece. | WEB/components/find/Find.tsx:73; WEB/components/find/OutlineLayer.tsx:344-389; WEB/lib/map/overture.ts:19-26; WEB/lib/outline/outline-state.ts:346-348 |
 | Detect: footprint source | Overture Maps building footprints, release `2026-09-23.1` (PMTiles, tiles end at zoom 14). A building cut by a tile edge is proposed as the piece under the press. Footprints are approximate, "about 0.6 m". | WEB/lib/map/overture.ts:1-16 |
-| Detect: callout | Found: "Footprint found · N corners · A m²", then "From Overture Maps · approximate, about 0.6 m. Accept it, or drag the corners to the roof edge you see.", with **Use this outline** and **Adjust**. Not found: "No footprint known here" / "Outline the roof by corners or by a rectangle instead." | WEB/components/find/DetectedCallout.tsx:30-48 |
+| Detect: callout | Found: "Footprint found · N corners · A m²", then "From Overture Maps · approximate, about 0.6 m. Accept it, or drag the corners to the roof edge you see.", with one button, **Use this outline**, which closes the callout; the footprint's corners drag as any closed roof's. Not found: "No footprint known here" / "Outline the roof by corners or by a rectangle instead." | WEB/components/find/DetectedCallout.tsx:10-13, :29-41; WEB/components/find/Find.tsx:326 |
 | **Enter dimensions by hand instead** | Lead: "Type what you have measured. The roof is drawn as you type; Faces is where its long side looks." Title **Enter the roof by hand**. **Draw on the map instead** returns while a map exists. | WEB/components/find/Find.tsx:79, :405-413 |
 
 **Editing the outline**
@@ -483,7 +483,6 @@ Import is not done on Find. It opens from Home's **Import a drawing** ("KMZ, KML
 
 #### Known-stale (this area)
 - The map tip WEB/lib/outline/tips.ts:16, :22 ("Click inside the roof to pick it up") leaves out a condition. The roof is picked only with **Box** or **Tank** in hand; with **Wall** or **Building** in hand the same press places a point (WEB/components/find/OutlineLayer.tsx:391-409). Box is the tool given when the roof closes. The help topic HELP/find/tool/move-the-roof.mdx:12-13 says so.
-- WEB/components/find/DetectedCallout.tsx:12-13 (comment: Adjust "takes the corners tool"): Find wires **Use this outline** and **Adjust** both to close the callout only (WEB/components/find/Find.tsx:328-331). The footprint's corners drag either way.
 
 #### Facts we do not have (this area)
 - Geocoder coverage, language and country bias. The code only sends the map centre as `location` (WEB/lib/places/esri.ts:55).
@@ -497,7 +496,6 @@ Import is not done on Find. It opens from Home's **Import a drawing** ("KMZ, KML
 - The by-hand corner table is centred again on Build: the place becomes the polygon's centroid, not the typed point (API/services/roof_map.py:27-30). Logged at plan/phase-14-in-app-help.md:167.
 - The import dialog's text (WEB/components/shell/ImportDrawing.tsx:28) is inaccurate. KMZ/KML LineStrings (open) become walls, DXF circles become tanks, and KMZ obstacles are named by placemark name, not layer (CORE/io/roof_import.py:137-140, :198-200, :127-128).
 - Importing a drawing has no size check before sending. A file over the deployed 6 MiB request limit would likely be refused with the generic "The server answered 413 in a form that cannot be read. Try again; if it fails again, report it." (WEB/lib/api/errors.ts:30-32; WEB/components/shell/ImportDrawing.tsx:84-97). The Open-project and weather dialogs do check first (WEB/lib/flow/open-project.ts:18-21).
-- **Use this outline** and **Adjust** do exactly the same thing (WEB/components/find/Find.tsx:328-331).
 - Obstacle heights cannot be edited on Find after they are added (WEB/components/find/ObstacleList.tsx:41-56). Logged as deferred at plan/STATE.md:211.
 
 ## 3. The Studio, and its Roof and Array lenses
@@ -640,19 +638,19 @@ Other sections in this lens:
 - When an imported drawing had obstacles without heights, a note shows under the card: `These obstacles have no height in the file and were set to 1.0 m.`, then `<n> to review` and a **Review** button (RoofInspector.tsx:102-117; WEB/lib/studio/review-heights.ts:7,12).
 - The **Obstacles · <n>** panel follows, with **Add** (WEB/components/studio/ObstaclePanel.tsx:327-330). With none: "None yet. Add a box, a tank, a wall, a tree or a building." (ObstaclePanel.tsx:351). With a parapet above 0, a row "Parapet, all edges" with its height (ObstaclePanel.tsx:383-389).
 
-**Obstacles in the Roof lens** (checked at `960c4b1`):
+**Obstacles in the Roof lens** (checked at `5d710ae`):
 
 | Item | Value | Source |
 |---|---|---|
 | **Add** menu | **Box** (`2.0 × 2.0 m`), **Tank** (`⌀ 2.0 m`), **Wall** (`6.0 m, points`), **Tree** (`crown ⌀ 4.0 m`), **Building** (`beside the roof, points`) | WEB/lib/geometry/obstacle-fields.ts:43-61, 135-166 |
-| A new one | Starts at the middle of the roof (a building beside it, 3 to 13 m east of the middle); a press on the roof moves it there; it is added when its **Height** is committed; **Remove** drops it | ObstaclePanel.tsx:294-305, 332-349; WEB/components/scene/Scene.tsx:50, 148-150 |
-| Name | "<Kind> <n>", editable in the card's head | obstacle-fields.ts:136, 152; ObstaclePanel.tsx:62-87 |
+| A new one | Starts at the middle of the roof (a building beside it, 3 to 13 m east of the middle); a press on the roof moves it there. Its card ends with **Remove** and **Add the <kind>**. It joins the design by **Add the <kind>**, or Enter in its card, once its **Height** holds a value; leaving the Height field only fills it in. Add the <kind> without a height does nothing. **Remove** drops it | ObstaclePanel.tsx:292-305, 334-357; WEB/lib/geometry/obstacle-fields.ts:21; WEB/components/scene/Scene.tsx:49, 58 |
+| Name | "<Kind> <n>", editable in the card's head | obstacle-fields.ts:136, 152; ObstaclePanel.tsx:60-88 |
 | Fields by kind | Box: **Length**, **Width**, **Height**, **Rotation**, **East**, **North**. Tank: **Diameter**, **Height**, East, North. Tree: **Crown ⌀**, **Height**, **Crown starts at**, East, North. Wall: **Height**, **Thickness**, and its points. Building: **Height**, and its points | obstacle-fields.ts:22-40, 121-129 |
 | Ranges | Length, Width 0.1–500 m; Height 0.05–200 m; Rotation −180 to 180° (counter-clockwise); East, North −5000 to 5000 m; Diameter 0.1–100 m; Crown starts at 0–100 m; Thickness 0.05–5 m | obstacle-fields.ts:22-40; CORE/geometry.py:41 |
 | Points | A table with **Add a point** and a bin per point, which stops at 2 for a wall and 3 for a building | ObstaclePanel.tsx:92-118; obstacle-fields.ts:64 |
 | On the roof | A box, tank or tree is dragged; a wall or building is moved by its points in the list. A box corner resizes it with the opposite corner held; the turn handle snaps to a right angle within 3°; a handle on a stem sets the height; an edge handle sets a tank's or crown's diameter. Drags move in steps of 0.1 m | WEB/lib/geometry/obstacles.ts:100, 111; WEB/lib/scene/handles.ts:1-3, 29-58, 61-68; WEB/lib/stores/drag.ts:12 |
 | Trees | The footprint is the crown. The shadow comes from a 0.15 m trunk up to **Crown starts at**, then the crown up to **Height** | CORE/geometry.py:43-46, 56-57, 65-68 |
-| Heights to review (after an import) | The row carries an exclamation mark labelled "Height to review"; the card's hint "Enter the real height. The file gave none; 1.0 m stands until you do", with **Next** | ObstaclePanel.tsx:191-206, 366-374; WEB/lib/studio/review-heights.ts:10 |
+| Heights to review (after an import) | The row carries an exclamation mark labelled "Height to review"; the card's hint "Enter the real height. The file gave none; 1.0 m stands until you do", with **Next** | ObstaclePanel.tsx:194-206, 368-382; WEB/lib/studio/review-heights.ts:10 |
 | Section order | Roof lens: Location, the review note, Roof type, Edges and access, Obstacles. Array lens: Module, Mounting, Spacing (with the window). Strings lens: Inverter, System voltage, Modules in series, Options (with Your own and the note), MPPT loading, then **Sizing temperatures** and **Inverter limits and cabling** | WEB/components/studio/RoofInspector.tsx:148-189; ArrayInspector.tsx:54-73; StringsInspector.tsx:104-149 |
 
 ### Array lens: module
@@ -898,20 +896,20 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 
 - Shading is worked out for every hour of the weather year, with the sun placed at the middle of each hour (pvlib solar position) (CORE/weather.py:326-328; CORE/project.py:281-290).
 - Weather given at steps shorter than an hour is averaged to hours (CORE/weather.py:291-295; CORE/csv_weather.py:145-150).
-- Note: this annual sun is not the Cooper solar-time model that the Sun lens draws (CORE/geometry.py:267-278).
+- Note: this annual sun is not the Cooper solar-time model that the Sun lens draws (CORE/geometry.py:267-278). The in-app help says so: the view, the outlines and the shade-free window place the sun by solar time on the day shown; the year's shading places it at every hour from its exact position; the two differ by a fraction of a degree (HELP/studio/section/on-the-roof.mdx:21).
 - **Row-to-row shading** is analytic: the edge of the row in front shades the table from its lower edge up (CORE/shading.py:4-6, 135-151).
 - **Obstacle and parapet shadows** are projected at each module's mid height and intersected with its footprint. Sun positions are binned to 1° of elevation and 2.5° of azimuth (CORE/shading.py:7-9, 38, 160-222).
-- **Sky (diffuse)** loss comes from the hidden part of the sky. Modules with a row in front also get a row-masking angle (Passias) (CORE/shading.py:237-243).
+- **Sky (diffuse)** loss comes from the hidden part of the sky. Modules with a row in front also get a row-masking angle (Passias) (CORE/shading.py:240-244). The part of it the far horizon hides, the same for every module, is booked as far shading; the rest is near shading (CORE/geometry.py:339-341; CORE/shading.py:54, 258; CORE/shade_summary.py:47).
 - **Electrical loss** follows the bypass layout:
   - A shadow band on a portrait module costs the whole module, or half of a half-cell module.
   - In landscape it costs one substring per diode.
   - Fractions under 1% are ignored.
   - A string runs at its weakest module (CORE/shading.py:10-13, 113-120).
-- **Far shading (horizon):** beam is lost while the sun is under the horizon profile. Only PVGIS weather fetches a horizon (CORE/shading.py:245-249; CORE/weather.py:173-176).
+- **Far shading (horizon):** beam is lost while the sun is under the horizon profile, and the part of the sky the horizon hides is lost with it. Only PVGIS weather fetches a horizon (CORE/shading.py:247-250, 258; CORE/weather.py:173-176).
 
 #### Shade map (tab)
 
-- Each position of the layout is coloured by its **near shading over the year** from the design run. The value is the irradiation lost to near shading (shaded beam plus hidden sky), as a % of what passes the horizon. Every position is coloured, also those the chosen option leaves unused (CORE/shade_summary.py:27-54; API/schemas/design.py:25-34; HELP/studio/section/shade-map.mdx:12).
+- Each position of the layout is coloured by its **near shading over the year** from the design run. The value is the irradiation lost to near shading (shaded beam plus the sky the rows, parapet and obstacles hide), as a % of what passes the horizon. Every position is coloured, also those the chosen option leaves unused (CORE/shade_summary.py:27-54; API/schemas/design.py:25-34; HELP/studio/section/shade-map.mdx:12).
 
 | Field | Value | Source |
 |---|---|---|
@@ -936,7 +934,7 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 
 - Lines under the tiles say what is counted: `Of the <n> modules of option <L>` or `Of all <n> positions` (WEB/lib/studio/sun-figures.ts:43, 50).
 - The second line is the horizon note: `Far shading: PVGIS horizon, highest <x.x>°`; `Far shading: not counted, PVGIS sent no horizon for this site` when PVGIS sent its weather without one; or `Far shading: no horizon profile for this weather source` for the others (CORE/readouts.py:252-257).
-- Near loss is a share of the light past the horizon. Far loss is a share of the light with no horizon (CORE/shade_summary.py:22-24, 51-53).
+- Near loss is a share of the light past the horizon. Far loss is a share of the light with no horizon: the beam behind the horizon plus the sky it hides (CORE/shade_summary.py:22-24, 47, 51-53; HELP/studio/section/shading-over-the-year.mdx:12, 14).
 
 ### Strings lens: location and system voltage
 
@@ -1271,8 +1269,8 @@ The simulation is hourly over every hour of the weather. Its order follows PVsys
 
 - **Sun position.** The sun is placed at the middle of each hour (CORE/weather.py:326-328).
 - **Transposition.** The Perez model, with the roof's albedo, extraterrestrial DNI and relative airmass (CORE/simulation.py:99-101).
-- **Far shading.** The beam is zero in hours when the sun is above 0° but below the PVGIS horizon line (CORE/shading.py:245-249; CORE/simulation.py:218, 240). The diffuse light the horizon hides is counted in the sky loss, which lands in the near-shading row (CORE/geometry.py:315-341; CORE/simulation.py:234, 251).
-- **Near shading, linear.** Row-to-row shading is analytic, from the profile angle. The shadows of obstacles and the parapet are projected at each module's mid-height, with sun positions binned to 1° of elevation and 2.5° of azimuth. The sky diffuse each module sees is reduced by the obstacles, the horizon and the row in front (Passias masking) (CORE/shading.py:2-13, 38, 225-243).
+- **Far shading.** The beam is zero in hours when the sun is above 0° but below the PVGIS horizon line, and the diffuse light the horizon hides is taken in the same row (CORE/shading.py:247-250, 258; CORE/simulation.py:218, 240, 250). Booking it here changes no energy: the light reaching the modules is the same (CORE/simulation.py:234, 251).
+- **Near shading, linear.** Row-to-row shading is analytic, from the profile angle. The shadows of obstacles and the parapet are projected at each module's mid-height, with sun positions binned to 1° of elevation and 2.5° of azimuth. The sky diffuse each module sees is reduced by the obstacles and the row in front (Passias masking); the part the horizon hides is in the far-shading row (CORE/shading.py:2-13, 38, 226-244; CORE/simulation.py:250-251).
 - **IAM.** The PAN's IAM profile when it has 3 or more points, otherwise ASHRAE with b0 0.05. Diffuse and ground light use equivalent angles (CORE/simulation.py:72-77, 115-117).
 - **Bifacial rear gain.** pvlib infinite sheds (isotropic) × the PAN bifaciality × (1 − rear loss). It applies only to a bifacial module, on roofs other than sloped flush, with GCR between 0 and 1 (CORE/simulation.py:107-112, 217, 246).
 - **Module model.** PVsyst one-diode, fitted to the PAN's Isc and Voc at STC with its Rs, Rsh and Gamma (pvlib `calcparams_pvsyst`, EgRef 1.121 eV). Zero power under 1 W/m² (CORE/onediode.py:2-8, 22, 39-69).
@@ -1281,8 +1279,8 @@ The simulation is hourly over every hour of the weather. Its order follows PVsys
 
 | Loss | Default | User can change? | Source |
 |---|---|---|---|
-| Far shading, horizon | From the weather's horizon (PVGIS only) | No, only by choosing a weather source | CORE/shading.py:245-249; WEB/lib/flow/weather-source.ts:18-20 |
-| Near shading, linear | From the layout, the obstacles and the parapet | No, not in Performance | CORE/shading.py:225-243 |
+| Far shading, horizon | From the weather's horizon (PVGIS only): the beam behind it and the sky it hides | No, only by choosing a weather source | CORE/shading.py:247-250, 258; WEB/lib/flow/weather-source.ts:18-20 |
+| Near shading, linear | From the layout, the obstacles and the parapet | No, not in Performance | CORE/shading.py:226-244 |
 | IAM | PAN profile, else ASHRAE b0 = 0.05 | No (API field `iam_b0`, 0–1, has no UI) | CORE/simulation.py:47, 72-77; API/schemas/losses.py:26 |
 | **Soiling** | 2.0 %, applied to the front irradiance (not the rear) | Yes, in the chain: 0–30 %, 1 decimal | CORE/simulation.py:37, 216, 246; WEB/lib/performance/loss-fields.ts:13 |
 | **Bifacial rear gain** | On. The switch is disabled for a monofacial module | Yes, a switch in the chain | CORE/simulation.py:48; WEB/lib/performance/loss-fields.ts:79-82 |
@@ -1490,44 +1488,45 @@ Verified at the commit in the header. `WEB` = `apps/web`, `API` = `apps/api/src/
 | Columns | Item, Specification, Qty, Unit. Qty has thousands commas and no decimals. | WEB/lib/handover/bom-view.ts:22-27 |
 | Caption | "The bill of materials of option {letter}, as the engine lists it" | WEB/lib/handover/bom-view.ts:38 |
 | Phone | Each line is a card | WEB/components/handover/BillOfMaterials.tsx:15-19 |
-| PV module | "{maker} {model}, {Wp} Wp", plus ", bifacial {x.xx}" for a bifacial module. Qty: modules used, in pcs. | CORE/bom.py:70-72 |
-| String inverter | "{maker} {model}, {kW} kW, {n} MPPT". Qty: inverters, in pcs. | CORE/bom.py:73-74 |
-| Mounting structure | The structure wording (see design report). Qty: tables. A table is a contiguous run of used modules in a row; on east-west roofs it is a row in use. | CORE/bom.py:35-47, CORE/bom.py:75 |
-| DC cable | "4 mm² Cu, {V} V DC, red + black". Qty: the schedule's lengths summed and rounded to a whole metre. | CORE/bom.py:12, CORE/bom.py:50-52, CORE/bom.py:68, CORE/bom.py:76 |
-| DC connector pair | "MC4-compatible, matched to the module". Qty: 2 × strings, in pairs. | CORE/bom.py:77 |
-| AC cable | "Inverter to ACDB, sized for {I} A at {V} V AC". Qty: AC cable length per inverter (default 30 m) × inverters. I is the inverter's maximum AC current, or P/(√3·V) when the inverter file lacks it. V is the inverter's output voltage, or 415 when the file lacks it. | CORE/bom.py:78-79, CORE/bom.py:85-88; CORE/project.py:55 |
-| AC distribution board | "{n} incomer(s), 1 outgoing". Qty: 1 pcs. | CORE/bom.py:80 |
+| PV module | "{maker} {model}, {Wp} Wp", plus ", bifacial {x.xx}" for a bifacial module. Qty: modules used, in pcs. | CORE/bom.py:115-117 |
+| String inverter | "{maker} {model}, {kW} kW, {n} MPPT". Qty: inverters, in pcs. | CORE/bom.py:118-119 |
+| Mounting structure | The structure wording (see design report). Qty: tables. A table is a contiguous run of used modules in a row; on east-west roofs it is a row in use. | CORE/bom.py:72-84, CORE/bom.py:120 |
+| DC cable | One line for each size the schedule uses, smallest first: "{4, 6 or 10} mm² Cu, {V} V DC, red + black". Qty: the lengths of that size's strings, summed and rounded to a whole metre. The Handover card's fact gives the metres of all sizes together. | CORE/bom.py:64-69, CORE/bom.py:87-89, CORE/bom.py:112, CORE/bom.py:121-122; WEB/lib/flow/deliverables/items.ts:69-74 |
+| DC connector pair | "MC4-compatible, matched to the module". Qty: 2 × strings, in pairs. | CORE/bom.py:123 |
+| AC cable | "Inverter to ACDB, sized for {I} A at {V} V AC". Qty: AC cable length per inverter (default 30 m) × inverters. I is the inverter's maximum AC current, or P/(√3·V) when the inverter file lacks it. V is the inverter's output voltage, or 415 when the file lacks it. | CORE/bom.py:124-125, CORE/bom.py:131-134; CORE/project.py:55 |
+| AC distribution board | "{n} incomer(s), 1 outgoing". Qty: 1 pcs. | CORE/bom.py:126 |
 | Copy message | "Bill of materials copied as a table" | WEB/lib/handover/bom-view.ts:31 |
 
 ### Handover: DC cable schedule
 
 | Item | Value | Source |
 |---|---|---|
-| Form | An on-screen table, also printed on report page 5 and continuation pages. No file of its own. | WEB/lib/flow/deliverables/items.ts:45; CORE/export/report.py:56-68 |
-| Columns | String, Inverter, MPPT, Modules, "Voc cold (V)" (0 decimals), "Isc (A)" (2 decimals), "DC cable (m)" (1 decimal), Cable. The first seven sort. The default is the engine's order, by string. | WEB/lib/handover/schedule-view.ts:44-70 |
-| Total row | "{n} strings" and the sum of the lengths (1 decimal) | WEB/lib/handover/schedule-view.ts:72-76 |
-| Captions | "The DC cable schedule of option {letter}, in the engine's order, by string". When sorted: "Sorted by {column}, upwards/downwards. The order of the engine, by string, is the default". | WEB/lib/handover/schedule-view.ts:78-82 |
-| Row values | String "S{n}"; inverter "INV-{n}"; MPPT from 1; modules = modules in series; Voc cold = one module's Voc at the lowest temperature × modules in series; Isc = the module's Isc; cable = "4 mm² Cu, {system V} V DC" | CORE/bom.py:55-62 |
+| Form | An on-screen table, also printed on report page 5 and continuation pages. No file of its own. | WEB/lib/flow/deliverables/items.ts:45; CORE/export/report.py:58-70 |
+| Columns | String, Inverter, MPPT, Modules, "Voc cold (V)" (0 decimals), "Isc (A)" (2 decimals), "DC cable (m)" (1 decimal), "Drop (%)" (2 decimals), Cable. The first eight sort. The default is the engine's order, by string. The report prints the same columns, "Drop, %" among them. | WEB/lib/handover/schedule-view.ts:49-84; CORE/export/report.py:31-33 |
+| Total row | "{n} strings" and the sum of the lengths (1 decimal) | WEB/lib/handover/schedule-view.ts:86-90 |
+| Captions | "The DC cable schedule of option {letter}, in the engine's order, by string". When sorted: "Sorted by {column}, upwards/downwards. The order of the engine, by string, is the default". | WEB/lib/handover/schedule-view.ts:92-96 |
+| Row values | String "S{n}"; inverter "INV-{n}"; MPPT from 1; modules = modules in series; Voc cold = one module's Voc at the lowest temperature × modules in series; Isc = the module's Isc; cable = "{size} mm² Cu, {system V} V DC", the string's own size | CORE/bom.py:92-107 |
 | String order | Sorted by azimuth, then row, then x of the start | CORE/stringing.py:214 |
-| Length per string | 2 × (east-west distance + north-south distance from the string's start to its inverter, + 2 m slack). The string's own length is added when the layout is single-line (east-west, or all modules in one line). Rounded to 0.1 m. | CORE/stringing.py:240-248; CORE/bom.py:61 |
+| Length per string | 2 × (east-west distance + north-south distance from the string's start to its inverter, + 2 m slack). The string's own length is added when the layout is single-line (east-west, or all modules in one line). Rounded to 0.1 m. | CORE/stringing.py:240-248; CORE/bom.py:102 |
 | Inverter position | For each inverter: the point on the setback line nearest the mean start of its strings | CORE/stringing.py:228-235; CORE/placement.py:143 |
-| Cable size | Always 4 mm² Cu | CORE/bom.py:12 |
-| Copy message | "DC cable schedule copied as a table" | WEB/lib/handover/schedule-view.ts:39 |
+| Cable size | Each string's own: the smallest of 4, 6 and 10 mm² Cu that carries 1.25 × the module's Isc within the rating of EN 50618 cable, two loaded cables side by side on a surface at 60 °C ambient (44, 57, 79 A), and drops no more than 1 % of the string's voltage at its maximum power point at STC over its length. Resistance: IEC 60228 class 5 tinned copper (5.09, 3.39, 1.95 Ω/km at 20 °C) raised to a conductor at 70 °C. Imp and Vmp from the PAN file (its Isc and Voc where it gives none). A string no size holds to 1 % takes 10 mm². | CORE/bom.py:12-19, 50-61, 99 |
+| Drop (%) | The string's cable's voltage drop at that point, 2 decimals. Over 1 % it carries an exclamation mark labelled "More than 1 % even at 10 mm²: a shorter run, or the inverter nearer, brings it down". The energy does not use it: DC ohmic loss stays the percentage in Performance | WEB/lib/handover/schedule-view.ts:43-44, 57-64; CORE/bom.py:40-41; CORE/simulation.py:41 |
+| Copy message | "DC cable schedule copied as a table" | WEB/lib/handover/schedule-view.ts:40 |
 
 ### Handover: CAD layout (DXF)
 
 | Item | Value | Source |
 |---|---|---|
-| Format | DXF R2010, units metres | CORE/export/files.py:83-84 |
+| Format | DXF R2010, units metres | CORE/export/files.py:95-96 |
 | Coordinates | Local roof metres, x east, y north. For a roof traced on the map, the origin is the outline's centroid. | CLAUDE.md rule 2; WEB/lib/handover/cad-view.ts:26; API/services/roof_map.py:28-30 |
-| ROOF (colour 7) | The outline | CORE/export/files.py:86-94 |
-| SETBACK (8) | The inner line inside the setback, when not empty | CORE/export/files.py:95-97 |
-| OBSTACLES (1) | Footprints | CORE/export/files.py:98-100 |
-| KEEPOUT (30) | Keep-out areas within the roof | CORE/export/files.py:103-104 |
-| MODULES_UNUSED (9) | Free positions not used by the option | CORE/export/files.py:105-112 |
-| INVERTERS (40) | A 2 × 1.2 m rectangle at each inverter's position | CORE/export/files.py:113-114 |
-| TEXT (7) | "{obstacle} h={height}" at each footprint's centre (text height 0.4), and "INV-{n}" (0.5) placed 0.8 m north of each inverter | CORE/export/files.py:101-102, CORE/export/files.py:115 |
-| STRING_S01 … | One layer per string, holding its module outlines. Colours cycle 2–7. | CORE/export/files.py:106-112 |
+| ROOF (colour 7) | The outline | CORE/export/files.py:98-106 |
+| SETBACK (8) | The inner line inside the setback, when not empty | CORE/export/files.py:107-109 |
+| OBSTACLES (1) | Footprints | CORE/export/files.py:110-112 |
+| KEEPOUT (30) | Keep-out areas within the roof | CORE/export/files.py:115-116 |
+| MODULES_UNUSED (9) | Free positions not used by the option | CORE/export/files.py:117-124 |
+| INVERTERS (40) | A rectangle at each inverter's position, its width (east-west) and depth (north-south) as the OND file gives them (`Width`, `Depth`; the demo's inverter 1.048 × 0.395 m). Where the file gives no size, a 2 × 1.2 m block | CORE/export/files.py:80-88, 125-128; CORE/io/pvsyst.py:246-247, 302-303 |
+| TEXT (7) | "{obstacle} h={height}" at each footprint's centre (text height 0.4), and "INV-{n}" (0.5) placed 0.2 m north of the inverter's outline; "INV-{n} (symbol, not to scale)" where the file gives no size | CORE/export/files.py:113-114, CORE/export/files.py:129 |
+| STRING_S01 … | One layer per string, holding its module outlines. Colours cycle 2–7. | CORE/export/files.py:118-124 |
 | Preview | The report's Layout page in a paper frame, the layer rows with what is on each, and the caption "R2010 · metres · x east, y north" | WEB/components/handover/CadPreview.tsx:28-50; WEB/lib/handover/cad-view.ts:33-54 |
 
 ### Handover: Google Earth model (KMZ)
