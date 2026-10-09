@@ -52,8 +52,8 @@ const PRODUCTS: Product[] = [
     docs: "/docs/rooftop",
     start: [
       { label: "Getting started", meta: "5 min", href: "/docs/rooftop/getting-started" },
+      { label: "Your first rooftop design", meta: "20 min", href: "/docs/rooftop/first-design" },
       { label: "The workspace", meta: "5 min", href: "/docs/rooftop/workspace" },
-      { label: "Your designs and the project file", meta: "5 min", href: "/docs/rooftop/projects" },
     ],
     action: { label: "Open Rooftop", href: "https://rooftop.solarlayout.app" },
   },
