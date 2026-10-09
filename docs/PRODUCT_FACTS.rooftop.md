@@ -93,6 +93,7 @@ Moving between areas:
 | Lenses | Desktop: rail at the left; tablet: row floating over the 3D view; phone: a four-way switch at the top of the bottom sheet | WEB/components/shell/LensNav.tsx:6; WEB/components/studio/Studio.tsx:52,56,69 |
 | Back to Home | The logo in the top bar ("Home"), on every size; also **Home** in the project switcher | WEB/components/shell/TopBar.tsx:79-87; WEB/components/shell/ProjectSwitcher.tsx:75 |
 | Project switcher rows | **New design** (Find the roof, goes to `/find`), **Open a project** (.rtd), **Import a drawing** (KMZ, KML, DXF), **Save a copy** (.rtd), **Home** | WEB/components/shell/ProjectSwitcher.tsx:71-75 |
+| Project switcher and the state of saving | The design's name in the top bar opens the project switcher. A mark before the name shows the state of saving; its words ("Saved on this device" …) are the name's tooltip, and stand under the name in the switcher | WEB/components/shell/TopBar.tsx:89-90; WEB/components/shell/ProjectSwitcher.tsx:247-260; WEB/components/shell/SaveState.tsx:10-24 |
 | Top-bar buttons | **Present** (play icon; word shown from desktop width) and **Export** (leads to Handover) | WEB/components/shell/TopBar.tsx:49-71,115-118 |
 | Home and Find | Outside the workspaces' shell: no top bar, no tab bar | WEB/components/home/Home.tsx:56-62; WEB/app/(workspaces)/layout.tsx:4-6 |
 
