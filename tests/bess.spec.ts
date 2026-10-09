@@ -55,7 +55,7 @@ test("search finds a BESS page from the BESS tree", async ({ page }) => {
   await input.fill("battery")
   const dialog = page.getByRole("dialog")
   const result = dialog.getByRole("button", { name: /BESS Desktop|Getting started/i }).first()
-  await expect(result, "search returned no BESS result — check /api/search indexes bessSource").toBeVisible({ timeout: 15_000 })
+  await expect(result, "search returned no BESS result — check /docs/api/search indexes bessSource").toBeVisible({ timeout: 15_000 })
   await result.click()
   await expect(page).toHaveURL(/\/docs\/bess\//)
 })

@@ -108,7 +108,7 @@ test("the theme toggle changes the theme and the painted background", async ({
 test("search returns a real result, not just an empty dialog", async ({
   page,
 }) => {
-  // Worth asserting a result rather than the dialog: without the /api/search
+  // Worth asserting a result rather than the dialog: without the /docs/api/search
   // route the dialog still opens and accepts typing, and every query silently
   // returns nothing. That reads as "search is bad" rather than "search is
   // broken", so only a positive result proves the backend is wired.
@@ -133,7 +133,7 @@ test("search returns a real result, not just an empty dialog", async ({
 
   await expect(
     result,
-    "search returned no result for a term that appears in a page title — check /api/search",
+    "search returned no result for a term that appears in a page title — check /docs/api/search",
   ).toBeVisible({ timeout: 15_000 })
 
   // And the result must navigate somewhere real. Which page ranks first is the

@@ -15,6 +15,11 @@ import { source, bessSource } from "@/lib/source"
  * absolute `url`, so a hit navigates to the right product regardless of
  * which tree it came from.
  *
+ * It lives under `/docs` so that `solarlayout.app/docs/api/search` reaches it
+ * through the website's existing `/docs/:path*` rewrite: the dialog fetches a
+ * same-origin path, and `/api/search` on solarlayout.app is the website's own
+ * namespace (a 404), which left search empty there until 2026-10-09 (#19).
+ *
  * This is the one dynamic route on an otherwise fully prerendered site. The
  * alternative — `staticGET` plus a client-side index — would keep the
  * deployment function-free, but the client preset for it is deprecated in
