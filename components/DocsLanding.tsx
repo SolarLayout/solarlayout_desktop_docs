@@ -19,6 +19,7 @@
  */
 import Link from "next/link"
 import {
+  ArrowLeft,
   ArrowUpRight,
   Boxes,
   Download,
@@ -33,7 +34,6 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { SolarLayoutLogo } from "@/components/SolarLayoutLogo"
-import { BessLogo } from "@/components/BessLogo"
 
 interface HighlightCard {
   icon: LucideIcon
@@ -134,7 +134,7 @@ const TOPICS: TopicSection[] = [
     icon: Download,
     category: "Exports",
     links: [
-      { label: "The PDF report", href: "/docs/exports/pdf-report" },
+      { label: "The Detailed Project Report", href: "/docs/exports/project-report" },
       { label: "Google Earth export", href: "/docs/exports/kmz" },
       { label: "CAD drawing export", href: "/docs/exports/dxf" },
       { label: "Saving and reopening projects", href: "/docs/projects" },
@@ -182,12 +182,11 @@ function HeroBanner() {
               so this is how a reader reaches the sibling app's docs from the
               index. Reciprocated on the BESS landing. */}
           <Link
-            href="/docs/bess"
+            href="/docs"
             className="inline-flex shrink-0 items-center gap-[7px] rounded-[9px] border border-fd-border bg-fd-card px-[14px] py-[8px] text-[13px] font-medium text-fd-foreground shadow-sm transition-colors hover:border-fd-primary/40 hover:bg-fd-muted"
           >
-            <BessLogo aria-hidden="true" className="size-[16px]" />
-            <span>BESS Desktop docs</span>
-            <ArrowUpRight className="size-[14px]" aria-hidden />
+            <ArrowLeft className="size-[14px]" aria-hidden />
+            <span>All products</span>
           </Link>
         </div>
 

@@ -11,13 +11,16 @@ test("the BESS intro page renders with the docs chrome", async ({ page }) => {
   await expect(page.locator("#nd-sidebar")).toBeVisible()
 })
 
-test("the root shows a product picker linking to both apps", async ({ page }) => {
+test("the root redirects to the index, which opens each product's docs", async ({ page }) => {
   await page.goto("/")
-  await expect(page.getByRole("link", { name: /SolarLayout Desktop/i }).first()).toBeVisible()
-  await expect(page.getByRole("link", { name: /BESS Desktop/i }).first()).toBeVisible()
-  // The BESS card lands on the BESS tree.
-  await page.getByRole("link", { name: /BESS Desktop/i }).first().click()
-  await expect(page).toHaveURL(/\/docs\/bess(\/|$)/)
+  await expect(page).toHaveURL(/\/docs$/)
+  await expect(page).toHaveTitle("SolarLayout Docs")
+  const products = page.getByRole("heading", { level: 2 })
+  await expect(products).toHaveText(["SolarLayout Desktop", "BESS Desktop"])
+  const open = page.getByRole("link", { name: /Open the docs/i })
+  await expect(open.nth(0)).toHaveAttribute("href", "/docs/solarlayout")
+  await open.nth(1).click()
+  await expect(page).toHaveURL(/\/docs\/bess$/)
 })
 
 test("the /docs/bess landing links into the BESS tree", async ({ page }) => {
@@ -36,11 +39,11 @@ test("a BESS article page is title-branded BESS, not SolarLayout", async ({ page
   await expect(page).not.toHaveTitle(/SolarLayout Desktop Docs$/)
 })
 
-test("the /docs/bess landing offers a link across to the SolarLayout docs", async ({ page }) => {
+test("the /docs/bess landing links back to the index", async ({ page }) => {
   await page.goto("/docs/bess")
-  const crossLink = page.getByRole("link", { name: /SolarLayout Desktop docs/i }).first()
-  await expect(crossLink).toBeVisible()
-  await crossLink.click()
+  const back = page.getByRole("link", { name: /All products/i }).first()
+  await expect(back).toBeVisible()
+  await back.click()
   await expect(page).toHaveURL(/\/docs$/)
 })
 

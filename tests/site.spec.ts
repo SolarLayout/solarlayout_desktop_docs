@@ -1,12 +1,12 @@
 import { test, expect } from "@playwright/test"
 
 /**
- * The SolarLayout landing surface, rendered at `/docs` (DocsLanding). The
- * root `/` is a separate product picker — see tests/bess.spec.ts for its
- * assertions.
+ * The SolarLayout Desktop landing surface, rendered at `/docs/solarlayout`
+ * (DocsLanding). `/docs` is the company-level index and `/` redirects to it —
+ * see tests/bess.spec.ts for the index's assertions.
  */
-test("landing renders at /docs", async ({ page }) => {
-  await page.goto("/docs")
+test("landing renders at /docs/solarlayout", async ({ page }) => {
+  await page.goto("/docs/solarlayout")
 
   await expect(
     page.getByRole("heading", { level: 1, name: /Design a plant with/i }),
@@ -28,18 +28,18 @@ test("landing renders at /docs", async ({ page }) => {
 })
 
 test("landing links to a page that actually resolves", async ({ page }) => {
-  await page.goto("/docs")
+  await page.goto("/docs/solarlayout")
   await page.getByRole("link", { name: /Start reading/i }).first().click()
   await expect(page).toHaveURL(/\/docs\/first-layout$/)
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
 })
 
-test("the /docs landing offers a link across to the BESS docs", async ({ page }) => {
-  await page.goto("/docs")
-  const crossLink = page.getByRole("link", { name: /BESS Desktop docs/i }).first()
-  await expect(crossLink).toBeVisible()
-  await crossLink.click()
-  await expect(page).toHaveURL(/\/docs\/bess$/)
+test("the SolarLayout Desktop landing links back to the index", async ({ page }) => {
+  await page.goto("/docs/solarlayout")
+  const back = page.getByRole("link", { name: /All products/i }).first()
+  await expect(back).toBeVisible()
+  await back.click()
+  await expect(page).toHaveURL(/\/docs$/)
 })
 
 test("brand fonts are actually served, not silently falling back", async ({

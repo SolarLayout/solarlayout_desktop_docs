@@ -55,6 +55,66 @@ Three things differ for a BESS page, and only these three:
 Do not weaken any SolarLayout rule in this guide to accommodate BESS content;
 add a BESS-specific note instead, as above.
 
+### Three products: names, order and the shared shell
+
+SolarLayout makes three products, and these docs cover each in its own tree:
+SolarLayout Desktop (`content/docs`), BESS Desktop (`content/bess`) and, as
+its pages arrive, SolarLayout Rooftop (`/docs/rooftop`). Approved by Arun on
+2026-10-09 (#19).
+
+**Names.**
+
+| Say | Never | Where |
+|---|---|---|
+| **SolarLayout** | the vendor, the team, we | The company, and the supplier a reader writes to |
+| **SolarLayout Desktop**, then *the application* | SolarLayout alone for the product, the desktop tool | Full name at a page's first mention |
+| **BESS Desktop**, then *the application* | BESS Tool, the BESS product | As above |
+| **SolarLayout Rooftop**, then *Rooftop* | Rooftop Desktop, the rooftop tool, the web version, the cloud product | As above. Rooftop is a browser app and always will be: no platform word in its name |
+| **products** (the three together) | tools, apps (in shared places), suites, editions, tiers | The index, the landings, search |
+
+- **Order of weight.** Wherever the three appear together (the index, the
+  search filter, any list): SolarLayout Desktop, BESS Desktop, SolarLayout
+  Rooftop.
+- **Industry words.** *Rooftop solar* or *rooftop PV*, never a bare
+  "rooftops" (it reads as roofing); *utility-scale PV plant*; *battery storage*.
+  Never *bankable*, anywhere.
+- **Each tree stands alone.** A content page never names, links or compares
+  another product: the SolarLayout–BESS rule above, extended to three.
+  Products cross only in the shared shell: the index at `/docs`, the landings'
+  **All products** link, the header, search.
+- **The shell's words** name what the reader gets, never claims: *Guides and
+  reference*, *Start here*, *Open the docs*, *All products*, *Search the
+  documentation*, *Search in*. Each product's one line says what it designs,
+  in the reader's terms.
+- **Each app opens its own docs**, never the index: SolarLayout Desktop at
+  `/docs/solarlayout`, BESS Desktop at `/docs/bess`, SolarLayout Rooftop at
+  `/docs/rooftop`. The index is for a reader who has not picked a product.
+
+### Writing for the SolarLayout Rooftop tree
+
+Everything in this guide applies, with these differences:
+
+- **The fact source is `PRODUCT_FACTS.rooftop.md`**, every fact cited
+  `file:line` into the Rooftop repository (`rooftop-design-app`), written
+  before the pages. The app's in-app help topics are its own words: the docs
+  go deeper (walkthroughs, the engineering, troubleshooting), never contradict
+  them, and each topic links to its page.
+- **The reader** is a rooftop installer, C&I solar EPC, design consultant or
+  sales engineer: someone who knows rooftop PV, not software. Define each term
+  on first use in a page (string, MPPT, DC/AC ratio, PR, P90, setback), then
+  use it freely.
+- **Platforms and the action.** Any browser on a phone, tablet or computer.
+  The one link to the app is `rooftop.solarlayout.app` and the action is
+  **Open Rooftop**. It is *added to the home screen*, never "installed" or
+  "downloaded". (The two desktop trees keep §1: Windows only, the download
+  page the one install link.)
+- **Access, said one way:** "Free, no account needed. Your designs are kept on
+  this device." Every page that touches access, saving or sharing says it in
+  these words, and says what follows from it: a design on one device is not on
+  another; the project file carries it across.
+- **Release notes** are a *What's new* page: one dated entry per update that
+  changes what users meet, no version numbers.
+
 ## 2. Voice
 
 **Define the noun, state the requirement, link the reference.** Nothing warm,

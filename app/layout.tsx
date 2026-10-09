@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { RootProvider } from "fumadocs-ui/provider/next"
+import { ProductSearchDialog } from "@/components/ProductSearchDialog"
 import "./global.css"
 
 export const metadata = {
@@ -19,7 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             `.dark`. Sharing the product storage key means a reader's
             choice follows them between the product surfaces when they
             are served same-origin (localStorage is per-origin). */}
-        <RootProvider theme={{ storageKey: "solarlayout-theme" }}>
+        <RootProvider theme={{ storageKey: "solarlayout-theme" }} search={{ SearchDialog: ProductSearchDialog }}>
           {children}
         </RootProvider>
       </body>

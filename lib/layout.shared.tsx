@@ -15,10 +15,11 @@ export const solarlayoutBaseOptions: BaseLayoutProps = {
         <span>SolarLayout Desktop Docs</span>
       </span>
     ),
+    url: "/docs/solarlayout",
   },
   links: [
     { text: "BESS Desktop", url: "/docs/bess" },
-    { text: "Docs", url: "/docs" },
+    { text: "Docs", url: "/docs/solarlayout" },
     { text: "Install", url: "/docs/install/windows" },
     { text: "Release notes", url: "/docs/releases" },
   ],
@@ -32,9 +33,10 @@ export const bessBaseOptions: BaseLayoutProps = {
         <span>BESS Desktop Docs</span>
       </span>
     ),
+    url: "/docs/bess",
   },
   links: [
-    { text: "SolarLayout Desktop", url: "/docs" },
+    { text: "SolarLayout Desktop", url: "/docs/solarlayout" },
     { text: "Docs", url: "/docs/bess" },
     { text: "Install", url: "/docs/bess/install/windows" },
     { text: "Release notes", url: "/docs/bess/releases" },

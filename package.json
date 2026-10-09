@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "description": "SolarLayout Desktop product documentation — Next.js + Fumadocs",
+  "description": "SolarLayout product documentation — Next.js + Fumadocs",
   "scripts": {
     "dev": "next dev --port 3007 --webpack",
     "build": "next build --webpack",

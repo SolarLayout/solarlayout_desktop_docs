@@ -1,7 +1,10 @@
 # solarlayout_desktop_docs — Claude Code context
 
-Product documentation site for **SolarLayout Desktop** (and the BESS tool under
-`content/bess/`), built with Next.js + Fumadocs. Content is MDX on disk.
+Product documentation site for SolarLayout's products: **SolarLayout Desktop**
+(`content/docs/`, landing `/docs/solarlayout`) and **BESS Desktop**
+(`content/bess/`, `/docs/bess`), with SolarLayout Rooftop (`/docs/rooftop`) to
+come. `/docs` is the company-level index. Built with Next.js + Fumadocs;
+content is MDX on disk.
 
 ## Before touching content
 
