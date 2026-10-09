@@ -8,6 +8,7 @@ import {
   ArrowUpRight,
   BookOpen,
   ExternalLink,
+  FileDown,
   Map,
   LayoutGrid,
   LifeBuoy,
@@ -60,14 +61,27 @@ const TOPICS: TopicSection[] = [
     ],
   },
   {
+    icon: FileDown,
+    category: "Results and handover",
+    links: [
+      { label: "Performance: the hourly energy yield", href: "/docs/rooftop/performance" },
+      { label: "Handover: the report and the files", href: "/docs/rooftop/handover" },
+      { label: "Present: the tour for a client", href: "/docs/rooftop/present" },
+    ],
+  },
+  {
     icon: BookOpen,
-    category: "Projects",
-    links: [{ label: "Your designs and the project file", href: "/docs/rooftop/projects" }],
+    category: "Projects and reference",
+    links: [
+      { label: "Your designs and the project file", href: "/docs/rooftop/projects" },
+      { label: "Equipment files, limits and glossary", href: "/docs/rooftop/reference" },
+    ],
   },
   {
     icon: LifeBuoy,
     category: "Help",
     links: [
+      { label: "Troubleshooting", href: "/docs/rooftop/troubleshooting" },
       { label: "What's new", href: "/docs/rooftop/whats-new" },
       { label: "Getting help", href: "/docs/rooftop/support" },
     ],
@@ -234,6 +248,13 @@ function FooterRow() {
           className="inline-flex items-center gap-[4px] text-[12px] text-fd-muted-foreground transition-colors hover:text-fd-foreground"
         >
           What&apos;s new
+          <ArrowUpRight className="size-[12px]" aria-hidden />
+        </Link>
+        <Link
+          href="/docs/rooftop/reference"
+          className="inline-flex items-center gap-[4px] text-[12px] text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+        >
+          Reference
           <ArrowUpRight className="size-[12px]" aria-hidden />
         </Link>
       </div>

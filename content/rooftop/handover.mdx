@@ -1,0 +1,252 @@
+---
+title: Handover
+description: The design report, single-line diagram, bill of materials, DC cable schedule, CAD layout, Google Earth model, hourly data and project file.
+---
+
+**Handover** lists what a design hands over: "Everything the installer, the
+client and the utility need". Each item opens in a preview, and each file
+has its own download. **Download all** takes the files in one zip.
+
+Open it with **Handover** in the top bar, or the tab bar on a phone, or with
+**Export** in the top bar. Every file is made from the design as it is at
+that moment, for the stringing option the design shows: the one you chose,
+or the run's own choice until you choose. A string is a chain of modules
+wired in series; an MPPT is an inverter input that tracks its own best
+operating point.
+
+<Screenshot id="rooftop-handover" />
+
+## The items
+
+| Item | Format | The line under its name |
+| --- | --- | --- |
+| **Design report** | PDF | "A4 landscape · *n* pages" |
+| **Single-line diagram** | PNG | The strings and their modules, the inverters and their MPPTs |
+| **Bill of materials** | On screen | The modules, the tables and the metres of DC cable |
+| **DC cable schedule** | On screen | The strings, and the highest cold Voc of any string |
+| **CAD layout** | DXF | "Metres · one layer per string" |
+| **Google Earth model** | KMZ | "Roof, obstacles with heights, *n* modules" |
+| **Hourly data** | CSV | "*n* rows · irradiance, temperature, power" |
+| **Project file** | RTD | The file's name, and "opens again here" |
+
+Six items are files. **Bill of materials** and **DC cable schedule** are
+tables on screen with no file of their own; both are printed in the design
+report, on page 5, and **Copy as table** copies either one for a
+spreadsheet. **Project file** stands at the end of the list as a card with
+its own **Save a copy**.
+
+Press a row to open its preview. A press never downloads. The download is
+in the preview's head: **Download PDF**, **Download PNG**, **Download DXF**,
+**Download KMZ**, **Download CSV**, or **Save a copy** for the project file.
+On a tablet or a computer a file's row ends in a download icon and a
+table's row in a chevron; on a phone every row ends in a chevron. Either way
+the row opens the preview.
+
+| Size | How the list and the preview stand |
+| --- | --- |
+| Computer | Side by side. **Design report** is shown at first |
+| Tablet | Side by side, the list narrower |
+| Phone | The list fills the screen; an item opens over it, with **Handover** at the top to go back |
+
+## Downloading
+
+The browser asks for the file and saves it when it arrives. A ring stands in
+for the download icon while it is on its way; a second press meanwhile does
+nothing. A download that arrives shows no message of its own, only the
+browser's download.
+
+Files are named after the design: its name, with spaces and characters a
+file name cannot hold turned into hyphens, cut to 80 characters, then the
+ending. A design with no usable name gives `rooftop-design`.
+
+| Item | Ending |
+| --- | --- |
+| Design report | `-report.pdf` |
+| Single-line diagram | `-single-line-diagram.png` |
+| CAD layout | `-layout.dxf` |
+| Google Earth model | `.kmz` |
+| Hourly data | `-hourly.csv` |
+| Project file | `.rtd` |
+| Download all | `.zip` |
+
+The report carries your own date, the date of the device you work on.
+
+While the design runs again after a change, the diagram, the bill of
+materials and the cable schedule stay on screen, dimmed, until the new run
+arrives.
+
+## Design report
+
+A PDF on A4 landscape, one page for each part. A design of 28 strings or
+fewer has six pages.
+
+| Page | What it holds |
+| --- | --- |
+| 1 · Summary | The design's name, "SolarLayout Rooftop" and the date, then the site, roof, structure, module, inverter, stringing, DC and AC capacity, weather, energy of year 1 with its P-values, specific yield with PR and capacity factor, module area and CO₂ avoided |
+| 2 · Layout | "Layout and strings": the plan with the strings |
+| 3 · Shadows | The plan in shadow at the end of the shade-free window on the design day, with the near, electrical and far shading of the year and the area kept clear |
+| 4 · Energy | The loss diagram, the energy of each month, and the energy of years 1, 5, 10, 15, 20 and 25, the 25-year total and the P-values |
+| 5 · Schedule | "String schedule and bill of materials": the first 28 strings, then the bill of materials |
+| Continued | "String schedule, continued": 40 strings to a page, as many pages as needed |
+| Last | The single-line diagram |
+
+P50 and P90 are the energy of a year reached or exceeded in 50 and 90 years
+out of 100; PR, the performance ratio, is the share of the energy the
+modules would give at their rating that reaches the grid.
+[Performance](/docs/rooftop/performance) says how each is worked out.
+
+The preview shows the pages themselves, in a paper frame, with thumbnails
+to jump between them, **Previous page** and **Next page**, and the **Left**
+and **Right** keys. Its head reads, for example, "Page 1 of 6 · Summary".
+The pages are made once the run has an option; after a change the old pages
+stay, dimmed, until the new ones arrive.
+
+## Single-line diagram
+
+A PNG on A4 landscape, titled with the strings and the module: "Single-line
+diagram · *n* strings of *s* × *w* Wp". It runs from the strings, through
+each MPPT and inverter, to the AC distribution board (ACDB), the net meter
+and the grid.
+
+- Each inverter is a box, "INV-1" and so on, with its AC power and MPPT
+  count.
+- Each MPPT carries a block of its strings, "*count* × *s* mod". An MPPT
+  with no strings reads "not used".
+
+The preview draws the same diagram in the page, its blocks in the colours of
+the MPPTs. Point at or tap a block for its strings and its current against
+the MPPT's limit.
+
+<Screenshot id="rooftop-handover-sld" />
+
+## Bill of materials
+
+A table of the option's lines, as the engine lists them, with **Item**,
+**Specification**, **Qty** and **Unit**. On a phone each line is a card.
+
+| Item | Specification | Quantity |
+| --- | --- | --- |
+| PV module | Maker, model and Wp; the bifaciality for a bifacial module | Modules used |
+| String inverter | Maker, model, AC kW and MPPT count | Inverters |
+| Mounting structure | The structure, as the report's summary words it | Tables: a run of modules side by side in a row; on an east-west roof, a row in use |
+| DC cable | The cable, named by the system voltage | The schedule's lengths, summed, in metres |
+| DC connector pair | "MC4-compatible, matched to the module" | Two for each string |
+| AC cable | "Inverter to ACDB", sized for its AC current and voltage | **AC cable per inverter** × inverters |
+| AC distribution board | One incomer for each inverter, one outgoing | 1 |
+
+**AC cable per inverter**, 30 m unless you change it, is set in the Strings
+lens under **Inverter limits and cabling**.
+
+## DC cable schedule
+
+One row for each string of the option, in the engine's order:
+
+| Column | What it gives |
+| --- | --- |
+| **String** | S1, S2 … |
+| **Inverter** | INV-1, INV-2 … |
+| **MPPT** | The MPPT of its inverter, from 1 |
+| **Modules** | Modules in series |
+| **Voc cold (V)** | The string's open-circuit voltage at the lowest ambient |
+| **Isc (A)** | The module's short-circuit current |
+| **DC cable (m)** | The string's cable, out and back |
+| **Cable** | The cable's specification |
+
+Press a heading to sort by it; the caption says how it is sorted, and the
+engine's order is the default. The last row gives the number of strings and
+the total length.
+
+Each string's cable is an estimate: twice the sum of the east-west distance,
+the north-south distance from the string's start to its inverter and 2 m of
+slack. On an east-west roof, or where every module stands in one line, the
+string's own length is added once. Each inverter stands on the setback line,
+the edge of the clear margin kept inside the roof edge, at the point nearest
+the mean of its strings' starts.
+
+## CAD layout
+
+A DXF (R2010), in metres, in the roof's own frame: x to the east, y to the
+north. For a roof outlined on the map, the origin is the middle of the
+outline.
+
+| Layer | What is on it |
+| --- | --- |
+| ROOF | The roof outline |
+| SETBACK | The line inside the setback |
+| OBSTACLES | The obstacles' footprints |
+| KEEPOUT | The areas kept clear |
+| MODULES_UNUSED | Positions the option does not use |
+| INVERTERS | A mark at each inverter |
+| TEXT | Each obstacle's name and height, "h=2.5", and each inverter's name |
+| STRING_S01 and on | One layer for each string, with its modules |
+
+The preview shows the layout page of the report and the layers.
+
+## Google Earth model
+
+A KMZ named after the design. The folder "Roof" holds the roof and each
+obstacle with its height in its name; the folder "Modules (*n*)" holds one shape
+for each module used, placed on the map at the roof's latitude and
+longitude. Unused positions, the inverters, the wiring and heights as shapes
+are not in the file.
+
+A KMZ saved here can be imported again with **Import a drawing**: the roof
+and the obstacles' heights are read back.
+
+## Hourly data
+
+A CSV with one row for each hour of the design's weather, values to three
+decimals.
+
+| Column | What it is |
+| --- | --- |
+| `time_utc_hour_start` | The start of the hour, UTC |
+| `ghi_w_m2` | Global horizontal irradiance, W/m² |
+| `poa_eff_w_m2` | Effective irradiance on the plane of the modules, W/m², the mean over the strings |
+| `t_cell_c` | Cell temperature, °C, the mean over the strings |
+| `p_dc_kw` | DC power, kW |
+| `p_ac_kw` | AC power, kW; slightly below zero at night, the inverters' night consumption |
+
+The preview shows the first 8 rows and the columns.
+
+## Project file
+
+The project file (`.rtd`) carries the design: its name, roof, array, losses,
+the module and inverter files themselves, the weather, the system voltage and
+your choices. It holds no results; they are worked out again when it opens.
+It needs nothing to be saved: no option, no run.
+
+The preview shows its name, which you can change here, the file's name and
+size, and what is in it. [Your designs and the project
+file](/docs/rooftop/projects) says how it opens on another device.
+
+## Download all
+
+**Download all**, at the head of the list, takes the six files in one zip:
+the report, the CAD layout, the Google Earth model, the hourly data, the
+single-line diagram and the project file, each named as its own download.
+It waits until the run has an option.
+
+<Callout type="info">
+Free, no account needed. Your designs are kept on this device. A design on
+one device is not on another: the project file carries it across, and the
+files you download carry it to the installer and the client.
+</Callout>
+
+## When something goes wrong
+
+| Message | What to do |
+| --- | --- |
+| "The files were not updated" · "They are of the design before" | The last run failed. **Try again**. |
+| "The files were not made" · "There are no files yet" | The run failed before any files. **Try again**. |
+| A card with the run's reason and **Open the Strings lens** | The run has no options yet. Act on the reason, then come back. |
+| "The table could not be copied. Select it and copy by hand." | The browser refused the clipboard. |
+
+[Troubleshooting](/docs/rooftop/troubleshooting#handover) lists the rest.
+
+## Next
+
+<Cards>
+  <Card title="Present" href="/docs/rooftop/present" description="The guided tour of the design on the whole screen" />
+  <Card title="Reference" href="/docs/rooftop/reference" description="The equipment files, the limits and the terms" />
+</Cards>
