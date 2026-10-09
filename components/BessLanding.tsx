@@ -12,6 +12,7 @@
 import Link from "next/link"
 import {
   Activity,
+  ArrowLeft,
   ArrowUpRight,
   BarChart3,
   Boxes,
@@ -28,7 +29,6 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { BessLogo } from "@/components/BessLogo"
-import { SolarLayoutLogo } from "@/components/SolarLayoutLogo"
 
 interface HighlightCard {
   icon: LucideIcon
@@ -189,9 +189,8 @@ function HeroBanner() {
             href="/docs"
             className="inline-flex shrink-0 items-center gap-[7px] rounded-[9px] border border-fd-border bg-fd-card px-[14px] py-[8px] text-[13px] font-medium text-fd-foreground shadow-sm transition-colors hover:border-fd-primary/40 hover:bg-fd-muted"
           >
-            <SolarLayoutLogo aria-hidden="true" className="size-[16px]" />
-            <span>SolarLayout Desktop docs</span>
-            <ArrowUpRight className="size-[14px]" aria-hidden />
+            <ArrowLeft className="size-[14px]" aria-hidden />
+            <span>All products</span>
           </Link>
         </div>
 

@@ -8,8 +8,13 @@
  * hero treatment matching `/`. Both groups are URL-transparent
  * (parentheses don't appear in the path).
  */
-import { DocsLanding } from "@/components/DocsLanding"
+import { DocsIndex } from "@/components/DocsIndex"
+
+export const metadata = {
+  title: { absolute: "SolarLayout Docs" },
+  description: "Guides and reference for SolarLayout Desktop, BESS Desktop and SolarLayout Rooftop.",
+}
 
 export default function DocsIndexPage() {
-  return <DocsLanding />
+  return <DocsIndex />
 }

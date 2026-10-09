@@ -48,6 +48,14 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+
+  /**
+   * The documentation index lives at `/docs`, where `solarlayout.app/docs` reaches it (#19). The docs domain's own
+   * root sends readers there. Not permanent, so a browser never caches it past a later change.
+   */
+  async redirects() {
+    return [{ source: "/", destination: "/docs", permanent: false }]
+  },
 }
 
 export default withMDX(nextConfig)

@@ -23,17 +23,21 @@ import { source, bessSource } from "@/lib/source"
  */
 type Loader = typeof source
 
-const toIndexes = (loader: Loader) =>
+// Each entry is tagged with its product (the dialog's filter) and carries the product's name as its breadcrumb (the
+// label on every result), #19.
+const toIndexes = (loader: Loader, tag: string, product: string) =>
   loader.getPages().map((page) => ({
     id: page.url,
     url: page.url,
     title: page.data.title,
     description: page.data.description,
+    tag,
+    breadcrumbs: [product],
     // structuredData is emitted by fumadocs-mdx for search; it is what the
     // single-source createFromSource used under the hood.
     structuredData: (page.data as { structuredData?: unknown }).structuredData,
   }))
 
 export const { GET } = createSearchAPI("advanced", {
-  indexes: [...toIndexes(source), ...toIndexes(bessSource)] as never,
+  indexes: [...toIndexes(source, "solarlayout", "SolarLayout Desktop"), ...toIndexes(bessSource, "bess", "BESS Desktop")] as never,
 })

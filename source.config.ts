@@ -33,6 +33,9 @@ export const bess = defineDocs({
 
 export default defineConfig({
   mdxOptions: {
-    // MDX options
+    // Search indexes text only: headings, paragraphs, quotes and table cells, wherever they sit (inside a Callout
+    // or a Step too). Fumadocs' default also turns a self-closing component such as <Card title href description />
+    // into a block of its raw attributes, which showed in results as "card title: … href: …" (#19).
+    remarkStructureOptions: { types: ["heading", "paragraph", "blockquote", "tableCell"] },
   },
 })
