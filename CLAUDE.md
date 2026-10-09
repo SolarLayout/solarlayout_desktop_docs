@@ -26,7 +26,7 @@ content is MDX on disk.
 ## Updating the docs after product changes — use the `update-docs` skill
 
 This repo has a project skill for exactly this job:
-**`/update-docs solarlayout`** or **`/update-docs bess`**
+**`/update-docs solarlayout`**, **`/update-docs bess`** or **`/update-docs rooftop`**
 (`.claude/skills/update-docs/`; the human guide is
 [`UPDATE_DOCS_USING_SKILL.md`](UPDATE_DOCS_USING_SKILL.md)). It finds what
 merged in the product repo since the fact sheet was last verified, audits it
@@ -40,7 +40,7 @@ the product: "update / sync / refresh the docs", "document the new
 improvise a partial version of the workflow. Its steps — fact sheet first,
 audits against current code, screenshot capture, independent review — are
 what keep these docs correct. If the product isn't clear from the request,
-ask which one (SolarLayout Desktop or BESS Desktop); one product per run.
+ask which one (SolarLayout Desktop, BESS Desktop or SolarLayout Rooftop); one product per run.
 
 **Nudge instead of invoking** when the request looks like a product change
 but is phrased as a page edit. For example, "change the default on the

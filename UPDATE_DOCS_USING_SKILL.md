@@ -27,9 +27,15 @@ or
 /update-docs bess
 ```
 
+or
+
+```
+/update-docs rooftop
+```
+
 You can also just ask in plain words — *"the product shipped the Earthing
 fixes, bring the docs up to date"* — and Claude picks up the skill. Name the
-product if the request could mean either.
+product if the request could mean more than one.
 
 Claude will tell you what changed in the product since the docs were last
 checked, ask for the decisions only you can make, and finish with a pull
@@ -44,7 +50,7 @@ request. Nothing is deployed; deployment stays manual.
 | You need | Why |
 |---|---|
 | **Claude Code**, opened at the root of this repo | the skill is a project skill; it loads from `.claude/skills/` |
-| **The product repo `PVlayout_Advance` checked out beside this one** (`../PVlayout_Advance`), on `main` and pulled | the skill reads the product's code — it is the source of every fact. Tell Claude if your checkout lives elsewhere |
+| **The product repo checked out beside this one**, on `main` and pulled: `PVlayout_Advance` (`../PVlayout_Advance`) for SolarLayout Desktop and BESS Desktop, `rooftop-design-app` (`../rooftop-design-app`) for SolarLayout Rooftop | the skill reads the product's code — it is the source of every fact. Tell Claude if your checkout lives elsewhere |
 | **Bun** 1.3+ and **Node.js** 22+ | the site's gates and the skill's scripts |
 | **Git** with push access to this repo | the skill works on a branch and opens a PR |
 | **GitHub CLI (`gh`)**, signed in (`gh auth status`) | to open the PR and, if you ask, to file product issues |
@@ -76,6 +82,15 @@ change, regenerates the worklist `docs/bess-screenshot-index.xlsx`, and tells
 you which rows need capturing. Someone then takes those screenshots and drops
 the files into `public/screenshots/bess/`. Nothing else is needed for BESS
 beyond the "Everyone" list.
+
+### SolarLayout Rooftop only — screenshots are taken in a browser
+
+Rooftop is a browser app, so Claude takes its screenshots itself with
+Playwright, from https://rooftop.solarlayout.app (or from the product repo's
+test stack for changes not deployed yet). Nothing to install beyond
+Playwright's browser above, and no Windows PC. Rooftop has no release tags:
+`main` is deployed by hand, so Claude asks which changes are live before a
+*What's new* entry says so.
 
 ---
 

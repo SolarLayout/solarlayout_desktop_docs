@@ -1,21 +1,23 @@
 ---
 name: update-docs
-description: Bring this repo's product documentation up to date after product changes — SolarLayout Desktop (content/docs, docs/PRODUCT_FACTS.md) or BESS Desktop (content/bess, docs/PRODUCT_FACTS.bess.md). Finds what merged in the product repo (PVlayout_Advance) since the fact sheet was last verified, audits it against the code, updates the fact sheet first, recaptures or re-briefs the screenshots, writes and revises pages, reviews them, runs the gates and opens a PR. Use it whenever someone asks to update, sync, refresh or re-verify the docs, document new product features or PRs, bring the docs up to product main, or says the product changed / shipped / fixed issues — even if they don't say "update-docs". Invoke as /update-docs solarlayout or /update-docs bess.
-argument-hint: solarlayout | bess
+description: Bring this repo's product documentation up to date after product changes — SolarLayout Desktop (content/docs, docs/PRODUCT_FACTS.md), BESS Desktop (content/bess, docs/PRODUCT_FACTS.bess.md) or SolarLayout Rooftop (content/rooftop, docs/PRODUCT_FACTS.rooftop.md). Finds what merged in the product repo (PVlayout_Advance, or rooftop-design-app for Rooftop) since the fact sheet was last verified, audits it against the code, updates the fact sheet first, recaptures or re-briefs the screenshots, writes and revises pages, reviews them, runs the gates and opens a PR. Use it whenever someone asks to update, sync, refresh or re-verify the docs, document new product features or PRs, bring the docs up to product main, or says the product changed / shipped / fixed issues — even if they don't say "update-docs". Invoke as /update-docs solarlayout, /update-docs bess or /update-docs rooftop.
+argument-hint: solarlayout | bess | rooftop
 ---
 
 # Update the product docs after product changes
 
-This repo documents two products from one product repo (`PVlayout_Advance`,
-normally a sibling checkout at `../PVlayout_Advance`):
+This repo documents three products from two product repos, normally sibling
+checkouts: SolarLayout Desktop and BESS Desktop from `../PVlayout_Advance`,
+SolarLayout Rooftop from `../rooftop-design-app`.
 
 | Argument | Product | Read now |
 |---|---|---|
 | `solarlayout` | SolarLayout Desktop | [references/solarlayout.md](references/solarlayout.md) |
 | `bess` | BESS Desktop | [references/bess.md](references/bess.md) |
+| `rooftop` | SolarLayout Rooftop | [references/rooftop.md](references/rooftop.md) |
 
 If the argument is missing and the request doesn't make the product obvious,
-ask. Update one product per run and per PR — the two trees ship on different
+ask. Update one product per run and per PR — the trees ship on different
 schedules and must never cross-reference each other.
 
 The agent briefs this workflow fans out to are in
@@ -111,7 +113,9 @@ Follow the product reference. For SolarLayout: extend the capture tool on a
 product branch, run the full capture on Windows, and verify frames at 100 %.
 Then install them into `public/screenshots/` and update the manifest text,
 and commit. For BESS: write precise capture briefs, regenerate the worklist,
-and hand off to the user.
+and hand off to the user. For Rooftop: take them yourself with Playwright from
+the live app (or the product's test stack for merges not yet deployed), as its
+reference says, and look at every frame before it goes in.
 
 ### 5. Write and revise pages
 
@@ -140,6 +144,7 @@ node .claude/skills/update-docs/scripts/check-pages.mjs --product <p>
 bun run lint && bun run typecheck && bun run build
 BESS_REPO=<product repo> bun run test:e2e
 bun run screenshots:index            # or screenshots:index:bess
+node scripts/check-rooftop-facts-citations.mjs   # Rooftop
 ```
 
 The page checker fails on what breaks the build or a written rule:

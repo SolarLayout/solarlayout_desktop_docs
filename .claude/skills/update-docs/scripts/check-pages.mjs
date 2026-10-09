@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // Fast rule check for one product's pages — run it before the build.
 //
-//   node .claude/skills/update-docs/scripts/check-pages.mjs --product solarlayout|bess [--files a.mdx,b.mdx]
+//   node .claude/skills/update-docs/scripts/check-pages.mjs --product solarlayout|bess|rooftop [--files a.mdx,b.mdx]
 //
 // ERRORS (exit 1): things that break the build or a written rule —
 //   unescaped `{word}` in prose (MDX evaluates it: build/prerender fails),
 //   VERIFY/TODO/TBD/FIXME left in, code identifiers or PR/issue numbers,
-//   the other product named, banned platforms/tiers/GitHub, a <Screenshot id>
+//   another product named, banned platforms/tiers/GitHub (and, for Rooftop, its
+//   own banned words), a <Screenshot id>
 //   missing from the manifest or its PNG missing, an internal link to a page
 //   that is not in a meta.json.
 // WARNINGS: change-log phrasing ("now", "no longer", …) — many hits are fine
@@ -20,27 +21,38 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((acc, a, i, all) =>
   if (a.startsWith("--")) acc.push([a.slice(2), all[i + 1]])
   return acc
 }, []))
-const P = {
+// Each tree stands alone (docs/WRITING_GUIDE.md, "Three products"): a page never names another product. "SolarLayout"
+// alone is the supplier and is allowed everywhere.
+const TREES = {
   solarlayout: {
     tree: "content/docs", base: "/docs", manifest: "content/screenshots.ts",
-    other: /\bBESS\b|battery energy storage/i,
+    other: /\bBESS\b|battery energy storage|SolarLayout Rooftop/i,
     releases: "content/docs/releases.mdx",
   },
   bess: {
     tree: "content/bess", base: "/docs/bess", manifest: "content/bess/screenshots.ts",
-    // "SolarLayout" alone is the supplier and is allowed; the product is not.
-    other: /SolarLayout[ .]Desktop|SolarLayout (?:app|application)\b/,
+    other: /SolarLayout[ .]Desktop|SolarLayout (?:app|application)\b|SolarLayout Rooftop/,
     releases: "content/bess/releases.mdx",
   },
-}[args.product]
-if (!P) { console.error("Usage: --product solarlayout|bess [--files a.mdx,b.mdx]"); process.exit(2) }
+  rooftop: {
+    tree: "content/rooftop", base: "/docs/rooftop", manifest: "content/rooftop/screenshots.ts",
+    other: /SolarLayout[ .]Desktop|SolarLayout (?:app|application)\b|\bBESS\b/,
+    releases: "content/rooftop/whats-new.mdx",
+    // Rooftop is a browser app (the writing guide's Rooftop section): added to the home screen, never installed or
+    // downloaded; named SolarLayout Rooftop, then Rooftop, never a desktop, web or cloud version or a tool.
+    banned: /\binstall(?:s|ed|ing|ation)?\b|\bdownload (?:the app|the application|Rooftop|SolarLayout Rooftop)\b|Rooftop Desktop|\bweb version\b|\bcloud (?:product|version)\b|\brooftop tool\b|\bsign(?:-| )in\b|\bbankable\b/i,
+  },
+}
+const P = TREES[args.product]
+if (!P) { console.error("Usage: --product solarlayout|bess|rooftop [--files a.mdx,b.mdx]"); process.exit(2) }
 
-const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+const walk = (d) => !fs.existsSync(d) ? [] : fs.readdirSync(d, { withFileTypes: true }).flatMap((e) =>
   e.isDirectory() ? walk(path.join(d, e.name)) : e.name.endsWith(".mdx") ? [path.join(d, e.name)] : [])
 const treeDir = path.join(root, P.tree)
 // For solarlayout, content/docs does not contain the bess tree; for bess, only content/bess.
 let files = walk(treeDir)
 if (args.files) files = args.files.split(",").map((f) => path.resolve(root, f.trim()))
+if (!files.length) { console.log(`No pages in ${P.tree} yet.`); process.exit(0) }
 
 // Pages listed in meta.json files → the set of valid internal URLs.
 function metaPages(dir, urlBase) {
@@ -62,8 +74,8 @@ function metaPages(dir, urlBase) {
   return out
 }
 const valid = metaPages(treeDir, P.base)
-const otherTree = args.product === "bess" ? metaPages(path.join(root, "content/docs"), "/docs")
-                                          : metaPages(path.join(root, "content/bess"), "/docs/bess")
+const otherTree = new Set(Object.entries(TREES).filter(([k]) => k !== args.product)
+  .flatMap(([, t]) => [...metaPages(path.join(root, t.tree), t.base)]))
 
 const manifestSrc = fs.readFileSync(path.join(root, P.manifest), "utf8")
 const manifest = new Map()
@@ -82,7 +94,8 @@ const headings = (file) => {
   return headingsOf.get(file)
 }
 const urlToFile = (url) => {
-  const rel = url.replace(/^\/docs\/bess/, "content/bess").replace(/^\/docs/, "content/docs")
+  const rel = url.replace(/^\/docs\/bess/, "content/bess").replace(/^\/docs\/rooftop/, "content/rooftop")
+    .replace(/^\/docs(?=\/|$)/, "content/docs")
   return [path.join(root, rel + ".mdx"), path.join(root, rel, "index.mdx")].find((f) => fs.existsSync(f))
 }
 
@@ -113,7 +126,8 @@ for (const file of files) {
     if (/\b(VERIFY|TODO|TBD|FIXME|XXX)\b/.test(line)) errors.push(`${at}  leftover ${line.match(/\b(VERIFY|TODO|TBD|FIXME|XXX)\b/)[1]}`)
     if (CODEISH.test(prose)) errors.push(`${at}  code identifier / PR number: ${prose.match(CODEISH)[0]}`)
     if (BANNED.test(text)) errors.push(`${at}  banned term: ${text.match(BANNED)[0]}`)
-    if (P.other.test(text.replace(/https?:\/\/\S+/g, ""))) errors.push(`${at}  names the other product: ${text.match(P.other)[0]}`)
+    if (P.other.test(text.replace(/https?:\/\/\S+/g, ""))) errors.push(`${at}  names another product: ${text.match(P.other)[0]}`)
+    if (P.banned?.test(text.replace(/https?:\/\/\S+/g, ""))) errors.push(`${at}  banned for this product: ${text.match(P.banned)[0]}`)
     if (!isReleases && CHANGELOG.test(text)) warns.push(`${at}  change-log phrasing? "${text.match(CHANGELOG)[0]}" — ${text.trim().slice(0, 110)}`)
     for (const m of line.matchAll(/<Screenshot\s+id="([^"]+)"/g)) {
       const f = manifest.get(m[1])
@@ -124,7 +138,7 @@ for (const file of files) {
       const url = (m[1] || m[3]).replace(/\/$/, "")
       const hash = m[2] || m[4]
       if (!valid.has(url)) {
-        if (otherTree.has(url)) errors.push(`${at}  links into the other product's tree: ${url}`)
+        if (otherTree.has(url)) errors.push(`${at}  links into another product's tree: ${url}`)
         else errors.push(`${at}  link to a page not in any meta.json: ${url}`)
         continue
       }
