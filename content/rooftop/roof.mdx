@@ -1,0 +1,228 @@
+---
+title: The Roof lens
+description: Where the roof is, its type, the parapet, setback, walkways and clearance, and the obstacles on and beside it, trees included.
+---
+
+The **Roof** lens is the first of the Studio's four lenses in SolarLayout
+Rooftop. It holds what the array is laid on: where the roof is, its type, its
+edges and the access kept along them, and what stands on or beside it. Every
+change here lays out the roof again and runs the design again, except
+**Albedo**, which runs the design alone.
+
+The lens opens at `/studio/roof`, and it is where Rooftop lands after **Build
+this roof** on Find. Its sections, top to bottom: **Location**, **Roof type**,
+**Edges and access**, then **Obstacles**. On a computer the line under the
+lens title reads the roof's area, the area inside the setback and the number
+of obstacles, as `… m² · … m² inside the setback · … obstacles`.
+
+<Screenshot id="rooftop-roof-lens" />
+
+## Location
+
+The **Location** card says where the roof is and how it came into the design.
+
+| Line | What it says |
+| --- | --- |
+| Place | The latitude and longitude of the roof, to five decimals |
+| How it was entered | `Outlined on satellite`, `Entered by hand` or `From a file` |
+| Corners and obstacles | For example `4 corners · 3 obstacles` |
+| Size and facing | A rectangle by its two sides (`a × b m`), any other outline by its area in m², then `· faces` and the bearing of the side of its longest edge that looks toward the equator |
+| File | The name of the drawing, for a roof read from a KMZ or a DXF |
+
+**Edit** opens Find with this design's outline and obstacles on the map,
+where they stand, and its roof type selected. On a phone the whole row is
+the link, labelled "Edit the outline". Build the roof again and the design
+takes the edited outline, its place, its obstacles and its roof type; the
+parapet, setback, walkways and the rest of the design stay as they were,
+except as a change of roof type to **Sloped** sets them (see below).
+[Find the roof](/docs/rooftop/find) covers the map and its tools.
+
+A roof covers 30,000 m² at most.
+
+## Roof type
+
+**Roof type** decides how the engine lays the modules on the roof. The Roof
+lens shows the three types by their short names; Find shows the same choice
+by their full names. The default is **Flat, tilted rows**.
+
+| Type (short name) | Caption | How the modules sit |
+| --- | --- | --- |
+| **Flat, tilted rows** (**Tilted rows**) | Rows facing the equator | Rows of tables at the array's **Tilt**. Row pitch is shade-free unless you set it. A walkway comes every so many modules along a row. |
+| **Flat, east-west** (**East-west**) | Back-to-back, low tilt | Back-to-back units, one face turned east and the other west. Units stand together, with a gap only where the shade-free window needs one. A walkway comes every so many units. |
+| **Sloped, flush** (**Sloped**) | Modules follow the roof pitch | Modules lie on the roof at its **Pitch**, facing its **Faces**, their lower edge 0.1 m above the roof. Rows follow each other with only the module gap between them. A walkway comes every so many rows. |
+
+Choosing **Sloped** sets the parapet to 0 and, where the roof had no pitch,
+gives it a pitch of 10°. Choosing either flat type changes only the type.
+The same rule applies on Find, to a roof built there as **Sloped, flush** and
+to one built again with its type changed to it.
+
+The roof type also sets three things the other lenses use:
+
+| Setting | Tilted rows | East-west | Sloped | Used in |
+| --- | --- | --- | --- | --- |
+| Cell rise, for sizing strings (modules wired in series) | 25 °C | 25 °C | 35 °C | **Sizing temperatures**, Strings lens |
+| Thermal Uc (how fast the modules shed heat) | 29 | 20 | 15 | The energy simulation |
+| Bifacial rear gain, for a bifacial module | Counted | Counted | Not counted | The energy simulation |
+
+## Edges and access
+
+**Edges and access** holds the parapet, the setback from the edges, the
+walkways, the clearance around obstacles and the roof's albedo. A sloped roof
+adds **Pitch** and **Faces**. The fields stand two to a row on a tablet or a
+computer, one to a row on a phone.
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Parapet** | 0.9 m | 0 to 5 m | The height of a parapet wall along every edge. It is drawn as a wall 0.2 m thick inside each edge, and casts shadows as an obstacle does. 0 means no parapet. |
+| **Setback** | 1.0 m | 0 to 10 m | The strip along every edge, measured inward, where no module is placed. |
+| **Walkway** | 0.6 m | 0 to 3 m | The width of each walkway left between modules. |
+| **Every** | 24 modules (tilted rows); 4 rows (east-west, sloped) | 0 to 500 | How often a walkway comes. On tilted rows, an aisle across the rows after every so many modules along a row; on east-west roofs, after every so many units; on sloped roofs, after every so many rows. 0 means no walkway. |
+| **Clearance** | 0.5 m | 0 to 5 m | The gap kept free of modules around every obstacle. |
+| **Albedo** | 0.20 | 0.05 to 0.9 | The share of light the roof reflects. The energy simulation uses it for the light reflected onto the modules; it moves no module and no shadow. |
+| **Pitch** (sloped only) | 10° for a roof made sloped | 0 to 60° | The slope of the roof, and the tilt the modules take. |
+| **Faces** (sloped only) | 180° | 0 to 359.9° | The direction the slope looks, clockwise from north. The modules face it: lying on the roof, they can face nowhere else. |
+
+The **setback** is the strip inside the roof edge kept clear of modules, for
+access and for the edge zone your code asks for. The engine shrinks the roof
+inward by it, with sharp corners. Where that splits the roof into pieces,
+only the largest piece is used.
+
+A value takes effect when you press **Enter** or leave the field. A value
+outside the range is set to the nearest end, and the field says which: the
+highest or the lowest that can be set.
+
+The parapet's shadow through the shade-free window of the design day is kept
+clear of modules, as an obstacle's is, unless shaded positions are allowed in
+the [Array lens](/docs/rooftop/array#shade-free-window). When the roof has a
+parapet, the obstacles list ends with a row `Parapet, all edges` and its
+height; the height itself is set here.
+
+## Obstacles
+
+An obstacle is anything on or beside the roof that takes room or casts a
+shadow: a stair room, a lift room, an AC unit, a tank, a wall, a tree, a
+taller building next door. Each has a height above the roof surface, and each
+counts three times:
+
+- No module is placed on its footprint or within the **Clearance** around it.
+- The area its shadow sweeps through the shade-free window of the design day
+  is kept clear of modules, unless shaded positions are allowed.
+- Its shadow is counted, hour by hour over the weather year, in the shading
+  of every module it falls on.
+
+Boxes, tanks, walls and buildings can be drawn on Find over the satellite
+image. Trees are added here, in the Roof lens.
+
+<Screenshot id="rooftop-roof-add" />
+
+### Add an obstacle
+
+<Steps>
+<Step>
+
+### Choose its kind
+
+Under **Obstacles**, press **Add** and choose a kind. Each shows the size a
+fresh one starts at.
+
+| Kind | Starts at |
+| --- | --- |
+| **Box** | `2.0 × 2.0 m` |
+| **Tank** | `⌀ 2.0 m` |
+| **Wall** | `6.0 m, points` |
+| **Tree** | `crown ⌀ 4.0 m` |
+| **Building** | `beside the roof, points` |
+
+</Step>
+<Step>
+
+### Place it
+
+The obstacle stands at the middle of the roof, its card open. Press the roof
+where it belongs to move it there, or type where it stands in the card.
+
+</Step>
+<Step>
+
+### Give its height
+
+Type its **Height** above the roof surface. The obstacle joins the design with
+that height, and the design runs again. **Remove** drops it before it is
+added.
+
+</Step>
+</Steps>
+
+An added obstacle is named after its kind and its count, such as *Box 2*. The
+name heads its card: type over it to rename it.
+
+### Edit an obstacle
+
+Select a row in the list, or press the obstacle on the roof, to open its
+card. Its fields depend on its kind.
+
+| Kind | Fields |
+| --- | --- |
+| Box | **Length**, **Width**, **Height**, **Rotation** (counter-clockwise), **East**, **North** |
+| Tank | **Diameter**, **Height**, **East**, **North** |
+| Tree | **Crown ⌀**, **Height**, **Crown starts at**, **East**, **North** |
+| Wall | **Height**, **Thickness**, and a table of its points, two at least |
+| Building | **Height**, and a table of its corners, three at least |
+
+| Field | Range |
+| --- | --- |
+| **Length**, **Width** | 0.1 to 500 m |
+| **Height** | 0.05 to 200 m, above the roof surface |
+| **Rotation** | −180 to 180° |
+| **East**, **North** | −5000 to 5000 m from the middle of the roof |
+| **Diameter**, **Crown ⌀** | 0.1 to 100 m |
+| **Crown starts at** | 0 to 100 m |
+| **Thickness** | 0.05 to 5 m |
+
+The points of a wall or a building are metres east and north of the middle
+of the roof, in order. **Add a point** adds one; the bin beside a point
+removes it, down to the fewest the kind needs.
+
+On the roof, a selected box, tank or tree moves with a drag. Its handles do
+the rest: a corner of a box resizes it with the opposite corner held still,
+the round handle turns it and snaps to a right angle within 3°, the handle
+on the stem above it sets its height, and the handle on the edge of a tank
+or a crown sets its diameter. Drags move in steps of 0.1 m. A wall and a
+building are moved by their points in the card; their callout says so.
+
+The bin in the card's head removes the obstacle.
+
+### Trees
+
+A tree is a crown on a thin trunk. **Crown starts at** is the height at which
+the crown begins, and **Height** is the top of the crown, both above the roof
+surface. Modules keep clear of the whole crown's footprint. The shadow is that
+of a thin trunk up to the crown, and of the crown above it.
+
+### Heights to review
+
+A drawing imported without heights has them set to 1.0 m. A note under the
+**Location** card says `These obstacles have no height in the file and were
+set to 1.0 m.`, with how many are `to review` and a **Review** button.
+**Review** opens the first of them; its row carries an exclamation mark, labelled `Height
+to review`, and its card reads "Enter the real height. The file gave none; 1.0 m
+stands until you do". Type the real height, and **Next** opens the next one.
+
+<Screenshot id="rooftop-roof-review" />
+
+## When something goes wrong
+
+| Message | What to do |
+| --- | --- |
+| **The layout was not updated**, with the reason and **Try again** | The positions on the roof are those of the design before. Correct what the reason names, or try again. |
+| `The roof outline encloses no area. Give at least three corners that are not on one line.` | Edit the outline on Find. |
+| `The roof outline crosses itself. Give the corners in order around the roof.` | Edit the outline on Find so that no two edges cross. |
+| `This outline covers … m². SolarLayout designs one roof at a time, up to 30,000 m² (about 3 MWp). …` | Outline each building as its own design. |
+| `No module fits on this roof` | Inside the setback and clear of shadows there is no room for a module. Check the outline, the **Setback** and the obstacles in this lens. |
+
+## Next
+
+<Cards>
+  <Card title="The Array lens" href="/docs/rooftop/array" description="The module, the mounting, the spacing and the shade-free window" />
+  <Card title="Find the roof" href="/docs/rooftop/find" description="The outline on the map, and what stands on the roof" />
+</Cards>

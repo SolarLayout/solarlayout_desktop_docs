@@ -1,0 +1,238 @@
+---
+title: The Array lens
+description: The module and its library, the mounting, the row pitch and azimuth, the shade-free window, and how the engine places the modules on the roof.
+---
+
+The **Array** lens in SolarLayout Rooftop holds what the layout is made of:
+the module, how it is mounted, how far apart the rows stand and which way
+they face, and the shade-free window that keeps them clear of shade. Every
+change here lays out the roof again, and the design runs again.
+
+The lens opens at `/studio/array`. Its sections, top to bottom: **Module**,
+**Mounting**, **Spacing** (not on a sloped roof), then **Shade-free window**.
+On a computer the line under the lens title counts the layout, as
+`… positions · … tables · … rows · … m² of modules`.
+
+<Screenshot id="rooftop-array-lens" />
+
+## Module
+
+The **Module** card shows the PV module of the design, read from its PAN
+file:
+
+- the model, then its maker and rated power, as `<maker> · <Wp> Wp`;
+- its size in metres, and its bifaciality for a bifacial module;
+- its Voc, its Isc and its bypass diodes, and `twin half-cell` where it
+  applies;
+- its temperature coefficients of Voc, Vmp and Pmpp in %/°C, with where they
+  come from: `PAN file`, `one-diode model` or `entered`;
+- the engine's notes on the module, with an exclamation mark beside the
+  coefficients;
+- the file's name, and **Change**.
+
+Before the first run the card reads `Reading the module with the first run`.
+
+A new design starts with the INA-144MHC-TF-560: 560 Wp, 2.277 × 1.133 m,
+bifaciality 0.80. It is a sample that comes with Rooftop, not one of the
+library's modules.
+
+The module's size and orientation set the footprint of every position. Its
+voltages, coefficients and highest system voltage set how many modules fit in
+a string (modules wired in series); its Imp and Isc how many strings an MPPT
+(an inverter input with its own maximum power point tracker) can take; its
+rated power the capacity of each stringing option. See
+[the Strings lens](/docs/rooftop/strings).
+
+### Choose a module from the library
+
+**Change** opens **Choose a module**: the app's library of 119 modules, from
+300 to 650 Wp, from five makers.
+
+| Control | What it does |
+| --- | --- |
+| Search (**Maker or model**) | Every word typed must appear in the maker, the model or the file's name |
+| **Power** | A range in Wp, in steps of 5 |
+| Columns | **Module**, **Wp**, **Efficiency %**, **Size m**, and **Bifacial** on a computer. Press a heading to sort; on a phone, the **Order** list sorts instead |
+| Count | `… of 119 modules` shown |
+
+The list opens sorted by power, low to high. The design's own module is
+tagged `In this design`. Choose a row and press **Use this module**, or
+double-click it, or press **Enter**. The module is read, the roof is laid out
+again, and the design runs again.
+
+<Screenshot id="rooftop-array-picker" />
+
+### Use a PAN file of your own
+
+On a tablet or a computer, drop a `.PAN` file on the strip **Or drop a PAN
+file of your own here**, or press **Choose a file**. On a phone, use
+**Choose a PAN file of your own**.
+
+Rooftop reads the maker, model, rated power and size, the electrical values,
+the temperature coefficients, the cells and bypass diodes, the one-diode
+parameters, the highest system voltage, the bifaciality, the light-induced
+degradation and the incidence-angle profile. A file must give the rated power
+(PNom), Voc and Isc. A file without a size is read, but the card carries a
+note and the layout cannot be made until a file with a size is chosen.
+
+A file that cannot be read leaves the module as it was:
+**This module was not loaded**, then the reason and `The module of before is
+kept.`
+
+## Mounting
+
+**Mounting** says how the modules stand on the roof. Its fields follow the
+roof type.
+
+| Roof type | Fields |
+| --- | --- |
+| Flat, tilted rows | **Tilt**, **Orientation**, **Modules in tilt**, **Lower-edge clearance** |
+| Flat, east-west | **East-west tilt**, **Ridge gap**, **Lower-edge clearance** |
+| Sloped, flush | A **Tilt** read-out, **Orientation**, **Modules in tilt** |
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Tilt** | 15° | 0 to 45°, by 1° | The angle of the tables. Takes effect when the slider is let go. The hint under it suggests a tilt from the latitude, held between 5° and 15°: `Latitude … suggests …°`. |
+| **Orientation** | **Portrait** | **Portrait**, **Landscape** | Portrait puts the module's length up the slope, landscape its width. |
+| **Modules in tilt** | 1 | 1 to 4 | How many modules stand one above another on a table. A taller table casts a longer shadow, so a shade-free row pitch grows with it. |
+| **Lower-edge clearance** | 0.5 m | 0 to 3 m | The height of the table's lower edge above the roof. The shadows of obstacles and the parapet that keep positions empty are worked out at this height. |
+| **East-west tilt** | 10° | 0 to 30°, by 1° | The tilt of each side, away from the ridge. |
+| **Ridge gap** | 0.3 m | 0 to 2 m | The gap between the two sides at the ridge. |
+
+On a sloped roof the tilt is the roof's own **Pitch**, set in the
+[Roof lens](/docs/rooftop/roof#edges-and-access); the read-out says `Follows
+the roof pitch`, with the bearing the roof faces. East-west units always hold
+one module per side with its width up the slope, so **Orientation** and
+**Modules in tilt** do not apply there.
+
+Two settings have no field. Modules stand 0.02 m apart on a table, and on a
+sloped roof their lower edge sits 0.1 m above the roof. A table's depth up
+the slope is the number of modules in tilt times the module's side, plus
+0.02 m between each.
+
+## Spacing
+
+**Spacing** sets how far apart the rows stand and which way they face. On
+tilted rows it holds **Row pitch** and **Azimuth**; on east-west roofs,
+**Azimuth** alone. A sloped roof has no spacing: its rows follow one another
+up the roof.
+
+Each value has a switch. On, the engine decides it. Off, a field appears,
+filled with the value of the last layout, and takes your own.
+
+| Field | Switch | Default | Range when entered | What it does |
+| --- | --- | --- | --- | --- |
+| **Row pitch** | **Shade-free row pitch** | On: the engine decides | 0.5 to 30 m | The distance on plan from the front edge of one row to the front edge of the next |
+| **Azimuth** | **Follow the roof edge** | On: the engine decides | 0 to 359.9°, clockwise from north | The direction the rows face |
+
+### Shade-free row pitch
+
+With the switch on, the engine finds the lowest sun profile angle in the
+shade-free window of the design day, with the sun in front of the rows,
+checked every 15 minutes and never below 1°. The pitch is the one at which a
+row does not shade the next at that angle:
+
+pitch = L × (cos β + sin β ÷ tan ψ)
+
+where L is the table's depth up the slope, β the tilt and ψ the profile
+angle. The pitch is rounded up to the next 5 cm. The read-out gives it with
+`Shade-free · GCR … · profile angle …°`; the GCR (ground coverage ratio) is
+the table's depth up the slope divided by the pitch.
+
+The pitch never falls below the table's depth on plan plus 0.3 m. A pitch you
+enter under that is raised to it, and a note in **Notes to review** says so.
+
+### Azimuth
+
+With **Follow the roof edge** on, the rows face square off the roof edge
+closest to the equator: the engine takes the smallest rectangle that holds
+the roof, and faces the rows along the side of it that looks nearest the
+equator. The read-out says `Follows the roof edge closest to the equator`; on
+an east-west roof, `The ridges run square to the roof edge closest to the
+equator`.
+
+## Shade-free window
+
+The **shade-free window** is the hours of the design day, in solar time, in
+which rows and obstacles must not shade the modules. Solar time puts noon
+where the sun stands highest.
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Shade-free window** | 09:00 to 16:00 | 05:00 to 19:00, by the quarter hour. The start is noon at the latest, the end noon at the earliest | The hours, in solar time |
+| **Design day** | **Winter solstice** | **Winter solstice**, **21 Jun**, **21 Mar** | The day the window is on. The winter solstice is 21 December in the northern hemisphere, 21 June in the southern |
+| **Allow shaded positions** | Off | Off, on | Off: positions shaded inside the window stay empty. On: they are used too |
+
+<Screenshot id="rooftop-array-window" />
+
+The engine follows the sun through the window every quarter hour. The window
+sets three things:
+
+- **Kept-clear areas.** The shadows of every obstacle and of the parapet,
+  swept across the window at the height of the lower edge, are kept free of
+  modules unless shaded positions are allowed. This applies on every roof
+  type.
+- **Row pitch** on tilted rows, when the engine decides it.
+- **The gap between east-west units.** Units stand side by side with no gap
+  unless the window needs one; then the engine adds the gap that keeps both
+  faces shade-free, rounded up to 5 cm. A layout note gives the gap.
+
+Widening the window adds space between rows and keeps more of the roof clear
+around obstacles; narrowing it fits more modules, and accepts shade outside
+the window. The window shapes the layout only. The energy run still counts
+the shade on every module for every hour of the weather year, as the
+[Sun lens](/docs/rooftop/sun) shows.
+
+## How the layout is placed
+
+The engine lays the modules out from the roof, the array settings and the
+module. Weather, inverter and system voltage play no part in it.
+
+1. **Turn the roof to the azimuth**, so that the array faces down the frame.
+2. **Find where modules may stand.** Start from the roof inside the setback,
+   keeping only the largest piece if the setback splits it. Take away every
+   obstacle grown by **Clearance**. Unless shaded positions are allowed, take
+   away the kept-clear areas too.
+3. **Lay a grid** from the corner of that area. Every row shares the same
+   columns. A table, all its modules up the slope, is placed only where its
+   whole footprint lies inside the area. On east-west roofs each side of a
+   unit is tested on its own.
+4. **Space it.** On tilted rows, columns step by the module's side plus
+   0.02 m, with walkway aisles, and rows by the pitch. On sloped roofs rows
+   follow directly. On east-west roofs, units are two module sides deep plus
+   the ridge gap, with the shade gap and the walkways between them.
+
+What the counts mean:
+
+| Count | What it is |
+| --- | --- |
+| Positions | The modules placed |
+| Tables | On tilted and sloped roofs, unbroken runs of side-by-side modules in a row; on east-west roofs, groups of 10 positions along a unit |
+| Rows | Rows, or units, with at least one module |
+| GCR | Depth up the slope ÷ pitch on tilted rows; 1.0 on sloped roofs; twice the depth ÷ (unit width + gap) on east-west roofs |
+
+The parapet and each obstacle have their own kept-clear area on the roof.
+Press one for its callout: `Kept clear · … positions` (or `Shaded in the
+window · …` when shaded positions are allowed), and which obstacle shades it
+between which hours.
+
+There is no cap on the number of modules. The roof covers 30,000 m² at most.
+
+## When something goes wrong
+
+| Message | What to do |
+| --- | --- |
+| **The layout was not updated**, with the reason and **Try again** | The positions shown are those of the design before. Correct what the reason names, or try again. |
+| `No module fits on this roof` | There is no room for a module inside the setback and clear of shadows. Check the outline, the setback and the obstacles in the Roof lens. |
+| `… gives no size of the module (Width and Height). The layout needs it: choose a PAN file that has it.` | Choose another PAN file, or one from the library. |
+| `…: not a PVsyst module file (PNom, Voc or Isc missing)` | The file is not a module file Rooftop can read. Choose another. |
+| `Voc coefficient … %/°C is outside the usual −0.35 to −0.20 %/°C for crystalline silicon. Check the datasheet and enter it if it differs.` | Enter the datasheet's value under **Sizing temperatures** in the Strings lens. |
+| `The equipment catalog could not be loaded (HTTP …). Try again.` | Check the connection and press **Try again**. |
+| `No module in the app matches “…”.` | Clear the search, or take a PAN file of your own. |
+
+## Next
+
+<Cards>
+  <Card title="The Sun lens" href="/docs/rooftop/sun" description="The day's shadows, and the shading of each position over the year" />
+  <Card title="The Strings lens" href="/docs/rooftop/strings" description="System voltage, the inverter, and the stringing options" />
+</Cards>

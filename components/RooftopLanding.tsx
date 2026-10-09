@@ -50,8 +50,14 @@ const TOPICS: TopicSection[] = [
   },
   {
     icon: Map,
-    category: "The roof",
-    links: [{ label: "Find the roof", href: "/docs/rooftop/find" }],
+    category: "The roof and the Studio",
+    links: [
+      { label: "Find the roof", href: "/docs/rooftop/find" },
+      { label: "Roof: type, edges and obstacles", href: "/docs/rooftop/roof" },
+      { label: "Array: module, mounting and spacing", href: "/docs/rooftop/array" },
+      { label: "Sun: shadows and the shade map", href: "/docs/rooftop/sun" },
+      { label: "Strings: voltage, inverter and options", href: "/docs/rooftop/strings" },
+    ],
   },
   {
     icon: BookOpen,
