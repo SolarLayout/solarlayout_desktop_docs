@@ -15,6 +15,8 @@ content is MDX on disk.
    (`PVlayout_Advance`: `apps/solarlayout-desktop/` and `packages/solar-core/`;
    `apps/bess-tool/` for BESS) and add it to the fact sheet with a `file:line`
    citation before writing it.
+   For SolarLayout Rooftop pages (`/docs/rooftop`) the fact sheet is
+   `docs/PRODUCT_FACTS.rooftop.md`, citing the `rooftop-design-app` repository.
 3. Never repeat anything in `PRODUCT_FACTS.md` §18 (known-stale sources). The
    product's in-app F1 guide is one of them. Never describe a §20 product
    issue as behaviour.
