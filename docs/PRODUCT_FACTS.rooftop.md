@@ -5,7 +5,7 @@ pages** (`/docs/rooftop`). If a number, label or behaviour is not here, do not
 state it on a page. Every value was read from the product's code in the
 `rooftop-design-app` repository and carries a `file:line` citation.
 
-**Verified against `main` at `75591f2` on 2026-10-09.** Where the app's own
+**Verified against `main` at `cd3f0ae` on 2026-10-09** (written at `75591f2` the same day, re-verified after #172 to #178). Where the app's own
 in-app help, a code comment or a design document says something the code
 contradicts, it is listed under the area's *Known-stale* heading and must not
 be repeated. Product defects noticed while reading are listed under *Product
@@ -124,7 +124,7 @@ Moving between areas:
 | A write that fails | Note "Not saved on this device", with the browser's reason, "This design · on this device", and a try-again action; the next edit tries again | WEB/components/shell/notes-view.ts:123-130; WEB/lib/device/saving.ts:8,56-57 |
 | Quota / private window | No quota check of its own: a failed IndexedDB write shows "Not saved" with the browser's words; a refused localStorage is ignored silently (the open design is just not remembered) | WEB/lib/device/designs-db.ts:52-67; WEB/lib/device/remembered.ts:1-3,23-25 |
 | After a reload | The design remembered as open is reopened from the device, else the demo; a kept design that cannot be read opens the demo and says "<reason> The demo is open instead." | WEB/components/shell/use-opens-what-belongs.ts:9-25; WEB/lib/device/opening.ts:16-36 |
-| Another browser or device | Designs live in this browser only. Copy shown: "Nothing leaves this browser until you export." Moving a design: **Save a copy** (.rtd) then **Open a project** on the other device ("A saved .rtd file, from this device or a colleague") | WEB/lib/home/home-view.ts:25-32; WEB/components/home/Home.tsx:37 |
+| Another browser or device | Designs live in this browser only. Copy shown: "Your designs are kept on this device." Moving a design: **Save a copy** (.rtd) then **Open a project** on the other device ("A saved .rtd file, from this device or a colleague") | WEB/lib/home/home-view.ts:25-33; WEB/components/home/Home.tsx:37 |
 | Delete | Home card menu > **Delete**: dialog title "Delete <name>?", body "It is kept on this device alone.", buttons **Cancel** (focused) and **Delete**. An open design that is deleted stays open, no longer kept; its next edit keeps it again under a new id | WEB/lib/home/cards.ts:49-52; WEB/components/home/OnThisDevice.tsx:28-73; WEB/lib/device/saving.ts:51-55,241-250 |
 | Server-side storage | None: no database; the API keeps nothing per user (see "Data that leaves the device" for its in-memory caches) | plan/README.md:48-49 |
 
@@ -143,7 +143,7 @@ Moving between areas:
 | Open refusals | Not .rtd: "Choose a project file (.rtd)."; too large: "This file is larger than any project this app saves, so it cannot be opened."; unreadable: "The file could not be read. Choose another." | WEB/lib/flow/open-project.ts:11,21,24 |
 | Demo card | Label "Demo project", the demo's name and roof; **Open the demo**. Capacity and "Energy, year 1" appear only after the demo has run on this device; before that: "Capacity and energy come with the run in the Studio" | WEB/components/home/DemoCard.tsx:19-20,52-62; WEB/lib/home/home-view.ts:17-23 |
 | The demo | "Pune demo roof": 90 × 40 m flat roof, tilted rows, in Pune (18.52, 73.86); obstacles: Stair room, Water tank, AC unit 1–4; bundled PVGIS TMY weather; module file `insolation-ina-144mhc-tf-560.PAN`, inverter file `wattpower-wp-330ktl-h1.OND`; system voltage 1500 V marked as the user's choice | CORE/demo.py:2,8,21-31,41-53; CORE/resources.py:9-10; CORE/samples/pune_weather.json (source "pvgis", label "PVGIS TMY") |
-| "On this device" section | Heading "On this device"; with none kept: "Designs you save appear here. Nothing leaves this browser until you export."; otherwise "Nothing leaves this browser until you export." Cards: three per row on desktop, two on tablet, one on phone, newest edited first | WEB/components/home/OnThisDevice.tsx:26,28-55; WEB/lib/home/home-view.ts:25-32; WEB/lib/home/cards.ts:41-44 |
+| "On this device" section | Heading "On this device"; with none kept: "Designs you save appear here. Your designs are kept on this device."; otherwise "Your designs are kept on this device." Cards: three per row on desktop, two on tablet, one on phone, newest edited first | WEB/components/home/OnThisDevice.tsx:26,28-55; WEB/lib/home/home-view.ts:25-33; WEB/lib/home/cards.ts:41-44 |
 | A design card | Plan thumbnail, name, roof words (e.g. "flat roof, tilted rows"), Capacity and "Energy, year 1" of the last run, or "Waiting for a system voltage" / "Not run yet"; "Edited just now", "Edited 5 minutes ago", "Edited yesterday", "Edited 17 Sep 2026" … | WEB/components/home/DesignCard.tsx:113-145; WEB/lib/home/cards.ts:24-38; WEB/lib/device/kept-design.ts:33-37,79-92 |
 | Card menu | **Open**, **Rename**, **Duplicate**, **Save a copy** (.rtd), **Delete** | WEB/components/home/DesignCard.tsx:33-39 |
 | Rename | Name becomes a field in place; Enter or leaving commits, Escape cancels; empty refused with "A name is needed"; at most 200 characters | WEB/components/home/DesignCard.tsx:49-54,114-124; WEB/lib/flow/name-field.ts:7,9 |
@@ -207,7 +207,7 @@ Moving between areas:
 | API `POST /equipment/module`, `/equipment/inverter` | Choosing a module or inverter (library or own file) | File name and text/base64 of the PAN/OND | API/routers/equipment.py:9-18; API/schemas/equipment.py:17-19 |
 | API `POST /project/open` | Open a project | The .rtd's name and text | API/routers/project.py:9-12; WEB/lib/flow/open-project.ts:34-37 |
 | PVGIS (European Commission JRC, re.jrc.ec.europa.eu) | Sent by the API when weather "PVGIS" is loaded (the default source) | Latitude, longitude (TMY and horizon) | CORE/weather.py:28,142-143,166-177; API/schemas/project.py:73 |
-| NASA POWER (power.larc.nasa.gov) | Sent by the API when weather "NASA POWER" is loaded | Latitude, longitude, year 2023 | CORE/weather.py:29,180-194 |
+| NASA POWER (power.larc.nasa.gov) | Sent by the API when weather "NASA POWER" is loaded | Latitude, longitude, year 2023 | CORE/weather.py:29,181-195 |
 | Esri World Imagery (ibasemaps-api.arcgis.com) | Find's map; the 3D ground in the Studio and Present | Tile requests (area viewed) with the app's public key | WEB/lib/places/esri.ts:7-9,21-22,65; WEB/components/find/RoofMap.tsx:73-84; WEB/components/scene/Ground.tsx:39 |
 | Esri geocoding (geocode-api.arcgis.com) | Typing a place in the search | The typed text, up to 5 results asked, the map's centre when there is one, the app's key | WEB/lib/places/esri.ts:10-16,48-58 |
 | Overture Maps (tiles.overturemaps.org) | Only while **Detect building** is the tool | Range reads of the zoom-14 building tiles (area viewed) | WEB/lib/map/overture.ts:8-12; WEB/components/find/OutlineLayer.tsx:344-347 |
@@ -219,7 +219,7 @@ What the API keeps:
 | Item | Value | Source |
 |---|---|---|
 | Stated design | "Stateless: every response is a pure function of the request." No database | API/main.py:25-30; plan/README.md:48-49 |
-| In-memory caches (per running instance, not written to disk) | Weather downloads of up to 64 sites, keyed by coordinates; shading, options and operating points up to 64/64/32 MB, keyed by a fingerprint of the inputs; report page images up to 32 MB (about 30 sets), keyed by project and day. Evicted oldest first; lost when the instance stops | API/services/weather.py:12-21; CORE/weather.py:78-104; API/services/design.py:38-44; CORE/memo.py:1-13,40-42,111-121; API/services/export.py:30-38 |
+| In-memory caches (per running instance, not written to disk) | Weather downloads of up to 64 sites, keyed by coordinates; shading, options and operating points up to 64/64/32 MB, keyed by a fingerprint of the inputs; report page images up to 32 MB (about 30 sets), keyed by project and day. Evicted oldest first; lost when the instance stops | API/services/weather.py:12-21; CORE/weather.py:78-104; API/services/design.py:39-45; CORE/memo.py:1-13,40-42,111-121; API/services/export.py:30-38 |
 | Logs | One line per request: method, path, status, time (no query string, no body); unexpected errors logged with method, path and traceback; CloudWatch, kept 30 days | API/timing.py:1-8,29-31,54; API/errors.py:148-150; docs/deployment.md:71; infra/aws/README.md:101 |
 
 ### Limits
@@ -236,7 +236,7 @@ What the API keeps:
 | Design name | At most 200 characters; empty refused ("A name is needed") | API/schemas/project.py:65; WEB/lib/flow/name-field.ts:7,9 |
 | Downloaded file names | At most 80 characters from the design's name | API/services/export.py:28,235 |
 | Place search | Up to 5 results | WEB/lib/places/esri.ts:16 |
-| Weather download waits | PVGIS 60 s, NASA POWER 120 s | CORE/weather.py:135-136,194 |
+| Weather download waits | PVGIS 60 s, NASA POWER 120 s | CORE/weather.py:135-136,195 |
 | Concurrent API instances | 50 on staging, 100 on production (reserved concurrency) | docs/deployment.md:16 |
 | A long run | Streams progress; the connection stays open while a byte comes every 120 s; the API sends a keep-alive every 15 s | docs/deployment.md:78-80 |
 
@@ -246,7 +246,6 @@ What the API keeps:
 - docs/design/information-architecture.md:24 lists Present in the top bar on every size. In the code, Present shows only when the bar is at least 820 px wide, never on phone (WEB/components/shell/TopBar.tsx:49,115-117).
 - docs/deployment.md:15 gives each function 10,240 MB. The functions run at 1,769 MB (docs/deployment.md:80; apps/api/Dockerfile comment; D67, plan/README.md:110; infra/aws/README.md:130).
 - "Stateless" (API/main.py:28; CLAUDE.md (repo root):3; infra/aws/README.md:3) is true of the answers, but each instance holds memory caches of weather, shading/options and report page images (see "What the API keeps"). The privacy policy must not say the API holds nothing.
-- HELP/studio/section/system-voltage.mdx:21 says 600 V applies "In the United States and Canada". The code also counts PR, GU, VI, AS and MP (WEB/lib/country/country.ts:9). This is consistent if "the United States" includes its territories.
 
 #### Facts we do not have (this area)
 
@@ -259,7 +258,6 @@ What the API keeps:
 
 #### Product issues noticed (this area)
 
-- The Home copy "Nothing leaves this browser until you export." (WEB/lib/home/home-view.ts:27; also docs/design/components.md:777-778) is not accurate. Every layout and run sends the whole design to the API, including its location, outline, equipment files and weather (WEB/lib/api/client.ts:113-121). Typed searches go to Esri, and map tiles reveal the area viewed. What is true is that designs are *kept* only in this browser.
 - Import a drawing has no size check in the app. The API schema accepts up to 28,000,000 base64 characters (API/schemas/roof_import.py:11), but the deployed Function URL refuses anything over 6 MiB. A drawing over about 4.7 MB is therefore probably refused before the API sees it, and the user gets the generic "The server answered 413 in a form that cannot be read. Try again; if it fails again, report it." (WEB/lib/api/errors.ts:30-33). This was not checked at run time.
 - A user's own PAN/OND file over 256,000 characters has no check in the app. The API refuses it with a generic validation message (API/errors.py:137-139; API/schemas/equipment.py:18-19).
 - `/studio` without a lens always goes to Roof (WEB/app/(workspaces)/studio/page.tsx:5-7), while the workspace links go to the last lens (WEB/lib/routes.ts:63-68). This is minor.
@@ -273,20 +271,20 @@ What the API keeps:
 | Item | Value | Source |
 |---|---|---|
 | Route and tab title | `/find`; title "Find and outline · SolarLayout Rooftop" | WEB/lib/routes.ts:71, WEB/app/find/page.tsx:5 |
-| From Home's search | The primary action is **Find my roof**. With nothing typed it links to `/find`. A place that is chosen opens `/find?at=<lat>,<lon>`, plus `&place=<label>` when the place was found by words. Find then opens at the Outline step, at that place. | WEB/components/home/Home.tsx:30, :93-96, :148; WEB/lib/routes.ts:86-92; WEB/components/find/Find.tsx:108, :116 |
+| From Home's search | The primary action is **Find my roof**. With nothing typed it links to `/find`. A place that is chosen opens `/find?at=<lat>,<lon>`, plus `&place=<label>` when the place was found by words. Find then opens at the Outline step, at that place. | WEB/components/home/Home.tsx:30, :93-96, :148; WEB/lib/routes.ts:86-92; WEB/components/find/Find.tsx:109, :116 |
 | From the project switcher | **New design** (fact "Find the roof") goes to `/find` | WEB/components/shell/ProjectSwitcher.tsx:71 |
-| From the Studio's Roof lens | **Edit** (desktop/tablet), or the row labelled "Edit the outline" (phone), goes to `/find?edit=roof`. The open design's outline and obstacles are drawn on the map, its roof type is selected, and the screen starts at Outline. | WEB/components/studio/RoofInspector.tsx:32, :80, :91-93; WEB/components/find/Find.tsx:217-238 |
-| Back | Round button labelled "Back to home", top left | WEB/components/find/Find.tsx:299-301 |
-| Steps | **Find**, **Outline**, **Build**. Desktop and tablet show a pill: done steps get a tick, the current step is raised. Phone and tablet show "Step N of 3" in the panel. | WEB/components/find/Steps.tsx:5-9, :21-37; WEB/components/find/Find.tsx:303, :360 |
-| Start view | Without a place, the map shows India from far (lon 78.5, lat 21.5, zoom 4). With a place, or with a design open, it opens at roof zoom. | WEB/components/find/Find.tsx:62-63, :139-142 |
+| From the Studio's Roof lens | **Edit** (desktop/tablet), or the row labelled "Edit the outline" (phone), goes to `/find?edit=roof`. The open design's outline and obstacles are drawn on the map, its roof type is selected, and the screen starts at Outline. | WEB/components/studio/RoofInspector.tsx:32, :80, :91-93; WEB/components/find/Find.tsx:218-239 |
+| Back | Round button labelled "Back to home", top left | WEB/components/find/Find.tsx:300-302 |
+| Steps | **Find**, **Outline**, **Build**. Desktop and tablet show a pill: done steps get a tick, the current step is raised. Phone and tablet show "Step N of 3" in the panel. | WEB/components/find/Steps.tsx:5-9, :21-37; WEB/components/find/Find.tsx:304, :360 |
+| Start view | Without a place, the map shows India from far (lon 78.5, lat 21.5, zoom 4). With a place, or with a design open, it opens at roof zoom. | WEB/components/find/Find.tsx:63-64, :139-142 |
 
 **Layout by size**
 
 | Size | What it shows | Source |
 |---|---|---|
-| Desktop | Full-screen map. Panel floats at the right. Top bar: back button, search, Steps pill. Map buttons at the bottom right. Toolbar at the bottom centre. Scale bar and attribution at the bottom left. | WEB/components/find/Find.tsx:298-306, :346-348; WEB/components/find/RoofMap.tsx:146-159 |
-| Tablet | Panel is a bottom sheet of 384 px, and the map ends above it. Steps pill, map buttons and scale bar are shown. Toolbar buttons have an icon and a name. Tips show over the map. | WEB/components/find/Find.tsx:81-83, :99, :303, :306; WEB/components/find/OutlineTools.tsx:66-68; WEB/components/find/RoofMap.tsx:41 |
-| Phone | Bottom sheet. No Steps pill, no map buttons ("the map is pinched and turned by hand") and no scale bar. Toolbar shows short names (**Detect** for **Detect building**) and **Undo** only. A tip shows at the top of the sheet. Roof type is a segmented control. | WEB/components/find/Find.tsx:100, :305-306; WEB/components/find/OutlineTools.tsx:27, :72-74; WEB/components/find/RoofMap.tsx:40-41; WEB/components/find/RoofTypeChoice.tsx:26, :47-53 |
+| Desktop | Full-screen map. Panel floats at the right. Top bar: back button, search, Steps pill. Map buttons at the bottom right. Toolbar at the bottom centre. Scale bar and attribution at the bottom left. | WEB/components/find/Find.tsx:299-307, :346-348; WEB/components/find/RoofMap.tsx:146-159 |
+| Tablet | Panel is a bottom sheet of 384 px, and the map ends above it. Steps pill, map buttons and scale bar are shown. Toolbar buttons have an icon and a name. Tips show over the map. | WEB/components/find/Find.tsx:82-84, :99, :303, :306; WEB/components/find/OutlineTools.tsx:66-68; WEB/components/find/RoofMap.tsx:41 |
+| Phone | Bottom sheet. No Steps pill, no map buttons ("the map is pinched and turned by hand") and no scale bar. Toolbar shows short names (**Detect** for **Detect building**) and **Undo** only. A tip shows at the top of the sheet. Roof type is a segmented control. | WEB/components/find/Find.tsx:101, :305-306; WEB/components/find/OutlineTools.tsx:27, :72-74; WEB/components/find/RoofMap.tsx:40-41; WEB/components/find/RoofTypeChoice.tsx:26, :47-53 |
 
 **First step panel** (title **Find the roof**)
 
@@ -304,8 +302,8 @@ What the API keeps:
 |---|---|---|
 | Kind | Satellite imagery only; there is no street-map switch. The map is labelled "Satellite map". Drawn with MapLibre (WebGL). | WEB/components/find/RoofMap.tsx:43-47, :73-85, :140-141 |
 | Imagery provider | Esri World Imagery (ArcGIS Location Platform), 256 px tiles, native to zoom 19 | WEB/lib/places/esri.ts:1-9, :65 |
-| Attribution shown | "Powered by Esri · Source: Esri, Vantor, Earthstar Geographics, and the GIS User Community". While **Detect building** is in hand a second line is added: "© Overture Maps Foundation, ODbL". | WEB/lib/places/esri.ts:14; WEB/lib/map/overture.ts:14; WEB/components/find/Find.tsx:287; WEB/components/find/RoofMap.tsx:156-159 |
-| Roof zoom | 18 (MapLibre count, the imagery's native 19, about 0.3 m per pixel). The map flies here when a place is found. | WEB/components/ui/design-numbers.ts:23-24; WEB/components/find/Find.tsx:263 |
+| Attribution shown | "Powered by Esri · Source: Esri, Vantor, Earthstar Geographics, and the GIS User Community". While **Detect building** is in hand a second line is added: "© Overture Maps Foundation, ODbL". | WEB/lib/places/esri.ts:14; WEB/lib/map/overture.ts:14; WEB/components/find/Find.tsx:288; WEB/components/find/RoofMap.tsx:156-159 |
+| Roof zoom | 18 (MapLibre count, the imagery's native 19, about 0.3 m per pixel). The map flies here when a place is found. | WEB/components/ui/design-numbers.ts:23-24; WEB/components/find/Find.tsx:264 |
 | Maximum zoom | 21.5; above 19 the tiles are enlarged | WEB/components/find/RoofMap.tsx:33; WEB/lib/places/provider.ts:9 |
 | Map buttons | "North up", "Zoom in", "Zoom out" | WEB/components/find/MapButtons.tsx:20-29 |
 | Scale bar | Largest round length that fits in 124 px | WEB/components/ui/design-numbers.ts:27; WEB/lib/map/scale-bar.ts:18-25 |
@@ -317,7 +315,7 @@ What the API keeps:
 | Item | Value | Source |
 |---|---|---|
 | Field | Placeholder and label "Search an address or paste coordinates". A **Search** button appears once text is typed; Enter does the same. Before anything is typed, a "Use my location" button stands beside the field. | WEB/components/shell/Search.tsx:48, :238, :280-298; WEB/lib/places/beside-the-field.ts:8-12 |
-| Geocoder | Esri World geocoding, `findAddressCandidates`; at most 5 places; places near the map's centre come first | WEB/lib/places/esri.ts:10-11, :16, :49-58; WEB/components/find/Find.tsx:269-273 |
+| Geocoder | Esri World geocoding, `findAddressCandidates`; at most 5 places; places near the map's centre come first | WEB/lib/places/esri.ts:10-11, :16, :49-58; WEB/components/find/Find.tsx:270-274 |
 | Results | A list under the field shows each place's label and its kind (Type). Up and down arrows, Home and End move the mark; Enter or a press takes the place; Esc closes. While searching: Searching for “…”. | WEB/components/shell/Search.tsx:154-175, :307-319, :333-339; WEB/lib/places/search-state.ts:50-66 |
 | Decimal coordinates | Latitude first. Comma, semicolon or space between. Decimal commas are accepted when there are exactly two numbers ("12,914094 77,491989"). A sign is allowed. | WEB/lib/places/place-input.ts:59-65, :104-113, :216-263 |
 | DMS and DDM | Degrees, minutes and seconds with ° ′ ″ (typographic or ASCII marks) and N/S/E/W before or after. Only the last part may have a fraction. Minutes and seconds go up to 59. Lat/lon order is swapped when the letters say so. | WEB/lib/places/place-input.ts:48-57, :152-189, :201-212, :243-248 |
@@ -325,7 +323,7 @@ What the API keeps:
 | Read-back | Coordinates and links are read as they are typed. One option shows under the field, marked "Coordinates", formatted to 5 decimals, e.g. `18.53621° N, 73.89380° E`. | WEB/components/shell/Search.tsx:139-149, :303-306; WEB/lib/format/place.ts:17-20 |
 | What looks like coordinates | Never sent to the geocoder. It is refused with the reason, or offered swapped (marked "Swapped"; Enter takes it). | WEB/components/shell/Search.tsx:129-135, :160-164, :320-327 |
 | Use my location | Browser geolocation, high accuracy, 15 s timeout | WEB/components/shell/Search.tsx:177-192 |
-| After a place is chosen | The map flies to it at roof zoom and Outline begins. Without a map, the by-hand entry opens with the place filled. | WEB/components/find/Find.tsx:259-267; WEB/lib/outline/first-step.ts:58-59 |
+| After a place is chosen | The map flies to it at roof zoom and Outline begins. Without a map, the by-hand entry opens with the place filled. | WEB/components/find/Find.tsx:260-268; WEB/lib/outline/first-step.ts:58-59 |
 | Design name | The place's label when it was found by words; otherwise the API's "Untitled roof" | WEB/lib/outline/build-request.ts:31; API/services/roof_map.py:15, :43; plan/README.md:92 (D49) |
 | Without a key | Words cannot be searched; coordinates and links still work | WEB/components/shell/Search.tsx:29, :104-107 |
 
@@ -335,12 +333,12 @@ Panel title **Outline the roof**. The tool's lead text sits under it.
 
 | Tool (toolbar label) | How it works | Source |
 |---|---|---|
-| **Corners** (default) | Lead: "Click each corner. Drag a corner to adjust it, or type a length you have measured." Each press places a corner. Pressing the first corner again closes the outline once there are at least 3 corners (within 12 px, 20 px on touch); Enter also closes. | WEB/components/find/Find.tsx:70, :119; WEB/components/find/OutlineLayer.tsx:411-414, :753-758; WEB/lib/outline/outline-state.ts:221-239; WEB/components/ui/design-numbers.ts:36-39 |
-| **Rectangle** | Lead: "Drag a box across the roof, then turn it to the building by its handle. Drag a corner to adjust it." A drag draws a box while no corners exist; it is closed when released. Its round handle ("Turn the rectangle") turns it and snaps to north within 3°. | WEB/components/find/Find.tsx:71; WEB/components/find/OutlineLayer.tsx:422-450, :923-944; WEB/lib/outline/rectangle.ts:31-39 |
-| **Detect building** (phone: **Detect**) | Lead: "Click inside the building. Where its footprint is known, it is proposed as the outline, to accept or adjust." While the tool is in hand, known footprints show faintly. A press takes the footprint under it as a closed outline and replaces any outline already drawn. A building in pieces gives its largest piece. | WEB/components/find/Find.tsx:72; WEB/components/find/OutlineLayer.tsx:344-389; WEB/lib/map/overture.ts:19-26; WEB/lib/outline/outline-state.ts:346-348 |
+| **Corners** (default) | Lead: "Click each corner. Drag a corner to adjust it, or type a length you have measured." Each press places a corner. Pressing the first corner again closes the outline once there are at least 3 corners (within 12 px, 20 px on touch); Enter also closes. | WEB/components/find/Find.tsx:71, :119; WEB/components/find/OutlineLayer.tsx:411-414, :753-758; WEB/lib/outline/outline-state.ts:221-239; WEB/components/ui/design-numbers.ts:36-39 |
+| **Rectangle** | Lead: "Drag a box across the roof, then turn it to the building by its handle. Drag a corner to adjust it." A drag draws a box while no corners exist; it is closed when released. Its round handle ("Turn the rectangle") turns it and snaps to north within 3°. | WEB/components/find/Find.tsx:72; WEB/components/find/OutlineLayer.tsx:422-450, :923-944; WEB/lib/outline/rectangle.ts:31-39 |
+| **Detect building** (phone: **Detect**) | Lead: "Click inside the building. Where its footprint is known, it is proposed as the outline, to accept or adjust." While the tool is in hand, known footprints show faintly. A press takes the footprint under it as a closed outline and replaces any outline already drawn. A building in pieces gives its largest piece. | WEB/components/find/Find.tsx:73; WEB/components/find/OutlineLayer.tsx:344-389; WEB/lib/map/overture.ts:19-26; WEB/lib/outline/outline-state.ts:346-348 |
 | Detect: footprint source | Overture Maps building footprints, release `2026-09-23.1` (PMTiles, tiles end at zoom 14). A building cut by a tile edge is proposed as the piece under the press. Footprints are approximate, "about 0.6 m". | WEB/lib/map/overture.ts:1-16 |
 | Detect: callout | Found: "Footprint found · N corners · A m²", then "From Overture Maps · approximate, about 0.6 m. Accept it, or drag the corners to the roof edge you see.", with **Use this outline** and **Adjust**. Not found: "No footprint known here" / "Outline the roof by corners or by a rectangle instead." | WEB/components/find/DetectedCallout.tsx:30-48 |
-| **Enter dimensions by hand instead** | Lead: "Type what you have measured. The roof is drawn as you type; Faces is where its long side looks." Title **Enter the roof by hand**. **Draw on the map instead** returns while a map exists. | WEB/components/find/Find.tsx:78, :405-413 |
+| **Enter dimensions by hand instead** | Lead: "Type what you have measured. The roof is drawn as you type; Faces is where its long side looks." Title **Enter the roof by hand**. **Draw on the map instead** returns while a map exists. | WEB/components/find/Find.tsx:79, :405-413 |
 
 **Editing the outline**
 
@@ -359,11 +357,11 @@ Panel title **Outline the roof**. The tool's lead text sits under it.
 
 | Item | Value | Source |
 |---|---|---|
-| Button | **Build this roof**. It is disabled until the outline is closed. While working it shows "Building the roof". | WEB/components/find/Find.tsx:395-404 |
-| What happens | New design: the API returns a whole project with defaults, which is opened. From Edit: outline, place, obstacles, source and roof type go into the open design and the rest is kept. Then the Studio opens at `/studio/roof`. | WEB/components/find/Find.tsx:241-257, :424-428; WEB/lib/routes.ts:48; plan/README.md:86 (D43) |
+| Button | **Build this roof**. It is disabled until the outline is closed. While working it shows "Building the roof". | WEB/components/find/Find.tsx:396-405 |
+| What happens | New design: the API returns a whole project with defaults, which is opened. From Edit: outline, place, obstacles, source and roof type go into the open design and the rest is kept. Then the Studio opens at `/studio/roof`. | WEB/components/find/Find.tsx:242-258, :424-428; WEB/lib/routes.ts:48; plan/README.md:86 (D43) |
 | Place of the built roof | The centroid of the outline. The outline is stored in local metres around it. | API/services/roof_map.py:27-30 |
-| Roof type on Find | **Flat, tilted rows** (default) · **Flat, east-west** · **Sloped, flush**. Captions: "Rows facing the equator", "Back-to-back, low tilt", "Modules follow the roof pitch". Short labels on phone/tablet: Tilted rows / East-west / Sloped. | WEB/components/find/Find.tsx:124, :382-387; WEB/lib/geometry/roof-types.ts:6-10 |
-| Source recorded | "Outlined on satellite" (map) or "Entered by hand" (by hand) | WEB/lib/geometry/roof-card.ts:20-25; WEB/components/find/Find.tsx:242 |
+| Roof type on Find | **Flat, tilted rows** (default) · **Flat, east-west** · **Sloped, flush**. Captions: "Rows facing the equator", "Back-to-back, low tilt", "Modules follow the roof pitch". Short labels on phone/tablet: Tilted rows / East-west / Sloped. | WEB/components/find/Find.tsx:125, :382-387; WEB/lib/geometry/roof-types.ts:6-10 |
+| Source recorded | "Outlined on satellite" (map) or "Entered by hand" (by hand) | WEB/lib/geometry/roof-card.ts:20-25; WEB/components/find/Find.tsx:243 |
 
 ### Find: shape and edges
 
@@ -377,13 +375,13 @@ Panel title **Outline the roof**. The tool's lead text sits under it.
 | Closing 4 near-square corners with it on | Made an exact rectangle; the first edge is kept | — | — | WEB/lib/outline/outline-state.ts:103-131 |
 | Status before closing | "Click the first corner of the roof." / "N of at least 3 corners placed." / "N corners placed. Click the first corner, or press Enter, to close the outline." | — | — | WEB/components/find/OutlinePanel.tsx:72-78 |
 | Tiles | **Area** (m², whole), **Faces** ("{deg}° {compass}": the outward normal of the longest edge, toward the equator), **Corners** | — | — | WEB/components/find/OutlinePanel.tsx:35-45; WEB/lib/geometry/measure.ts:74-95 |
-| Heights, parapet | Not set on Find. A new roof gets the engine's parapet of 0.9 m and a pitch of 0°, both changed in the Studio. | — | — | CORE/geometry.py:100, :106; API/services/roof_map.py:35-42 |
+| Heights, parapet | Not set on Find. A new roof gets the engine's parapet of 0.9 m and a pitch of 0°, both changed in the Studio. | — | — | CORE/geometry.py:100, :106; API/services/roof_map.py:35-43 |
 
 **By hand: Place and Shape**
 
 | Item | Default | Range | Unit | Source |
 |---|---|---|---|---|
-| **Place**: Latitude / Longitude. Caption: "From the search above, or typed. Five decimals; north and east are positive." | the found place, else where the drawn roof stands | −90–90 / −180–180, 5 decimals | ° | WEB/components/find/ByHandPanel.tsx:23-24, :47-55; WEB/components/find/Find.tsx:208-215 |
+| **Place**: Latitude / Longitude. Caption: "From the search above, or typed. Five decimals; north and east are positive." | the found place, else where the drawn roof stands | −90–90 / −180–180, 5 decimals | ° | WEB/components/find/ByHandPanel.tsx:23-24, :47-55; WEB/components/find/Find.tsx:209-216 |
 | **Shape** | **Rectangle** | Rectangle / Corners | — | WEB/lib/outline/shapes.ts:6-9; WEB/lib/outline/by-hand.ts:24 |
 | Length, Width (the longer is the long side) | empty | 0.1–2000, 2 decimals | m | WEB/components/find/ByHandPanel.tsx:26, :64-67; WEB/lib/outline/by-hand.ts:32-49 |
 | **Long side faces** | empty | 0–359, whole | ° clockwise from north | WEB/components/find/ByHandPanel.tsx:28, :68 |
@@ -409,10 +407,10 @@ Obstacle tools appear once the roof is closed: **Box**, **Tank**, **Wall**, **Bu
 
 | Kind | How drawn | Min points | Lead text | Source |
 |---|---|---|---|---|
-| Box | Drag corner to corner, drawn north-aligned, then turned by its handle | 4 | "Drag a box across the thing on the roof, then turn it by its handle. Its height is asked right after." | WEB/components/find/Find.tsx:73; WEB/lib/outline/obstacles.ts:22, :27-30 |
-| Tank (cylinder) | Drag from the middle to the edge; diameter = 2 × the drag | 1 + diameter | "Drag from the middle of the tank to its edge. Its height is asked right after." | WEB/components/find/Find.tsx:74; WEB/lib/outline/obstacles.ts:73-78 |
-| Wall | Press each point; press the last again, or Enter, to end | 2 | "Click each point of the wall; click the last again, or press Enter, to end it. …" | WEB/components/find/Find.tsx:75; WEB/lib/outline/outline-state.ts:378-386 |
-| Building beside the roof | Press each corner; press the first again (or Enter) to close | 3 | "Click the corners of the building beside the roof; click the first again to close it. …" | WEB/components/find/Find.tsx:76; WEB/lib/outline/outline-state.ts:234-236 |
+| Box | Drag corner to corner, drawn north-aligned, then turned by its handle | 4 | "Drag a box across the thing on the roof, then turn it by its handle. Its height is asked right after." | WEB/components/find/Find.tsx:74; WEB/lib/outline/obstacles.ts:22, :27-30 |
+| Tank (cylinder) | Drag from the middle to the edge; diameter = 2 × the drag | 1 + diameter | "Drag from the middle of the tank to its edge. Its height is asked right after." | WEB/components/find/Find.tsx:75; WEB/lib/outline/obstacles.ts:73-78 |
+| Wall | Press each point; press the last again, or Enter, to end | 2 | "Click each point of the wall; click the last again, or press Enter, to end it. …" | WEB/components/find/Find.tsx:76; WEB/lib/outline/outline-state.ts:378-386 |
+| Building beside the roof | Press each corner; press the first again (or Enter) to close | 3 | "Click the corners of the building beside the roof; click the first again to close it. …" | WEB/components/find/Find.tsx:77; WEB/lib/outline/outline-state.ts:234-236 |
 
 | Item | Default | Range | Unit | Source |
 |---|---|---|---|---|
@@ -469,8 +467,8 @@ Import is not done on Find. It opens from Home's **Import a drawing** ("KMZ, KML
 | The latitude comes first, and {n} is more than 90°. Did you mean this? (offers the swap) | Latitude > 90 that fits as a longitude | WEB/lib/places/place-input.ts:256-258 |
 | A latitude goes up to 90°, and this one is {n}°. Check where it was copied from. / A longitude goes up to 180°, … | Out of range | WEB/lib/places/place-input.ts:259-261 |
 | No footprint known here / Outline the roof by corners or by a rectangle instead. | Detect press with no footprint | WEB/components/find/DetectedCallout.tsx:31, :38 |
-| The outline could not be shown on the map. | Edit: `/roof/on-map` fails with a non-API error | WEB/components/find/Find.tsx:233 |
-| The roof could not be built. Try again. | Build fails with a non-API error | WEB/components/find/Find.tsx:255 |
+| The outline could not be shown on the map. | Edit: `/roof/on-map` fails with a non-API error | WEB/components/find/Find.tsx:234 |
+| The roof could not be built. Try again. | Build fails with a non-API error | WEB/components/find/Find.tsx:256 |
 | The outline crosses itself. Move the corners so that no two edges cross. | Build with a self-crossing outline | API/services/roof_map.py:18, :25-26 |
 | This outline covers {n} m². SolarLayout designs one roof at a time, up to 30,000 m² (about 3 MWp). For a larger site, outline each building as its own design. | Area > 30,000 m² (Build, Edit, import) | CORE/errors.py:43-51; CORE/geometry.py:29 |
 | The server cannot be reached. Check the connection and try again. | API unreachable | WEB/lib/api/errors.ts:4 |
@@ -483,11 +481,8 @@ Import is not done on Find. It opens from Home's **Import a drawing** ("KMZ, KML
 | The file could not be read. Choose another. | Import fails with a non-API error | WEB/components/shell/ImportDrawing.tsx:96 |
 
 #### Known-stale (this area)
-- HELP/find/tool/move-the-roof.mdx:12-13 and the tip WEB/lib/outline/tips.ts:16, :22 ("Click inside the roof to pick it up") leave out a condition. The roof is picked only with **Box** or **Tank** in hand; with **Wall** or **Building** in hand the same press places a point (WEB/components/find/OutlineLayer.tsx:391-409). Box is the tool given when the roof closes.
-- HELP/find/section/place.mdx:16 says that after drawing on the map the fields "start where the drawn roof stands". In the code, a place found by the search wins; only without one is the outline frame's origin used, and that origin is the first corner placed, not the roof's middle (WEB/components/find/Find.tsx:208-215; WEB/lib/outline/outline-state.ts:26, :219).
-- HELP/find/section/place.mdx:20 ("Obstacles drawn on the map … stay while the place stays the same"): they stay only when the typed place exactly equals that frame origin. When a place had been found, switching to by hand drops them (WEB/lib/outline/outline-state.ts:357-366).
-- WEB/components/find/DetectedCallout.tsx:12-13 (comment: Adjust "takes the corners tool"): Find wires **Use this outline** and **Adjust** both to close the callout only (WEB/components/find/Find.tsx:327-330). The footprint's corners drag either way.
-- HELP/app/section/roof-type.mdx:30 ("Both are the same setting"): the value is the same, but **Sloped, flush** chosen on Find leaves the engine's parapet (0.9 m) and pitch (0°). Chosen in the Roof lens, it sets the parapet to 0 and the pitch to 10° (WEB/lib/studio/roof-type.ts:5-10; CORE/geometry.py:100, :106). Line 24 of the topic scopes this correctly.
+- The map tip WEB/lib/outline/tips.ts:16, :22 ("Click inside the roof to pick it up") leaves out a condition. The roof is picked only with **Box** or **Tank** in hand; with **Wall** or **Building** in hand the same press places a point (WEB/components/find/OutlineLayer.tsx:391-409). Box is the tool given when the roof closes. The help topic HELP/find/tool/move-the-roof.mdx:12-13 says so.
+- WEB/components/find/DetectedCallout.tsx:12-13 (comment: Adjust "takes the corners tool"): Find wires **Use this outline** and **Adjust** both to close the callout only (WEB/components/find/Find.tsx:328-331). The footprint's corners drag either way.
 
 #### Facts we do not have (this area)
 - Geocoder coverage, language and country bias. The code only sends the map centre as `location` (WEB/lib/places/esri.ts:55).
@@ -496,13 +491,12 @@ Import is not done on Find. It opens from Home's **Import a drawing** ("KMZ, KML
 - What the user sees when the Overture footprint tiles fail to load. The code has no separate state, so it would read as "No footprint known here" (WEB/components/find/OutlineLayer.tsx:377-381).
 
 #### Product issues noticed (this area)
-- Trees are lost when a roof is edited on Find and built again: `obstaclesOfMap` drops them (WEB/lib/outline/obstacles.ts:136; WEB/components/find/Find.tsx:248, :425-427). Already logged at plan/phase-14-in-app-help.md:165.
-- **Sloped, flush** chosen on Find gives a different roof (parapet and pitch) than the same choice in the Roof lens (see Known-stale). Logged at plan/phase-14-in-app-help.md:163.
+- Trees are lost when a roof is edited on Find and built again: `obstaclesOfMap` drops them when the roof is shown on the map again, and the build takes the map's obstacles (WEB/lib/outline/obstacles.ts:136; WEB/components/find/Find.tsx:227, 249). Already logged at plan/phase-14-in-app-help.md:165.
 - **Long side faces** 0 and 180 give the same roof (WEB/lib/outline/by-hand.ts:37-49). Logged at plan/phase-14-in-app-help.md:166.
 - The by-hand corner table is centred again on Build: the place becomes the polygon's centroid, not the typed point (API/services/roof_map.py:27-30). Logged at plan/phase-14-in-app-help.md:167.
 - The import dialog's text (WEB/components/shell/ImportDrawing.tsx:28) is inaccurate. KMZ/KML LineStrings (open) become walls, DXF circles become tanks, and KMZ obstacles are named by placemark name, not layer (CORE/io/roof_import.py:137-140, :198-200, :127-128).
 - Importing a drawing has no size check before sending. A file over the deployed 6 MiB request limit would likely be refused with the generic "The server answered 413 in a form that cannot be read. Try again; if it fails again, report it." (WEB/lib/api/errors.ts:30-32; WEB/components/shell/ImportDrawing.tsx:84-97). The Open-project and weather dialogs do check first (WEB/lib/flow/open-project.ts:18-21).
-- **Use this outline** and **Adjust** do exactly the same thing (WEB/components/find/Find.tsx:327-330).
+- **Use this outline** and **Adjust** do exactly the same thing (WEB/components/find/Find.tsx:328-331).
 - Obstacle heights cannot be edited on Find after they are added (WEB/components/find/ObstacleList.tsx:41-56). Logged as deferred at plan/STATE.md:211.
 
 ## 3. The Studio, and its Roof and Array lenses
@@ -586,8 +580,9 @@ The **Roof type** section is a segmented control labelled **Tilted rows** / **Ea
 | **Flat, east-west** / **East-west** | "Back-to-back, low tilt" | Back-to-back units: one side faces az+90°, the other az−90°, each one module (width up the slope). Units sit with no gap unless the window needs one. The walkway comes every N **units**. The edge field **Every** has unit `rows` | WEB/lib/geometry/roof-types.ts:8; CORE/placement.py:222-276 |
 | **Sloped, flush** / **Sloped** | "Modules follow the roof pitch" | Modules lie on the roof at the roof's **Pitch**, facing **Faces** unless the array has its own azimuth. Rows follow each other separated only by the module gap. Lower edge sits 0.1 m above the roof. Adds **Pitch** and **Faces** to Edges and access. GCR is reported as 1.0 | WEB/lib/geometry/roof-types.ts:9; CORE/placement.py:130-131,149,177-179,219; WEB/lib/studio/roof-fields.ts:30; API/schemas/array.py:26 |
 
-- **Choosing Sloped in the Roof lens** sets the parapet to 0 and, if the pitch was 0, sets it to 10° (WEB/lib/studio/roof-type.ts:5-10).
-- **Choosing any other type** changes only the type (roof-type.ts:9).
+- **Choosing Sloped in the Roof lens** sets the parapet to 0 and, if the pitch was 0, sets it to 10° (WEB/lib/geometry/roof-type-rule.ts:5-10).
+- **Choosing any other type** changes only the type (roof-type-rule.ts:9).
+- **Sloped chosen on Find** gives the same roof. A new design built on Find as **Sloped, flush** gets parapet 0 and pitch 10° (API/services/roof_map.py:42, 49-56). A design built again on Find goes through the same rule as the Roof lens: its type changed to Sloped sets the parapet to 0 and a pitch of 10° where it had none; an unchanged type keeps its parapet and pitch (WEB/lib/geometry/roof-type-rule.ts:15-20; WEB/components/find/Find.tsx:249).
 - **Defaults that depend on roof type**:
   - Thermal Uc: 29 (tilted), 20 (east-west), 15 (sloped) (CORE/simulation.py:31).
   - Cell rise for string sizing: 25 / 25 / 35 °C (CORE/stringing.py:26).
@@ -619,7 +614,7 @@ Section **Edges and access** (RoofInspector.tsx:171-182):
 | **Every** (east-west, sloped) | 4 | 0 – 500 | rows | 0 | WEB/lib/studio/roof-fields.ts:19 / API/schemas/roof.py:53 |
 | **Clearance** (around obstacles) | 0.5 | 0 – 5 | m | 2 | WEB/lib/studio/roof-fields.ts:20 / API/schemas/roof.py:54 |
 | **Albedo** | 0.20 | 0.05 – 0.9 | (fraction) | 2 | WEB/lib/studio/roof-fields.ts:21 / API/schemas/roof.py:57 |
-| **Pitch** (sloped only) | 0 from the API; 10 when Sloped is chosen in the Roof lens | 0 – 60 | ° | 0 | WEB/lib/studio/roof-fields.ts:22 / API/schemas/roof.py:55; WEB/lib/studio/roof-type.ts:10 |
+| **Pitch** (sloped only) | 10 for a roof made sloped, on Find or in the Roof lens; 0 in the API's schema | 0 – 60 | ° | 0 | WEB/lib/studio/roof-fields.ts:22 / API/schemas/roof.py:55; WEB/lib/geometry/roof-type-rule.ts:10; API/services/roof_map.py:52-56 |
 | **Faces** (sloped only) | 180 | 0 – 359.9 | ° | 1 | WEB/lib/studio/roof-fields.ts:23 / API/schemas/roof.py:56 |
 
 What each one does in the engine:
@@ -740,7 +735,7 @@ Section **Mounting** (WEB/components/studio/ArrayMounting.tsx:62-68). Fields by 
 - With the switch off, the line under it reads `Shade-free would be <pitch> m` (array-fields.ts:62).
 
 **Azimuth**:
-- Engine read-out: `<deg>° <compass>` with `Follows the roof edge closest to the equator`. On east-west roofs the line reads `The ridge runs along the roof edge closest to the equator` (array-view.ts:16-28).
+- Engine read-out: `<deg>° <compass>` with `Follows the roof edge closest to the equator`. On east-west roofs the line reads `The ridges run square to the roof edge closest to the equator` (array-view.ts:16-28).
 - The engine's azimuth is the normal of the roof's minimum bounding rectangle that points closest to the equator (geometry.py:137-153). On sloped roofs it is **Faces** (placement.py:130-131).
 - With the switch off, the line reads `The roof edge closest to the equator faces <bearing>` (array-view.ts:28).
 
@@ -787,7 +782,7 @@ The engine lays the modules out from the roof, the array settings and the module
    - The outline must have area and must not cross itself (layouts.py:30-35).
    - Outlines over 30,000 m² are refused (CORE/geometry.py:29,156-164; API/convert.py:43).
    - The module must have a size (layouts.py:44-45).
-   - A roof with no positions yields `No module fits on this roof` (API/services/design.py:27-31,217-218).
+   - A roof with no positions yields `No module fits on this roof` (API/services/design.py:28-32,226-227).
 
 ### Studio (Roof, Array): messages
 
@@ -799,7 +794,7 @@ The engine lays the modules out from the roof, the array settings and the module
 | API, outline has no area | `The roof outline encloses no area. Give at least three corners that are not on one line.` | API/services/layouts.py:14 |
 | API, outline crosses itself | `The roof outline crosses itself. Give the corners in order around the roof.` | API/services/layouts.py:15 |
 | API, roof too large | `This outline covers <area> m². SolarLayout designs one roof at a time, up to 30,000 m² (about 3 MWp). For a larger site, outline each building as its own design.` | CORE/errors.py:47-49 |
-| Vitals, no positions | `No module fits on this roof` / `Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles.` | API/services/design.py:27-31; WEB/components/shell/vitals-view.ts:131-133 |
+| Vitals, no positions | `No module fits on this roof` / `Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles.` | API/services/design.py:28-32; WEB/components/shell/vitals-view.ts:131-133 |
 | Layout note (east-west) | `Unit gap <g> m keeps east-west units shade-free in the window.` | CORE/placement.py:276 |
 | Module note, Voc coefficient | `Voc coefficient <x> %/°C is outside the usual -0.35 to -0.20 %/°C for crystalline silicon. Check the datasheet and enter it if it differs.` (minus shown as a true minus) | CORE/onediode.py:25,107-108; WEB/components/studio/ModuleCard.tsx:78 |
 | Module note / layout refusal, no size | `<file> gives no size of the module (Width and Height). The layout needs it: choose a PAN file that has it.` | API/services/equipment.py:19-23 |
@@ -814,8 +809,7 @@ The engine lays the modules out from the roof, the array settings and the module
 | No 3D | `This browser cannot draw the roof in 3D.` / `The browser stopped drawing the roof in 3D.` | WEB/components/studio/stage-words.ts:4-5 |
 
 #### Known-stale (this area)
-- HELP/studio/section/edges-and-access.mdx:17 says the Albedo field's hint reads `0.20 concrete, 0.60 white membrane`. **In fact no hint is shown.** The hint is defined (WEB/lib/studio/roof-fields.ts:21), but RoofInspector does not pass it (RoofInspector.tsx:176) and NumberField has no hint prop (WEB/components/ui/NumberField.tsx:9-41). The `0 is no walkway` hint for **Every** (roof-fields.ts:18-19) is not shown either.
-- HELP/studio/section/spacing.mdx:20, and the in-app line (WEB/lib/studio/array-view.ts:18), say that on an east-west roof "the ridge runs along" the edge closest to the equator. **In fact the ridges run square to that edge**, pointing toward the equator, with the faces turned east and west of it. Units step across the frame's x axis; each ridge strip lies along the frame's y axis, the azimuth direction (CORE/placement.py:239-259,267).
+- None found at `cd3f0ae`.
 
 #### Facts we do not have (this area)
 - Mouse and trackpad mapping for orbit, pan and zoom (e.g. which button pans). The code uses drei `OrbitControls` defaults and sets only touch (CameraRig.tsx:25-26,125-140).
@@ -823,7 +817,6 @@ The engine lays the modules out from the roof, the array settings and the module
 - The exact layout values in pixels per size beyond those cited. The breakpoints are 640 / 1101 px (use-size.ts:9-10).
 
 #### Product issues noticed (this area)
-- **Sloped roof from Find gets the wrong defaults.** A design built on Find as **Sloped, flush** gets the engine defaults: parapet 0.9 m and pitch 0°, so modules lie flat (API/services/roof_map.py:34-41; CORE/geometry.py:100,106). Choosing Sloped in the Roof lens instead gives parapet 0 and pitch 10° (roof-type.ts:10). Re-building on Find for an existing design also keeps the old parapet and pitch (WEB/components/find/Find.tsx:248).
 - **Read-out lines echo your own value.** With the switch off, the Row pitch line `Shade-free would be <pitch> m` and the Azimuth line `The roof edge closest to the equator faces <bearing>` read `layout.pitch` and `layout.azimuth` (array-fields.ts:62; WEB/lib/studio/array-view.ts:28). Once the layout made with your own value comes back, those are the values the engine used, i.e. yours (CORE/placement.py:129,170-175,281-282), so the lines repeat your own number rather than the shade-free or edge value.
 - **An entered row pitch can be silently raised.** A pitch below table depth + 0.3 m is raised by the engine (placement.py:175), but the field still shows the number you typed (array-fields.ts:61-62).
 - **East-west designs always have a note.** Every east-west layout adds the Unit gap note, even when the gap is 0.00 m (placement.py:276). Layout notes count as notes to review (notes-view.ts:100), so an east-west design never shows `Nothing to review`.
@@ -889,7 +882,7 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 
 #### How shading is computed (engine)
 
-- Shading is worked out for every hour of the weather year, with the sun placed at the middle of each hour (pvlib solar position) (CORE/weather.py:325-327; CORE/project.py:281-290).
+- Shading is worked out for every hour of the weather year, with the sun placed at the middle of each hour (pvlib solar position) (CORE/weather.py:326-328; CORE/project.py:281-290).
 - Weather given at steps shorter than an hour is averaged to hours (CORE/csv_weather.py:109-115).
 - Note: this annual sun is not the Cooper solar-time model that the Sun lens draws (CORE/geometry.py:267-278).
 - **Row-to-row shading** is analytic: the edge of the row in front shades the table from its lower edge up (CORE/shading.py:4-6, 135-151).
@@ -928,7 +921,7 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 | **Kept clear** | m² (whole) | The layout's area left empty for shade | same | WEB/components/studio/SunShading.tsx:46; WEB/lib/studio/sun-figures.ts:33 |
 
 - Lines under the tiles say what is counted: `Of the <n> modules of option <L>` or `Of all <n> positions` (WEB/lib/studio/sun-figures.ts:43, 50).
-- The second line is the horizon note: `Far shading: PVGIS horizon, highest <x.x>°` or `Far shading: no horizon profile for this weather source` (CORE/readouts.py:246-249).
+- The second line is the horizon note: `Far shading: PVGIS horizon, highest <x.x>°`; `Far shading: not counted, PVGIS sent no horizon for this site` when PVGIS sent its weather without one; or `Far shading: no horizon profile for this weather source` for the others (CORE/readouts.py:246-251).
 - Near loss is a share of the light past the horizon. Far loss is a share of the light with no horizon (CORE/shade_summary.py:22-24, 51-53).
 
 ### Strings lens: location and system voltage
@@ -960,7 +953,7 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
   - Rating above the voltage: `This inverter takes up to <r> V. Raise it only if the site's code allows.` (or `module`), with **Use <next> V**.
   - No length fits and a higher voltage would fit one: `No string length fits under <v> V; at <w> V one does. Raise it only if the site's code allows.` (WEB/lib/studio/voltage-words.ts:58-75; WEB/components/studio/SystemVoltage.tsx:51-56).
 - **Missing ratings.** The inverter's rating is `VAbsMax`, else `VMPPMax`. The module's is `VMaxIEC`, else `VMaxUL`, else **1000 V assumed** (CORE/io/pvsyst.py:286, 209).
-- The DC cable in the bill of materials is named by the voltage set (HELP/studio/section/system-voltage.mdx:33; CORE/readouts.py:285-296).
+- The DC cable in the bill of materials is named by the voltage set (HELP/studio/section/system-voltage.mdx:33; CORE/readouts.py:287-298).
 
 ### Strings lens: inverter
 
@@ -972,7 +965,7 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 - The OND file's name under the card.
 - Skeletons show before a run.
 
-**Default inverter.** A design made from Find carries no OND (API/services/roof_map.py:43; CORE/project.py:40-43), so it uses the engine's bundled sample `wattpower-wp-330ktl-h1.OND` (CORE/project.py:142-147; CORE/resources.py:10). That file:
+**Default inverter.** A design made from Find carries no OND (API/services/roof_map.py:44; CORE/project.py:40-43), so it uses the engine's bundled sample `wattpower-wp-330ktl-h1.OND` (CORE/project.py:142-147; CORE/resources.py:10). That file:
 - Rates 275 kW, with MPPT 500–1500 V, VAbsMax 1500 V and VmppNom 1080 V.
 - Has 6 MPPT and 28 inputs.
 - Gives no IMaxMPPT, so the current comes from IMaxDC 390 A ÷ 6 = 65 A (CORE/samples/wattpower-wp-330ktl-h1.OND:28-46, 134-135; API/services/equipment.py:71-83).
@@ -1104,8 +1097,9 @@ Lengths below the nominal are never tried for the fill.
 - Without a current limit, the middle reads instead `The OND gives no current limit per MPPT: one string for each of its <n> inputs at most, <p> per MPPT, so one inverter takes <s> strings. Enter the datasheet value of the current per MPPT.`
 - Options that miss the target follow with an exclamation mark: `<L>: DC/AC <r>, <note>; …`.
 
-**Your own** (WEB/components/studio/StringOptions.tsx:114-197; WEB/lib/studio/custom-fields.ts:11-49):
-- **Add your own** opens **Series**, **Strings** and **Inverters** (`series × strings × inverters`). The fields start from the chosen option's numbers.
+**Your own** (WEB/components/studio/StringOptions.tsx:114-197; WEB/lib/studio/custom-fields.ts:11-50):
+- **Add your own** opens **Series**, **Strings** and **Inverters** (`series × strings × inverters`). The fields start from the design's own option, else the chosen option's numbers; with no option because the roof holds too few positions, at the length that fits × 1 × 1 (WEB/lib/studio/custom-fields.ts:17-23).
+- With no options because the roof holds too few positions, yet a string fits, **Add your own** stands under the engine's words in **Options**: the API names that length (`no_options.fits`), and the engine builds the option at it (WEB/lib/studio/strings-view.ts:52; WEB/components/studio/StringsInspector.tsx:123-126; API/schemas/design.py:236-240; API/services/design.py:236-251). When no length fits, or the roof holds no module, there is no **Add your own**.
 - Hints and ranges:
   - Series: `<min> to <max> fit`.
   - Strings: `<min(inverters, held)> to <held> of <n> fit`, or `No string of <n> fits on the roof`.
@@ -1122,7 +1116,7 @@ Lengths below the nominal are never tried for the fill.
 ### Strings lens: MPPT loading
 
 - **Distribution.** The chosen option's strings, sorted by azimuth, row and start, are split across inverters in contiguous blocks. Each inverter's strings are spread over its MPPTs as evenly as they go (CORE/stringing.py:211-227).
-- **Per MPPT values** (CORE/readouts.py:252-282):
+- **Per MPPT values** (CORE/readouts.py:254-284):
   - Imp = strings × module Imp.
   - Isc = strings × module Isc.
   - kWp = strings × series × module Pnom ÷ 1000.
@@ -1171,16 +1165,17 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 | `The sun is down` / `The sun was not fetched` / `The sun's day is on its way` | No sun tiles at the hour | none | WEB/components/studio/SunInspector.tsx:100 |
 | `The sun stays below the horizon all day` / `…above the horizon all day` | Polar day | none | WEB/components/studio/Time.tsx:153-157 |
 | `The shade map follows the design run` | Run not of the layout shown | ring | WEB/lib/scene/shade-map.ts:68 |
-| `Far shading: no horizon profile for this weather source` | Weather without a horizon (non-PVGIS) | none | CORE/readouts.py:247-248 |
-| `Choose a system voltage to size the strings` / `600, 1000 or 1500 V. Nothing is sized until you choose.` | Project without a voltage | n/a | CORE/readouts.py:19-20; API/services/design.py:33-35 |
+| `Far shading: not counted, PVGIS sent no horizon for this site` | PVGIS weather that came without its horizon | none | CORE/readouts.py:247-248 |
+| `Far shading: no horizon profile for this weather source` | Weather without a horizon (non-PVGIS) | none | CORE/readouts.py:249-250 |
+| `Choose a system voltage to size the strings` / `600, 1000 or 1500 V. Nothing is sized until you choose.` | Project without a voltage | n/a | CORE/readouts.py:19-20; API/services/design.py:34-36 |
 | `Sizing the strings for <v> V` | Waiting for the run of the voltage | ring | WEB/components/studio/SeriesRange.tsx:53-56 |
 | `Strings sized to <n> V, this inverter's/module's limit` (+ `Your system is set to <v> V. The bill of materials follows the voltage set.`) | User's voltage above an equipment rating | ! | WEB/lib/studio/voltage-words.ts:86-89 |
 | `This inverter/module takes up to <r> V. Raise it only if the site's code allows.` | Rating above the voltage | none (button) | WEB/lib/studio/voltage-words.ts:74 |
 | `No string length fits under <v> V; at <w> V one does. Raise it only if the site's code allows.` | No fit, a higher voltage fits | none (button) | WEB/lib/studio/voltage-words.ts:70 |
 | `No string length fits this inverter` / `No string length fits: at least <n> modules are needed for the <m> V MPPT minimum, but at most <k> fit under <L> V.` | Shortest > longest | ! | CORE/readouts.py:21, 62-63; CORE/stringing.py:68-70 |
-| `Change the system voltage, the inverter or the sizing temperatures` | Same; shown in **Options** | none | WEB/lib/studio/strings-view.ts:30 |
-| `Too few positions for a string` / `The roof holds <n> positions, and a string takes <a> to <b> modules. A string of <s> would fit: enter it as a custom option.` (or `No string of that length fits.`) | No candidate length forms a string | ! | API/services/design.py:227-241 |
-| `No module fits on this roof` / `Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles.` | Empty layout | ! | API/services/design.py:27-32 |
+| `Change the system voltage, the inverter or the sizing temperatures` | Same; shown in **Options** | none | WEB/lib/studio/strings-view.ts:31 |
+| `Too few positions for a string` / `The roof holds <n> positions, and a string takes <a> to <b> modules. A string of <s> would fit: add it as your own option.` (or `No string of that length fits.`) | No candidate length forms a string | ! | API/services/design.py:236-251 |
+| `No module fits on this roof` / `Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles.` | Empty layout | ! | API/services/design.py:28-33 |
 | `Over the current of an MPPT, or its limit not known: see the MPPT loading` | Option in target, MPPT not OK | ! | WEB/lib/studio/option-cards.ts:23 |
 | `Fits` / `Over the limit` / `Limit not known` | MPPT row | ✓ / ! / ! | WEB/lib/studio/mppt-table.ts:44-47 |
 | `Current per MPPT not in the OND` | No IMaxMPPT, no IMaxDC, nothing entered | ! | WEB/lib/studio/inverter-card.ts:28 |
@@ -1192,19 +1187,7 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 
 #### Known-stale (this area)
 
-- **HELP/studio/section/modules-in-series.mdx:27-29.** Under "When no length fits" it says "To try a length the run did not offer, add your own option."
-  - Truth: when no length fits, the engine builds no custom option (CORE/project.py:317).
-  - **Options** shows only `Change the system voltage, the inverter or the sizing temperatures`, with no **Add your own** (WEB/components/studio/StringsInspector.tsx:121-130; WEB/lib/studio/strings-view.ts:48-51).
-- **HELP/studio/section/system-voltage.mdx:21** says 600 V applies "In the United States and Canada".
-  - Truth: also Puerto Rico, Guam, the US Virgin Islands, American Samoa and the Northern Mariana Islands (WEB/lib/country/country.ts:9).
-- **HELP/studio/section/system-voltage.mdx:31** says the lens offers more "When the inverter takes more".
-  - Truth: the offer uses the lower of the inverter's and the module's ratings, and may name the module (WEB/lib/studio/voltage-words.ts:39-46, 74).
-- **HELP/studio/section/system-voltage.mdx:17 and HELP/studio/section/modules-in-series.mdx:18** say "the module's highest system voltage from its file".
-  - Truth: a PAN without VMaxIEC/VMaxUL is taken as 1000 V (CORE/io/pvsyst.py:209). An OND without VAbsMax uses VMPPMax (CORE/io/pvsyst.py:286).
-- **WEB/lib/studio/voltages.ts:1** comment "decision F7: never chosen for the user".
-  - Truth: replaced by D87. The app sets a new design's voltage from the visitor's country (WEB/lib/stores/project-store.ts:51-55).
-- **HELP/studio/section/on-the-roof.mdx:13-14** gives **Sun path**'s default but not **Shade-free window**'s.
-  - Truth: on by default (WEB/lib/stores/view-store.ts:115). This is an omission, not a contradiction.
+- None found at `cd3f0ae`.
 
 #### Facts we do not have (this area)
 
@@ -1217,13 +1200,12 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 
 #### Product issues noticed (this area)
 
-1. **Dead-end advice on too few positions.** The API message says `A string of <s> would fit: enter it as a custom option.` (API/services/design.py:231-235). In that state the Strings lens hides **Add your own** (WEB/components/studio/StringsInspector.tsx:124-130; WEB/lib/studio/strings-view.ts:47-51), so the user cannot follow it. The engine would build that custom option, because the range is OK (CORE/project.py:317).
-2. **Assumed module rating presented as the module's.** A PAN with no VMaxIEC/VMaxUL is treated as 1000 V (CORE/io/pvsyst.py:209). At 1500 V the lens would say `Strings sized to 1000 V, this module's limit`, though the file gives no limit (WEB/lib/studio/voltage-words.ts:85-88).
-3. **Voc coefficient default shown is not the one used.** The field says `<x> %/°C from the PAN file` (WEB/lib/studio/sizing-fields.ts:51). Without an entered value, cold Voc is the one-diode model's, not the PAN coefficient's (CORE/onediode.py:75-84; CORE/project.py:254-255).
-4. **Oversize OND refused in raw words.** An OND above 256,000 characters is refused by request validation (API/schemas/equipment.py:18-19). The message is the framework's field-length text, shown verbatim under `This inverter was not loaded` (API/errors.py:104-112, 139-141; WEB/components/studio/EquipmentPicker.tsx:75-78, 250-256).
-5. **MPPT colours repeat across inverters.** Colouring by MPPT uses the MPPT number within its inverter, so strings on INV-1 MPPT 1 and INV-2 MPPT 1 look identical, and the legend reads only `MPPT 1` (WEB/lib/stores/string-colours.ts:34-37; WEB/lib/scene/string-legend.ts:26, 41-42).
-6. **"fits" beside an exclamation mark.** A verdict that is not OK only because of DC/AC still has the title `<n> in series fits: …`, shown bold next to an exclamation mark (CORE/readouts.py:68-70; WEB/components/studio/SeriesRange.tsx:60-62).
-7. **The view's sun and the shading's sun differ.** The Sun lens and the shadow outlines use a Cooper-declination solar-time sun (CORE/geometry.py:267-278). The year's shading uses pvlib positions at each weather hour (CORE/weather.py:325-327). Small differences between what is drawn and what is counted are possible.
+1. **Assumed module rating presented as the module's.** A PAN with no VMaxIEC/VMaxUL is treated as 1000 V (CORE/io/pvsyst.py:209). At 1500 V the lens would say `Strings sized to 1000 V, this module's limit`, though the file gives no limit (WEB/lib/studio/voltage-words.ts:85-88).
+2. **Voc coefficient default shown is not the one used.** The field says `<x> %/°C from the PAN file` (WEB/lib/studio/sizing-fields.ts:51). Without an entered value, cold Voc is the one-diode model's, not the PAN coefficient's (CORE/onediode.py:75-84; CORE/project.py:254-255).
+3. **Oversize OND refused in raw words.** An OND above 256,000 characters is refused by request validation (API/schemas/equipment.py:18-19). The message is the framework's field-length text, shown verbatim under `This inverter was not loaded` (API/errors.py:104-112, 139-141; WEB/components/studio/EquipmentPicker.tsx:75-78, 250-256).
+4. **MPPT colours repeat across inverters.** Colouring by MPPT uses the MPPT number within its inverter, so strings on INV-1 MPPT 1 and INV-2 MPPT 1 look identical, and the legend reads only `MPPT 1` (WEB/lib/stores/string-colours.ts:34-37; WEB/lib/scene/string-legend.ts:26, 41-42).
+5. **"fits" beside an exclamation mark.** A verdict that is not OK only because of DC/AC still has the title `<n> in series fits: …`, shown bold next to an exclamation mark (CORE/readouts.py:68-70; WEB/components/studio/SeriesRange.tsx:60-62).
+6. **The view's sun and the shading's sun differ.** The Sun lens and the shadow outlines use a Cooper-declination solar-time sun (CORE/geometry.py:267-278). The year's shading uses pvlib positions at each weather hour (CORE/weather.py:326-328). Small differences between what is drawn and what is counted are possible.
 
 ## 5. Performance
 
@@ -1236,7 +1218,7 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 | Opening a design | The run starts at once, with no pause. | — | WEB/lib/flow/design-flow.ts:378-380 |
 | Edits that ask for no run | Choosing an option (the run's answer already holds every option) and renaming the design. Every other edit asks for a run. | — | WEB/lib/flow/edit-parts.ts:11-17, 36-42 |
 | Choosing an option | Shown at once from the run's answer, through the **Stringing option** segmented control on tablet and desktop, or the **Option** select on phone. | — | WEB/components/performance/OptionSwitch.tsx:25-37; WEB/components/performance/Performance.tsx:64-66 |
-| What a run needs | A roof outline, a module, and weather for the site. Without a system voltage the run stops after the shading: no options and no energy, and a card says what it waits for. | — | API/services/design.py:55-63; API/routers/design.py:24-25; API/services/design.py:213-224 |
+| What a run needs | A roof outline, a module, and weather for the site. Without a system voltage the run stops after the shading: no options and no energy, and a card says what it waits for. | — | API/services/design.py:56-63; API/routers/design.py:24-25; API/services/design.py:222-233 |
 | Weather that is missing | When the API refuses a run with `weather_not_loaded`, the app loads the weather of the design's source for its site, puts it into the design and runs again, once per edit. | — | WEB/lib/flow/design-flow.ts:50-53, 272-295, 318 |
 | Weather kept in the design | Weather is used again if its source matches and its lat/lon is within 0.001° of the roof's. Otherwise it is loaded again. | ° | CORE/project.py:200-217 |
 | Progress steps (engine words) | **Fitting modules on the roof** · **Loading {source label} weather** · **Computing hourly shading for every module** · **Applying the losses** · **Sizing strings and simulating the options** | — | CORE/progress.py:12-15, 28-30; CORE/project.py:268-309 |
@@ -1254,19 +1236,19 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 | Default source | `pvgis` | — | API/schemas/project.py:73; CORE/project.py:43 |
 | Where it is fetched for | The roof's lat/lon (the middle of its outline) | ° | WEB/components/performance/use-weather-load.ts:60; HELP/find/section/place.mdx:22 |
 | PVGIS | PVGIS API v5.3, `/tmy` (a typical meteorological year, hourly), with lat, lon and JSON output only. The horizon comes from `/printhorizon`. Columns: G(h), Gb(n), Gd(h), T2m, WS10m. Months are placed on one calendar year (2019). Request timeout 60 s. | — | CORE/weather.py:28, 135-139, 142-146, 149-159, 166-179 |
-| PVGIS horizon | If the horizon request fails, the weather loads with no horizon. | — | CORE/weather.py:173-176 |
-| NASA POWER | Hourly point data for the year 2023, community RE, UTC: ALLSKY_SFC_SW_DWN, ALLSKY_SFC_SW_DNI, ALLSKY_SFC_SW_DIFF, T2M, WS10M. Gaps are interpolated. No horizon. Timeout 120 s. Label "NASA POWER 2023". | — | CORE/weather.py:182-211 |
+| PVGIS horizon | If the horizon request fails, the weather loads with no horizon, and that weather is not kept in the API's cache, so the next load asks PVGIS again. The run then says so in the weather notes: "PVGIS sent no horizon for this site, so far shading is not counted.", shown under the run line in Performance and in the design's notes ("Weather · Performance"). | — | CORE/weather.py:173-179; API/services/design.py:64, 130-134; WEB/lib/performance/header.ts:59; WEB/components/shell/notes-view.ts:102 |
+| NASA POWER | Hourly point data for the year 2023, community RE, UTC: ALLSKY_SFC_SW_DWN, ALLSKY_SFC_SW_DNI, ALLSKY_SFC_SW_DIFF, T2M, WS10M. Gaps are interpolated. No horizon. Timeout 120 s. Label "NASA POWER 2023". | — | CORE/weather.py:183-212 |
 | Server cache | Downloads are kept in memory for 64 sites, keyed by lat/lon to 4 decimals. | sites | API/services/weather.py:12-21; CORE/weather.py:168 |
 | Choosing PVGIS or NASA | The select names the new source at once, with a turning ring. A line under the title reads **Loading {label} weather**. When the hours arrive, the design is edited once. A failure shows under the select, and the weather from before stays. | — | WEB/components/performance/use-weather-load.ts:51-70; WEB/lib/flow/weather-source.ts:35; WEB/components/performance/Performance.tsx:86-88 |
 | Choosing CSV | Opens the dialog **Load weather from a CSV**. The file is sent to `/weather` and its summary and notes are shown. Nothing changes until **Use this weather**. | — | WEB/components/performance/WeatherCsvDialog.tsx:37-123; WEB/lib/performance/weather-csv.ts:6-14 |
 | CSV size limit | 3,000,000 bytes (3 MB). The app refuses a larger file before sending it. The API caps `csv_text` at 3,000,000 characters. | bytes | WEB/lib/performance/weather-csv.ts:20-28; API/schemas/limits.py:7; API/schemas/weather.py:46 |
 | CSV file types accepted | `.csv`, `.CSV`, `.txt` | — | WEB/lib/performance/weather-csv.ts:12 |
-| CSV columns (names matched case-insensitively, trimmed) | time: `time`, `time(utc)`, `datetime`, `date`, `timestamp`, `date/time` · GHI: `ghi`, `g(h)`, `gh`, `global_horizontal`, `allsky_sfc_sw_dwn`, `irradiance` · DNI: `dni`, `gb(n)`, `bn`, `allsky_sfc_sw_dni` · DHI: `dhi`, `gd(h)`, `dh`, `diffuse`, `allsky_sfc_sw_diff` · air temperature: `temp_air`, `t2m`, `temp`, `temperature`, `tamb`, `t_amb`, `ambient_temp` · wind: `wind_speed`, `ws10m`, `wind`, `ws`. Time and GHI are required. | — | CORE/weather.py:214-221, 234-240, 269-279 |
-| CSV format | The separator is detected. Lines beginning with `#` are skipped. Times are read as `YYYYMMDD:HHMM`, or failing that any common date-time. Times are UTC (no offset from the API). Each row's time is the start of its hour. | — | CORE/weather.py:229-231, 243-249; CORE/csv_weather.py:29-40; API/services/weather.py:59 |
+| CSV columns (names matched case-insensitively, trimmed) | time: `time`, `time(utc)`, `datetime`, `date`, `timestamp`, `date/time` · GHI: `ghi`, `g(h)`, `gh`, `global_horizontal`, `allsky_sfc_sw_dwn`, `irradiance` · DNI: `dni`, `gb(n)`, `bn`, `allsky_sfc_sw_dni` · DHI: `dhi`, `gd(h)`, `dh`, `diffuse`, `allsky_sfc_sw_diff` · air temperature: `temp_air`, `t2m`, `temp`, `temperature`, `tamb`, `t_amb`, `ambient_temp` · wind: `wind_speed`, `ws10m`, `wind`, `ws`. Time and GHI are required. | — | CORE/weather.py:215-222, 234-240, 269-279 |
+| CSV format | The separator is detected. Lines beginning with `#` are skipped. Times are read as `YYYYMMDD:HHMM`, or failing that any common date-time. Times are UTC (no offset from the API). Each row's time is the start of its hour. | — | CORE/weather.py:230-232, 243-249; CORE/csv_weather.py:29-40; API/services/weather.py:59 |
 | CSV units | Irradiance W/m², air °C, wind m/s | — | API/schemas/weather.py:17 |
-| CSV time step | Hourly or finer. Rows under an hour apart are averaged into the hour they begin in, with a note. | — | CORE/weather.py:260-261, 290-294; CORE/csv_weather.py:108-114 |
-| CSV without DNI or DHI | Both are worked out from GHI with the Erbs model, with a note. | — | CORE/weather.py:295-300; CORE/csv_weather.py:94-98 |
-| CSV without temperature or wind | 25 °C or 1 m/s is taken for every hour, with a note. | °C, m/s | CORE/weather.py:282-283; CORE/csv_weather.py:101-107 |
+| CSV time step | Hourly or finer. Rows under an hour apart are averaged into the hour they begin in, with a note. | — | CORE/weather.py:261-262, 290-294; CORE/csv_weather.py:108-114 |
+| CSV without DNI or DHI | Both are worked out from GHI with the Erbs model, with a note. | — | CORE/weather.py:296-301; CORE/csv_weather.py:94-98 |
+| CSV without temperature or wind | 25 °C or 1 m/s is taken for every hour, with a note. | °C, m/s | CORE/weather.py:283-284; CORE/csv_weather.py:101-107 |
 | CSV length | 8,760 or 8,784 hours expected. Any other count is accepted, with a note. The API allows at most 8,784 values per series. | hours | CORE/csv_weather.py:20, 115-119; API/schemas/weather.py:13 |
 | What the user sees about the source | The run line: "{n} modules in series × {s} strings on {k} inverter(s) · {hours} hours of {PVGIS / NASA POWER / CSV} weather, {tmin} to {tmax} °C, horizon up to {x}°" (or "no horizon"). Before options it starts "{positions} positions ready". The select shows the source name, or the CSV's file name. The CSV notes stand under the run line. The Summary row **Weather** reads "{label} · GHI {x} kWh/m² · in-plane {y} kWh/m²". | — | WEB/lib/performance/header.ts:34-44, 51, 58-59; WEB/lib/flow/weather-source.ts:24-27; WEB/components/performance/PerformanceHeader.tsx:38-47; CORE/export/summary.py:47-50 |
 | CSV dialog summary after reading | "{hours} hours · GHI {x} kWh/m²" / "beam {x} · diffuse {y} kWh/m²" / "{tmin} to {tmax} °C" | — | WEB/lib/performance/weather-csv.ts:31-37 |
@@ -1275,7 +1257,7 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 
 The simulation is hourly over every hour of the weather. Its order follows PVsyst's loss diagram (CORE/simulation.py:1-9). Each step is a row of the chain, in this order (CORE/simulation.py:381-409):
 
-- **Sun position.** The sun is placed at the middle of each hour (CORE/weather.py:325-327).
+- **Sun position.** The sun is placed at the middle of each hour (CORE/weather.py:326-328).
 - **Transposition.** The Perez model, with the roof's albedo, extraterrestrial DNI and relative airmass (CORE/simulation.py:99-101).
 - **Far shading.** The beam is zero in hours when the sun is above 0° but below the PVGIS horizon line (CORE/shading.py:245-249; CORE/simulation.py:218, 240). The diffuse light the horizon hides is counted in the sky loss, which lands in the near-shading row (CORE/geometry.py:315-341; CORE/simulation.py:234, 251).
 - **Near shading, linear.** Row-to-row shading is analytic, from the profile angle. The shadows of obstacles and the parapet are projected at each module's mid-height, with sun positions binned to 1° of elevation and 2.5° of azimuth. The sky diffuse each module sees is reduced by the obstacles, the horizon and the row in front (Passias masking) (CORE/shading.py:2-13, 38, 225-243).
@@ -1336,7 +1318,7 @@ The figures are those of the chosen option (WEB/lib/performance/page-view.ts:46-
 | **Energy to grid by month** | Tabs **Chart** and **Table**, unit "MWh". 12 bars from zero, with only the highest and lowest labelled. Tooltip "{mwh} MWh · {kWh/kWp} kWh/kWp" with the month. Table columns **Month**, **MWh**, **kWh/kWp**, with a last row **Year** | MWh 1 decimal. kWh/kWp whole | WEB/components/performance/MonthlyChart.tsx:20, 94, 158; WEB/components/performance/chart-card.ts:14-16; WEB/lib/performance/month-bars.ts:9, 37-72; CORE/simulation.py:413 |
 | **25 years** | A line of all 25 years, scaled to the run's own range rather than to zero. Years 1, 5, 10, 15, 20, 25 labelled. The table shows those six years and "Total, 25 years" | MWh 1 decimal (years), whole (total) | WEB/components/performance/YearsChart.tsx:27, 174; WEB/lib/performance/year-line.ts:33, 40-75 |
 | **Summary** (table **Item** / **Value**) | Rows in order: **Site**, **Roof**, **Structure**, **Module**, **Inverter**, **Stringing**, **DC capacity**, **AC capacity**, **Weather**, **Losses** ("Clipping {x} % · LID {y} % · uncertainty σ {z} %"), **Energy, year 1** ("P50 {x} MWh · P75 … · P90 …"), **Specific yield** ("{x} kWh/kWp · PR {y} % · CUF {z} % AC"), **Module area**, **CO₂ avoided** ("{x} t/yr at {f} t/MWh") | As in each row | WEB/components/performance/SummaryTable.tsx:19-22; WEB/lib/performance/summary.ts:32-35; CORE/export/summary.py:34-58; CORE/readouts.py:24, 304-313 |
-| Clipping % (Summary) | 1 − clipped output / inverter output | %, 1 decimal | CORE/simulation.py:422; CORE/readouts.py:309 |
+| Clipping % (Summary) | 1 − clipped output / inverter output | %, 1 decimal | CORE/simulation.py:422; CORE/readouts.py:311 |
 
 ### Performance: the demo's figures
 
@@ -1365,8 +1347,8 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 | Server fault | "The server could not finish this request. Try again; if it fails again, report it." | API/errors.py:28 |
 | App fault | "Something went wrong in the app: {what}. Try again; if it fails again, report it." | WEB/lib/flow/design-flow.ts:56-63; WEB/components/performance/use-weather-load.ts:20-24 |
 | No voltage | **Choose a system voltage to size the strings** / "600, 1000 or 1500 V. Nothing is sized until you choose." | CORE/readouts.py:19-20 |
-| No positions | **No module fits on this roof** / "Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles." | API/services/design.py:27-32 |
-| Too few positions | **Too few positions for a string** / "The roof holds {n} positions, and a string takes {min} to {max} modules. A string of {k} would fit: enter it as a custom option." (or "No string of that length fits.") | API/services/design.py:227-241 |
+| No positions | **No module fits on this roof** / "Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles." | API/services/design.py:28-33 |
+| Too few positions | **Too few positions for a string** / "The roof holds {n} positions, and a string takes {min} to {max} modules. A string of {k} would fit: add it as your own option." (or "No string of that length fits.") | API/services/design.py:236-251 |
 | No-options button | **Open the Strings lens** | WEB/components/shell/NoOptionsCard.tsx:34 |
 | Weather loading | **Loading {PVGIS TMY / NASA POWER 2023} weather** · **Reading {file name}** | WEB/lib/flow/weather-source.ts:35, 38-41 |
 | Weather failed (under the select) | **The weather was not loaded**, followed by the API's message | WEB/components/performance/WeatherSelect.tsx:19, 47-61 |
@@ -1381,7 +1363,7 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 | CSV too large | "This file is over 3 MB, more than a year of weather takes. Choose a file of hourly values." | WEB/lib/performance/weather-csv.ts:23 |
 | CSV browser failure | "The file could not be read ({error}). Choose another." | WEB/components/performance/WeatherCsvDialog.tsx:26-29 |
 | CSV empty | "Choose a CSV weather file." | CORE/csv_weather.py:35-36 |
-| CSV missing column | "{file}: no column named any of {names, comma-separated}" | CORE/weather.py:269-273 |
+| CSV missing column | "{file}: no column named any of {names, comma-separated}" | CORE/weather.py:270-274 |
 | CSV not a table | "{file} cannot be read as a table of hours: {reason}." | CORE/csv_weather.py:43-47 |
 | CSV no rows | "{file} has no hours: below its header there is no row." | CORE/csv_weather.py:57-58 |
 | CSV bad times | "{file}: the time cannot be read in {n} rows, the first of them row {r} ({value}). Write it as 2023-06-01 13:00, in UTC." | CORE/csv_weather.py:60-67 |
@@ -1395,7 +1377,7 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 #### Known-stale (this area)
 - **Demo options D and E.** `plan/reference/demo-numbers.md:50-51` lists options D and E as 26 x 27 x 2 and 28 x 25 x 2. The test asserts 28x28x2 and 29x27x2 (apps/api/tests/engine/test_demo_numbers.py:11). Use the test's figures.
 - **CSV notes comment.** The comment at WEB/lib/performance/header.ts:25 names three CSV notes (no beam and diffuse, no temperature, no wind). The engine also writes notes about the time step and about the hour count, five in all (CORE/csv_weather.py:92-120).
-- **Weather route docstring.** API/routers/weather.py:14 says "A year of hourly weather". A CSV may be finer than hourly (it is averaged into hours) and need not be a year (CORE/weather.py:290-294; CORE/csv_weather.py:115-119).
+- **Weather route docstring.** API/routers/weather.py:14 says "A year of hourly weather". A CSV may be finer than hourly (it is averaged into hours) and need not be a year (CORE/weather.py:291-295; CORE/csv_weather.py:115-119).
 - **Mockup figures.** The figures in the mockups (docs/design/README.md:128-129: soiling 3 %, degradation 0.7, Uc 25, levels P50 · P90 · P99, NASA POWER) are variants drawn for the boards. They are not the shipped defaults (2.0 %, 0.5 %/yr, Uc by roof type, P50/P75/P90, PVGIS; CORE/simulation.py:37-53).
 
 #### Facts we do not have (this area)
@@ -1406,12 +1388,11 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 - **Request timeouts in the web client.** Not examined.
 
 #### Product issues noticed (this area)
-- **Blank irradiance cells.** In a CSV, blank or non-numeric GHI cells become 0 W/m² and negative values become 0. Blank DNI or DHI cells (when the columns exist) become 0. Gaps in temperature are interpolated. None of this is refused or noted, although CORE/csv_weather.py:3-5 says such faults are refused (CORE/weather.py:277, 288-289, 302).
-- **Silent horizon failure.** If PVGIS's horizon request fails, the weather loads with no horizon and no message, so far shading becomes nothing (CORE/weather.py:173-176). The select still promises "PVGIS horizon" (WEB/lib/flow/weather-source.ts:18).
+- **Blank irradiance cells.** In a CSV, blank or non-numeric GHI cells become 0 W/m² and negative values become 0. Blank DNI or DHI cells (when the columns exist) become 0. Gaps in temperature are interpolated. None of this is refused or noted, although CORE/csv_weather.py:3-5 says such faults are refused (CORE/weather.py:278, 288-289, 302).
 - **Rear-gain switch on sloped flush roofs.** The **Bifacial rear gain** switch stays enabled on a Sloped, flush roof with a bifacial module, but the engine applies no rear gain there and nothing says why (CORE/simulation.py:107; WEB/lib/performance/loss-fields.ts:79-82).
 - **Horizon diffuse in the wrong row.** The diffuse light the horizon hides is booked in **Near shading, linear**. **Far shading, horizon** counts only the beam (CORE/geometry.py:315-341; CORE/simulation.py:249-251).
 - **Engine column names in the CSV gap message.** The message uses `temp_air`, `wind_speed`, `dni` or `dhi`, not the user's column name. "Row {r}" counts data rows below the header, not lines of the file (CORE/csv_weather.py:80-88).
-- **"Hourly" in the copy.** The CSV copy says "hourly" (WEB/lib/performance/weather-csv.ts:8, 10, 23; WEB/lib/flow/weather-source.ts:20), but the engine also accepts sub-hourly rows and averages them (CORE/weather.py:290-294).
+- **"Hourly" in the copy.** The CSV copy says "hourly" (WEB/lib/performance/weather-csv.ts:8, 10, 23; WEB/lib/flow/weather-source.ts:20), but the engine also accepts sub-hourly rows and averages them (CORE/weather.py:291-295).
 - **CSVs shorter than a year.** A CSV that is not a full year is accepted with only a note. "Energy to grid, year 1", PR, the P-values and the 25-year figures are then computed from just those hours (CORE/csv_weather.py:115-119; CORE/simulation.py:379-447).
 
 ## 6. Handover and the project file
