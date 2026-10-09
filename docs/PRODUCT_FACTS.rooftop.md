@@ -5,7 +5,7 @@ pages** (`/docs/rooftop`). If a number, label or behaviour is not here, do not
 state it on a page. Every value was read from the product's code in the
 `rooftop-design-app` repository and carries a `file:line` citation.
 
-**Verified against `main` at `cd3f0ae` on 2026-10-09** (written at `75591f2` the same day, re-verified after #172 to #178). Where the app's own
+**Verified against `main` at `960c4b1` on 2026-10-09** (written at `75591f2` the same day, re-verified after #172 to #178 and after #180 to #185). Where the app's own
 in-app help, a code comment or a design document says something the code
 contradicts, it is listed under the area's *Known-stale* heading and must not
 be repeated. Product defects noticed while reading are listed under *Product
@@ -163,9 +163,9 @@ Moving between areas:
 | Everywhere else | 1000 V | WEB/lib/country/country.ts:27-29 |
 | When it is applied | When a design without a voltage is opened (new, imported, opened from a file): set to the country's voltage and marked "set by the app" | WEB/lib/stores/project-store.ts:50-55,65-67; WEB/components/shell/stores.tsx:52 |
 | Choices | 600, 1000, 1500 V | WEB/lib/studio/voltages.ts:4-5 |
-| What the user sees beside the heading (Strings lens) | "Set for <country>" (e.g. "Set for the United States", "Set for India"); "Set by the app" if the app's value is not the current country's; "Your choice" once the user chooses | WEB/lib/studio/voltage-words.ts:77-84; WEB/lib/country/country.ts:11-12,31-34 |
-| Line under the choice (app-set) | 600 V: "600 V, the limit for homes in <the United States (NEC 690.7) / Canada (CE Code, Section 64)>. Change it if the site allows more."; 1000 V: "1000 V, the usual limit for rooftops in <country>. Change it if the site needs another." | WEB/lib/studio/voltage-words.ts:48-56 |
-| Never moved, never raised | Equipment rated lower: strings sized to the rating ("Strings sized to <n> V, this <inverter/module>'s limit."); a higher voltage is only offered ("… Raise it only if the site's code allows.") | WEB/lib/studio/voltage-words.ts:1-3,64-91; plan/README.md:125 (D88) |
+| What the user sees beside the heading (Strings lens) | "Set for <country>" (e.g. "Set for the United States", "Set for India"); "Set by the app" if the app's value is not the current country's; "Your choice" once the user chooses | WEB/lib/studio/voltage-words.ts:79-86; WEB/lib/country/country.ts:11-12,31-34 |
+| Line under the choice (app-set) | 600 V: "600 V, the limit for homes in <the United States (NEC 690.7) / Canada (CE Code, Section 64)>. Change it if the site allows more."; 1000 V: "1000 V, the usual limit for rooftops in <country>. Change it if the site needs another." | WEB/lib/studio/voltage-words.ts:49-57 |
+| Never moved, never raised | Equipment rated lower: strings sized to the rating ("Strings sized to <n> V, this <inverter/module>'s limit."); a higher voltage is only offered ("… Raise it only if the site's code allows.") | WEB/lib/studio/voltage-words.ts:1-3,65-97; plan/README.md:125 (D88) |
 | The demo | 1500 V, marked the user's choice (so it shows "Your choice") | CORE/demo.py:50-51 |
 
 ### In-app help
@@ -577,9 +577,9 @@ The **Roof type** section is a segmented control labelled **Tilted rows** / **Ea
 
 | Type (full name / short) | Caption | What it changes | Source |
 |---|---|---|---|
-| **Flat, tilted rows** / **Tilted rows** | "Rows facing the equator" | Rows of tables at the array **Tilt**. Row pitch is shade-free unless you set it. The walkway comes every N **modules** along a row. The edge field **Every** has unit `mod` | WEB/lib/geometry/roof-types.ts:7; CORE/placement.py:162-176; WEB/lib/studio/roof-fields.ts:28 |
-| **Flat, east-west** / **East-west** | "Back-to-back, low tilt" | Back-to-back units: one side faces az+90°, the other az−90°, each one module (width up the slope). Units sit with no gap unless the window needs one. The walkway comes every N **units**. The edge field **Every** has unit `rows` | WEB/lib/geometry/roof-types.ts:8; CORE/placement.py:222-276 |
-| **Sloped, flush** / **Sloped** | "Modules follow the roof pitch" | Modules lie on the roof at the roof's **Pitch**, facing **Faces** unless the array has its own azimuth. Rows follow each other separated only by the module gap. Lower edge sits 0.1 m above the roof. Adds **Pitch** and **Faces** to Edges and access. GCR is reported as 1.0 | WEB/lib/geometry/roof-types.ts:9; CORE/placement.py:130-131,149,177-179,219; WEB/lib/studio/roof-fields.ts:30; API/schemas/array.py:26 |
+| **Flat, tilted rows** / **Tilted rows** | "Rows facing the equator" | Rows of tables at the array **Tilt**. Row pitch is shade-free unless you set it. The walkway comes every N **modules** along a row. The edge field **Every** has unit `mod` | WEB/lib/geometry/roof-types.ts:7; CORE/placement.py:164-184; WEB/lib/studio/roof-fields.ts:28 |
+| **Flat, east-west** / **East-west** | "Back-to-back, low tilt" | Back-to-back units: one side faces az+90°, the other az−90°, each one module (width up the slope). Units sit with no gap unless the window needs one. The walkway comes every N **units**. The edge field **Every** has unit `rows` | WEB/lib/geometry/roof-types.ts:8; CORE/placement.py:230-284 |
+| **Sloped, flush** / **Sloped** | "Modules follow the roof pitch" | Modules lie on the roof at the roof's **Pitch**, facing **Faces**, always: lying on the roof, they can face nowhere else (an array azimuth kept from a flat roof is not used). Rows follow each other separated only by the module gap. Lower edge sits 0.1 m above the roof. Adds **Pitch** and **Faces** to Edges and access. GCR is reported as 1.0 | WEB/lib/geometry/roof-types.ts:9; CORE/placement.py:130-131,151,185-187,227; WEB/lib/studio/roof-fields.ts:30; API/schemas/array.py:26 |
 
 - **Choosing Sloped in the Roof lens** sets the parapet to 0 and, if the pitch was 0, sets it to 10° (WEB/lib/geometry/roof-type-rule.ts:5-10).
 - **Choosing any other type** changes only the type (roof-type-rule.ts:9).
@@ -638,7 +638,22 @@ What each one does in the engine:
 
 Other sections in this lens:
 - When an imported drawing had obstacles without heights, a note shows under the card: `These obstacles have no height in the file and were set to 1.0 m.`, then `<n> to review` and a **Review** button (RoofInspector.tsx:102-117; WEB/lib/studio/review-heights.ts:7,12).
-- The **Obstacles · <n>** panel follows (WEB/components/studio/ObstaclePanel.tsx:327-329). It is not covered here.
+- The **Obstacles · <n>** panel follows, with **Add** (WEB/components/studio/ObstaclePanel.tsx:327-330). With none: "None yet. Add a box, a tank, a wall, a tree or a building." (ObstaclePanel.tsx:351). With a parapet above 0, a row "Parapet, all edges" with its height (ObstaclePanel.tsx:383-389).
+
+**Obstacles in the Roof lens** (checked at `960c4b1`):
+
+| Item | Value | Source |
+|---|---|---|
+| **Add** menu | **Box** (`2.0 × 2.0 m`), **Tank** (`⌀ 2.0 m`), **Wall** (`6.0 m, points`), **Tree** (`crown ⌀ 4.0 m`), **Building** (`beside the roof, points`) | WEB/lib/geometry/obstacle-fields.ts:43-61, 135-166 |
+| A new one | Starts at the middle of the roof; a press on the roof moves it there; it is added when its **Height** is committed; **Remove** drops it | ObstaclePanel.tsx:294-305, 332-349; WEB/components/scene/Scene.tsx:50, 148-150 |
+| Name | "<Kind> <n>", editable in the card's head | obstacle-fields.ts:136, 152; ObstaclePanel.tsx:62-87 |
+| Fields by kind | Box: **Length**, **Width**, **Height**, **Rotation**, **East**, **North**. Tank: **Diameter**, **Height**, East, North. Tree: **Crown ⌀**, **Height**, **Crown starts at**, East, North. Wall: **Height**, **Thickness**, and its points. Building: **Height**, and its points | obstacle-fields.ts:22-40, 121-129 |
+| Ranges | Length, Width 0.1–500 m; Height 0.05–200 m; Rotation −180 to 180° (counter-clockwise); East, North −5000 to 5000 m; Diameter 0.1–100 m; Crown starts at 0–100 m; Thickness 0.05–5 m | obstacle-fields.ts:22-40; CORE/geometry.py:41 |
+| Points | A table with **Add a point** and a bin per point, which stops at 2 for a wall and 3 for a building | ObstaclePanel.tsx:92-118; obstacle-fields.ts:64 |
+| On the roof | A box, tank or tree is dragged; a wall or building is moved by its points in the list. A box corner resizes it with the opposite corner held; the turn handle snaps to a right angle within 3°; a handle on a stem sets the height; an edge handle sets a tank's or crown's diameter. Drags move in steps of 0.1 m | WEB/lib/geometry/obstacles.ts:100, 111; WEB/lib/scene/handles.ts:1-3, 29-58, 61-68; WEB/lib/stores/drag.ts:12 |
+| Trees | The footprint is the crown. The shadow comes from a 0.15 m trunk up to **Crown starts at**, then the crown up to **Height** | CORE/geometry.py:43-46, 56-57, 65-68 |
+| Heights to review (after an import) | The row reads "Height to review"; the card's hint "Enter the real height. The file gave none; 1.0 m stands until you do", with **Next** | ObstaclePanel.tsx:191-206, 366-374; WEB/lib/studio/review-heights.ts:10 |
+| Section order | Roof lens: Location, the review note, Roof type, Edges and access, Obstacles. Array lens: Module, Mounting, Spacing (with the window). Strings lens: Inverter, System voltage, Modules in series, Options (with Your own and the note), MPPT loading, then **Sizing temperatures** and **Inverter limits and cabling** | WEB/components/studio/RoofInspector.tsx:148-189; ArrayInspector.tsx:54-73; StringsInspector.tsx:104-149 |
 
 ### Array lens: module
 
@@ -732,7 +747,7 @@ Section **Mounting** (WEB/components/studio/ArrayMounting.tsx:62-68). Fields by 
 - How the engine works it out:
   - It takes the lowest sun profile angle in the window, with the sun in front of the rows, checked every 15 min and never below 1°. Pitch = L·(cos β + sin β / tan ψ) (placement.py:108-123; CORE/geometry.py:281).
   - It rounds up to the next 5 cm (placement.py:174).
-  - It never lets the pitch fall below the table's depth on plan + 0.3 m. This floor also applies to a pitch you enter (placement.py:175).
+  - It never lets the pitch fall below the table's depth on plan + 0.3 m. This floor also applies to a pitch you enter: one under it is raised, and the layout carries the note `Row pitch <p> m is under a table's depth on plan plus 0.3 m, so <q> m is used.`, shown in the notes to review at the Array lens (CORE/placement.py:177-183; WEB/components/shell/notes-view.ts:100).
 - With the switch off, the line under it reads `Shade-free would be <pitch> m` (array-fields.ts:62).
 
 **Azimuth**:
@@ -776,14 +791,14 @@ The engine lays the modules out from the roof, the array settings and the module
    - Tables: on tilted and sloped roofs, unbroken runs of adjacent columns in a row. On east-west roofs, groups of 10 positions along a unit.
    - Rows: rows (or units) with at least one module.
    - GCR: L/pitch for tilted rows; 1.0 for sloped; 2L/(unit + gap) for east-west.
-   - Source: CORE/placement.py:218-221,272-275,307-319.
+   - Source: CORE/placement.py:226-229,280-283,315-327.
 6. **Kept-clear areas, by cause.** The parapet and each obstacle get their own kept-clear area. Each records how many positions it keeps clear, counted from the same layout with shaded positions allowed (CORE/keepout_parts.py:37-66). Callout: `Kept clear · <n> positions` (`Shaded in the window · …` when allowed) / `<obstacle or "The parapet"> shades this area between <hh:mm> and <hh:mm>` (WEB/lib/geometry/keepout.ts:24-36).
 7. **Limits.**
    - There is no cap on the number of modules.
    - The outline must have area and must not cross itself (layouts.py:30-35).
    - Outlines over 30,000 m² are refused (CORE/geometry.py:29,156-164; API/convert.py:43).
    - The module must have a size (layouts.py:44-45).
-   - A roof with no positions yields `No module fits on this roof` (API/services/design.py:28-32,226-227).
+   - A roof with no positions yields `No module fits on this roof` (API/services/design.py:28-32,228-229).
 
 ### Studio (Roof, Array): messages
 
@@ -796,11 +811,11 @@ The engine lays the modules out from the roof, the array settings and the module
 | API, outline crosses itself | `The roof outline crosses itself. Give the corners in order around the roof.` | API/services/layouts.py:15 |
 | API, roof too large | `This outline covers <area> m². SolarLayout designs one roof at a time, up to 30,000 m² (about 3 MWp). For a larger site, outline each building as its own design.` | CORE/errors.py:47-49 |
 | Vitals, no positions | `No module fits on this roof` / `Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles.` | API/services/design.py:28-32; WEB/components/shell/vitals-view.ts:131-133 |
-| Layout note (east-west) | `Unit gap <g> m keeps east-west units shade-free in the window.` | CORE/placement.py:276 |
-| Module note, Voc coefficient | `Voc coefficient <x> %/°C is outside the usual -0.35 to -0.20 %/°C for crystalline silicon. Check the datasheet and enter it if it differs.` (minus shown as a true minus) | CORE/onediode.py:25,107-108; WEB/components/studio/ModuleCard.tsx:78 |
+| Layout note (east-west) | `Unit gap <g> m keeps east-west units shade-free in the window.` | CORE/placement.py:284 |
+| Module note, Voc coefficient | `Voc coefficient <x> %/°C is outside the usual -0.35 to -0.20 %/°C for crystalline silicon. Check the datasheet and enter it if it differs.` (minus shown as a true minus) | CORE/onediode.py:25,116-117; WEB/components/studio/ModuleCard.tsx:78 |
 | Module note / layout refusal, no size | `<file> gives no size of the module (Width and Height). The layout needs it: choose a PAN file that has it.` | API/services/equipment.py:19-23 |
 | Picker, file refused | **This module was not loaded** / `<reason>. The module of before is kept.` | WEB/components/studio/EquipmentPicker.tsx:249-258 |
-| Refusal reason, not a PAN | `<file>: not a PVsyst module file (PNom, Voc or Isc missing)` | CORE/io/pvsyst.py:216 |
+| Refusal reason, not a PAN | `<file>: not a PVsyst module file (PNom, Voc or Isc missing)` | CORE/io/pvsyst.py:218 |
 | Refusal reason, bad base64 | `The content of <file> is not valid base64.` | API/services/uploads.py:18 |
 | Refusal reason, library file | `<file> could not be loaded from the app's library (HTTP <n>). Try again.` | WEB/lib/equipment/library-file.ts:20 |
 | Picker, catalog | `Loading the library`; on failure `The equipment catalog could not be loaded (HTTP <n>). Try again.` with **Try again** | WEB/components/studio/EquipmentPicker.tsx:356-374; WEB/lib/equipment/catalog.ts:87 |
@@ -818,10 +833,8 @@ The engine lays the modules out from the roof, the array settings and the module
 - The exact layout values in pixels per size beyond those cited. The breakpoints are 640 / 1101 px (use-size.ts:9-10).
 
 #### Product issues noticed (this area)
-- **Read-out lines echo your own value.** With the switch off, the Row pitch line `Shade-free would be <pitch> m` and the Azimuth line `The roof edge closest to the equator faces <bearing>` read `layout.pitch` and `layout.azimuth` (array-fields.ts:62; WEB/lib/studio/array-view.ts:28). Once the layout made with your own value comes back, those are the values the engine used, i.e. yours (CORE/placement.py:129,170-175,281-282), so the lines repeat your own number rather than the shade-free or edge value.
-- **An entered row pitch can be silently raised.** A pitch below table depth + 0.3 m is raised by the engine (placement.py:175), but the field still shows the number you typed (array-fields.ts:61-62).
+- **Read-out lines echo your own value.** With the switch off, the Row pitch line `Shade-free would be <pitch> m` and the Azimuth line `The roof edge closest to the equator faces <bearing>` read `layout.pitch` and `layout.azimuth` (array-fields.ts:62; WEB/lib/studio/array-view.ts:28). Once the layout made with your own value comes back, those are the values the engine used, i.e. yours (CORE/placement.py:129,172-183,289-290), so the lines repeat your own number rather than the shade-free or edge value.
 - **East-west designs always have a note.** Every east-west layout adds the Unit gap note, even when the gap is 0.00 m (placement.py:276). Layout notes count as notes to review (notes-view.ts:100), so an east-west design never shows `Nothing to review`.
-- **A hidden azimuth carries into Sloped.** An array azimuth set while the roof was flat carries over when the roof becomes Sloped. The Sloped Array lens has no Spacing section to clear it (array-fields.ts:46), yet placement uses it in place of **Faces** (placement.py:130-131). The Tilt read-out still says `facing <Faces>` (array-view.ts:35).
 - **No-positions link goes to the wrong lens.** The `No module fits on this roof` vitals cell links to the Strings lens (vitals-view.ts:133), though the fix (outline, setback, obstacles) is in the Roof lens.
 
 ## 4. The Sun and Strings lenses
@@ -884,7 +897,7 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 #### How shading is computed (engine)
 
 - Shading is worked out for every hour of the weather year, with the sun placed at the middle of each hour (pvlib solar position) (CORE/weather.py:326-328; CORE/project.py:281-290).
-- Weather given at steps shorter than an hour is averaged to hours (CORE/csv_weather.py:109-115).
+- Weather given at steps shorter than an hour is averaged to hours (CORE/weather.py:291-295; CORE/csv_weather.py:145-150).
 - Note: this annual sun is not the Cooper solar-time model that the Sun lens draws (CORE/geometry.py:267-278).
 - **Row-to-row shading** is analytic: the edge of the row in front shades the table from its lower edge up (CORE/shading.py:4-6, 135-151).
 - **Obstacle and parapet shadows** are projected at each module's mid height and intersected with its footprint. Sun positions are binned to 1° of elevation and 2.5° of azimuth (CORE/shading.py:7-9, 38, 160-222).
@@ -922,7 +935,7 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 | **Kept clear** | m² (whole) | The layout's area left empty for shade | same | WEB/components/studio/SunShading.tsx:46; WEB/lib/studio/sun-figures.ts:33 |
 
 - Lines under the tiles say what is counted: `Of the <n> modules of option <L>` or `Of all <n> positions` (WEB/lib/studio/sun-figures.ts:43, 50).
-- The second line is the horizon note: `Far shading: PVGIS horizon, highest <x.x>°`; `Far shading: not counted, PVGIS sent no horizon for this site` when PVGIS sent its weather without one; or `Far shading: no horizon profile for this weather source` for the others (CORE/readouts.py:246-251).
+- The second line is the horizon note: `Far shading: PVGIS horizon, highest <x.x>°`; `Far shading: not counted, PVGIS sent no horizon for this site` when PVGIS sent its weather without one; or `Far shading: no horizon profile for this weather source` for the others (CORE/readouts.py:252-257).
 - Near loss is a share of the light past the horizon. Far loss is a share of the light with no horizon (CORE/shade_summary.py:22-24, 51-53).
 
 ### Strings lens: location and system voltage
@@ -941,20 +954,21 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 - **Beside the heading (who set it):**
   - `Your choice`, for a value the user chose or one from an older file.
   - `Set for <country>`, for an app-set value that equals the visitor's country default (e.g. `Set for the United States`, `Set for India`).
-  - `Set by the app` otherwise (WEB/lib/studio/voltage-words.ts:83; WEB/lib/country/country.ts:11-12, 31-34).
-- **Line under the choice (app-set only)** (WEB/lib/studio/voltage-words.ts:48-56):
+  - `Set by the app` otherwise (WEB/lib/studio/voltage-words.ts:85; WEB/lib/country/country.ts:11-12, 31-34).
+- **Line under the choice (app-set only)** (WEB/lib/studio/voltage-words.ts:49-57):
   - 600 V in the country: `600 V, the limit for homes in the United States (NEC 690.7). Change it if the site allows more.` For Canada: `… in Canada (CE Code, Section 64). …`
   - 600 V not the country's: `600 V, the limit for homes in the United States and Canada. Change it if the site allows more.`
   - Other voltage, the country's: `1000 V, the usual limit for rooftops in <country>. Change it if the site needs another.`
   - Other voltage, not the country's: `… the usual limit for rooftops outside the United States and Canada. Change it if the site needs another.`
-- **Equipment rated under the voltage.** The rating is the lower of the inverter's highest DC voltage and the module's highest system voltage (WEB/lib/studio/voltage-words.ts:39-46). Strings are sized to it, and the voltage itself does not move (CORE/stringing.py:60).
-  - App-set voltage: a plain line, `Strings sized to <n> V, this inverter's limit.` (or `module's`) (WEB/lib/studio/voltage-words.ts:85).
-  - User's voltage: a note with an exclamation mark. Title `Strings sized to <n> V, this inverter's limit`. Detail `Your system is set to <v> V. The bill of materials follows the voltage set.` A **Use <m> V** button offers the highest of 600/1000/1500 at or under the rating, where one exists (WEB/lib/studio/voltage-words.ts:81, 86-89; WEB/components/studio/SystemVoltage.tsx:39-50, 61-66).
+- **Equipment rated under the voltage.** The rating is the lower of the inverter's highest DC voltage and the module's highest system voltage (WEB/lib/studio/voltage-words.ts:40-47). Strings are sized to it, and the voltage itself does not move (CORE/stringing.py:60).
+  - App-set voltage: a plain line, `Strings sized to <n> V, this inverter's limit.` (or `module's`); for a module whose file gives no rating, `Strings sized to 1000 V, taken for this module: its file gives no limit.` (WEB/lib/studio/voltage-words.ts:87).
+  - A PAN with no VMaxIEC or VMaxUL is taken as 1000 V, and the module answers `v_max_from_file: false` (CORE/io/pvsyst.py:151, 210-211; API/schemas/equipment.py:57-59). The limit note under the bar then reads `module (1000 V taken, its file gives none)` (CORE/readouts.py:214-225).
+  - User's voltage: a note with an exclamation mark. Title `Strings sized to <n> V, this inverter's limit`. Detail `Your system is set to <v> V. The bill of materials follows the voltage set.` A **Use <m> V** button offers the highest of 600/1000/1500 at or under the rating, where one exists (WEB/lib/studio/voltage-words.ts:83, 86-89; WEB/components/studio/SystemVoltage.tsx:39-50, 61-66).
 - **Offer up** (the app never raises the voltage):
   - Rating above the voltage: `This inverter takes up to <r> V. Raise it only if the site's code allows.` (or `module`), with **Use <next> V**.
-  - No length fits and a higher voltage would fit one: `No string length fits under <v> V; at <w> V one does. Raise it only if the site's code allows.` (WEB/lib/studio/voltage-words.ts:58-75; WEB/components/studio/SystemVoltage.tsx:51-56).
-- **Missing ratings.** The inverter's rating is `VAbsMax`, else `VMPPMax`. The module's is `VMaxIEC`, else `VMaxUL`, else **1000 V assumed** (CORE/io/pvsyst.py:286, 209).
-- The DC cable in the bill of materials is named by the voltage set (HELP/studio/section/system-voltage.mdx:33; CORE/readouts.py:287-298).
+  - No length fits and a higher voltage would fit one: `No string length fits under <v> V; at <w> V one does. Raise it only if the site's code allows.` (WEB/lib/studio/voltage-words.ts:59-77; WEB/components/studio/SystemVoltage.tsx:51-56).
+- **Missing ratings.** The inverter's rating is `VAbsMax`, else `VMPPMax`. The module's is `VMaxIEC`, else `VMaxUL`, else **1000 V assumed** (CORE/io/pvsyst.py:288, 209).
+- The DC cable in the bill of materials is named by the voltage set (HELP/studio/section/system-voltage.mdx:33; CORE/readouts.py:293-304).
 
 ### Strings lens: inverter
 
@@ -989,7 +1003,7 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 - **Own file:** drop it on `Or drop an OND file of your own here` (tablet and desktop), or choose it. The drop zone reads `Let go to load the file` and `Reading the file <name>`. Accepted extensions are `.ond`/`.OND` (WEB/components/studio/EquipmentPicker.tsx:36, 161-164, 430-440).
 - **File size:** up to 256,000 characters as text, or 341,336 as base64 (API/schemas/limits.py:9-10; API/schemas/equipment.py:14-27).
 - **Encodings:** UTF-8, Latin-1 or CP1252 (CORE/io/pvsyst.py:17-27).
-- **Refused file:** `This inverter was not loaded` then `<reason>. The inverter of before is kept.` (WEB/components/studio/EquipmentPicker.tsx:250-258). A file without PNomConv or VMPPMax gives `<file>: not a PVsyst inverter file (PNomConv or VMPPMax missing)` (CORE/io/pvsyst.py:311-312).
+- **Refused file:** `This inverter was not loaded` then `<reason>. The inverter of before is kept.` (WEB/components/studio/EquipmentPicker.tsx:250-258). A file without PNomConv or VMPPMax gives `<file>: not a PVsyst inverter file (PNomConv or VMPPMax missing)` (CORE/io/pvsyst.py:313-314).
 - **New inverter:** the OND text and name go into the design, any entered current per MPPT is cleared, and the design runs again (WEB/lib/studio/inverter-card.ts:63-66).
 - **Number of inverters (#163).** Per series length, the run tries every inverter count from 1 up to the larger of:
   - the fewest that take every string, and
@@ -1027,7 +1041,7 @@ The Sun lens has two tabs at the top of its inspector: **Shadows** and **Shade m
 | **Lowest ambient** | Lowest `temp_air` of the weather year (`<x> °C from the weather`). 5 °C with no weather | −50 to 40 (1 dp); API −90 to 60 | °C | WEB/lib/studio/sizing-fields.ts:12-18, 55; CORE/weather.py:43-45; CORE/project.py:234-238; API/schemas/project.py:79 |
 | **Highest ambient** | Highest `temp_air` of the weather year. 40 °C with no weather | 0 to 60; API −90 to 70 | °C | WEB/lib/studio/sizing-fields.ts:14, 56; CORE/weather.py:47-49; CORE/project.py:240-244; API/schemas/project.py:80 |
 | **Cell rise** | By roof type: flat tilted 25, flat east-west 25, sloped flush 35 (`25 °C by roof type: flat, open rack`) | 0 to 60; API 0 to 100 | °C | CORE/stringing.py:26; WEB/lib/studio/sizing-fields.ts:34, 57; API/schemas/project.py:78 |
-| **Voc coefficient** | Module's (`<x> %/°C from the PAN file` or `from the one-diode model`) | −0.999 to −0.001 (3 dp); API strictly between −1 and 0 | %/°C | WEB/lib/studio/sizing-fields.ts:17, 51-52; API/schemas/project.py:33-40 |
+| **Voc coefficient** | The one the strings are sized with: `<x> %/°C, the one-diode model's` (cold Voc is the module's one-diode model's while none is entered, whatever the PAN states; the module card keeps the PAN's own) | −0.999 to −0.001 (3 dp); API strictly between −1 and 0 | %/°C | WEB/lib/studio/sizing-fields.ts:17, 49-52; CORE/onediode.py:86-92; API/services/design.py:194-195; API/schemas/project.py:33-40 |
 
 - Resets: **Use the weather's <x> °C**, **Use the roof type's**, **Use the module's** (WEB/lib/studio/sizing-fields.ts:52-57).
 - Voc note (exclamation mark) when the module's coefficient lies outside −0.35 to −0.20 %/°C: `Voc coefficient <x> %/°C is outside the usual −0.35 to −0.20 %/°C for crystalline silicon. Check the datasheet and enter it if it differs.` (CORE/onediode.py:25, 104-108; WEB/components/studio/SizingTemperatures.tsx:26-31).
@@ -1093,14 +1107,14 @@ Lengths below the nominal are never tried for the fill.
 - A press or an arrow key chooses an option without running again (WEB/components/studio/StringsInspector.tsx:90-93).
 - A saved choice that no longer exists falls back to the first option (CORE/project.py:341-342).
 
-**Note under the cards** (CORE/readouts.py:222-243; WEB/components/studio/StringOptions.tsx:203-216):
+**Note under the cards** (CORE/readouts.py:228-249; WEB/components/studio/StringOptions.tsx:203-216):
 - `Target DC/AC 1.10–1.30, warning above 1.40. At most <p> strings per MPPT (<p> × <Imp> A ≤ <I> A), so one inverter takes <s> strings. The least shaded strings in a row are used first, then those across rows.`
 - Without a current limit, the middle reads instead `The OND gives no current limit per MPPT: one string for each of its <n> inputs at most, <p> per MPPT, so one inverter takes <s> strings. Enter the datasheet value of the current per MPPT.`
 - Options that miss the target follow with an exclamation mark: `<L>: DC/AC <r>, <note>; …`.
 
 **Your own** (WEB/components/studio/StringOptions.tsx:114-197; WEB/lib/studio/custom-fields.ts:11-50):
 - **Add your own** opens **Series**, **Strings** and **Inverters** (`series × strings × inverters`). The fields start from the design's own option, else the chosen option's numbers; with no option because the roof holds too few positions, at the length that fits × 1 × 1 (WEB/lib/studio/custom-fields.ts:17-23).
-- With no options because the roof holds too few positions, yet a string fits, **Add your own** stands under the engine's words in **Options**: the API names that length (`no_options.fits`), and the engine builds the option at it (WEB/lib/studio/strings-view.ts:52; WEB/components/studio/StringsInspector.tsx:123-126; API/schemas/design.py:236-240; API/services/design.py:236-251). When no length fits, or the roof holds no module, there is no **Add your own**.
+- With no options because the roof holds too few positions, yet a string fits, **Add your own** stands under the engine's words in **Options**: the API names that length (`no_options.fits`), and the engine builds the option at it (WEB/lib/studio/strings-view.ts:52; WEB/components/studio/StringsInspector.tsx:123-126; API/schemas/design.py:241-245; API/services/design.py:238-253). When no length fits, or the roof holds no module, there is no **Add your own**.
 - Hints and ranges:
   - Series: `<min> to <max> fit`.
   - Strings: `<min(inverters, held)> to <held> of <n> fit`, or `No string of <n> fits on the roof`.
@@ -1117,14 +1131,14 @@ Lengths below the nominal are never tried for the fill.
 ### Strings lens: MPPT loading
 
 - **Distribution.** The chosen option's strings, sorted by azimuth, row and start, are split across inverters in contiguous blocks. Each inverter's strings are spread over its MPPTs as evenly as they go (CORE/stringing.py:211-227).
-- **Per MPPT values** (CORE/readouts.py:254-284):
+- **Per MPPT values** (CORE/readouts.py:260-290):
   - Imp = strings × module Imp.
   - Isc = strings × module Isc.
   - kWp = strings × series × module Pnom ÷ 1000.
 - **Limits:**
   - Imp limit: the OND's IMaxMPPT/IMaxDCMPPT, else IMaxDC ÷ MPPT count.
   - Isc limit: the OND's IscMaxMPPT/ISCMax, else the Imp limit.
-  - An entered current replaces both (CORE/io/pvsyst.py:248-256, 291-292; CORE/project.py:182-186).
+  - An entered current replaces both (CORE/io/pvsyst.py:250-258, 291-292; CORE/project.py:182-186).
   - Tolerance is 1e-6 A (CORE/readouts.py:25, 281-282).
 - **Table** (WEB/lib/studio/mppt-table.ts:40-78; WEB/components/studio/MpptTable.tsx:10-62):
   - **MPPT loading** heading, with `of option <L>` beside it.
@@ -1166,16 +1180,16 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 | `The sun is down` / `The sun was not fetched` / `The sun's day is on its way` | No sun tiles at the hour | none | WEB/components/studio/SunInspector.tsx:100 |
 | `The sun stays below the horizon all day` / `…above the horizon all day` | Polar day | none | WEB/components/studio/Time.tsx:153-157 |
 | `The shade map follows the design run` | Run not of the layout shown | ring | WEB/lib/scene/shade-map.ts:68 |
-| `Far shading: not counted, PVGIS sent no horizon for this site` | PVGIS weather that came without its horizon | none | CORE/readouts.py:247-248 |
-| `Far shading: no horizon profile for this weather source` | Weather without a horizon (non-PVGIS) | none | CORE/readouts.py:249-250 |
+| `Far shading: not counted, PVGIS sent no horizon for this site` | PVGIS weather that came without its horizon | none | CORE/readouts.py:253-254 |
+| `Far shading: no horizon profile for this weather source` | Weather without a horizon (non-PVGIS) | none | CORE/readouts.py:255-256 |
 | `Choose a system voltage to size the strings` / `600, 1000 or 1500 V. Nothing is sized until you choose.` | Project without a voltage | n/a | CORE/readouts.py:19-20; API/services/design.py:34-36 |
 | `Sizing the strings for <v> V` | Waiting for the run of the voltage | ring | WEB/components/studio/SeriesRange.tsx:53-56 |
-| `Strings sized to <n> V, this inverter's/module's limit` (+ `Your system is set to <v> V. The bill of materials follows the voltage set.`) | User's voltage above an equipment rating | ! | WEB/lib/studio/voltage-words.ts:86-89 |
-| `This inverter/module takes up to <r> V. Raise it only if the site's code allows.` | Rating above the voltage | none (button) | WEB/lib/studio/voltage-words.ts:74 |
-| `No string length fits under <v> V; at <w> V one does. Raise it only if the site's code allows.` | No fit, a higher voltage fits | none (button) | WEB/lib/studio/voltage-words.ts:70 |
+| `Strings sized to <n> V, this inverter's/module's limit` (+ `Your system is set to <v> V. The bill of materials follows the voltage set.`) | User's voltage above an equipment rating | ! | WEB/lib/studio/voltage-words.ts:88-95 |
+| `This inverter/module takes up to <r> V. Raise it only if the site's code allows.` (`1000 V is taken for this module: its file gives no limit. Raise it only if the site's code allows.` for a taken rating) | Rating above the voltage | none (button) | WEB/lib/studio/voltage-words.ts:75-76 |
+| `No string length fits under <v> V; at <w> V one does. Raise it only if the site's code allows.` | No fit, a higher voltage fits | none (button) | WEB/lib/studio/voltage-words.ts:71 |
 | `No string length fits this inverter` / `No string length fits: at least <n> modules are needed for the <m> V MPPT minimum, but at most <k> fit under <L> V.` | Shortest > longest | ! | CORE/readouts.py:21, 62-63; CORE/stringing.py:68-70 |
 | `Change the system voltage, the inverter or the sizing temperatures` | Same; shown in **Options** | none | WEB/lib/studio/strings-view.ts:31 |
-| `Too few positions for a string` / `The roof holds <n> positions, and a string takes <a> to <b> modules. A string of <s> would fit: add it as your own option.` (or `No string of that length fits.`) | No candidate length forms a string | ! | API/services/design.py:236-251 |
+| `Too few positions for a string` / `The roof holds <n> positions, and a string takes <a> to <b> modules. A string of <s> would fit: add it as your own option.` (or `No string of that length fits.`) | No candidate length forms a string | ! | API/services/design.py:238-253 |
 | `No module fits on this roof` / `Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles.` | Empty layout | ! | API/services/design.py:28-33 |
 | `Over the current of an MPPT, or its limit not known: see the MPPT loading` | Option in target, MPPT not OK | ! | WEB/lib/studio/option-cards.ts:23 |
 | `Fits` / `Over the limit` / `Limit not known` | MPPT row | ✓ / ! / ! | WEB/lib/studio/mppt-table.ts:44-47 |
@@ -1184,7 +1198,7 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 | `No inverter in the app matches "<q>".` / `No inverter in the app within these filters.` + `The search reads the maker, the model and the file's name. An OND file of your own is taken below.` | Empty list | none | WEB/components/studio/EquipmentPicker.tsx:380-386 |
 | `Loading the library` / catalog error + **Try again** | Catalog loading or failed | ring | WEB/components/studio/EquipmentPicker.tsx:357-372 |
 | `The strings follow the design run` | Run not of the layout shown | ring | WEB/components/studio/StringLegend.tsx:82-86 |
-| Voc coefficient note (see Modules in series) | Coefficient outside −0.35…−0.20 | ! | CORE/onediode.py:104-108 |
+| Voc coefficient note (see Modules in series) | Coefficient outside −0.35…−0.20 | ! | CORE/onediode.py:113-117 |
 
 #### Known-stale (this area)
 
@@ -1192,17 +1206,14 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 
 #### Facts we do not have (this area)
 
-- Whether a **NumberField** clamps or refuses a value outside its range. The ranges are cited, but the behaviour is in WEB/components/ui, which was not read.
 - The exact text the app shows for an OND over 256,000 characters. The API answers with pydantic's validation message through API/errors.py:104-112; its wording was not run.
 - The hour of the design day's `Kept clear` area beyond "the shade-free window of the design day". The keep-out sweep is CORE/geometry.py:281-290, and its step (0.25 h) is the default of `window_sun`; the caller was not traced.
-- Whether 15-minute weather is shaded per hour after averaging. Hours are averaged at CSV read (CORE/csv_weather.py:109-115); the downstream shading steps were not traced beyond that.
+- Whether 15-minute weather is shaded per hour after averaging. Hours are averaged at CSV read (CORE/weather.py:291-295); the downstream shading steps were not traced beyond that.
 - The full list of maker display names (`makerOf`, WEB/lib/equipment/makers.ts) was not read.
 - The Sun lens's run-progress words (CORE/progress.py:12-15) were not traced to where the UI shows them.
 
 #### Product issues noticed (this area)
 
-1. **Assumed module rating presented as the module's.** A PAN with no VMaxIEC/VMaxUL is treated as 1000 V (CORE/io/pvsyst.py:209). At 1500 V the lens would say `Strings sized to 1000 V, this module's limit`, though the file gives no limit (WEB/lib/studio/voltage-words.ts:85-88).
-2. **Voc coefficient default shown is not the one used.** The field says `<x> %/°C from the PAN file` (WEB/lib/studio/sizing-fields.ts:51). Without an entered value, cold Voc is the one-diode model's, not the PAN coefficient's (CORE/onediode.py:75-84; CORE/project.py:254-255).
 3. **Oversize OND refused in raw words.** An OND above 256,000 characters is refused by request validation (API/schemas/equipment.py:18-19). The message is the framework's field-length text, shown verbatim under `This inverter was not loaded` (API/errors.py:104-112, 139-141; WEB/components/studio/EquipmentPicker.tsx:75-78, 250-256).
 4. **MPPT colours repeat across inverters.** Colouring by MPPT uses the MPPT number within its inverter, so strings on INV-1 MPPT 1 and INV-2 MPPT 1 look identical, and the legend reads only `MPPT 1` (WEB/lib/stores/string-colours.ts:34-37; WEB/lib/scene/string-legend.ts:26, 41-42).
 5. **"fits" beside an exclamation mark.** A verdict that is not OK only because of DC/AC still has the title `<n> in series fits: …`, shown bold next to an exclamation mark (CORE/readouts.py:68-70; WEB/components/studio/SeriesRange.tsx:60-62).
@@ -1219,7 +1230,7 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 | Opening a design | The run starts at once, with no pause. | — | WEB/lib/flow/design-flow.ts:378-380 |
 | Edits that ask for no run | Choosing an option (the run's answer already holds every option) and renaming the design. Every other edit asks for a run. | — | WEB/lib/flow/edit-parts.ts:11-17, 36-42 |
 | Choosing an option | Shown at once from the run's answer, through the **Stringing option** segmented control on tablet and desktop, or the **Option** select on phone. | — | WEB/components/performance/OptionSwitch.tsx:25-37; WEB/components/performance/Performance.tsx:64-66 |
-| What a run needs | A roof outline, a module, and weather for the site. Without a system voltage the run stops after the shading: no options and no energy, and a card says what it waits for. | — | API/services/design.py:56-63; API/routers/design.py:24-25; API/services/design.py:222-233 |
+| What a run needs | A roof outline, a module, and weather for the site. Without a system voltage the run stops after the shading: no options and no energy, and a card says what it waits for. | — | API/services/design.py:56-63; API/routers/design.py:24-25; API/services/design.py:224-235 |
 | Weather that is missing | When the API refuses a run with `weather_not_loaded`, the app loads the weather of the design's source for its site, puts it into the design and runs again, once per edit. | — | WEB/lib/flow/design-flow.ts:50-53, 272-295, 318 |
 | Weather kept in the design | Weather is used again if its source matches and its lat/lon is within 0.001° of the roof's. Otherwise it is loaded again. | ° | CORE/project.py:200-217 |
 | Progress steps (engine words) | **Fitting modules on the roof** · **Loading {source label} weather** · **Computing hourly shading for every module** · **Applying the losses** · **Sizing strings and simulating the options** | — | CORE/progress.py:12-15, 28-30; CORE/project.py:268-309 |
@@ -1245,12 +1256,12 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 | CSV size limit | 3,000,000 bytes (3 MB). The app refuses a larger file before sending it. The API caps `csv_text` at 3,000,000 characters. | bytes | WEB/lib/performance/weather-csv.ts:20-28; API/schemas/limits.py:7; API/schemas/weather.py:46 |
 | CSV file types accepted | `.csv`, `.CSV`, `.txt` | — | WEB/lib/performance/weather-csv.ts:12 |
 | CSV columns (names matched case-insensitively, trimmed) | time: `time`, `time(utc)`, `datetime`, `date`, `timestamp`, `date/time` · GHI: `ghi`, `g(h)`, `gh`, `global_horizontal`, `allsky_sfc_sw_dwn`, `irradiance` · DNI: `dni`, `gb(n)`, `bn`, `allsky_sfc_sw_dni` · DHI: `dhi`, `gd(h)`, `dh`, `diffuse`, `allsky_sfc_sw_diff` · air temperature: `temp_air`, `t2m`, `temp`, `temperature`, `tamb`, `t_amb`, `ambient_temp` · wind: `wind_speed`, `ws10m`, `wind`, `ws`. Time and GHI are required. | — | CORE/weather.py:215-222, 234-240, 269-279 |
-| CSV format | The separator is detected. Lines beginning with `#` are skipped. Times are read as `YYYYMMDD:HHMM`, or failing that any common date-time. Times are UTC (no offset from the API). Each row's time is the start of its hour. | — | CORE/weather.py:230-232, 243-249; CORE/csv_weather.py:29-40; API/services/weather.py:59 |
+| CSV format | The separator is detected. Lines beginning with `#` are skipped. Times are read as `YYYYMMDD:HHMM`, or failing that any common date-time. Times are UTC (no offset from the API). Each row's time is the start of its hour. | — | CORE/weather.py:230-232, 243-249; CORE/csv_weather.py:29-41; API/services/weather.py:59 |
 | CSV units | Irradiance W/m², air °C, wind m/s | — | API/schemas/weather.py:17 |
-| CSV time step | Hourly or finer. Rows under an hour apart are averaged into the hour they begin in, with a note. | — | CORE/weather.py:261-262, 290-294; CORE/csv_weather.py:108-114 |
-| CSV without DNI or DHI | Both are worked out from GHI with the Erbs model, with a note. | — | CORE/weather.py:296-301; CORE/csv_weather.py:94-98 |
-| CSV without temperature or wind | 25 °C or 1 m/s is taken for every hour, with a note. | °C, m/s | CORE/weather.py:283-284; CORE/csv_weather.py:101-107 |
-| CSV length | 8,760 or 8,784 hours expected. Any other count is accepted, with a note. The API allows at most 8,784 values per series. | hours | CORE/csv_weather.py:20, 115-119; API/schemas/weather.py:13 |
+| CSV time step | Hourly or finer. Rows under an hour apart are averaged into the hour they begin in, with a note. | — | CORE/weather.py:261-262, 290-294; CORE/csv_weather.py:144-150 |
+| CSV without DNI or DHI | Both are worked out from GHI with the Erbs model, with a note. | — | CORE/weather.py:296-301; CORE/csv_weather.py:130-134 |
+| CSV without temperature or wind | 25 °C or 1 m/s is taken for every hour, with a note. | °C, m/s | CORE/weather.py:283-284; CORE/csv_weather.py:137-143 |
+| CSV length | 8,760 or 8,784 hours, after rows under an hour are averaged. Any other count is refused: "<file> has <n> hours, not the 8,760 of a year (8,784 in a leap year). The energy of a year needs every hour of it: give a whole year." The API allows at most 8,784 values per series. | hours | CORE/csv_weather.py:20, 117-125; API/schemas/weather.py:13 |
 | What the user sees about the source | The run line: "{n} modules in series × {s} strings on {k} inverter(s) · {hours} hours of {PVGIS / NASA POWER / CSV} weather, {tmin} to {tmax} °C, horizon up to {x}°" (or "no horizon"). Before options it starts "{positions} positions ready". The select shows the source name, or the CSV's file name. The CSV notes stand under the run line. The Summary row **Weather** reads "{label} · GHI {x} kWh/m² · in-plane {y} kWh/m²". | — | WEB/lib/performance/header.ts:34-44, 51, 58-59; WEB/lib/flow/weather-source.ts:24-27; WEB/components/performance/PerformanceHeader.tsx:38-47; CORE/export/summary.py:47-50 |
 | CSV dialog summary after reading | "{hours} hours · GHI {x} kWh/m²" / "beam {x} · diffuse {y} kWh/m²" / "{tmin} to {tmax} °C" | — | WEB/lib/performance/weather-csv.ts:31-37 |
 
@@ -1319,7 +1330,7 @@ The figures are those of the chosen option (WEB/lib/performance/page-view.ts:46-
 | **Energy to grid by month** | Tabs **Chart** and **Table**, unit "MWh". 12 bars from zero, with only the highest and lowest labelled. Tooltip "{mwh} MWh · {kWh/kWp} kWh/kWp" with the month. Table columns **Month**, **MWh**, **kWh/kWp**, with a last row **Year** | MWh 1 decimal. kWh/kWp whole | WEB/components/performance/MonthlyChart.tsx:20, 94, 158; WEB/components/performance/chart-card.ts:14-16; WEB/lib/performance/month-bars.ts:9, 37-72; CORE/simulation.py:413 |
 | **25 years** | A line of all 25 years, scaled to the run's own range rather than to zero. Years 1, 5, 10, 15, 20, 25 labelled. The table shows those six years and "Total, 25 years" | MWh 1 decimal (years), whole (total) | WEB/components/performance/YearsChart.tsx:27, 174; WEB/lib/performance/year-line.ts:33, 40-75 |
 | **Summary** (table **Item** / **Value**) | Rows in order: **Site**, **Roof**, **Structure**, **Module**, **Inverter**, **Stringing**, **DC capacity**, **AC capacity**, **Weather**, **Losses** ("Clipping {x} % · LID {y} % · uncertainty σ {z} %"), **Energy, year 1** ("P50 {x} MWh · P75 … · P90 …"), **Specific yield** ("{x} kWh/kWp · PR {y} % · CUF {z} % AC"), **Module area**, **CO₂ avoided** ("{x} t/yr at {f} t/MWh") | As in each row | WEB/components/performance/SummaryTable.tsx:19-22; WEB/lib/performance/summary.ts:32-35; CORE/export/summary.py:34-58; CORE/readouts.py:24, 304-313 |
-| Clipping % (Summary) | 1 − clipped output / inverter output | %, 1 decimal | CORE/simulation.py:422; CORE/readouts.py:311 |
+| Clipping % (Summary) | 1 − clipped output / inverter output | %, 1 decimal | CORE/simulation.py:422; CORE/readouts.py:317 |
 
 ### Performance: the demo's figures
 
@@ -1349,7 +1360,7 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 | App fault | "Something went wrong in the app: {what}. Try again; if it fails again, report it." | WEB/lib/flow/design-flow.ts:56-63; WEB/components/performance/use-weather-load.ts:20-24 |
 | No voltage | **Choose a system voltage to size the strings** / "600, 1000 or 1500 V. Nothing is sized until you choose." | CORE/readouts.py:19-20 |
 | No positions | **No module fits on this roof** / "Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles." | API/services/design.py:28-33 |
-| Too few positions | **Too few positions for a string** / "The roof holds {n} positions, and a string takes {min} to {max} modules. A string of {k} would fit: add it as your own option." (or "No string of that length fits.") | API/services/design.py:236-251 |
+| Too few positions | **Too few positions for a string** / "The roof holds {n} positions, and a string takes {min} to {max} modules. A string of {k} would fit: add it as your own option." (or "No string of that length fits.") | API/services/design.py:238-253 |
 | No-options button | **Open the Strings lens** | WEB/components/shell/NoOptionsCard.tsx:34 |
 | Weather loading | **Loading {PVGIS TMY / NASA POWER 2023} weather** · **Reading {file name}** | WEB/lib/flow/weather-source.ts:35, 38-41 |
 | Weather failed (under the select) | **The weather was not loaded**, followed by the API's message | WEB/components/performance/WeatherSelect.tsx:19, 47-61 |
@@ -1365,20 +1376,21 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 | CSV browser failure | "The file could not be read ({error}). Choose another." | WEB/components/performance/WeatherCsvDialog.tsx:26-29 |
 | CSV empty | "Choose a CSV weather file." | CORE/csv_weather.py:35-36 |
 | CSV missing column | "{file}: no column named any of {names, comma-separated}" | CORE/weather.py:270-274 |
-| CSV not a table | "{file} cannot be read as a table of hours: {reason}." | CORE/csv_weather.py:43-47 |
-| CSV no rows | "{file} has no hours: below its header there is no row." | CORE/csv_weather.py:57-58 |
-| CSV bad times | "{file}: the time cannot be read in {n} rows, the first of them row {r} ({value}). Write it as 2023-06-01 13:00, in UTC." | CORE/csv_weather.py:60-67 |
-| CSV repeated hours | "{file}: {n} hours are there more than once, the first of them {YYYY-MM-DD HH:MM}. Every hour may be there once." (with "hour is" for one) | CORE/csv_weather.py:68-75 |
-| CSV gaps | "{file}: {column} has no value in {n} rows, the first of them row {r}. Fill the gaps, or leave the column out." | CORE/csv_weather.py:78-89 |
-| CSV notes | "{file} has no beam and diffuse irradiance. They were worked out from the global irradiance (Erbs model), which is less exact than measured values." · "{file} has no air temperature. 25 °C was taken for every hour, so the strings are sized for 25 °C. Enter the site's lowest and highest ambient in the Strings lens." · "{file} has no wind speed. 1 m/s was taken for every hour." · "{file} gives the weather every {m} minutes. Each hour is the average of its rows (the simulation takes a row as an hour)." · "{file} has {n} hours, not the 8,760 of a year. Energy of a year needs every hour of it." | CORE/csv_weather.py:92-120 |
+| CSV not a table | "{file} cannot be read as a table of hours: {reason}." | CORE/csv_weather.py:44-48 |
+| CSV no rows | "{file} has no hours: below its header there is no row." | CORE/csv_weather.py:59-60 |
+| CSV bad times | "{file}: the time cannot be read in {n} rows, the first of them row {r} ({value}). Write it as 2023-06-01 13:00, in UTC." | CORE/csv_weather.py:62-69 |
+| CSV repeated hours | "{file}: {n} hours are there more than once, the first of them {YYYY-MM-DD HH:MM}. Every hour may be there once." (with "hour is" for one) | CORE/csv_weather.py:70-77 |
+| CSV gaps | "{file}: {column} has no value in {n} rows, the first of them row {r}. Fill the gaps, or leave the column out." | CORE/csv_weather.py:103-125 |
+| CSV irradiance with no value | A blank or unreadable GHI cell is refused, and DNI or DHI when both are given: "<file>: <column> has no value in <n> rows, the first of them row <r>. Fill the gaps: an hour without its irradiance is not an hour of none." (DNI, DHI: "… Fill the gaps, or leave out both beam and diffuse.") The column is named as the file names it | CORE/csv_weather.py:40, 80-100 |
+| CSV notes | "{file} has no beam and diffuse irradiance. They were worked out from the global irradiance (Erbs model), which is less exact than measured values." · "{file} has no air temperature. 25 °C was taken for every hour, so the strings are sized for 25 °C. Enter the site's lowest and highest ambient in the Strings lens." · "{file} has no wind speed. 1 m/s was taken for every hour." · "{file} gives the weather every {m} minutes. Each hour is the average of its rows (the simulation takes a row as an hour)." · "{file} has irradiance below zero in {n} rows. It was taken as 0." · "{file} has no air temperature in {n} rows. It was taken from the hours on either side." | CORE/csv_weather.py:128-172; CORE/weather.py:278, 289-290 |
 | Chain | **From sunlight to the grid** · LID placeholder "PAN {x}" / "default {x}" · "PAN gives {x} %" · **Use the PAN's** · **Use the default** · "The module is monofacial: no rear gain." | WEB/components/performance/LossChain.tsx:57; WEB/lib/performance/loss-fields.ts:65, 70-75 |
 | Assumptions | **Assumptions** · **Thermal Uc** ("{x} W/m²K by roof type" when empty, "{x} by roof type" when entered) · **Use the roof type's** · **Rear shading and mismatch** · **Roof albedo** · **Weather variability** · **Model and data** · **Exceedance levels** · **Grid CO₂** | WEB/components/performance/Assumptions.tsx:19; WEB/lib/performance/assumption-fields.ts:51-63, 84-92 |
 | Table captions | "The energy to grid of every month, and of the year" · "Every year is in the chart; the table says six of them and the total." · "The design, summed up by the engine" | WEB/components/performance/MonthlyChart.tsx:158; WEB/components/performance/YearsChart.tsx:174; WEB/components/performance/SummaryTable.tsx:22 |
 
 #### Known-stale (this area)
 - **Demo options D and E.** `plan/reference/demo-numbers.md:50-51` lists options D and E as 26 x 27 x 2 and 28 x 25 x 2. The test asserts 28x28x2 and 29x27x2 (apps/api/tests/engine/test_demo_numbers.py:11). Use the test's figures.
-- **CSV notes comment.** The comment at WEB/lib/performance/header.ts:25 names three CSV notes (no beam and diffuse, no temperature, no wind). The engine also writes notes about the time step and about the hour count, five in all (CORE/csv_weather.py:92-120).
-- **Weather route docstring.** API/routers/weather.py:14 says "A year of hourly weather". A CSV may be finer than hourly (it is averaged into hours) and need not be a year (CORE/weather.py:291-295; CORE/csv_weather.py:115-119).
+- **CSV notes comment.** The comment at WEB/lib/performance/header.ts:25 names three CSV notes (no beam and diffuse, no temperature, no wind). The engine also writes notes about the time step and about the hour count, five in all (CORE/csv_weather.py:128-172).
+- **Weather route docstring.** API/routers/weather.py:14 says "A year of hourly weather". A CSV may be finer than hourly; it is averaged into hours (CORE/weather.py:291-295).
 - **Mockup figures.** The figures in the mockups (docs/design/README.md:128-129: soiling 3 %, degradation 0.7, Uc 25, levels P50 · P90 · P99, NASA POWER) are variants drawn for the boards. They are not the shipped defaults (2.0 %, 0.5 %/yr, Uc by roof type, P50/P75/P90, PVGIS; CORE/simulation.py:37-53).
 
 #### Facts we do not have (this area)
@@ -1389,12 +1401,10 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 - **Request timeouts in the web client.** Not examined.
 
 #### Product issues noticed (this area)
-- **Blank irradiance cells.** In a CSV, blank or non-numeric GHI cells become 0 W/m² and negative values become 0. Blank DNI or DHI cells (when the columns exist) become 0. Gaps in temperature are interpolated. None of this is refused or noted, although CORE/csv_weather.py:3-5 says such faults are refused (CORE/weather.py:278, 288-289, 302).
 - **Rear-gain switch on sloped flush roofs.** The **Bifacial rear gain** switch stays enabled on a Sloped, flush roof with a bifacial module, but the engine applies no rear gain there and nothing says why (CORE/simulation.py:107; WEB/lib/performance/loss-fields.ts:79-82).
 - **Horizon diffuse in the wrong row.** The diffuse light the horizon hides is booked in **Near shading, linear**. **Far shading, horizon** counts only the beam (CORE/geometry.py:315-341; CORE/simulation.py:249-251).
-- **Engine column names in the CSV gap message.** The message uses `temp_air`, `wind_speed`, `dni` or `dhi`, not the user's column name. "Row {r}" counts data rows below the header, not lines of the file (CORE/csv_weather.py:80-88).
+- **Engine column names in the CSV gap message.** The message uses `temp_air`, `wind_speed`, `dni` or `dhi`, not the user's column name. "Row {r}" counts data rows below the header, not lines of the file (CORE/csv_weather.py:105-124).
 - **"Hourly" in the copy.** The CSV copy says "hourly" (WEB/lib/performance/weather-csv.ts:8, 10, 23; WEB/lib/flow/weather-source.ts:20), but the engine also accepts sub-hourly rows and averages them (CORE/weather.py:291-295).
-- **CSVs shorter than a year.** A CSV that is not a full year is accepted with only a note. "Energy to grid, year 1", PR, the P-values and the 25-year figures are then computed from just those hours (CORE/csv_weather.py:115-119; CORE/simulation.py:379-447).
 
 ## 6. Handover and the project file
 
@@ -1484,7 +1494,7 @@ Repo commit 75591f2. `WEB` = `apps/web`, `API` = `apps/api/src/rooftop_api`, `CO
 | Row values | String "S{n}"; inverter "INV-{n}"; MPPT from 1; modules = modules in series; Voc cold = one module's Voc at the lowest temperature × modules in series; Isc = the module's Isc; cable = "4 mm² Cu, {system V} V DC" | CORE/bom.py:55-62 |
 | String order | Sorted by azimuth, then row, then x of the start | CORE/stringing.py:214 |
 | Length per string | 2 × (east-west distance + north-south distance from the string's start to its inverter, + 2 m slack). The string's own length is added when the layout is single-line (east-west, or all modules in one line). Rounded to 0.1 m. | CORE/stringing.py:240-248; CORE/bom.py:61 |
-| Inverter position | For each inverter: the point on the setback line nearest the mean start of its strings | CORE/stringing.py:228-235; CORE/placement.py:141 |
+| Inverter position | For each inverter: the point on the setback line nearest the mean start of its strings | CORE/stringing.py:228-235; CORE/placement.py:143 |
 | Cable size | Always 4 mm² Cu | CORE/bom.py:12 |
 | Copy message | "DC cable schedule copied as a table" | WEB/lib/handover/schedule-view.ts:39 |
 
