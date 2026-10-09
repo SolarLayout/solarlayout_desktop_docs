@@ -54,8 +54,31 @@ test.describe("proxied through solarlayout.app/docs", () => {
     )
 
     await expect(
-      page.getByRole("heading", { level: 1, name: /Design a plant with/i }),
+      page.getByRole("heading", { level: 1, name: /Guides and reference for/i }),
     ).toBeVisible()
+  })
+
+  // Search must answer through the proxy too: the dialog fetches a same-origin
+  // path, so on solarlayout.app it reaches the website, not this deployment,
+  // unless the path is one the website forwards. It shipped broken that way
+  // until 2026-10-09 (#19): /api/search returned the website's 404.
+  test("search returns results through the proxy", async ({ page }) => {
+    const searches: number[] = []
+    page.on("response", (r) => {
+      if (r.url().includes("/api/search")) searches.push(r.status())
+    })
+
+    await page.goto(`${PROXY_URL}/docs`, { waitUntil: "networkidle" })
+    await page.getByRole("button", { name: /Search the documentation/i }).click()
+    await page.keyboard.type("arrester")
+
+    const dialog = page.getByRole("dialog")
+    await expect(
+      dialog.getByText(/arrester/i).first(),
+      "search returned no result through the proxy — check the search API path",
+    ).toBeVisible({ timeout: 15_000 })
+    expect(searches.length, "the dialog never called the search API").toBeGreaterThan(0)
+    expect(searches.every((s) => s === 200), `search API answered ${searches.join(", ")}`).toBe(true)
   })
 
   test("a content page is styled and its sidebar hydrated", async ({ page }) => {

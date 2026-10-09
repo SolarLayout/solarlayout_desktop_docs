@@ -24,6 +24,9 @@ import {
 } from "fumadocs-ui/components/dialog/search"
 import type { SharedProps } from "fumadocs-ui/contexts/search"
 
+// Under /docs, so the website's /docs rewrite carries it to this deployment (app/docs/api/search/route.ts).
+const SEARCH_API = "/docs/api/search"
+
 const PRODUCTS = [
   { name: "All", value: "" },
   { name: "SolarLayout Desktop", value: "solarlayout" },
@@ -33,7 +36,7 @@ const PRODUCTS = [
 export function ProductSearchDialog(props: SharedProps) {
   // "" is All: no filter sent to the index.
   const [tag, setTag] = useState("")
-  const { search, setSearch, query } = useDocsSearch({ client: fetchClient({ tag: tag || undefined }) })
+  const { search, setSearch, query } = useDocsSearch({ client: fetchClient({ api: SEARCH_API, tag: tag || undefined }) })
   return (
     <SearchDialog search={search} onSearchChange={setSearch} isLoading={query.isLoading} {...props}>
       <SearchDialogOverlay />

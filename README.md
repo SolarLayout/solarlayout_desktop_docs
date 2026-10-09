@@ -297,7 +297,7 @@ Add reviewers to `Production` if a production deploy should need approval.
   domain appears, and it lives in Vercel rather than in the repo.
 
 Every content page is prerendered at build time. The one exception is
-`/api/search`, which backs the search dialog and runs as a function — it builds
+`/docs/api/search`, which backs the search dialog and runs as a function — it builds
 its index from the same content loader the pages use, so there is no separate
 indexing step and nothing to configure.
 
