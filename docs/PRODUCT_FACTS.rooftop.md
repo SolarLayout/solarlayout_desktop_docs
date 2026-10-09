@@ -376,7 +376,7 @@ Panel title **Outline the roof**. The tool's lead text sits under it.
 | Closing 4 near-square corners with it on | Made an exact rectangle; the first edge is kept | — | — | WEB/lib/outline/outline-state.ts:103-131 |
 | Status before closing | "Click the first corner of the roof." / "N of at least 3 corners placed." / "N corners placed. Click the first corner, or press Enter, to close the outline." | — | — | WEB/components/find/OutlinePanel.tsx:72-78 |
 | Tiles | **Area** (m², whole), **Faces** ("{deg}° {compass}": the outward normal of the longest edge, toward the equator), **Corners** | — | — | WEB/components/find/OutlinePanel.tsx:35-45; WEB/lib/geometry/measure.ts:74-95 |
-| Heights, parapet | Not set on Find. A new roof gets the engine's parapet of 0.9 m and a pitch of 0°, both changed in the Studio. | — | — | CORE/geometry.py:100, :106; API/services/roof_map.py:35-43 |
+| Heights, parapet | Not set on Find. A new flat roof gets the engine's parapet of 0.9 m and a pitch of 0°; a new sloped, flush roof a parapet of 0 and a pitch of 10°. All are changed in the Studio. | — | — | CORE/geometry.py:100, :106; API/services/roof_map.py:35-56 |
 
 **By hand: Place and Shape**
 
@@ -645,14 +645,14 @@ Other sections in this lens:
 | Item | Value | Source |
 |---|---|---|
 | **Add** menu | **Box** (`2.0 × 2.0 m`), **Tank** (`⌀ 2.0 m`), **Wall** (`6.0 m, points`), **Tree** (`crown ⌀ 4.0 m`), **Building** (`beside the roof, points`) | WEB/lib/geometry/obstacle-fields.ts:43-61, 135-166 |
-| A new one | Starts at the middle of the roof; a press on the roof moves it there; it is added when its **Height** is committed; **Remove** drops it | ObstaclePanel.tsx:294-305, 332-349; WEB/components/scene/Scene.tsx:50, 148-150 |
+| A new one | Starts at the middle of the roof (a building beside it, 3 to 13 m east of the middle); a press on the roof moves it there; it is added when its **Height** is committed; **Remove** drops it | ObstaclePanel.tsx:294-305, 332-349; WEB/components/scene/Scene.tsx:50, 148-150 |
 | Name | "<Kind> <n>", editable in the card's head | obstacle-fields.ts:136, 152; ObstaclePanel.tsx:62-87 |
 | Fields by kind | Box: **Length**, **Width**, **Height**, **Rotation**, **East**, **North**. Tank: **Diameter**, **Height**, East, North. Tree: **Crown ⌀**, **Height**, **Crown starts at**, East, North. Wall: **Height**, **Thickness**, and its points. Building: **Height**, and its points | obstacle-fields.ts:22-40, 121-129 |
 | Ranges | Length, Width 0.1–500 m; Height 0.05–200 m; Rotation −180 to 180° (counter-clockwise); East, North −5000 to 5000 m; Diameter 0.1–100 m; Crown starts at 0–100 m; Thickness 0.05–5 m | obstacle-fields.ts:22-40; CORE/geometry.py:41 |
 | Points | A table with **Add a point** and a bin per point, which stops at 2 for a wall and 3 for a building | ObstaclePanel.tsx:92-118; obstacle-fields.ts:64 |
 | On the roof | A box, tank or tree is dragged; a wall or building is moved by its points in the list. A box corner resizes it with the opposite corner held; the turn handle snaps to a right angle within 3°; a handle on a stem sets the height; an edge handle sets a tank's or crown's diameter. Drags move in steps of 0.1 m | WEB/lib/geometry/obstacles.ts:100, 111; WEB/lib/scene/handles.ts:1-3, 29-58, 61-68; WEB/lib/stores/drag.ts:12 |
 | Trees | The footprint is the crown. The shadow comes from a 0.15 m trunk up to **Crown starts at**, then the crown up to **Height** | CORE/geometry.py:43-46, 56-57, 65-68 |
-| Heights to review (after an import) | The row reads "Height to review"; the card's hint "Enter the real height. The file gave none; 1.0 m stands until you do", with **Next** | ObstaclePanel.tsx:191-206, 366-374; WEB/lib/studio/review-heights.ts:10 |
+| Heights to review (after an import) | The row carries an exclamation mark labelled "Height to review"; the card's hint "Enter the real height. The file gave none; 1.0 m stands until you do", with **Next** | ObstaclePanel.tsx:191-206, 366-374; WEB/lib/studio/review-heights.ts:10 |
 | Section order | Roof lens: Location, the review note, Roof type, Edges and access, Obstacles. Array lens: Module, Mounting, Spacing (with the window). Strings lens: Inverter, System voltage, Modules in series, Options (with Your own and the note), MPPT loading, then **Sizing temperatures** and **Inverter limits and cabling** | WEB/components/studio/RoofInspector.tsx:148-189; ArrayInspector.tsx:54-73; StringsInspector.tsx:104-149 |
 
 ### Array lens: module
