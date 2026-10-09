@@ -1,0 +1,165 @@
+---
+title: Reference
+description: The module and inverter files, PAN and OND, the files SolarLayout Rooftop reads, the limits a design keeps to, and the terms these pages use.
+---
+
+This page gathers what SolarLayout Rooftop reads and the limits it keeps:
+the equipment files, the other files it opens, the limits of a design, and a
+glossary of the terms used across these pages. The fields of each lens and
+their ranges are on the lens's own page.
+
+## Equipment files
+
+Rooftop reads equipment as PVsyst files: a module as a PAN file, an
+inverter as an OND file. Each comes from the app's library, or from a file
+of your own. The file itself goes into the design and into its project file,
+so a design opened on another device has the same equipment.
+
+### Modules (PAN)
+
+| | |
+| --- | --- |
+| Library | 119 modules from 5 makers, 300 to 650 Wp. **Change** on the module card in the [Array lens](/docs/rooftop/array) opens **Choose a module** |
+| A new design's module | INA-144MHC-TF-560: 560 Wp, 2.277 × 1.133 m, bifacial with a bifaciality of 0.80 |
+| Your own file | Drop it on **Or drop a PAN file of your own here**, or **Choose a file**; on a phone, **Choose a PAN file of your own**. A `.pan` file |
+| Text | UTF-8, Latin-1 or Windows-1252 |
+| Size | 256,000 characters at most |
+| Needed | `PNom`, `Voc` and `Isc`. Without one, the file is refused and the module of before is kept |
+| Needed for the layout | The module's `Width` and `Height`. A file without them loads with a note, and the roof cannot be laid out until a module with a size is chosen |
+
+<Screenshot id="rooftop-reference-picker" />
+
+What Rooftop reads from a PAN file:
+
+- The maker, the model and the power.
+- The size. A value of 100 or more is read as millimetres; the longer side is
+  the module's length.
+- Isc, Voc, Imp and Vmp, and the temperature coefficients of
+  current, voltage and power.
+- The cells, the bypass diodes, and whether it is a twin half-cell module.
+- The one-diode model's parameters.
+- The highest system voltage, the bifaciality factor, the LID and the IAM
+  profile.
+
+The module card says where its coefficients come from: **PAN file**,
+**one-diode model**, or **entered**. When the Voc coefficient lies outside
+−0.35 to −0.20 %/°C, usual for crystalline silicon, the card carries a note
+with an exclamation mark: check the datasheet and enter the value in the
+Strings lens if it differs. The strings are sized with the one-diode model's
+coefficient unless you enter one. A PAN file that gives no highest system
+voltage is taken as 1000 V, and the Strings lens says the limit was taken.
+
+### Inverters (OND)
+
+| | |
+| --- | --- |
+| Library | 388 inverters from 12 makers. **Change** on the inverter card in the [Strings lens](/docs/rooftop/strings) opens **Choose an inverter**. 27 of its files are tagged **Preliminary** |
+| A design made on Find | Starts with a 275 kW inverter: 6 MPPTs, 28 inputs, an MPPT range of 500 to 1500 V and a highest DC voltage of 1500 V |
+| Your own file | Drop it on **Or drop an OND file of your own here**, or **Choose a file**; on a phone, **Choose an OND file of your own**. An `.ond` file |
+| Text | UTF-8, Latin-1 or Windows-1252 |
+| Size | 256,000 characters at most |
+| Needed | `PNomConv` and `VMPPMax`. Without one, the file is refused and the inverter of before is kept |
+
+What Rooftop takes from an OND file:
+
+| Value | From the file | When the file lacks it |
+| --- | --- | --- |
+| Current per MPPT | `IMaxMPPT` | `IMaxDC` ÷ the MPPT count, said in a note. With neither, the limit is not known: enter the datasheet value under **Inverter limits and cabling** |
+| Highest DC voltage | `VAbsMax` | `VMPPMax` |
+| MPPT range | The MPPT voltage window | n/a |
+| Nominal MPPT voltage | `VmppNom`, for the nominal string length | The longest string that fits |
+| Efficiency | The efficiency curves, by power and by voltage | The euro efficiency, else 97 % |
+| Threshold, clipping, night consumption | The threshold power, the nominal AC power, the night loss | n/a |
+
+An MPPT is an inverter input that tracks its own best operating point; a
+string is a chain of modules wired in series. In the options Rooftop
+proposes, no MPPT carries more strings than its current per MPPT allows. An
+option of your own is not held to that limit: **MPPT loading** shows each
+MPPT against it.
+
+## Other files Rooftop opens
+
+| File | Where | What it takes |
+| --- | --- | --- |
+| Project file, `.rtd` | **Open a project**, on Home or in the project switcher | A project file saved by Rooftop, format 1 or 2. See [Your designs and the project file](/docs/rooftop/projects) |
+| Drawing, KMZ, KML or DXF | **Import a drawing**, on Home or in the project switcher | The roof and its obstacles. A DXF needs its place and its units, metres or millimetres. See [Find the roof](/docs/rooftop/find#import-a-drawing) |
+| Weather, `.csv` or `.txt` | **CSV file** in Performance's **Weather** list | Hourly values with times in UTC. See [Performance](/docs/rooftop/performance#your-own-csv) |
+| Module, `.pan` | **Choose a module** | As above |
+| Inverter, `.ond` | **Choose an inverter** | As above |
+
+## Limits
+
+| What | Limit |
+| --- | --- |
+| Roof outline | Three corners at least, enclosing an area, with no two edges crossing |
+| Roof area | 30,000 m², about 3 MWp. Outline each building of a larger site as its own design |
+| Modules on a roof | No limit beyond the roof |
+| Design name | 1 to 200 characters |
+| Downloaded file names | Made from the design's name, 80 characters at most, then the ending |
+| Module or inverter file | 256,000 characters |
+| Weather CSV | 3 MB; a whole year, 8,760 hours or 8,784 in a leap year |
+| Project file | About 6 MB: "larger than any project this app saves" |
+| KML inside a KMZ | 20 MB |
+| Place search | Five places offered at most |
+| System voltage | 600, 1000 or 1500 V |
+| Stringing options | Five at most, lettered A to E, then your own |
+| Your own option | Any series length, strings and inverters that fit; 1 to 200 inverters |
+| Exceedance levels | Up to three, from P50 to P99 |
+
+A system voltage is set for the country you work from when a design starts
+without one: 600 V in the United States, its territories and Canada, 1000 V elsewhere.
+Rooftop never raises it; equipment rated lower sizes the strings to its own
+rating.
+
+## Glossary
+
+| Term | Meaning |
+| --- | --- |
+| ACDB | AC distribution board: where the inverters' AC cables meet before the meter |
+| Albedo | The share of light the roof surface reflects; 0.20 by default |
+| Availability | The share of the year the system runs |
+| Azimuth | The direction the modules face, in degrees clockwise from north |
+| Bifacial | A module that also turns light on its back into power; its bifaciality is how much, against the front |
+| Capacity factor | The year's energy over what the system would give at full AC power every hour of the year; CUF in the summary |
+| Cell rise | How much warmer than the air the cells run in full sun, used to size strings: 25 °C on a flat roof, 35 °C on a sloped one |
+| Clearance | The margin kept free of modules around each obstacle |
+| Clipping | Energy lost when the array gives more than the inverter's AC power |
+| DC/AC ratio | The array's DC rating over the inverters' AC rating; the target is 1.10 to 1.30 |
+| Design day | The day the shade-free window is checked on: the winter solstice of the hemisphere unless you choose another |
+| DHI, DNI, GHI | Diffuse horizontal, direct normal and global horizontal irradiance |
+| Electrical shading | The loss beyond the shaded area itself, because a shaded cell holds back its bypass section and its string |
+| Far shading | Light lost to the horizon: hills and buildings far from the roof |
+| GCR | Ground coverage ratio: the length of a table up its slope over the row pitch |
+| IAM | Incidence angle modifier: light reflected off the glass when it arrives at a low angle |
+| In-plane irradiation | The light reaching the plane of the modules over the year |
+| Kept clear | An area of the roof left empty because an obstacle or the parapet shades it in the shade-free window |
+| Lens | One of the Studio's four views of the design: Roof, Array, Sun, Strings |
+| LID | Light-induced degradation: the loss of a module's first hours in the sun |
+| MPPT | Maximum power point tracker: an inverter input that tracks its own best operating point |
+| Near shading | Light lost to the shadows of rows, obstacles and the parapet on the roof |
+| OND | The PVsyst file of an inverter |
+| P50, P75, P90 | The energy of a year reached or exceeded in 50, 75 or 90 years out of 100 |
+| PAN | The PVsyst file of a module |
+| Parapet | The low wall around a flat roof's edge; its shadow is counted |
+| Performance ratio (PR) | The share of the energy the modules would give at their rating, under the light they receive, that reaches the grid |
+| Position | A place on the roof where a module fits; an option may leave some unused |
+| Project file | The `.rtd` file that carries a design to another device or a colleague |
+| Row pitch | The distance from one row to the same point of the next |
+| Setback | The clear margin kept between the roof edge and the modules |
+| Shade-free window | The hours of solar time on the design day in which rows and obstacles must not shade the modules; 09:00 to 16:00 by default |
+| Solar time | Time by the sun: noon is when the sun stands highest. No time zone is used |
+| Specific yield | The year's energy for each kWp of modules, in kWh/kWp |
+| STC | Standard test conditions: 1000 W/m², 25 °C cells, the conditions of a module's rating |
+| String | A chain of modules wired in series to one MPPT |
+| Table | One mounting unit: a run of modules side by side in a row, with every module up its slope |
+| TMY | Typical meteorological year: a year of hourly weather made up of typical months |
+| Uc | The thermal loss factor of the modules, in W/m²K: the higher, the cooler they run |
+| Voc cold | A string's open-circuit voltage at the lowest ambient: what must stay under the system voltage and the equipment's ratings |
+| Walkway | An aisle kept free of modules across the rows, every so many modules or rows |
+
+## Next
+
+<Cards>
+  <Card title="Troubleshooting" href="/docs/rooftop/troubleshooting" description="The messages of the app, what each means and what to do" />
+  <Card title="Getting help" href="/docs/rooftop/support" description="The help in the app, these pages, and SolarLayout" />
+</Cards>

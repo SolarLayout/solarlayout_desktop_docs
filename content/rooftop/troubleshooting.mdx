@@ -1,0 +1,187 @@
+---
+title: Troubleshooting
+description: The messages SolarLayout Rooftop shows, grouped by where you meet them, with what each means and what to do.
+---
+
+SolarLayout Rooftop says what went wrong where it happens, in plain words,
+and keeps what it had before: a failed run leaves the figures of the design
+before, a refused file leaves the file before. This page lists the messages
+by where you meet them. A word in *italics* stands for a value the app fills
+in: a name, a number, a file.
+
+A result that does not fit is marked with an exclamation mark, never a
+cross; a tick means it fits.
+
+If a message says to report it, or a fault comes back after **Try again**,
+write to SolarLayout as [Getting help](/docs/rooftop/support) describes, with
+the message word for word and the design's project file.
+
+## Anywhere in the app
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| "The server cannot be reached. Check the connection and try again." | The device is offline, or the connection dropped | Check the connection, then **Try again** |
+| "The server answered *n* in a form that cannot be read. Try again; if it fails again, report it." | The server's answer could not be read | **Try again**; report it if it repeats |
+| "The server could not finish this request. Try again; if it fails again, report it." | A fault on the server | **Try again**; report it if it repeats |
+| "Something went wrong in the app: *what*. Try again; if it fails again, report it." | A fault in the page itself | **Try again**, or reload the page; report it if it repeats |
+| "This browser cannot draw the roof in 3D." | The browser has no 3D drawing (WebGL) | A flat plan stands in. Use another browser for 3D |
+| "The browser stopped drawing the roof in 3D." | The browser gave up its 3D drawing | A flat plan stands in. Reload the page for 3D |
+
+## Saving and opening designs
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| **Not saved** in the top bar; "Not saved on this device" in the notes, with the browser's reason | The browser refused to keep the design, for example in a private window or when its storage for the site is full | Save a copy of the project file at once, then **Try again**. The next change tries again too |
+| "*reason* The demo is open instead." | The design that was open could not be read from this device | Open another design from Home, or a project file |
+| "That design is no longer on this device." | It was deleted from this device | Open it from its project file, if you have one |
+| "A name is needed" | A design's name cannot be empty | Type a name, up to 200 characters |
+
+## Opening a project file
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| "Choose a project file (.rtd)." | The file does not end in `.rtd` | Choose the `.rtd` file Rooftop saved |
+| "This file is larger than any project this app saves, so it cannot be opened." | The file is over about 6 MB | It is not one Rooftop made |
+| "The file could not be read. Choose another." | The browser could not read it from the disk | Save a fresh copy from the device that has the design |
+| "The file is not a project file (.rtd): …" | The file is damaged, or is another kind of file | Save a fresh copy, and open that |
+| "The project file cannot be opened: *reason*" | Part of the design in the file is not valid | Save a fresh copy from the device that has the design |
+| "This project file is format *n*. This version reads formats 1 and 2. Open it with a newer version of the app." | The file comes from a newer Rooftop | Reload the page, then open the file again |
+| "The *module* file *name* (PAN) is not included in this project. Choose it again." | An older file named its module, inverter or CSV weather but did not carry it | Choose the module, the inverter or the weather again |
+
+## Find
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| "The map is not available" · "This app has no key for the imagery." | The satellite map cannot be shown | Use **Enter dimensions by hand instead** |
+| "This browser cannot draw the map" | The browser has no WebGL | Try another browser, or enter the roof by its measurements |
+| "The imagery does not load" | The satellite tiles did not arrive | Check the connection and try again, or enter the roof by its measurements |
+| "Words cannot be searched for without a map key. Paste coordinates or a maps link instead." | The address search is not available | Paste coordinates or a maps link |
+| "The address search is not available right now. Paste coordinates or a maps link instead." | The address search answered with an error | Paste coordinates or a maps link |
+| "The search cannot be reached. Check the connection and try again." | The connection dropped | Check the connection |
+| "The search answered *n*. Try again in a moment." · "The search answered in a shape that cannot be read." · "The search failed. Try again." | The address search did not give a usable answer | Try again, or paste coordinates |
+| "Nothing found for “*text*”. Try a fuller address, or paste coordinates." | No place matches | Add the city or the area, or paste coordinates |
+| "Your location is not available. Allow it in the browser, or search for the address." | The browser refused or could not find your location | Allow location for the site, or search |
+| "These look like coordinates, but … cannot be read." | A latitude or longitude is not in a form Rooftop reads | Write them as `12.91409, 77.49199` or `12°54′50.74″N 77°29′31.16″E` |
+| "Only the latitude is here." or "Only the longitude is here." | One of the two is missing | Add the other |
+| "Both are marked …" | Both values carry N or S, or both E or W | The latitude takes N or S, the longitude E or W |
+| "−*n* is marked N" (or E) | A minus and a letter disagree | Keep the minus or the letter, not both |
+| "Minutes and seconds go up to 59." | A value of 60 or more | Check where it was copied from |
+| "The latitude comes first, and *n* is more than 90°. Did you mean this?" | Latitude and longitude are the wrong way round | Take the swap offered |
+| "A latitude goes up to 90°" or "A longitude goes up to 180°" | The value is out of range | Check where it was copied from |
+| "No footprint known here" | **Detect building** has no footprint at that point | Outline the roof by its corners or as a rectangle |
+| "The outline could not be shown on the map." | The open design's outline could not be placed on the map | Go back to the Studio and press **Edit** again |
+| "The roof could not be built. Try again." | **Build this roof** did not reach the server or failed | Try again |
+| "The outline crosses itself. Move the corners so that no two edges cross." | Two edges of the outline cross | Drag the corners into order around the roof |
+| "This outline covers *n* m². SolarLayout designs one roof at a time, up to 30,000 m² (about 3 MWp). …" | The roof is larger than one design takes | Outline each building as its own design |
+
+## Importing a drawing
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| "*name* is not a KMZ, KML or DXF file. Choose a file with one of these endings." | The file's ending is another | Export the roof as KMZ, KML or DXF |
+| "A DXF drawing does not say where the roof is. Give its latitude and longitude." | A DXF has no place | Search for the place, or type **Latitude** and **Longitude** |
+| "*file* has no KML file inside." | The KMZ is empty or holds no KML | Export it again from its program |
+| "*file*: the KML inside is larger than 20 MB. Export the roof and its obstacles alone." | The drawing holds far more than the roof | Export only the roof and its obstacles |
+| "*file* is not a KML file that can be read: …" · "*file* is not a DXF file that can be read: …" | The file is damaged or not what its ending says | Export it again |
+| "*file* has no polygon to use as the roof." · "*file* has no closed polyline to use as the roof." | No closed shape to take as the roof | Close the roof's outline in the drawing |
+| "The content of *name* is not valid base64." · "The file could not be read. Choose another." | The file did not arrive whole | Choose it again |
+| "These obstacles have no height in the file and were set to 1.0 m." | Some shapes carried no `h=` height | Press **Review** in the Roof lens and set each height |
+
+## The Studio: roof, array and module
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| "*max* *unit* is the highest that can be set." · "*min* *unit* is the lowest that can be set." | A value outside the field's range was set to the nearest end | Enter a value within the range |
+| "Enter a number, from *min* to *max* *unit*." | The field holds no number | Enter one |
+| **The layout was not updated**, with the reason, and **Try again**; "Layout was not updated" in the notes | The roof could not be laid out again | Act on the reason, or **Try again** |
+| "The roof outline encloses no area. Give at least three corners that are not on one line." | The outline is a line or a point | Edit the outline on Find |
+| "The roof outline crosses itself. Give the corners in order around the roof." | Two edges cross | Edit the outline on Find |
+| **No module fits on this roof** · "Inside the edge setback and clear of shadows there is no room for a module. …" | The setback, the clearance and the shaded areas leave no room | In the [Roof lens](/docs/rooftop/roof), check the outline, a smaller setback or clearance, and the obstacles' heights; or allow shaded positions in the Array lens |
+| "*file* gives no size of the module (Width and Height). The layout needs it: choose a PAN file that has it." | The PAN file has no size | Choose another module, or a PAN file with its size |
+| **This module was not loaded** · "*reason*. The module of before is kept." | The file was refused | Act on the reason |
+| "*file*: not a PVsyst module file (PNom, Voc or Isc missing)" | The file is not a PAN file | Choose the module's PAN file |
+| "Voc coefficient *x* %/°C is outside the usual −0.35 to −0.20 %/°C for crystalline silicon. …" | The coefficient may be wrong in the file | Check the datasheet, and enter the coefficient under the sizing temperatures in the [Strings lens](/docs/rooftop/strings) if it differs |
+| "*file* could not be loaded from the app's library (HTTP *n*). Try again." · "The equipment catalog could not be loaded (HTTP *n*). Try again." | The library did not arrive | Check the connection, then **Try again** |
+| "No module in the app matches “*text*”." · "No module in the app within these filters." | Nothing in the library matches | **Clear the search** or **Clear the filters**, or use a PAN file of your own |
+
+The setback is the clear margin kept between the roof edge and the modules.
+
+## The Studio: sun and strings
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| "The sun is down" · "The sun was not fetched" · "The sun's day is on its way" | No sun at the hour shown, or the day has not arrived | Move the hour into the day, or wait |
+| "The sun stays below the horizon all day" · "… above the horizon all day" | Polar night or polar day at this latitude | Choose another day |
+| "The shade map follows the design run" · "The strings follow the design run" | The run of the layout on screen is on its way | Wait for it |
+| "Far shading: not counted, PVGIS sent no horizon for this site" | PVGIS sent the weather without its horizon | Know that the year's figures leave far shading out |
+| "Far shading: no horizon profile for this weather source" | NASA POWER and CSV weather carry no horizon | Use PVGIS TMY to count far shading |
+| "Strings sized to *n* V, this inverter's limit" (or module's) | The equipment is rated under the voltage you chose; the strings follow the rating | Take the voltage offered with **Use *m* V**, or keep yours |
+| "This inverter takes up to *r* V. Raise it only if the site's code allows." | A higher voltage would suit the equipment | Raise it only where the code allows |
+| "No string length fits under *v* V; at *w* V one does. …" | Only a higher voltage gives a string that fits | Raise it only where the code allows |
+| **No string length fits this inverter** · "… at least *n* modules are needed for the *m* V MPPT minimum, but at most *k* fit under *L* V." | The shortest string is longer than the longest allowed | Change the system voltage, the inverter or the sizing temperatures |
+| **Too few positions for a string** · "The roof holds *n* positions, and a string takes *a* to *b* modules. …" | The roof holds too few modules for the inverter's string | **Add your own** at the length the message names, or choose an inverter that takes shorter strings |
+| "Over the current of an MPPT, or its limit not known: see the MPPT loading" | An option in target loads an MPPT past its limit, or the limit is not known | Read **MPPT loading** |
+| **Over the limit** | An MPPT carries more current than its limit | Choose another option, or an inverter that takes more current per MPPT |
+| **Limit not known** | The OND file gives no current limit per MPPT | **Enter the current per MPPT**, and give the datasheet value |
+| "Current per MPPT not in the OND" | The OND gives no current limit, and none is entered | Enter the datasheet value under **Inverter limits and cabling** |
+| **This inverter was not loaded** · "*reason*. The inverter of before is kept." | The file was refused | Act on the reason |
+| "*file*: not a PVsyst inverter file (PNomConv or VMPPMax missing)" | The file is not an OND file | Choose the inverter's OND file |
+| "No inverter in the app matches “*text*”." · "No inverter in the app within these filters." | Nothing in the library matches | Clear the search or the filters, or use an OND file of your own |
+| "*s* strings cannot fill *k* inverters" · "Each inverter needs a string at least. …" | Your own option has more inverters than strings | **Change** your option, or **Remove** it |
+| "*n* in series does not fit at *V* V" | Your own string is too long for the voltage or the MPPT maximum, or too short for the MPPT minimum | **Change** to a length within the range shown, or **Remove** it |
+
+A string is a chain of modules wired in series; an MPPT is an inverter
+input that tracks its own best operating point. The DC/AC ratio, the array's
+DC rating over the inverters' AC rating, is aimed at 1.10 to 1.30.
+
+## Performance and weather
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| **Energy was not updated** · **Values are of the design before** | The last run failed; the figures are of the design before the change | Read the reason under it, then **Try again** |
+| **Energy was not computed** · **There are no values yet** | The first run failed | Read the reason, then **Try again** |
+| **The weather was not loaded**, with the reason | The weather source was not loaded; the weather before stays | See the reasons below |
+| "*source* has no weather for *lat*, *lon*: … Check the site, or choose another weather source." | The service holds no weather for this place | Check the roof's place, or choose another source |
+| "*source* could not be reached. Check the connection and try again, or choose another weather source." | The service did not answer | Try again, or choose another source |
+| "*source* answered in a form that cannot be read. …" · "*source* failed: it answered *n*. …" | The service had a fault | Try again later, or choose another source |
+| "This project has no weather for *lat*, *lon* yet. Load the *source* weather first." · "The weather in this project is … not for this site or source. …" | The weather does not belong to the roof's place | Choose the weather source again in **Weather** |
+| "This file is over 3 MB, more than a year of weather takes. Choose a file of hourly values." | The CSV is too large | Give a year of hourly values |
+| "The file could not be read (…). Choose another." · "Choose a CSV weather file." | The browser could not read it, or it is empty | Choose the file again |
+| "*file*: no column named any of …" | A needed column is missing or named otherwise | Name the time and global irradiance columns as [Performance](/docs/rooftop/performance#your-own-csv) lists |
+| "*file* cannot be read as a table of hours: …" · "*file* has no hours: below its header there is no row." | The file is not a table, or holds no rows | Save it again as a CSV with a header row |
+| "*file*: the time cannot be read in *n* rows, the first of them row *r* (…). Write it as 2023-06-01 13:00, in UTC." | Some times are in a form Rooftop cannot read | Write every time as the message shows |
+| "*file*: *n* hours are there more than once, …" | An hour appears twice | Keep each hour once |
+| "*file* has *n* hours, not the 8,760 of a year (8,784 in a leap year). …" | The file is not a whole year | Give every hour of a year once |
+| "*file*: *column* has no value in *n* rows, …" | A column has empty cells. Missing irradiance is never taken as zero | Fill the gaps. Beam and diffuse can instead be left out together: they are then worked out from the global irradiance |
+
+The notes Rooftop adds to a CSV it accepts, on missing beam and diffuse,
+temperature or wind, a time step under an hour, irradiance below zero or
+gaps in the temperature, are listed on the Performance page with what each
+means.
+
+## Handover
+
+| Message | What it means | What to do |
+| --- | --- | --- |
+| "The files were not updated" · "They are of the design before" | The last run failed; the files are those of the design before | **Try again** |
+| "The files were not made" · "There are no files yet" | The run failed before any files | **Try again** |
+| A card with the run's reason and **Open the Strings lens** | The run has no stringing options yet | Act on the reason it gives |
+| "The pages were not updated" · "They are of the design before" | The report's preview pages failed after a change | **Try again** |
+| "The pages were not made" · "There is no preview yet" | The report's preview pages failed | **Try again** |
+| "The hourly data was not made" · "There is no preview yet" | The CSV's preview failed | **Try again** |
+| A note with the reason and **Try again** | A download failed | **Try again** |
+| "Choose a stringing option first. This design has …" · "This design has no option *x*. …" | The file needs an option the design does not have | Choose an option in Performance or the Strings lens |
+| "The table could not be copied. Select it and copy by hand." | The browser refused the clipboard | Select the table and copy it |
+
+<Callout type="info">
+Free, no account needed. Your designs are kept on this device, so
+SolarLayout cannot see a design you report. Send its project file: **Save a
+copy** in the project switcher.
+</Callout>
+
+## Next
+
+<Cards>
+  <Card title="Getting help" href="/docs/rooftop/support" description="The help in the app, these pages, and SolarLayout" />
+  <Card title="Reference" href="/docs/rooftop/reference" description="The equipment files, the limits and the terms" />
+</Cards>

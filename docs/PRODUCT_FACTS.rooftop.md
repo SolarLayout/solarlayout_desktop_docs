@@ -1182,7 +1182,7 @@ All marks are a tick (`fits`) or an exclamation mark (`note`). There is no cross
 | `The shade map follows the design run` | Run not of the layout shown | ring | WEB/lib/scene/shade-map.ts:68 |
 | `Far shading: not counted, PVGIS sent no horizon for this site` | PVGIS weather that came without its horizon | none | CORE/readouts.py:253-254 |
 | `Far shading: no horizon profile for this weather source` | Weather without a horizon (non-PVGIS) | none | CORE/readouts.py:255-256 |
-| `Choose a system voltage to size the strings` / `600, 1000 or 1500 V. Nothing is sized until you choose.` | Project without a voltage | n/a | CORE/readouts.py:19-20; API/services/design.py:34-36 |
+| `Choose a system voltage to size the strings` / `600, 1000 or 1500 V. Nothing is sized until you choose.` | Project without a voltage: the API's answer. The web app gives every design a voltage, so its user does not meet it (WEB/lib/stores/project-store.ts:50-55) | n/a | CORE/readouts.py:19-20; API/services/design.py:34-36 |
 | `Sizing the strings for <v> V` | Waiting for the run of the voltage | ring | WEB/components/studio/SeriesRange.tsx:53-56 |
 | `Strings sized to <n> V, this inverter's/module's limit` (+ `Your system is set to <v> V. The bill of materials follows the voltage set.`) | User's voltage above an equipment rating | ! | WEB/lib/studio/voltage-words.ts:88-95 |
 | `This inverter/module takes up to <r> V. Raise it only if the site's code allows.` (`1000 V is taken for this module: its file gives no limit. Raise it only if the site's code allows.` for a taken rating) | Rating above the voltage | none (button) | WEB/lib/studio/voltage-words.ts:75-76 |
@@ -1358,7 +1358,7 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 | Run failed | **Energy was not updated** · **Values are of the design before** · **Try again** / **Energy was not computed** · **There are no values yet** | WEB/components/shell/vitals-view.ts:66-68 |
 | Server fault | "The server could not finish this request. Try again; if it fails again, report it." | API/errors.py:28 |
 | App fault | "Something went wrong in the app: {what}. Try again; if it fails again, report it." | WEB/lib/flow/design-flow.ts:56-63; WEB/components/performance/use-weather-load.ts:20-24 |
-| No voltage | **Choose a system voltage to size the strings** / "600, 1000 or 1500 V. Nothing is sized until you choose." | CORE/readouts.py:19-20 |
+| No voltage | **Choose a system voltage to size the strings** / "600, 1000 or 1500 V. Nothing is sized until you choose." (the API's; not met in the web app, which gives every design a voltage) | CORE/readouts.py:19-20; WEB/lib/stores/project-store.ts:50-55 |
 | No positions | **No module fits on this roof** / "Inside the edge setback and clear of shadows there is no room for a module. Check the outline, the setback and the obstacles." | API/services/design.py:28-33 |
 | Too few positions | **Too few positions for a string** / "The roof holds {n} positions, and a string takes {min} to {max} modules. A string of {k} would fit: add it as your own option." (or "No string of that length fits.") | API/services/design.py:238-253 |
 | No-options button | **Open the Strings lens** | WEB/components/shell/NoOptionsCard.tsx:34 |
@@ -1380,7 +1380,7 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 | CSV no rows | "{file} has no hours: below its header there is no row." | CORE/csv_weather.py:59-60 |
 | CSV bad times | "{file}: the time cannot be read in {n} rows, the first of them row {r} ({value}). Write it as 2023-06-01 13:00, in UTC." | CORE/csv_weather.py:62-69 |
 | CSV repeated hours | "{file}: {n} hours are there more than once, the first of them {YYYY-MM-DD HH:MM}. Every hour may be there once." (with "hour is" for one) | CORE/csv_weather.py:70-77 |
-| CSV gaps | "{file}: {column} has no value in {n} rows, the first of them row {r}. Fill the gaps, or leave the column out." | CORE/csv_weather.py:103-125 |
+| CSV gaps | Wind with gaps, or a temperature column with no value at all: "{file}: {column} has no value in {n} rows, the first of them row {r}. Fill the gaps, or leave the column out." Gaps in some temperature rows are filled and noted; irradiance has its own refusal (below) | CORE/csv_weather.py:101-113, 162-171 |
 | CSV irradiance with no value | A blank or unreadable GHI cell is refused, and DNI or DHI when both are given: "<file>: <column> has no value in <n> rows, the first of them row <r>. Fill the gaps: an hour without its irradiance is not an hour of none." (DNI, DHI: "… Fill the gaps, or leave out both beam and diffuse.") The column is named as the file names it | CORE/csv_weather.py:40, 80-100 |
 | CSV notes | "{file} has no beam and diffuse irradiance. They were worked out from the global irradiance (Erbs model), which is less exact than measured values." · "{file} has no air temperature. 25 °C was taken for every hour, so the strings are sized for 25 °C. Enter the site's lowest and highest ambient in the Strings lens." · "{file} has no wind speed. 1 m/s was taken for every hour." · "{file} gives the weather every {m} minutes. Each hour is the average of its rows (the simulation takes a row as an hour)." · "{file} has irradiance below zero in {n} rows. It was taken as 0." · "{file} has no air temperature in {n} rows. It was taken from the hours on either side." | CORE/csv_weather.py:128-172; CORE/weather.py:278, 289-290 |
 | Chain | **From sunlight to the grid** · LID placeholder "PAN {x}" / "default {x}" · "PAN gives {x} %" · **Use the PAN's** · **Use the default** · "The module is monofacial: no rear gain." | WEB/components/performance/LossChain.tsx:57; WEB/lib/performance/loss-fields.ts:65, 70-75 |
@@ -1403,14 +1403,30 @@ The demo is the Pune demo roof: a 90 × 40 m flat roof at 18.52, 73.86, with fla
 #### Product issues noticed (this area)
 - **Rear-gain switch on sloped flush roofs.** The **Bifacial rear gain** switch stays enabled on a Sloped, flush roof with a bifacial module, but the engine applies no rear gain there and nothing says why (CORE/simulation.py:107; WEB/lib/performance/loss-fields.ts:79-82).
 - **Horizon diffuse in the wrong row.** The diffuse light the horizon hides is booked in **Near shading, linear**. **Far shading, horizon** counts only the beam (CORE/geometry.py:315-341; CORE/simulation.py:249-251).
-- **Engine column names in the CSV gap message.** The message uses `temp_air`, `wind_speed`, `dni` or `dhi`, not the user's column name. "Row {r}" counts data rows below the header, not lines of the file (CORE/csv_weather.py:105-124).
+- **Engine column names in the CSV gap message.** The remaining gap message (wind, or a temperature column with no value) uses `temp_air` or `wind_speed`, not the user's column name. "Row {r}" counts data rows below the header, not lines of the file (CORE/csv_weather.py:101-113).
 - **"Hourly" in the copy.** The CSV copy says "hourly" (WEB/lib/performance/weather-csv.ts:8, 10, 23; WEB/lib/flow/weather-source.ts:20), but the engine also accepts sub-hourly rows and averages them (CORE/weather.py:291-295).
+
+### Confirmed while writing the pages (at `960c4b1`)
+
+| Item | Value | Source |
+|---|---|---|
+| Performance, top to bottom | Header, figures, the chain from sunlight to the grid, energy by month, 25 years, Assumptions, Summary. On a computer the chain stands at the left and the charts at the right; on a tablet the charts stand side by side | WEB/components/performance/Performance.tsx:28-33, 94-120 |
+| Figure tiles, in order | Performance ratio, Specific yield, Capacity factor AC, In-plane irradiation, Energy over 25 years, CO₂ avoided | WEB/lib/performance/kpis.ts:28-45 |
+| Roof albedo | **Roof albedo** in Assumptions and **Albedo** in the Roof lens are one value. Changing it runs the design but does not lay the roof out again | WEB/lib/performance/assumption-fields.ts:87, 97-98; WEB/lib/studio/roof-fields.ts:21, 29; WEB/lib/flow/edit-parts.ts:6-17, 36-42 |
+| Download all | At the head of Handover's list, beside the title; enabled once any file other than the project file can be made | WEB/components/handover/DeliverableList.tsx:57-80 |
+| Previews that fail | The report's pages and the hourly data's preview carry **Try again** | WEB/components/handover/ReportPreview.tsx:14, 103; WEB/components/handover/HourlyPreview.tsx:17, 63 |
+| Present, the ground | Follows the Studio's Layers choice: the satellite image only when **Satellite imagery** is on | WEB/components/scene/Scene.tsx:75-76; WEB/lib/stores/view-store.ts:204-207 |
+| Present, the day | Scene 4 plays the Sun lens's day, the design day unless another is chosen | WEB/lib/flow/design-flow.ts:172-176; WEB/components/present/Present.tsx:70-73 |
+| Present, the panels | 1: roof area, latitude, longitude; 2: obstacles, size, parapet; 3: positions, rows, tilt; 4: solar time, sun height, bearing; 5: DC capacity, strings, inverters; 6: energy, yield, PR | WEB/lib/present/scene-panel.ts:122-175 |
+| Present, the motion | The camera tilts from plan into 3D over scene 1 and holds; the energy counts up over the first 6 s of scene 6, then holds | WEB/lib/present/tour.ts:69, 73-145 |
+| Present button | An icon alone from a top bar of 820 px; its word from desktop width | WEB/components/shell/TopBar.tsx:46-55, 115-117 |
+| A number field's words | "Enter a number, from <min> to <max> <unit>." when the entry is not a number; a value out of range is clamped with "<max> is the highest that can be set." / "<min> is the lowest that can be set." | WEB/components/ui/number-entry.ts:44-57, 74-84 |
 
 ## 6. Handover and the project file
 
 ### Handover: the screen
 
-Repo commit 75591f2. `WEB` = `apps/web`, `API` = `apps/api/src/rooftop_api`, `CORE` = `apps/api/src/rooftop_core`, `HELP` = `apps/web/content/help`. Other paths are from the repo root.
+Verified at the commit in the header. `WEB` = `apps/web`, `API` = `apps/api/src/rooftop_api`, `CORE` = `apps/api/src/rooftop_core`, `HELP` = `apps/web/content/help`. Other paths are from the repo root.
 
 | Item | Value | Source |
 |---|---|---|
