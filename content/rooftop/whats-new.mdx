@@ -13,18 +13,31 @@ newest first.
   says: "Your designs are kept on this device."
 - **Sloped from Find.** A roof built on Find as **Sloped, flush** gets the
   roof Sloped gives in the Roof lens: no parapet, and a pitch of 10° where it
-  had none. It no longer starts flat behind a 0.9 m parapet.
+  had none.
 - **PVGIS weather without its horizon says so.** When PVGIS sends a site's
   weather without its horizon, the Sun lens reads "Far shading: not counted,
   PVGIS sent no horizon for this site", and Performance notes the same. The
   next time the weather loads, PVGIS is asked again.
 - **The east-west ridge line.** On an east-west roof, the Array lens says
-  "The ridges run square to the roof edge closest to the equator", as the
-  units are laid.
+  "The ridges run square to the roof edge closest to the equator".
 - **Your own option on a small roof.** When a roof holds too few positions
   for the run's options but one string fits, **Add your own** stands under
   the message in the Strings lens, set to that string. **Add** builds it and
   chooses it.
+- **A weather CSV is a whole year.** A file of other than 8,760 hours (8,784
+  in a leap year) is refused: the energy of a year needs every hour of it. A
+  blank or unreadable global irradiance cell is refused with its row, and so
+  is one of beam or diffuse when the file gives both. Irradiance below zero, taken as 0, and gaps in the air
+  temperature, filled from the hours on either side, are noted.
+- **Sloped roofs face their slope.** Modules on a sloped, flush roof face its
+  **Faces**, whatever azimuth the array kept from a flat roof.
+- **A row pitch under a table's depth says so.** One entered under a table's
+  depth on plan plus 0.3 m is raised to it, with a note to review.
+- **The Voc coefficient that sizes the strings.** Under **Sizing
+  temperatures**, the field gives the one-diode model's coefficient the strings
+  are sized with, unless you enter one.
+- **A module file without a voltage rating.** It is taken as 1000 V, and the
+  Strings lens says the limit was taken, not given by the module.
 
 ## Next
 

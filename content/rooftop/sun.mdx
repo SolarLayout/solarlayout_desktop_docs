@@ -1,0 +1,181 @@
+---
+title: The Sun lens
+description: The day and the hour on the roof, the sun's path and the engine's shadows, the shade map of every position, and shading over the year.
+---
+
+The **Sun** lens in SolarLayout Rooftop shows the sun on the roof: its path
+on a day you choose, its shadows hour by hour, and what shading costs each
+position over a year of the site's weather. The day and the hour change what
+you see, never the design. The layout keeps its design day, set in the
+[Array lens](/docs/rooftop/array#shade-free-window), and the shading figures
+cover the whole year.
+
+The lens opens at `/studio/sun`, on its **Shadows** tab. Its two tabs, at the
+top of the inspector:
+
+| Tab | Sections |
+| --- | --- |
+| **Shadows** | **Day**, **Sun at …**, **Shading over the year**, **On the roof** |
+| **Shade map** | **Shade map**, **Shading over the year** |
+
+Leaving the lens takes it back to **Shadows**.
+
+**Every time in the Sun lens is solar time**, not clock time: noon is when
+the sun stands highest. No time zone is used. The timeline says so, `solar
+time`.
+
+<Screenshot id="rooftop-sun-lens" />
+
+## The day
+
+| Field | Default | Choices | What it does |
+| --- | --- | --- | --- |
+| **Day** | The design day | **21 Dec**, **21 Mar**, **21 Jun**, **Any date** | The day whose sun, path and shadows are shown |
+| **Day**, **Month** (with **Any date**) | The day shown | 1 to 31; January to December | Any day of the year |
+
+The design day is the winter solstice of the roof's hemisphere (21 December
+in the north, 21 June in the south) unless the array has a design day of its
+own. The line under the choices says which it is: `21 December is the design
+day: the winter solstice for this hemisphere`, or that the date is the design
+day of the array. With **Any date** it reads the day's number in the year and
+the design day.
+
+- A day past the end of its month is taken as the month's last day. The year
+  has 365 days, with no leap day.
+- Choose the date of the design day and the view follows the design day,
+  even if the array's design day changes later.
+- **[** and **]** step a day back or forward, round the year.
+
+On a computer the line under the lens title names the day and the window,
+for example `21 December · winter solstice · shade-free from 09:00 to 16:00`.
+The equinoxes are named too.
+
+## The sun at the hour
+
+The hour is set on the timeline at the foot of the 3D view. It starts at
+10:30 and runs from sunrise to sunset, each rounded inward to the quarter
+hour; on a day the sun never rises or never sets, it runs the whole day and
+says `The sun stays below the horizon all day` or `The sun stays above the
+horizon all day`.
+
+| To | Do |
+| --- | --- |
+| Move a quarter hour | **←** or **→**, or drag the timeline |
+| Move an hour | **,** or **.**, or **Page Up** and **Page Down** on the slider |
+| Move a day | **[** or **]** |
+| Play the day | The play button: a quarter hour every 250 ms to the end of the day, then it stops. Played from the end, it starts again at the start of the timeline. With reduced motion, an hour a second |
+
+The timeline's marks are sunrise, the start and end of the shade-free window,
+noon, and sunset. On a phone the timeline sits at the top of the sheet and
+gives the window, **Shade-free** `<from> – <to>`.
+
+The section **Sun at** and the hour shows two tiles:
+
+| Tile | What it says |
+| --- | --- |
+| **Height** | The sun's elevation above the horizon, to 0.1° |
+| **Bearing** | Where the sun stands, measured from the nearer of south and north, for example `56.6° W of south`; along a compass line, `due south`, `due north`, `due east` or `due west` |
+
+With no tiles the section says `The sun is down`, `The sun's day is on its
+way`, or `The sun was not fetched` if working it out failed.
+
+On a tablet or a computer the sun on its path carries a callout: the hour,
+marked `start of the shade-free window` or `end of the shade-free window`
+where it is one, and `Sun … high`, with its bearing.
+
+## On the roof
+
+Three switches choose what is drawn over the roof. They change nothing of the
+design.
+
+| Switch | Default | What it draws |
+| --- | --- | --- |
+| **Sun path** | On | The arc the sun follows on the day shown, marked at sunrise, the ends of the shade-free window, noon and sunset |
+| **Shade-free window** | On | The part of the arc inside the shade-free window, drawn thicker. Dimmed, and cannot be turned, while **Sun path** is off |
+| **Calculated shadow outlines** | Off | The engine's shadows of the parapet and the obstacles on the roof surface at the day and hour shown, dashed over the shadows the view draws |
+
+Where the dashed outlines and the drawn shadows agree, the view is true. The
+outlines are asked for once the hour stands still for a moment, and are shown
+only while they belong to the hour on screen.
+
+<Screenshot id="rooftop-sun-outlines" />
+
+## Shade map
+
+The **Shade map** tab colours each position of the layout by its near
+shading over the year, from the design run. Near shading is the light lost to
+shadows on the roof: the direct light shaded by the rows in front, the
+parapet and the obstacles, and the part of the sky hidden from the module. It
+is a share of the light that gets past the horizon. Every position is
+coloured, those an option leaves unused too.
+
+| Part | What it shows |
+| --- | --- |
+| Scale | From 0 to the first of 1, 2, 5, 10, 20, 50 or 100 % that holds the largest loss, in five equal steps |
+| Legend on the stage | `Near shading over the year`, the marks of the scale (on a phone, its two ends), and `Of all … positions` |
+| Inspector | Each step's range, as `… to … %`, with how many positions fall in it |
+
+Select a module, or tap it on a tablet or a phone, for its callout:
+`Position … · row …` (`unit` on an east-west roof) and `Near shading … % over
+the year`. With a chosen option, the callout adds the string it belongs to
+and that string's shading, or that the option does not use it.
+
+While the run is not yet of the layout shown, the map says `The shade map
+follows the design run` and colours nothing, so that no module takes another
+layout's value.
+
+<Screenshot id="rooftop-sun-shade-map" />
+
+## Shading over the year
+
+**Shading over the year** sits in both tabs. Its four tiles say what shading
+costs over a year of the weather.
+
+| Tile | Unit | What it counts |
+| --- | --- | --- |
+| **Near, linear** | % | The light lost to shadows on the roof, from the rows in front, the parapet and the obstacles: the shaded part of the direct light and the hidden part of the sky, as a share of the light past the horizon |
+| **Electrical, beyond linear** | % | The energy lost on top of that, because bypass diodes and the cell layout turn a partial shadow into a larger loss, and a string (modules wired in series) runs at its weakest module. It needs strings, so until there is an option it waits and says why |
+| **Far, horizon** | % | The direct light lost while the sun is behind the distant horizon, as a share of the light with no horizon at all |
+| **Kept clear** | m² | The area inside the setback (the strip inside the roof edge kept clear of modules) that the shadows of the parapet and the obstacles cover through the shade-free window of the design day |
+
+Before there is an option, near and far shading count every position of the
+layout: `Of all … positions`. With a chosen option they are its own, from
+its energy losses, for the modules it uses: `Of the … modules of option …`.
+
+A second line says where the horizon comes from:
+
+| Line | When |
+| --- | --- |
+| `Far shading: PVGIS horizon, highest …°` | The weather is from PVGIS, which sends a horizon with it |
+| `Far shading: not counted, PVGIS sent no horizon for this site` | PVGIS sent its weather without a horizon |
+| `Far shading: no horizon profile for this weather source` | Any other weather source. Far shading is then not counted |
+
+The weather is chosen with **Weather** in the Performance header.
+
+## How shading is worked out
+
+Shading is worked out for every hour of the weather year, with the sun at the
+middle of each hour. Weather given at shorter steps is averaged into hours.
+
+- **Row to row.** The edge of the row in front shades the table from its
+  lower edge up, worked out exactly.
+- **Obstacles and the parapet.** Their shadows are cast at each module's mid
+  height and set against its footprint.
+- **The sky.** The diffuse loss is the part of the sky hidden from the
+  module; a module with a row in front also loses the sky that row masks.
+- **Electrical.** A shadow band on a portrait module costs the whole module,
+  or half of a half-cell module; in landscape it costs one substring per
+  bypass diode. Shaded fractions under 1 % are left out. A string runs at its
+  weakest module.
+- **Far shading.** Direct light is lost while the sun is under the horizon
+  profile. Only PVGIS weather brings one.
+
+The shade-free window shapes the layout; this count is separate from it and
+covers every hour of the year, inside the window and out.
+
+## Next
+
+<Cards>
+  <Card title="The Strings lens" href="/docs/rooftop/strings" description="System voltage, the inverter, and the stringing options" />
+  <Card title="The Array lens" href="/docs/rooftop/array" description="The shade-free window and the row pitch it sets" />
+</Cards>
