@@ -6,8 +6,8 @@
 |---|---|
 | Fact sheet | `docs/PRODUCT_FACTS.rooftop.md`. Its header records the commit it was verified at ("Verified against `main` at `<sha>`"); `product-changes.mjs` reads it as the baseline. Each part ends with *Known-stale*, *Facts we do not have* and *Product issues noticed* |
 | Citation check | `node scripts/check-rooftop-facts-citations.mjs` (`ROOFTOP_REPO=<path>` when the checkout is not `../rooftop-design-app`). It reads the sheet's short prefixes (`WEB`, `API`, `CORE`, `HELP`, then `docs/`, `plan/`, `infra/`, `apps/api/tests/`), ranges and lists. Like the BESS check, it proves the cited line exists, not that it still says the fact |
-| Pages | `content/rooftop/**`, served at `/docs/rooftop/**` (nav: `content/rooftop/meta.json`, in the order of the approved tree) |
-| What's new | `content/rooftop/whats-new.mdx`: one dated entry per update that changes what users meet, newest first, no version numbers |
+| Pages | `content/rooftop/<folder>/<page>.mdx`, served at `/docs/rooftop/<folder>/<page>`, a folder's `index.mdx` at `/docs/rooftop/<folder>`. The folders are the sidebar's collapsible groups, as in the other two trees: `start`, `roof`, `steps`, `show`, `reference`, each with its `meta.json` (title, pages); `content/rooftop/meta.json` lists them in the order of the approved tree. The app's help links to these addresses (`WEB/lib/docs/docs.ts`): a page moved or a heading renamed here is changed there in the same release |
+| What's new | `content/rooftop/reference/whats-new.mdx`: one dated entry per update that changes what users meet, newest first, no version numbers |
 | Screenshot manifest | `content/rooftop/screenshots.ts` → images under `public/screenshots/rooftop/…`; ids always `rooftop-`-prefixed |
 | Product repository | `SolarLayout/rooftop-design-app`, normally `../rooftop-design-app`: the browser app `apps/web`, its in-app help `apps/web/content/help` (32 topics), the API `apps/api/src/rooftop_api`, the engine `apps/api/src/rooftop_core` |
 | The app | https://rooftop.solarlayout.app (staging https://rooftop.staging.solarlayout.app) |

@@ -37,7 +37,7 @@ const TREES = {
   rooftop: {
     tree: "content/rooftop", base: "/docs/rooftop", manifest: "content/rooftop/screenshots.ts",
     other: /SolarLayout[ .]Desktop|SolarLayout (?:app|application)\b|\bBESS\b/,
-    releases: "content/rooftop/whats-new.mdx",
+    releases: "content/rooftop/reference/whats-new.mdx",
     // Rooftop is a browser app (the writing guide's Rooftop section): added to the home screen, never installed or
     // downloaded; named SolarLayout Rooftop, then Rooftop, never a desktop, web or cloud version or a tool. Never
     // "every" (the owner, 2026-10-13), save the field the app names "Walkway every", as its own voice scan allows.

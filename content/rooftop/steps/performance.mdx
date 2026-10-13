@@ -3,7 +3,7 @@ title: Performance
 description: The energy the design sends to the grid, where it is lost, the weather it is computed from, 25 years of output and the model behind the figures.
 ---
 
-Performance is the fourth of the [five steps](/docs/rooftop/steps) in SolarLayout Rooftop: the energy the design makes in a year, and where it is lost. Each figure on the page is the chosen option's, computed hour by hour over a year of the site's weather, from the sunlight on the ground to the energy delivered to the grid.
+Performance is the fourth of the [five steps](/docs/rooftop/start/steps) in SolarLayout Rooftop: the energy the design makes in a year, and where it is lost. Each figure on the page is the chosen option's, computed hour by hour over a year of the site's weather, from the sunlight on the ground to the energy delivered to the grid.
 
 From the top, the page holds its head (**Performance**, with **Present** on a tablet and a desktop, and **Continue to Handover**), the energy of year 1 with the **Option** and **Weather** selects beside it, three figures, and four tabs: **By month**, **Over 25 years**, **Where the energy goes** and **Assumptions**. One tab shows at a time; the one opened last is remembered on this device. The arrow keys, Home and End move between the tabs.
 
@@ -36,7 +36,7 @@ The result chip at the right of the top bar carries the same energy of year 1. I
 | A ring and "Computing the energy" | Before the first result |
 | The figure, e.g. "617.8 MWh a year" | The result of the chosen option |
 | The figure dimmed, with a ring | A run is on its way |
-| The note mark and "&lt;n&gt; to review" before the figure | Notes wait in the [notes to review](/docs/rooftop/steps#notes-to-review) |
+| The note mark and "&lt;n&gt; to review" before the figure | Notes wait in the [notes to review](/docs/rooftop/start/steps#notes-to-review) |
 | The note mark and "Energy not computed" | A run failed with no result before it, or no option can be made |
 | The note mark, the last figure dimmed, "Showing the last result" | A later run failed; the result shown is from before the change |
 
@@ -59,7 +59,7 @@ The two selects stand at the right of the energy on a desktop, and under it, sid
 
 ### Option
 
-**Option** chooses which of the run's options the page shows: ways to wire the modules to the inverter, the best first. Each item reads "&lt;letter&gt; · &lt;caption&gt;" with its mark. How the options are made is on the Strings page, under [Options](/docs/rooftop/strings#options).
+**Option** chooses which of the run's options the page shows: ways to wire the modules to the inverter, the best first. Each item reads "&lt;letter&gt; · &lt;caption&gt;" with its mark. How the options are made is on the Strings page, under [Options](/docs/rooftop/steps/strings#options).
 
 Its caption says why it is there: "Recommended" (option A, when its DC/AC ratio is within the target), "Fills the inverter" or "Fills the inverters", "Less clipping", "Below target" or "Above target" (with ", &lt;n&gt; inverters" when the option has more than one), or "Your own option", the stringing you added in the Strings step. Some options have no caption.
 
@@ -86,7 +86,7 @@ What each source brings:
 | PVGIS | Global horizontal, beam normal and diffuse horizontal irradiance, air temperature at 2 m, wind speed at 10 m; the months placed on one calendar year | The horizon comes with it. If PVGIS gives no horizon, the weather loads without one and the run's note says "The weather for this site came without a horizon. The run leaves horizon shading out." |
 | NASA POWER | The same five quantities for 2023 | Missing values are filled from the hours either side; irradiance below zero is taken as 0. No horizon |
 
-Each source becomes one table of hours in UTC, each value the hour's average, with the sun placed at the middle of the hour. The horizon the run counts is shown in the Sun view's card under [Shade over the year](/docs/rooftop/sun#shade-over-the-year).
+Each source becomes one table of hours in UTC, each value the hour's average, with the sun placed at the middle of the hour. The horizon the run counts is shown in the Sun view's card under [Shade over the year](/docs/rooftop/steps/sun#shade-over-the-year).
 
 The weather is kept in the design with its hours, so a design opened again needs no load while its source is the same and the roof stands within 0.001° of latitude and longitude of where the weather was loaded. Move the roof further and the app loads the weather again.
 
@@ -155,7 +155,7 @@ What the app does with what is missing:
 A refused file stays in the dialog with its name and size, under **This file cannot be used** and the reason. If the server cannot be reached, the dialog says **The file was not loaded** with the cause. Either way the weather of before stays.
 
 <Callout type="warn">
-A file without air temperature sizes the strings for 25 °C. In the Strings step, enter the site's lowest and highest ambient under **Sizing temperatures** (see [Modules per string](/docs/rooftop/strings#modules-per-string)).
+A file without air temperature sizes the strings for 25 °C. In the Strings step, enter the site's lowest and highest ambient under **Sizing temperatures** (see [Modules per string](/docs/rooftop/steps/strings#modules-per-string)).
 </Callout>
 
 The file is checked again at each run. Its notes become the run's weather notes: each is listed as "Weather · Performance" with **Open Performance**, counts in the result chip's "to review", and marks the Performance step as needing you.
@@ -299,7 +299,7 @@ The run computes each hour of the weather in PVsyst's order of losses. The parts
 | Array nominal energy at STC | The sum of the effective irradiance / 1000 × each string's rated power |
 | Module | The PVsyst one-diode model, its photocurrent and saturation current fitted to the module file's Isc and Voc at STC with its Rs, Rsh, Rsh(0), Rsh exponent, Gamma and μGamma, band gap 1.121 eV; the maximum power point by Newton's method; zero power under 1 W/m². A string works at its modules' mean irradiance and cell temperature. **Irradiance level** is the one-diode power at 25 °C against the rated power |
 | Cell temperature | The PVsyst cell temperature model with Uc (by roof type, or yours), Uv = 0 and the module's efficiency; absorption 0.9 |
-| String shading loss | A shaded share under 1 % is left out; in portrait a whole module, or half of a half-cell module; in landscape one bypass substring for each share; never less than the linear loss. A string runs at its weakest module: its worst module's loss less its mean linear loss, applied to the beam's share of its irradiance. See [how shading is worked out](/docs/rooftop/sun#how-shading-is-worked-out) |
+| String shading loss | A shaded share under 1 % is left out; in portrait a whole module, or half of a half-cell module; in landscape one bypass substring for each share; never less than the linear loss. A string runs at its weakest module: its worst module's loss less its mean linear loss, applied to the beam's share of its irradiance. See [how shading is worked out](/docs/rooftop/steps/sun#how-shading-is-worked-out) |
 | Module quality, LID, mismatch, DC ohmic | Applied in that order; the DC ohmic loss scales with the load |
 | Inverter | For each inverter, the efficiency curves of the inverter file (OND) by input power, interpolated between curves by the power-weighted string voltage; without curves its European efficiency, else 97 %; zero below its threshold power; clipped at its nominal AC power; its night consumption in hours with no DC input |
 | AC ohmic, availability | As their fields say |
@@ -336,7 +336,7 @@ The 21 rows of All 21 steps, in order:
 | 20 | Availability | Downtime |
 | 21 | Energy to grid | To the grid, MWh |
 
-Options are made and simulated as the Strings step describes: each candidate is simulated over the whole year, those in the DC/AC target come first, then the most energy, and five at most are kept. [Your own option](/docs/rooftop/strings#your-own-option), when it can be built, is simulated after them and takes the next letter.
+Options are made and simulated as the Strings step describes: each candidate is simulated over the whole year, those in the DC/AC target come first, then the most energy, and five at most are kept. [Your own option](/docs/rooftop/steps/strings#your-own-option), when it can be built, is simulated after them and takes the next letter.
 
 ## When something goes wrong
 
@@ -353,11 +353,11 @@ A run that fails puts a note under the title: "Energy not updated" with "Showing
 
 A weather that does not load leaves **Weather not loaded** and the reason under the selects; the weather of before stays. Check the site, try again, or choose another source. A CSV that is refused says why in its dialog (above).
 
-More cases are on the [troubleshooting page](/docs/rooftop/troubleshooting#performance).
+More cases are on the [troubleshooting page](/docs/rooftop/reference/troubleshooting#performance).
 
 <Cards>
-  <Card title="Strings" href="/docs/rooftop/strings" description="The options, the inverter and the system voltage behind the figures" />
-  <Card title="The Sun view" href="/docs/rooftop/sun" description="Shadows over the day and the shade on each module over the year" />
-  <Card title="Handover" href="/docs/rooftop/handover" description="The report, the diagram, the schedules and the hourly data" />
-  <Card title="Present" href="/docs/rooftop/present" description="The design as a tour on the whole screen, for a client" />
+  <Card title="Strings" href="/docs/rooftop/steps/strings" description="The options, the inverter and the system voltage behind the figures" />
+  <Card title="The Sun view" href="/docs/rooftop/steps/sun" description="Shadows over the day and the shade on each module over the year" />
+  <Card title="Handover" href="/docs/rooftop/steps/handover" description="The report, the diagram, the schedules and the hourly data" />
+  <Card title="Present" href="/docs/rooftop/show/present" description="The design as a tour on the whole screen, for a client" />
 </Cards>

@@ -1,22 +1,10 @@
 {
   "title": "Documentation",
   "pages": [
-    "intro",
-    "getting-started",
-    "first-design",
-    "steps",
-    "find",
+    "start",
     "roof",
-    "array",
-    "sun",
-    "strings",
-    "performance",
-    "handover",
-    "present",
-    "projects",
-    "reference",
-    "troubleshooting",
-    "whats-new",
-    "support"
+    "steps",
+    "show",
+    "reference"
   ]
 }

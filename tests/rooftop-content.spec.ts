@@ -5,13 +5,15 @@ import { test, expect } from "@playwright/test"
 
 /**
  * Every SolarLayout Rooftop page renders as a real page, is in the sidebar, links only to Rooftop pages that exist, and
- * shows only captured screenshots. The twin of `tests/bess-content.spec.ts` for the flat `content/rooftop` tree; the
- * page list comes off disk, so it grows with the content.
+ * shows only captured screenshots. The twin of `tests/bess-content.spec.ts` for `content/rooftop`, whose pages sit in
+ * the sidebar's folders (a folder's index.mdx is the folder's own page); the page list comes off disk, so it grows with
+ * the content.
  */
 const TREE = path.join(process.cwd(), "content", "rooftop")
 const BASE = "/docs/rooftop"
-const files = fs.readdirSync(TREE).filter((f) => f.endsWith(".mdx"))
-const PAGES = files.map((f) => `${BASE}/${f.replace(/\.mdx$/, "")}`).sort()
+const files = (fs.readdirSync(TREE, { recursive: true }) as string[]).filter((f) => f.endsWith(".mdx"))
+const urlOf = (f: string) => `${BASE}/${f.replace(/\.mdx$/, "").replace(/(^|\/)index$/, "")}`.replace(/\/$/, "")
+const PAGES = files.map(urlOf).sort()
 const read = (f: string) => fs.readFileSync(path.join(TREE, f), "utf8")
 
 test("there are Rooftop content pages to test", () => {
@@ -43,7 +45,13 @@ for (const url of PAGES) {
 }
 
 test("every Rooftop page is in the sidebar, and every sidebar entry is a page", () => {
-  const listed = (JSON.parse(read("meta.json")) as { pages: string[] }).pages.filter((p) => !p.startsWith("---")).map((p) => `${BASE}/${p}`).sort()
+  const pagesOf = (dir: string): string[] =>
+    (JSON.parse(read(path.join(dir, "meta.json"))) as { pages: string[] }).pages
+      .filter((p) => !p.startsWith("---"))
+      .flatMap((p) => (fs.existsSync(path.join(TREE, dir, p, "meta.json")) ? pagesOf(path.join(dir, p)) : [urlOf(path.join(dir, `${p}.mdx`))]))
+      // A folder's index.mdx is the folder's own page in the sidebar, not one of the pages its meta.json lists.
+      .concat(dir && fs.existsSync(path.join(TREE, dir, "index.mdx")) ? [urlOf(path.join(dir, "index.mdx"))] : [])
+  const listed = pagesOf("").sort()
   expect(listed).toEqual(PAGES)
 })
 

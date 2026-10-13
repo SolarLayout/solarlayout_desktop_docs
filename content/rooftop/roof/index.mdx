@@ -4,7 +4,7 @@ description: Check the roof built on Find, then set its type, its edges and acce
 ---
 
 Roof is the first of the five steps in SolarLayout Rooftop. Its first part is
-[Find](/docs/rooftop/find), where you outline the roof on the map. After
+[Find](/docs/rooftop/roof/find), where you outline the roof on the map. After
 **Build this roof** the app opens the Roof step with the array already laid on
 the roof, and you check what was built: the parapet, the strips kept free of
 modules, what stands on the roof and where its corners are.
@@ -12,7 +12,7 @@ modules, what stands on the roof and where its corners are.
 The step's work column holds four sections, top to bottom: **Roof type**,
 **Edges and access**, **Obstacles** and **Outline**. Each is a summary row
 that opens; none is open the first time. [The work
-column](/docs/rooftop/steps#the-work-column) explains rows, fields and the
+column](/docs/rooftop/start/steps#the-work-column) explains rows, fields and the
 primary button. A change to any value on this step lays the roof out again,
 then runs the design. The roof albedo is the exception: it is set in
 Performance and runs the design alone.
@@ -40,7 +40,7 @@ device, a status of two lines stands under the head:
 Energy is in MWh to one decimal, DC capacity in kWp to two decimals. On the
 demo the status reads 638 modules, 357.28 kWp and 617.8 MWh in year 1. When
 the run fails or finds no option, line 1 stands alone, and [the
-result](/docs/rooftop/steps#the-result) in the top bar says what went wrong.
+result](/docs/rooftop/start/steps#the-result) in the top bar says what went wrong.
 
 <Screenshot id="rooftop-roof-first-open" />
 
@@ -102,7 +102,7 @@ The view controls stand at the stage's top right.
 | **3D** / **Plan** | 3D looks at the roof in perspective from the south-west, above it. Plan looks straight down, north up; it pans and zooms but does not turn. Plan is where the outline's corners are edited |
 | **Fit** | Frames the roof again, as the 3D view from the south-west. Pressed in Plan, it leaves Plan |
 | North control | Its needle turns with the view. Press it to turn the view north-up, at the same distance and height |
-| **Sun** | Turns on the Sun view on the step in hand: shadows at any hour, and the shade on each module over the year. See [The Sun view](/docs/rooftop/sun) |
+| **Sun** | Turns on the Sun view on the step in hand: shadows at any hour, and the shade on each module over the year. See [The Sun view](/docs/rooftop/steps/sun) |
 | **Imagery** | Shows the satellite imagery as the ground; press again for the plain grid. Each load starts on the grid, and the choice is not part of the design. The imagery's credit stands at the stage's bottom left while it is drawn |
 | **Show panel** | On a computer, while the work column is hidden. **Hide panel** at the column's top right, or `⌘ \` or `Ctrl \`, hides it; the step's primary then floats at the stage's foot |
 
@@ -125,7 +125,7 @@ shows a hidden work column again.
 | --- | --- |
 | The roof | **Roof · selected**, then `<a> × <b> m · <area> m²` for a rectangle, `<n> corners · <area> m²` otherwise |
 | An obstacle | **&lt;name&gt; · selected**, its size and height, and "Drag to move it." (box, tank, tree) or "Move it by its points in the list." (wall, building) |
-| A kept-clear area | **Kept clear · &lt;n&gt; positions**, then "&lt;cause&gt; shades this area between &lt;start&gt; and &lt;end&gt;", the shade-free hours. See [How the layout is placed](/docs/rooftop/array#how-the-layout-is-placed) |
+| A kept-clear area | **Kept clear · &lt;n&gt; positions**, then "&lt;cause&gt; shades this area between &lt;start&gt; and &lt;end&gt;", the shade-free hours. See [How the layout is placed](/docs/rooftop/steps/array#how-the-layout-is-placed) |
 
 ## Outline
 
@@ -204,7 +204,7 @@ The type also sets the defaults of two temperatures and the rear gain:
 | Cell rise for sizing the strings, °C | 25 | 25 | 35 |
 | Rear gain of a bifacial module | Yes | Yes | None |
 
-[Mounting](/docs/rooftop/array#mounting) shows the fields of each type.
+[Mounting](/docs/rooftop/steps/array#mounting) shows the fields of each type.
 
 ## Edges and access
 
@@ -230,7 +230,7 @@ obstacles**, and on a sloped roof **Sloped roof**.
 Metres take two decimals. Under the fields, a line reads
 `Roof albedo 0.20 · in Performance, Assumptions` with an arrow. Roof albedo is
 how much light the roof reflects. The line opens Performance; set
-the albedo under [Assumptions](/docs/rooftop/performance#assumptions).
+the albedo under [Assumptions](/docs/rooftop/steps/performance#assumptions).
 
 <Screenshot id="rooftop-roof-edges" />
 
@@ -252,7 +252,7 @@ beside the roof. Each one counts three times:
 - No module stands on it or within its **Clearance**.
 - The area its shadow crosses in the shade-free hours of the design day is
   kept free of modules, unless **Allow shaded positions** is on in
-  [Spacing](/docs/rooftop/array#spacing).
+  [Spacing](/docs/rooftop/steps/array#spacing).
 - Its shadow counts, hour by hour over the year, in the shade of each module
   it falls on.
 
@@ -273,7 +273,7 @@ access.
 ### Add an obstacle
 
 Obstacles drawn on Find are already here; see [Add the
-obstacles](/docs/rooftop/find#add-the-obstacles). To add one on the Roof step:
+obstacles](/docs/rooftop/roof/find#add-the-obstacles). To add one on the Roof step:
 
 <Steps>
 <Step>
@@ -356,7 +356,7 @@ column then says "The file has no height for these obstacles. The app uses
 1.0 m.", with `<n> to review` and **Review**, which selects the first. Its row
 carries a note mark, "Height to review", and its card says "Not in the file.
 Enter the real height." with **Next**. A typed height takes the obstacle off
-the list. [Import a drawing](/docs/rooftop/find#import-a-drawing) covers how
+the list. [Import a drawing](/docs/rooftop/roof/find#import-a-drawing) covers how
 heights are read from a file.
 
 ## When something goes wrong
@@ -373,11 +373,11 @@ heights are read from a file.
 | "The highest is &lt;max&gt; &lt;unit&gt;." or "The lowest is &lt;min&gt; &lt;unit&gt;." | A typed value was out of range; the field is set to the end of its range | Type a value inside the range |
 | "This browser cannot draw the roof in 3D." | The browser cannot draw 3D; a flat plan stands in | Use another browser for the 3D view |
 
-More cases are in [Troubleshooting](/docs/rooftop/troubleshooting#roof-and-array).
+More cases are in [Troubleshooting](/docs/rooftop/reference/troubleshooting#roof-and-array).
 
 <Cards>
-  <Card title="Find the roof" href="/docs/rooftop/find" description="Outline the roof on the map and build it" />
-  <Card title="Array" href="/docs/rooftop/array" description="The module, its mounting and how rows are spaced" />
-  <Card title="The Sun view" href="/docs/rooftop/sun" description="Shadows at any hour and the shade on each module" />
-  <Card title="Troubleshooting" href="/docs/rooftop/troubleshooting" description="Problems on the Roof and Array steps, and what to do" />
+  <Card title="Find the roof" href="/docs/rooftop/roof/find" description="Outline the roof on the map and build it" />
+  <Card title="Array" href="/docs/rooftop/steps/array" description="The module, its mounting and how rows are spaced" />
+  <Card title="The Sun view" href="/docs/rooftop/steps/sun" description="Shadows at any hour and the shade on each module" />
+  <Card title="Troubleshooting" href="/docs/rooftop/reference/troubleshooting" description="Problems on the Roof and Array steps, and what to do" />
 </Cards>
