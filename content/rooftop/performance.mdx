@@ -1,309 +1,363 @@
 ---
 title: Performance
-description: "The energy of a year, hour by hour on the site's weather: the weather sources and your own CSV, the losses, P50 to P90, 25 years and the options."
+description: The energy the design sends to the grid, where it is lost, the weather it is computed from, 25 years of output and the model behind the figures.
 ---
 
-**Performance** is the workspace that shows the energy of the chosen
-stringing option over a year. SolarLayout Rooftop simulates every hour of the
-site's weather, from the sunlight on the roof to the energy delivered to the
-grid, and shows each loss on the way, the year's figures, the months, 25
-years and a summary of the design.
+Performance is the fourth of the [five steps](/docs/rooftop/steps) in SolarLayout Rooftop: the energy the design makes in a year, and where it is lost. Each figure on the page is the chosen option's, computed hour by hour over a year of the site's weather, from the sunlight on the ground to the energy delivered to the grid.
 
-There is nothing to run by hand. A change to the design runs it again, and
-Performance shows the figures of the last run.
+From the top, the page holds its head (**Performance**, with **Present** on a tablet and a desktop, and **Continue to Handover**), the energy of year 1 with the **Option** and **Weather** selects beside it, three figures, and four tabs: **By month**, **Over 25 years**, **Where the energy goes** and **Assumptions**. One tab shows at a time; the one opened last is remembered on this device. The arrow keys, Home and End move between the tabs.
 
 <Screenshot id="rooftop-performance" />
 
 ## How a run starts
 
-A run starts on its own half a second after a change, so that changes made
-close together become one run. Opening a design runs it at once.
+There is no Run button. After each committed edit the app runs the design again, 500 ms after the last edit: edits closer together make one run, and a run already on its way is given up for the later one. When the roof, the array or the module changes, the app lays the modules out again first. A design opened a moment ago (the demo, a design from this device, a project file or a roof you built) runs at once.
 
 | You do | What follows |
 | --- | --- |
-| Change the roof, the array, the equipment, a loss or the weather | The design runs again |
-| Choose another stringing option | Shown at once: the run already holds every option |
+| Change the roof, the array, the equipment or the system voltage | The modules are laid out again where needed, then the design runs |
+| Change a loss, an assumption, the roof albedo or the weather on this page | The design runs again; the roof is not laid out again |
+| Change the ageing, the uncertainty, the levels or the grid CO₂ factor | The design runs again, and the year is not simulated again: these change only the figures worked out from the year |
+| Choose another option | Shown at once: the last run holds each option's figures |
 | Rename the design | Nothing runs |
-| Change **Degradation**, **Weather variability**, **Model and data**, **Exceedance levels** or **Grid CO₂** | The design runs again, but the year is not simulated again: these change only the figures worked out from the year |
 
-A run needs a roof outline, a module, weather for the site and a system
-voltage. Without a system voltage it stops after the shading: there are no
-options and no energy, and a card says what it waits for. The weather is
-loaded for you when the design has none for its site.
+A run needs weather for the site. When the design has none for its site and its source, the app loads it and then runs.
 
-While a run is on its way, a line under the title shows a ring that fills
-as it goes, **Updating energy** (or **Opening** and the design's name, when
-it opens), and the step the engine is on:
+While a run is on its way, "Updating" and a turning ring stand beside the label of the energy. The figures, the charts and the bars of the last result stay on screen, dimmed, until the run lands. At the first load, before any result, grey blocks stand in their places.
 
-1. **Fitting modules on the roof**
-2. **Loading** … **weather**
-3. **Computing hourly shading for every module**
-4. **Applying the losses**
-5. **Sizing strings and simulating the options**
+⌘ Z or Ctrl Z undoes the last committed edit; ⌘ ⇧ Z, Ctrl ⇧ Z or Ctrl Y redoes it. A key pressed in a field belongs to the field.
 
-The figures from before stay on the page, dimmed, until the new ones arrive.
-If a run fails, they stay, not dimmed, under **Energy was not updated** and
-**Values are of the design before**, with the reason. **Try again** runs the
-design again at once.
+### The result chip
 
-## The page, top to bottom
+The result chip at the right of the top bar carries the same energy of year 1. Its states:
 
-| Part | What it holds |
+| The chip shows | When |
 | --- | --- |
-| Header | The title, the run line, **Stringing option** (on a phone, the **Option** list) and **Weather** |
-| The figures | **Energy to grid, year 1** with its P-values, and six tiles |
-| **From sunlight to the grid** | The chain of gains and losses, with the losses you can change |
-| **Energy to grid by month** | Twelve months, as a chart or a table |
-| **25 years** | The energy of each year, with **Degradation** |
-| **Assumptions** | The model's settings and the uncertainty |
-| **Summary** | The design, summed up in one table |
+| A ring and "Computing the energy" | Before the first result |
+| The figure, e.g. "617.8 MWh a year" | The result of the chosen option |
+| The figure dimmed, with a ring | A run is on its way |
+| The note mark and "&lt;n&gt; to review" before the figure | Notes wait in the [notes to review](/docs/rooftop/steps#notes-to-review) |
+| The note mark and "Energy not computed" | A run failed with no result before it, or no option can be made |
+| The note mark, the last figure dimmed, "Showing the last result" | A later run failed; the result shown is from before the change |
 
-On a computer the chain stands at the left and the charts and assumptions at
-the right. On a tablet the two charts stand side by side, and on a phone
-everything is in one column.
+Press the chip for **The result**: the energy in year 1, the modules used of the positions, the DC capacity, the AC capacity, the DC/AC ratio, the performance ratio (PR) and the yield, with **Open Performance**. Where a run failed, the panel puts the problem first, with **Try again** where trying again can help.
 
-The run line says what was simulated: the modules in series, the strings
-and the inverters of the option, then the hours of weather, its source, the
-lowest and highest air temperature, and the highest angle of the horizon, or
-"no horizon".
+## The energy of year 1
 
-## Weather
+**Energy to the grid in year 1** is the chosen option's energy delivered to the grid in its first year, in MWh with one decimal. Under it stand two figures with their chances:
 
-The **Weather** list in the header offers three sources. Each is loaded for
-the middle of the roof outline.
+- **Likely**: the P50, the energy that half of all years reach. It is the year-1 figure itself.
+- **Conservative (P90)**: the energy that 9 years in 10 reach at least, with those words beside it.
 
-| Source | What it is | Horizon |
+Conservative takes the highest level above P50 that the design asks for, set in Assumptions under **Uncertainty**. At P75 its words are "3 years in 4 at least"; at P95, "19 years in 20 at least". With no level above P50, there is no Conservative figure. The levels in between appear in the summary row **Energy, year 1** under All 21 steps.
+
+For the demo, the energy of year 1 is 617.8 MWh, Likely 617.8 MWh and Conservative (P90) 584.2 MWh.
+
+## Option and weather
+
+The two selects stand at the right of the energy on a desktop, and under it, side by side, on a tablet or a phone.
+
+### Option
+
+**Option** chooses which of the run's options the page shows: ways to wire the modules to the inverter, the best first. Each item reads "&lt;letter&gt; · &lt;caption&gt;" with its mark. How the options are made is on the Strings page, under [Options](/docs/rooftop/strings#options).
+
+Its caption says why it is there: "Recommended" (option A, when its DC/AC ratio is within the target), "Fills the inverter" or "Fills the inverters", "Less clipping", "Below target" or "Above target" (with ", &lt;n&gt; inverters" when the option has more than one), or "Your own option", the stringing you added in the Strings step. Some options have no caption.
+
+A tick marks an option in the DC/AC target. A note mark says "Below the DC/AC target" or "Above the DC/AC target", or, for an option in the target, "MPPT current over its limit, or the limit not known". Choosing an option shows its figures at once and runs nothing again; undo takes the choice back. On a phone the select shows the option's letter alone. Before any option exists, the select is not shown.
+
+### Weather
+
+**Weather** sets the year of weather the run uses. The default is Typical year.
+
+| Choice | What it is |
+| --- | --- |
+| **Typical year** | From PVGIS, with the site's horizon: a typical meteorological year, hourly, with the horizon profile PVGIS gives for the site |
+| **2023, measured** | From NASA POWER, without a horizon: hourly values of 2023 for the site |
+| **Your file** | A CSV of a year of weather you load (below) |
+
+<Screenshot id="rooftop-performance-weather" />
+
+Choosing Typical year or 2023, measured names the choice in the select at once, with a turning ring in place of its chevron. Under the title a row says "Loading the typical year from PVGIS" or "Loading 2023's weather from NASA POWER", and "Updating" stands beside the energy. The weather is asked for the roof's latitude and longitude. When the hours arrive, the source and its hours become one edit, which undo takes back, and the run follows. While a weather loads the select cannot be opened; leaving the page gives the load up.
+
+What each source brings:
+
+| Source | Values, each hour | Notes |
 | --- | --- | --- |
-| **PVGIS TMY** (the default) | A typical meteorological year from PVGIS, the European Commission's solar database: hourly global, beam and diffuse irradiance, air temperature and wind | The PVGIS horizon of the site, so far shading is counted |
-| **NASA POWER 2023** | NASA POWER's hourly values for the year 2023 | None |
-| **CSV file** | Your own hourly values, with times read as UTC | None |
+| PVGIS | Global horizontal, beam normal and diffuse horizontal irradiance, air temperature at 2 m, wind speed at 10 m; the months placed on one calendar year | The horizon comes with it. If PVGIS gives no horizon, the weather loads without one and the run's note says "The weather for this site came without a horizon. The run leaves horizon shading out." |
+| NASA POWER | The same five quantities for 2023 | Missing values are filled from the hours either side; irradiance below zero is taken as 0. No horizon |
 
-Choosing PVGIS or NASA POWER asks that service for the site's weather by
-its latitude and longitude. The list names the source at once with a turning
-ring, and the line under the title reads **Loading PVGIS TMY weather** or
-**Loading NASA POWER 2023 weather**. When the hours arrive, the design runs
-on them. If they do not, **The weather was not loaded** stands under the list
-with the reason, and the weather from before stays.
+Each source becomes one table of hours in UTC, each value the hour's average, with the sun placed at the middle of the hour. The horizon the run counts is shown in the Sun view's card under [Shade over the year](/docs/rooftop/sun#shade-over-the-year).
 
-The weather is kept in the design. It is used again while its source is the
-same and the roof stays within 0.001° of latitude and longitude of the place
-it was loaded for; move the roof further and the weather of the new place is
-loaded.
+The weather is kept in the design with its hours, so a design opened again needs no load while its source is the same and the roof stands within 0.001° of latitude and longitude of where the weather was loaded. Move the roof further and the app loads the weather again.
 
-When PVGIS sends its year without the horizon, the run says so under the run
-line and in the design's notes: "PVGIS sent no horizon for this site, so far
-shading is not counted."
+### Your file
 
-### Your own CSV
+Load weather of your own, from a measurement or another source, as a CSV.
 
 <Steps>
 <Step>
+### Choose Your file
 
-### Open the dialog
+In **Weather**, choose **Your file**. The dialog **Load weather from a CSV** opens. Nothing changes until you use the weather.
 
-Choose **CSV file** in the **Weather** list. **Load weather from a CSV**
-opens.
-
+<Screenshot id="rooftop-performance-csv" />
 </Step>
 <Step>
+### Drop the file or choose it
 
-### Give the file
-
-Drop the file on **Drop the weather file here**, or **Choose a file**. A
-`.csv` or `.txt` file of 3 MB at most is taken. The file is read and its
-summary shown: the hours, the global irradiation, the beam and diffuse, and
-the range of air temperature, with any notes on the file.
-
+Drop the file on **Drop the weather file here**, or press **Choose a file**. The app reads it and shows its name and three lines: the hours and the irradiation on the ground, the beam and diffuse irradiation, and the range of air temperature. Its notes stand under them.
 </Step>
 <Step>
+### Use the weather
 
-### Use it
-
-**Use this weather** makes it the weather of the design, and the design runs
-on it. Nothing changes until you press it; **Cancel** leaves the weather as
-it was.
-
+Press **Use this weather**. The source, the file's name and text and its hours become one edit, and the run follows. **Choose another** picks a different file first.
 </Step>
 </Steps>
 
-<Screenshot id="rooftop-performance-csv" />
+What the file must be:
 
-The file is a table with a header row. Rooftop finds the separator itself,
-skips lines that begin with `#`, and reads the columns by their names, in
-any capitals:
+| Item | Requirement |
+| --- | --- |
+| File | `.csv` or `.txt`, at most 3 MB; the separator is detected; lines beginning with `#` and blank lines are left out |
+| Length | One year: 8,760 hours, or 8,784 in a leap year, once rows of less than an hour are averaged |
+| Time step | Hourly or finer. Rows less than an hour apart are averaged into the hour they begin in, with a note |
+| Times | Written as `YYYYMMDD:HHMM` or any common date and time. A time without an offset is taken as UTC; a time with one, e.g. `2019-01-01 00:00+05:30`, keeps it. A row's time is the start of its period |
+| Units | Irradiance in W/m², air temperature in °C, wind speed in m/s |
 
-| Column | Names it is found by | Needed |
+The columns, by their header (trimmed, in any case; for each quantity the first name of its list that the file has is taken):
+
+| Quantity | Header names read | Needed |
 | --- | --- | --- |
 | Time | `time`, `time(utc)`, `datetime`, `date`, `timestamp`, `date/time` | Yes |
 | Global horizontal irradiance | `ghi`, `g(h)`, `gh`, `global_horizontal`, `allsky_sfc_sw_dwn`, `irradiance` | Yes |
-| Beam (direct normal) | `dni`, `gb(n)`, `bn`, `allsky_sfc_sw_dni` | No |
-| Diffuse horizontal | `dhi`, `gd(h)`, `dh`, `diffuse`, `allsky_sfc_sw_diff` | No |
+| Beam normal irradiance | `dni`, `gb(n)`, `bn`, `allsky_sfc_sw_dni` | No |
+| Diffuse horizontal irradiance | `dhi`, `gd(h)`, `dh`, `diffuse`, `allsky_sfc_sw_diff` | No |
 | Air temperature | `temp_air`, `t2m`, `temp`, `temperature`, `tamb`, `t_amb`, `ambient_temp` | No |
 | Wind speed | `wind_speed`, `ws10m`, `wind`, `ws` | No |
 
-- Irradiance is in W/m², temperature in °C, wind in m/s.
-- Times are UTC. Write them as `2023-06-01 13:00`, or as PVGIS does,
-  `20230601:1300`. Each row's time is the start of its hour.
-- Give every hour of a year once: 8,760 hours, or 8,784 in a leap year. A
-  file of other hours is refused, since the energy of a year needs every hour.
-- Give every hour its irradiance. A blank or unreadable irradiance cell is
-  refused, with its column and its row.
+What the app does with what is missing:
 
-What Rooftop does with a file that lacks something, and says in a note:
-
-| The file | What is taken |
+| The file | The app |
 | --- | --- |
-| Has no beam or no diffuse column | Both are worked out from the global irradiance with the Erbs model, less exact than measured values |
-| Has no air temperature | 25 °C for every hour. The strings are then sized for 25 °C: enter the site's lowest and highest ambient in the [Strings lens](/docs/rooftop/strings) |
-| Has no wind speed | 1 m/s for every hour |
-| Gives a row every few minutes | Each hour is the average of its rows |
-| Has irradiance below zero | Taken as 0 |
-| Has gaps in the air temperature | Filled from the hours on either side |
+| Has no beam or no diffuse column | Works both out from the global irradiance with the Erbs model, the sun at mid-hour for the roof's place, with a note |
+| Has no air temperature | Takes 25 °C for all hours and sizes the strings for 25 °C, with a note |
+| Has no wind speed | Takes 1 m/s for all hours, with a note |
+| Has air temperature missing in some rows | Fills them from the hours either side, with a note |
+| Has irradiance below zero | Takes it as 0, with a note |
+| Has a blank or unreadable global irradiance | Refuses the file: "Fill the gaps in the irradiance column." |
+| Has blanks in beam or diffuse, both given | Refuses it: "Fill the gaps, or leave out both beam and diffuse." |
+| Has a gap left in another column | Refuses it: "Fill the gaps, or leave the column out." |
+| Has a time it cannot read | Refuses it: "Write it as 2023-06-01 13:00, in UTC." |
+| Has an hour twice | Refuses it: "Keep each hour once." |
+| Is not a whole year | Refuses it: "Give a whole year." |
+| Is over 3 MB | Refuses it before sending: "Choose a file of one year." |
+
+A refused file stays in the dialog with its name and size, under **This file cannot be used** and the reason. If the server cannot be reached, the dialog says **The file was not loaded** with the cause. Either way the weather of before stays.
+
+<Callout type="warn">
+A file without air temperature sizes the strings for 25 °C. In the Strings step, enter the site's lowest and highest ambient under **Sizing temperatures** (see [Modules per string](/docs/rooftop/strings#modules-per-string)).
+</Callout>
+
+The file is checked again at each run. Its notes become the run's weather notes: each is listed as "Weather · Performance" with **Open Performance**, counts in the result chip's "to review", and marks the Performance step as needing you.
+
+## The three figures
+
+| Figure | Shows | The words under it |
+| --- | --- | --- |
+| **System size** | The DC capacity, kWp | "&lt;x&gt; kW of inverter", the AC capacity |
+| **Yield** | The energy of year 1 per kWp, kWh/kWp | "A year, for each kWp" |
+| **Performance ratio (PR)** | The energy to the grid against what the modules' rated power gives in the sunlight on them, % | "Of its rated output, in this sunlight" |
+
+They stand as three tiles on a tablet and a desktop. On a phone they are a list, each label at the left and its figure at the right; the selects stand side by side under the energy, and **Continue to Handover** is pinned over the tab bar.
+
+<Screenshot id="rooftop-performance-phone" />
+
+## By month
+
+"Energy to the grid each month of year 1": each month's sum of the year's hourly energy to the grid. **Chart** and **Table** at its right switch the view.
+
+The chart has twelve bars from zero, with only the highest and the lowest month labelled. Point at a bar, focus it or tap it for its energy and yield, "&lt;MWh&gt; MWh · &lt;kWh/kWp&gt; kWh/kWp"; Escape or a second tap closes it. A month's yield is its energy in kWh over the DC capacity in kWp.
+
+The table lists **Month**, **Energy, MWh** and **Yield, kWh/kWp** for each month, then a **Year** row.
+
+## Over 25 years
+
+"Energy each year": one line over 25 years, with the total and the yearly fall under the title ("&lt;total&gt; MWh in all · &lt;d&gt; % less each year"). The axis fits the years rather than starting from zero, so the fall is visible; year 1 and year 25 carry their figures. Point at the line, or focus it and use the arrow keys, Home and End, for any year's energy. **Table** lists years 1, 5, 10, 15, 20 and 25, then "Total, 25 years".
+
+<Screenshot id="rooftop-performance-years" />
+
+Year n's energy is year 1's × (1 − d)^(n − 1), where d is **Less each year** under Assumptions › Ageing (default 0.50 %). Year 1 is the simulated year, which already holds the light-induced degradation (LID) of the modules, so the yearly fall begins in year 2. The total is the sum of the 25 years.
+
+## Where the energy goes
+
+The run's 21 steps from the sunlight to the grid, said as eleven plain steps. On a desktop they stand in two columns, **Before the modules** and **In the system**; on touch, in one. Each step has its name, its change ("+9.60 %", "−2.22 %"; "0.00 %" under 0.005 %) and a bar where a change of 10 % fills the bar, in the colour of a gain or a loss. Rest the pointer on a step for the rows of All 21 steps it holds. Each step's change is its rows' changes compounded, so the eleven compound to the same total as the 21.
+
+| Step | Group | Rows of All 21 steps it holds |
+| --- | --- | --- |
+| **Sunlight on the tilted modules** | Before the modules | Transposition to plane |
+| **Shade from rows, obstacles and the horizon** | Before the modules | Far shading, horizon · Near shading, linear |
+| **Dirt on the glass (soiling)** | Before the modules | Soiling |
+| **Light reflected off the glass** | Before the modules | IAM |
+| **Light on the back of the modules** | Before the modules | Bifacial rear gain |
+| **The modules' rated output** | Total, MWh | Array nominal energy at STC |
+| **Heat** | In the system | Temperature |
+| **Low light and module quality** | In the system | Irradiance level · Module quality · LID · Mismatch |
+| **Shade on a string** | In the system | Electrical shading |
+| **Cables** | In the system | DC ohmic · AC ohmic |
+| **Inverter** | In the system | Inverter efficiency · Inverter clipping · Night consumption |
+| **Downtime** | In the system | Availability |
+| **To the grid** | Total, MWh | Energy to grid |
+
+Three steps carry a field, with "Default" or "Yours" beside it:
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Soiling** (Dirt on the glass) | 2.00 % | 0–30 % | The front irradiance × (1 − soiling); the rear is not soiled |
+| **Mismatch between modules** (Low light and module quality) | 1.00 % | 0–10 % | DC power × (1 − mismatch) |
+| **Downtime** (Downtime) | 0.50 % | 0–20 % | Kept as availability, 100 % less the downtime; the energy to the grid × availability |
+
+<Screenshot id="rooftop-performance-losses" />
+
+### All 21 steps
+
+**All 21 steps**, under the columns, opens the full chain in their place, "All 21 steps, as the report lists them", with the legend **Gain**, **Loss** and **Editable**. **11 steps** goes back, and so does opening another tab. Each row has its label, its field where you may change it, its change against the row before, a bar on a cascade from the running total before to the one after, and the running total. The three totals, the global horizontal irradiation, the array's nominal energy and the energy to the grid, carry their units, kWh/m² or MWh. Rest the pointer on a row for 400 ms, focus its field or tap it for "&lt;total&gt; &lt;unit&gt; · &lt;change&gt;"; Escape closes it.
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Soiling** | 2.0 % | 0–30 % | The same value as the eleven steps' Soiling |
+| **Bifacial rear gain** (switch) | On | On or off | Adds the rear irradiance × the module's bifaciality × (1 − the rear loss) |
+| **Rear shading and mismatch** | 10.0 % | 0–50 % | The rear's loss to the structure's shade and to mismatch |
+| **Heat loss factor (Uc)** | By roof type: 29 for Tilted rows, 20 for East-west, 15 for Sloped, W/m²K | 5–60 W/m²K | The constant loss factor of the cell temperature model |
+| **Module quality** | 0.0 % | −5 to 10 % | DC power × (1 − quality); a negative value is a gain |
+| **LID** | The module file's value, else 1.5 % | 0–10 % | DC power × (1 − LID), in each year |
+| **Mismatch** | 1.0 % | 0–10 % | The same value as the eleven steps' Mismatch between modules |
+| **DC ohmic** | 1.5 % at STC power | 0–10 % | The share lost scales with the string's power over its STC power, at most twice the value |
+| **AC ohmic** | 1.0 % at nominal AC power | 0–10 % | Scales with the inverters' load, at most twice the value |
+| **Availability** | 99.5 % | 80–100 % | The energy to the grid × availability; the eleven steps' Downtime is 100 % less it |
+
+The rear-gain switch cannot be used with a module that is not bifacial ("The module is not bifacial: no rear gain.") or on a Sloped roof, where the modules lie flush ("Flush modules lie on the roof: no rear gain."). The Heat loss factor and LID show the value they take from the roof type or the module file inside the field until you type one. Typed, the row offers the way back: "Roof type gives &lt;x&gt; W/m²K" with **Use the roof type's**, or "Module file gives &lt;x&gt; %" with **Use the module file's** (or **Use the default**). A value out of range is brought to the nearest end, "The highest is &lt;max&gt; &lt;unit&gt;." or "The lowest is &lt;min&gt; &lt;unit&gt;."; a value that is not a number gets "Enter a number from &lt;min&gt; to &lt;max&gt; &lt;unit&gt;." The other rows come from the weather, the layout and the equipment files, and have no field.
+
+<Screenshot id="rooftop-performance-21-steps" />
+
+Under the chain, "Summary, as in the report" lists the chosen option in one table: the rows of the design report's first page, with a **Losses** row added:
+
+| Row | What it gives |
+| --- | --- |
+| **Site** | Latitude and longitude |
+| **Roof** | The roof type's long name, the roof's area and its usable area |
+| **Structure** | The mounting: tilt, modules in a row's height, lower edge; or the east-west tilt and ridge gap; or the roof pitch of flush rails |
+| **Module**, **Inverter** | Maker, model and rating; the inverter's MPPT count |
+| **Stringing** | Modules in series, strings and inverters |
+| **DC capacity**, **AC capacity** | kWp with the module count; kW with the DC/AC ratio |
+| **Weather** | The weather's name, the global horizontal and the in-plane irradiation, kWh/m² |
+| **Losses** | Clipping, LID and the uncertainty σ |
+| **Energy, year 1** | Each level the design asks for, P50, P75 and P90 by default, MWh |
+| **Yield** | kWh/kWp, the PR and the capacity utilisation factor (CUF) on AC |
+| **Module area** | m² and the share of the roof |
+| **CO₂ avoided** | t a year at the grid factor |
+
+## Assumptions
+
+Five rows, each with its facts on one line and who set it at the right; a press opens its fields in place. On a desktop they read in two columns, Weather, Ageing and Grid CO₂ per MWh at the left, Roof albedo and Uncertainty at the right; on touch, one column. Which rows are open is remembered on this device. The rows stand even before any option exists.
+
+| Row | Its line | Who set it |
+| --- | --- | --- |
+| **Weather** | The weather's name, its source and the irradiation on the ground | "Default" for Typical year, else "Yours" |
+| **Roof albedo** | "&lt;x&gt; · how much light the roof reflects" | Default or Yours |
+| **Ageing** | "&lt;d&gt; % less each year" | Default or Yours |
+| **Uncertainty** | "&lt;σ&gt; % · sets Likely and Conservative" | Default while σ and the levels are the defaults |
+| **Grid CO₂ per MWh** | "&lt;f&gt; t · India's grid" | "Set for India" while the default holds, else Yours |
+
+<Screenshot id="rooftop-performance-assumptions" />
+
+Opened, **Weather** gives the hours, the range of air temperature and the horizon's highest point (or "no horizon"), the run's weather notes, and "At the top of the page, choose the weather beside the energy."
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Roof albedo** (Roof albedo) | 0.20 | 0.05–0.9 | How much light the roof reflects: the ground-reflected light in the transposition and on the modules' back |
+| **Less each year** (Ageing) | 0.50 % | 0–3 % | The yearly fall of Over 25 years |
+| **Weather variability** (Uncertainty) | 3.0 % | 0–20 % | σ of the weather year |
+| **Model and data** (Uncertainty) | 3.0 % | 0–20 % | σ of the model and its inputs |
+| **Likely and conservative levels** (Uncertainty) | P50 · P75 · P90 | Three fields, P50 to P99 | The levels computed; the highest above P50 is Conservative. Sorted when committed; a level given twice is kept once |
+| **Grid CO₂** (Grid CO₂ per MWh) | 0.716 t/MWh, India's grid (CEA) | 0–2 t/MWh | CO₂ avoided = the energy × the factor |
+
+Under each field the hint says "Default", "Yours · default &lt;x&gt;" or "Set for India". Roof albedo is set here alone: the Roof step shows its value with a line to Performance, under [Edges and access](/docs/rooftop/roof#edges-and-access).
 
 ## The model
 
-The simulation runs every hour of the weather, in the order of the
-PVsyst loss diagram:
+The run computes each hour of the weather in PVsyst's order of losses. The parts below lead to the rows of All 21 steps and the figures of the page.
 
-1. **Sun position**, at the middle of each hour.
-2. **Transposition** of the light onto the plane of the modules, with the
-   Perez model and the roof's albedo.
-3. **Far shading.** The direct light is lost while the sun is behind the
-   horizon line, where the weather has one, and so is the part of the sky
-   the horizon hides.
-4. **Near shading.** Row-to-row shading is worked out from the sun's profile
-   angle. The shadows of obstacles and the parapet are cast on each module.
-   The sky each module sees is reduced by the obstacles and the row in
-   front.
-5. **IAM**, the light reflected off the glass at a low angle: the PAN file's
-   profile when it gives one, else the ASHRAE model.
-6. **Bifacial rear gain**, for a bifacial module on a flat roof.
-7. **The module**, by the PVsyst one-diode model fitted to the PAN file.
-8. **Cell temperature**, by the PVsyst thermal model.
-9. **Electrical shading.** A shaded module costs its bypass section: in
-   portrait, a whole module, or half of a half-cell module; in landscape, one
-   substring. A string runs at its weakest module.
-10. **Module quality, LID, mismatch and DC wiring.**
-11. **The inverter**: its efficiency from the OND file's curves, its
-    threshold, clipping at its AC power, and its night consumption.
-12. **AC wiring and availability.**
+| Part | How the run computes it |
+| --- | --- |
+| Sun position | The NREL solar position algorithm at the middle of each hour: apparent zenith and elevation |
+| Transposition to plane | The Perez model (the all-sites composite 1990 coefficients), with the extraterrestrial beam, the Kasten–Young air mass and the roof albedo; once for each tilt and azimuth (an east-west roof has two) |
+| Horizon shading | Beam set to zero in hours when the sun is above 0° but below the horizon line; the share of isotropic diffuse the horizon hides (sin² of its height, averaged over 36 sectors) is booked in this row too |
+| Near shading | Row-to-row shading worked out from the profile angle; obstacle and parapet shadows projected at each module's mid-height, the sun's positions grouped in bins of 1° of elevation by 2.5° of azimuth; the linear loss 1 − (1 − row share)(1 − obstacle share); the diffuse each module sees reduced by the obstacles (36 sectors) and, for a module with a row in front, by Passias masking. A string takes its modules' mean |
+| Incidence angle (IAM) | The module file's IAM profile (3 points or more, interpolated), else ASHRAE with b0 = 0.05; the sky and ground diffuse at the equivalent angles 59.7 − 0.1388β + 0.001497β² and 90 − 0.5788β + 0.002693β² |
+| Soiling | The front irradiance × (1 − soiling) |
+| Bifacial rear gain | The infinite-sheds model, isotropic, the rear irradiance at the ground coverage ratio, the row spacing and the module's mid-height, × the module file's bifaciality × (1 − the rear loss). Only with the switch on, a bifacial module and a roof that is not Sloped |
+| Array nominal energy at STC | The sum of the effective irradiance / 1000 × each string's rated power |
+| Module | The PVsyst one-diode model, its photocurrent and saturation current fitted to the module file's Isc and Voc at STC with its Rs, Rsh, Rsh(0), Rsh exponent, Gamma and μGamma, band gap 1.121 eV; the maximum power point by Newton's method; zero power under 1 W/m². A string works at its modules' mean irradiance and cell temperature. **Irradiance level** is the one-diode power at 25 °C against the rated power |
+| Cell temperature | The PVsyst cell temperature model with Uc (by roof type, or yours), Uv = 0 and the module's efficiency; absorption 0.9 |
+| String shading loss | A shaded share under 1 % is left out; in portrait a whole module, or half of a half-cell module; in landscape one bypass substring for each share; never less than the linear loss. A string runs at its weakest module: its worst module's loss less its mean linear loss, applied to the beam's share of its irradiance. See [how shading is worked out](/docs/rooftop/sun#how-shading-is-worked-out) |
+| Module quality, LID, mismatch, DC ohmic | Applied in that order; the DC ohmic loss scales with the load |
+| Inverter | For each inverter, the efficiency curves of the inverter file (OND) by input power, interpolated between curves by the power-weighted string voltage; without curves its European efficiency, else 97 %; zero below its threshold power; clipped at its nominal AC power; its night consumption in hours with no DC input |
+| AC ohmic, availability | As their fields say |
+| Performance ratio | The energy × 1000 / (kWp × the in-plane irradiation), the in-plane value taken after the transposition and before shading, IAM, soiling and rear gain |
+| Yield | The energy × 1000 / kWp |
+| Likely and Conservative | The energy at level x is E × (1 − z × σ), where z is the normal quantile of x / 100 and σ = √(weather variability² + model and data²). At the defaults σ is 4.24 %, and P50 equals E |
+| Over 25 years | Year n = E × (1 − d)^(n − 1), n from 1 to 25 |
+| CO₂ avoided | The energy × the grid factor, t a year |
+| Clipping (summary) | 1 − the clipped output / the inverter's output |
 
-## The losses you set
+The 21 rows of All 21 steps, in order:
 
-Boxed values in the chain are fields of the design. Entering one is a
-change, and the design runs again.
-
-| Field | Default | Range | What it does |
-| --- | --- | --- | --- |
-| **Soiling** | 2.0 % | 0 to 30 % | Dirt on the front glass |
-| **Bifacial rear gain** | On | On or off | Counts the light on the back of a bifacial module. With a monofacial module: "The module is monofacial: no rear gain." |
-| **Module quality** | 0.0 % | −5 to 10 % | The module's output against its rating; a negative value is a gain |
-| **LID** | The PAN's value, else 1.5 % | 0 to 10 % | Light-induced degradation. **Use the PAN's** or **Use the default** sets it back |
-| **Mismatch** | 1.0 % | 0 to 10 % | Differences between modules of a string |
-| **DC ohmic** | 1.5 % | 0 to 10 % | DC wiring loss at STC power; it grows with the power of the hour |
-| **AC ohmic** | 1.0 % | 0 to 10 % | AC wiring loss at the inverter's AC power; it grows with the load |
-| **Availability** | 99.5 % | 80 to 100 % | The share of the year the system runs |
-
-The **Assumptions** card holds the rest:
-
-| Field | Default | Range | What it does |
-| --- | --- | --- | --- |
-| **Thermal Uc** | By roof type: 29 for tilted rows, 20 for east-west, 15 for sloped | 5 to 60 W/m²K | How well the modules shed heat. **Use the roof type's** sets it back |
-| **Rear shading and mismatch** | 10.0 % | 0 to 50 % | Taken off the rear gain |
-| **Roof albedo** | 0.20 | 0.05 to 0.9 | The share of light the roof reflects; the same value as **Albedo** in the Roof lens |
-| **Weather variability** | 3.0 % | 0 to 20 % | How much one year's sunlight differs from another's |
-| **Model and data** | 3.0 % | 0 to 20 % | The uncertainty of the model and its inputs |
-| **Exceedance levels** | P50, P75, P90 | P50 to P99 | The three P-values shown; each level once, sorted |
-| **Grid CO₂** | 0.716 t/MWh | 0 to 2 t/MWh | The grid's emissions, for **CO₂ avoided** |
-
-The other rows of the chain follow from the design and its files: the
-horizon and near shading from the roof, the layout and the weather; IAM and
-the module's behaviour from the PAN file; the inverter's efficiency,
-threshold, clipping and night consumption from the OND file.
-
-## The figures
-
-All figures are those of the chosen option.
-
-| Figure | How it is worked out | Unit |
+| # | Row | In the eleven steps |
 | --- | --- | --- |
-| **Energy to grid, year 1** | The energy of every hour at the grid, after availability | MWh |
-| P-values, under it | See [P50, P75 and P90](#p50-p75-and-p90) | MWh |
-| **Performance ratio** | Energy ÷ (DC capacity × in-plane irradiation) | % |
-| **Specific yield** | Energy ÷ DC capacity | kWh/kWp |
-| **Capacity factor, AC** | Energy ÷ (AC capacity × 8,760 h), followed by the DC capacity factor | % |
-| **In-plane irradiation** | The light reaching the plane of the modules, before shading | kWh/m² |
-| **Energy over 25 years** | The sum of years 1 to 25 | MWh |
-| **CO₂ avoided** | Energy × **Grid CO₂** | t/yr |
+| 1 | Global horizontal irradiation | The start, kWh/m² |
+| 2 | Transposition to plane (&lt;tilt&gt;°) | Sunlight on the tilted modules |
+| 3 | Far shading, horizon | Shade from rows, obstacles and the horizon |
+| 4 | Near shading, linear | Shade from rows, obstacles and the horizon |
+| 5 | IAM | Light reflected off the glass |
+| 6 | Soiling | Dirt on the glass (soiling) |
+| 7 | Bifacial rear gain | Light on the back of the modules |
+| 8 | Array nominal energy at STC | The modules' rated output, MWh |
+| 9 | Irradiance level | Low light and module quality |
+| 10 | Temperature | Heat |
+| 11 | Electrical shading | Shade on a string |
+| 12 | Module quality | Low light and module quality |
+| 13 | LID | Low light and module quality |
+| 14 | Mismatch | Low light and module quality |
+| 15 | DC ohmic | Cables |
+| 16 | Inverter efficiency | Inverter |
+| 17 | Inverter clipping | Inverter |
+| 18 | Night consumption | Inverter |
+| 19 | AC ohmic | Cables |
+| 20 | Availability | Downtime |
+| 21 | Energy to grid | To the grid, MWh |
 
-The performance ratio (PR) is the share of the energy the modules would
-deliver at their rating, under the sunlight they receive, that reaches the
-grid.
+Options are made and simulated as the Strings step describes: each candidate is simulated over the whole year, those in the DC/AC target come first, then the most energy, and five at most are kept. [Your own option](/docs/rooftop/strings#your-own-option), when it can be built, is simulated after them and takes the next letter.
 
-**From sunlight to the grid** has 21 rows, from **Global horizontal
-irradiation** and **Transposition to plane** to **Energy to grid**. Each
-shows its change from the step before, a gain or a loss, and the running
-total in kWh/m² for light or MWh for energy. Point at a row for its figures.
+## When something goes wrong
 
-**Energy to grid by month** shows twelve bars, with the highest and lowest
-labelled; **Table** gives each month in MWh and kWh/kWp, and the year.
-**Summary** lists the site, the roof, the structure, the module, the
-inverter, the stringing, the DC and AC capacity, the weather with its
-irradiation, the losses (clipping, LID and the uncertainty), the energy with
-its P-values, the specific yield with PR and capacity factor, the module area
-and the CO₂ avoided.
+Before any option exists, the page shows the energy's label, the Weather select and a card with the reason and a button to the step that puts it right, then Assumptions:
 
-## P50, P75 and P90
+| Card | Button |
+| --- | --- |
+| "No module fits on this roof" | **Open Roof** |
+| "Choose a system voltage to size the strings" | **Open Strings** |
+| "No string length fits at &lt;V&gt; V" | **Open Strings** |
+| "Too few positions for a string" | **Open Strings** |
 
-A P-value is the energy of a year that is reached or exceeded with that
-probability: P90 is the energy exceeded in 90 years out of 100, P50 the
-middle. Rooftop works them from the year's energy and one uncertainty:
+A run that fails puts a note under the title: "Energy not updated" with "Showing the last result" and **Try again**, the values of before staying on screen; or, with no result before, "Energy not computed" with "There is no result yet" and **Try again**. The reason stands under it, such as "The server could not be reached. Check your connection, then try again." or "The server did not answer. Try again in a moment." **Try again** runs at once.
 
-- σ is the square root of **Weather variability**² + **Model and data**².
-  The defaults give 4.24 %.
-- P*x* = energy × (1 − z × σ), where z is the normal distribution's value
-  for *x* %. P50 equals the energy of year 1.
+A weather that does not load leaves **Weather not loaded** and the reason under the selects; the weather of before stays. Check the site, try again, or choose another source. A CSV that is refused says why in its dialog (above).
 
-On the demo roof, the year's 617.8 MWh gives P75 600.2 MWh and P90
-584.2 MWh. The last cell names σ beside its level. Change the levels under
-**Exceedance levels**.
-
-## 25 years
-
-The **25 years** card draws the energy of each year, falling by
-**Degradation**, 0.5 % a year by default (0 to 3 %). Year *n* is the energy
-of year 1 × (1 − degradation) to the power *n* − 1. The chart is scaled to
-its own range, not to zero; the table gives years 1, 5, 10, 15, 20 and 25 and
-the 25-year total.
-
-## Choosing an option
-
-The run simulates up to five stringing options, lettered A, B, C. A string
-is a chain of modules wired in series; an MPPT is an inverter input that
-tracks its own best operating point; the DC/AC ratio is the array's DC
-rating over the inverters' AC rating. Options within the DC/AC target come
-first, then by energy. A is **Recommended** when it meets the target.
-
-Choose an option under **Stringing option**, or in the **Option** list on a
-phone. The figures change at once, with no new run, and the same choice
-holds in the Strings lens and in Handover.
-
-When the run has no options, a card gives its reason in the engine's words,
-with **Open the Strings lens**: no system voltage chosen, no string length
-that fits the inverter, or too few positions for a string. The
-**Assumptions** card still shows.
-
-<Callout type="info">
-Moving the roof to another place or changing the weather source loads
-weather again. The run waits for it, then follows.
-</Callout>
-
-The messages of the page, and what to do about each, are on
-[Troubleshooting](/docs/rooftop/troubleshooting#performance-and-weather).
-
-## Next
+More cases are on the [troubleshooting page](/docs/rooftop/troubleshooting#performance).
 
 <Cards>
-  <Card title="Handover" href="/docs/rooftop/handover" description="The report, the drawings, the tables and the project file" />
-  <Card title="Reference" href="/docs/rooftop/reference" description="The equipment files, the limits and the terms" />
+  <Card title="Strings" href="/docs/rooftop/strings" description="The options, the inverter and the system voltage behind the figures" />
+  <Card title="The Sun view" href="/docs/rooftop/sun" description="Shadows over the day and the shade on each module over the year" />
+  <Card title="Handover" href="/docs/rooftop/handover" description="The report, the diagram, the schedules and the hourly data" />
+  <Card title="Present" href="/docs/rooftop/present" description="The design as a tour on the whole screen, for a client" />
 </Cards>

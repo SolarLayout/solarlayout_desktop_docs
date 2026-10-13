@@ -1,183 +1,400 @@
 ---
 title: Find the roof
-description: Find the building on the satellite map, outline its roof by its corners, as a rectangle or from a detected footprint, add what stands on it, or enter the roof by its measurements.
+description: Find the building on the satellite map, outline its roof, add its obstacles and roof type, then build it. Or enter the roof by hand.
 ---
 
-**Find** is where a design starts: the building on the satellite map, the
-outline of its roof, and what stands on it, each with its height. It works in
-three steps, shown at the top: **Find**, **Outline**, **Build**. **Build this
-roof** turns the outline into a design and opens the Studio.
+Find is the first part of the Roof step in SolarLayout Rooftop. You search for the building, outline its roof on the
+satellite map, add the obstacles that stand on it with their heights, choose the roof type, and press **Build this
+roof**. The app then makes the design and opens it in the Roof step, with the array laid out on the roof.
 
-You reach Find from Home's search and **Find my roof**, from **New design** in
-the project switcher, and from **Edit** on the roof's place in the Studio's
-Roof lens, which brings the open design's outline back onto the map.
+Find opens from Home's search (**Find the roof**), from **Use my location** and **Enter the roof by hand** under it,
+and from **New design** in the project menu. It is for a new roof: to change the outline of a design already built,
+edit it in the [Roof step](/docs/rooftop/roof#outline). Its top bar holds the mark (a link to Home), the words **New
+design**, the five steps with **Roof** in hand and, on a computer, **Docs**. **Array**, **Strings**, **Performance**
+and **Handover** are grey until the roof is built. See [The five steps](/docs/rooftop/steps#the-top-bar).
 
-<Screenshot id="rooftop-find-outline" />
+Nothing on Find is saved. The outline, its obstacles, the roof type and what you type by hand stay in the page only:
+leaving Find or reloading the page loses them. The design exists once **Build this roof** makes it. On a touch screen
+the app says "Press" where on a computer it says "Click"; these pages say click.
 
 ## Find the building
 
-The panel's first step, **Find the roof**, offers three ways in.
+The column opens on **Find the roof**: "Search for the building, then outline its roof on the map." Under the search
+stand **Use my location** ("When you are at the building") and **Enter the roof by hand** ("Type its length and width").
 
-<Screenshot id="rooftop-find-start-here" />
+<Screenshot id="rooftop-find-start" />
 
-| Way in | What it does |
-| --- | --- |
-| **Search for the building** | The search at the top takes an address, coordinates or a maps link. The map flies to the place, close enough to outline the roof. |
-| **Use my location** | The browser's location, when you are at the building. |
-| **Enter dimensions by hand** | The roof by its measurements, when it is measured already. See [By hand](#by-hand). |
+<Steps>
+<Step>
+### Type the address or the coordinates
+Type in **Address or coordinates**, the first field of the column. While it is empty, its list shows **Examples**: an
+address, coordinates and a maps link. Press one to put it in the field.
+</Step>
+<Step>
+### Search
+Press **Search** or Enter. The list shows up to 5 places with their kinds (such as Park, District or City), those near
+the map's centre first. Coordinates and maps links need no search: the list reads them back as you type, in one row
+marked **Coordinates**, such as `18.53621° N, 73.89380° E`.
+</Step>
+<Step>
+### Choose the place
+Press it in the list, or move to it with ↓ and ↑ and press Enter. The map flies to it at roof zoom, about 0.3 m a
+pixel, and the column becomes **Outline the roof**.
+</Step>
+</Steps>
 
-What the search understands:
+<Screenshot id="rooftop-find-places" />
 
-| You type | For example |
-| --- | --- |
-| An address | `Koregaon Park, Pune` |
-| Coordinates, latitude first | `18.53621, 73.89380` |
-| Degrees, minutes and seconds | `18°32′10.4″N 73°53′37.7″E` |
-| A maps link | `google.com/maps/@18.53621,73.89380`, and OpenStreetMap, Apple Maps and Bing Maps links |
+| You type | For example | What the app does |
+| --- | --- | --- |
+| An address or a place | `Koregaon Park, Pune` | Asks the address search, near the map's centre, for up to 5 places |
+| Decimal coordinates, latitude first | `18.53621, 73.89380` | Reads them on this device. A comma, a semicolon or a space goes between; a minus means south or west. Two numbers with decimal commas, such as `12,914094 77,491989`, are read with decimal points |
+| Degrees, minutes and seconds | `18°32′10.4″N 73°53′37.7″E` | Reads them on this device. N, S, E or W before or after each angle sets which is which; only the last part may have a fraction |
+| A maps link | `https://www.google.com/maps/@18.53621,73.89380,19z` | Reads the place from a Google Maps, Apple Maps, Bing or OpenStreetMap link that starts with `http://` or `https://` |
+| Whole numbers, alone or with only spaces between, such as a postcode | `411001` | Searches them as words |
 
-An address offers up to five places, the ones near the map's centre first.
-Coordinates and links are read as you type: one line under the field shows
-the point, marked **Coordinates**. Coordinates never go to the address
-search; when they cannot be read, the field says why, and a latitude and
-longitude typed the wrong way round are offered swapped.
+Coordinates are never sent to the address search. When they cannot be read, a note under the field says why. When a
+latitude over 90 fits as a longitude and no letters were given, the list offers the pair swapped, marked **Swapped**.
+A pair whose numbers are both under 90 is read in the order typed: `73.89380, 18.53621` is latitude 73.89380.
 
-<Screenshot id="rooftop-find-search" />
-
-The map is satellite imagery only. On a tablet or a computer, the buttons at
-the bottom right turn it north up and zoom in and out; on a phone the map is
-pinched and turned by hand.
+**Use my location** takes the map to this device's location, waiting up to 15 seconds for it. A place found by its
+address or its name names the design (its whole label) and gives its place name (the part before the first comma,
+`Koregaon Park` of `Koregaon Park, Pune`). Coordinates, a link and **Use my location** give no place name, and the
+design is named "Untitled roof"; rename it after Build in the project menu.
 
 ## Outline the roof
 
-Choose a tool in the toolbar at the bottom of the map.
+The map is satellite imagery only, from Esri. On a tablet or a computer its buttons at the bottom right are **North
+up**, **Zoom in** and **Zoom out**; on a phone, pinch and turn it by hand. Three tools draw the outline: **Corners**,
+in hand at first, **Rectangle** and **Detect building**, with the count of corners, **Undo** and **Clear** under them.
 
-| Tool | How |
-| --- | --- |
-| **Corners** | Click each corner of the roof. Click the first corner again, or press **Enter**, to close the outline. Three corners at least. |
-| **Rectangle** | Drag a box across the roof, then turn it to the building by its round handle. It snaps to north within 3°. |
-| **Detect building** | Click inside the building. Where its footprint is known, it is proposed as the outline. **Use this outline** takes it; drag its corners to the roof edge you see where they differ. Footprints come from Overture Maps and are approximate, about 0.6 m. |
+### By its corners
+<Steps>
+<Step>
+#### Click each corner of the roof
+Go round the roof's edge, one corner after another; drag the map between corners. Each edge shows its length. While
+**Square the corners** is on, as it is at first, a corner within 3° of a right angle with the edge before it snaps
+square; otherwise one within 3° of parallel to an edge drawn snaps parallel.
 
 <Screenshot id="rooftop-find-corners" />
+</Step>
+<Step>
+#### Click the first corner again
+Or press Enter. The outline closes; a roof needs at least 3 corners. With **Square the corners** on, four corners all
+within 3° of right angles become an exact rectangle, the first edge kept as drawn.
+</Step>
+<Step>
+#### Drag the corners onto the roof's edge
+On a touch screen a loupe above your finger shows the corner close up. Click the dot in the middle of an edge to add a
+corner there. To take a corner off, click it and press Delete, while the roof keeps at least 3.
+</Step>
+</Steps>
+
+### As a rectangle
+<Steps>
+<Step>
+#### Drag from one corner of the roof to the opposite one
+Choose **Rectangle** first. It draws only while no corner is placed: if some are, press **Clear**. The rectangle stands
+square to north, and the outline closes when you let go.
+</Step>
+<Step>
+#### Turn it by its round handle
+Drag the handle above it round its middle until its edges lie on the building's; within 3° of north it snaps straight.
+Dragging one of its corners makes it an outline of corners, and the handle goes: to turn it then,
+[pick the roof up](#move-or-turn-the-roof).
+</Step>
+</Steps>
+
+### From the building's footprint
+<Steps>
+<Step>
+#### Click inside the building
+Choose **Detect building**: the footprints known from Overture Maps show faintly. Click inside the building. Its footprint
+becomes the roof's outline, closed, in place of any corners placed, and a note says "Footprint found · &lt;n&gt;
+corners · &lt;area&gt; m²", accurate to about 0.6 m. If it is the wrong building, press **Undo** in the note.
 
 <Screenshot id="rooftop-find-detect" />
+</Step>
+<Step>
+#### Drag the corners onto the roof
+A footprint is close, not exact. Drag each corner onto the roof's edge you see, or type a measured length in
+**Edges**.
+</Step>
+</Steps>
 
-Once the outline is closed:
+### The closed outline
 
-- **Drag a corner** to move it. It snaps to a right angle, or parallel to an
-  edge, within 3°. On a touch screen a magnifier shows above your finger.
-- **Add a corner** by pressing the dot in the middle of an edge.
-- **Type an edge's length** under **Edges** to set it as measured. The edge
-  scales about its middle; on a rectangle, with **Square the corners** on, the
-  opposite edge follows.
-- **Square the corners**, on at first, snaps corners to 90° when they are
-  within 3°.
-- The tiles give the roof's **Area**, the way it **Faces** (outward from its
-  longest edge, toward the equator), and its **Corners**.
+The column's head becomes **Add the obstacles**: "The roof is outlined: &lt;area&gt; m², &lt;n&gt; corners. Add its
+obstacles, choose its type, then build." The column holds **Obstacles**, **Roof type**, **Edges** and **Enter the roof
+by hand**, with **Build this roof** at its foot.
 
-| Key | Does |
-| --- | --- |
-| **Enter** | Closes the outline |
-| **Esc** | Takes back the last corner |
-| Arrows | Nudge the selected corner 0.1 m, 1 m with **Shift** |
-| **Delete** | Removes the selected corner, keeping three at least |
-| **⌘ Z** or **Ctrl Z** | Undoes; with **Shift**, redoes |
+<Screenshot id="rooftop-find-closed" />
 
-**Clear outline** in the toolbar removes the corners and the obstacles at
-once, and can be undone.
+### Edges
+
+The **Edges** row shows the edges and where the long side faces, such as "4 edges · long side faces 180° S": the
+longest edge's side toward the equator (on an outline that is not a rectangle, the tilted rows can face another way).
+Press it to type a length measured on site or taken from a drawing: it is truer than one drawn on imagery that leans.
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| Each edge's length (m): North, North-east … on a rectangle (4 corners, each within 1° of a right angle), else Edge 1, Edge 2 … | As drawn | 0.1–2000, 1 decimal | Makes that edge the length typed: its ends move along it by the same amount, about its middle. On a rectangle with **Square the corners** on, the opposite edge follows |
+| **Square the corners** · "Snaps to 90° when you are within 3°" | On | On or off | Snaps corners to right angles while you place and drag them, squares a near-rectangle on closing, keeps a rectangle one when an edge is typed. Off, a corner still snaps parallel to an edge drawn |
+
+### Undo, Clear and the keys
+
+**Undo** takes back one step: a corner, a drag, a typed length, a footprint, a rectangle or its turn, an obstacle
+added, moved, turned, reshaped or removed, a move or turn of the roof, or a Clear. **Clear** takes off all corners and
+obstacles as one step. On a touch screen these two are the way back. With a keyboard, while the map has the keys:
+Enter closes the outline or ends a wall or a building. Esc takes back the last corner or point, or puts the picked-up
+roof down. Delete or Backspace removes the selected obstacle, else the selected corner while at least 4 remain. The
+arrow keys nudge the picked-up roof, else the selected obstacle or corner, 0.1 m (1 m with Shift). ⌘ Z or Ctrl Z
+undoes; ⇧ ⌘ Z or Shift Ctrl Z redoes (there is no Redo button).
 
 ## Move or turn the roof
 
-When the outline sits off the building on the imagery, move it rather than
-drawing it again. With **Box** or **Tank** in hand (**Box** is the tool you
-hold once the roof closes), click inside the roof to pick it up. Drag it to
-move it, with its obstacles, or nudge it with the arrows. Drag the round
-handle to turn it; it snaps square to north, east, south or west within 3°.
-**Esc** lets it go, and each move or turn is one step to undo.
+Once the outline is closed, the whole roof moves and turns, its obstacles with it: use it to set an outline onto the
+roof where the imagery shows it. A line at the top of the map says "Click the roof, then drag it to move it · drag ○
+to turn it" until you first move or turn a roof on this device.
 
-<Screenshot id="rooftop-find-move-roof" />
+<Steps>
+<Step>
+### Click a clear spot inside the roof
+Away from its corners and obstacles, with **Box**, **Tank** or **Tree** in hand (with **Wall** or **Building** a click
+places a point). The outline brightens and a round handle stands off the edge that faces nearest north.
+</Step>
+<Step>
+### Drag it into place
+On a touch screen drag with one finger: two fingers move the map. A dashed outline shows where it stood, and a label
+how far it has moved, as "&lt;x&gt; m E · &lt;y&gt; m N". The arrow keys nudge it 0.1 m, 1 m with Shift.
+</Step>
+<Step>
+### Turn it by its round handle
+The label gives the angle turned and where the long side faces. When the edge by the handle comes within 3° of facing
+north, east, south or west, the turn snaps square. To put the roof down, click outside it, choose another tool, or press Esc.
+</Step>
+</Steps>
 
-## What stands on the roof
+No obstacle can be drawn while the roof is picked up. Each move or turn is one Undo step; Build takes the roof where it
+stands.
 
-Once the roof is closed, the toolbar offers four obstacles. Each asks its
-height above the roof surface as soon as it is drawn, because the imagery
-cannot give it.
+## Add the obstacles
 
-| Obstacle | How to draw it |
-| --- | --- |
-| **Box** | Drag corner to corner across it, then turn it by its handle: a stair room, a lift room, an AC unit |
-| **Tank** | Drag from its middle to its edge |
-| **Wall** | Click each point; click the last again, or press **Enter**, to end it |
-| **Building** | Click the corners of a building beside the roof; click the first again to close it |
+An obstacle takes room from the modules and casts shade: a **Box** (anything rectangular, such as a stair room or a
+plant room), a **Tank** (anything round), a **Wall** (a line, straight or bent), a **Tree**, or a **Building** beside
+the roof whose shadow falls on it. Once the outline is closed, **Obstacles · &lt;n&gt;** offers the five, **Box** in
+hand. Choose a kind, then draw it on the map.
+
+A card beside the shape then asks for **Height above the roof** (m): "Above the roof's surface, not the ground".
+Measure it on site; the imagery cannot give one. Type it and press **Add** or Enter: **Add** waits for a number, from
+0.05 to 200 m. **Cancel** or Esc takes the shape off.
 
 <Screenshot id="rooftop-find-height" />
 
-The height dialog suggests a name, and **Add the box** (or the tank, the wall,
-the building) waits for a height. Closing it
-without adding discards the shape. The obstacles are listed under
-**Obstacles** with their sizes and heights; press one to select it on the map,
-drag it to move it, and turn a box or a building by its handle. **Delete**, or
-the row's bin, removes it.
+### Box
+<Steps>
+<Step>
+#### Drag from one corner to the opposite one
+The box stands square to north. Turn it after by its round handle until its edges lie on the stair room's.
+</Step>
+<Step>
+#### Type its height above the roof, then press Add
+</Step>
+</Steps>
 
-Trees are added in the Studio's Roof lens.
+### Tank
+<Steps>
+<Step>
+#### Drag from its middle to its edge
+The diameter is twice the drag.
+</Step>
+<Step>
+#### Type its height above the roof, then press Add
+</Step>
+</Steps>
 
-<Screenshot id="rooftop-find-building" />
+### Wall
+<Steps>
+<Step>
+#### Click each point, then the last one again
+Click where it begins and at each turn of it; end on the last point, or press Enter. At least 2 points.
+</Step>
+<Step>
+#### Type its height above the roof, then press Add
+</Step>
+</Steps>
+
+### Tree
+<Steps>
+<Step>
+#### Drag from its middle to the edge of its crown
+Modules keep clear of the whole crown.
+</Step>
+<Step>
+#### Type the height of its top, then press Add
+Its crown starts 2.0 m above the roof; set **Crown starts at** in the Roof step where it differs.
+</Step>
+</Steps>
+
+### Building beside the roof
+<Steps>
+<Step>
+#### Click each corner, then the first one again
+Go round the building, then close it on the first corner, or press Enter. At least 3 corners.
+</Step>
+<Step>
+#### Type how far it rises above the roof, not the ground, then press Add
+</Step>
+</Steps>
+
+<Screenshot id="rooftop-find-obstacles" />
+
+Each obstacle is listed as "&lt;Kind&gt; &lt;n&gt;" with its size and height, such as "Box · 5.0 × 4.0 m · 3.0 m
+high", and labelled on the map. Rename it and change its height in the Roof step. Select one by clicking it with
+**Box**, **Tank** or **Tree** in hand, or by pressing its row, then:
+
+- **Move** it: drag from inside, or nudge with the arrow keys. One wholly on the roof slides along the edge it meets.
+- **Turn** it by its round handle: a box or a building. A tank, a tree and a wall only move.
+- **Reshape** it by a corner; a tank's or a tree's one handle sets its diameter. Zoom in on a small one to see them.
+- **Remove** it: the bin of its row, or Delete.
+
+Once built, no module stands on an obstacle or within its clearance; what its shadow covers in the shade-free hours of
+the design day is kept clear unless shaded positions are allowed, and its shade counts in the energy hour by hour. See [Obstacles](/docs/rooftop/roof#obstacles).
 
 ## The roof type
 
-Under **Roof type**, choose **Flat, tilted rows** (the default), **Flat,
-east-west** or **Sloped, flush**. A roof made sloped has no parapet and a
-pitch of 10°; both can be changed in the Studio.
+**Roof type** shows once the outline is closed, and by hand. The default, marked **Default**, is **Flat, rows facing
+south** north of the equator and **Flat, rows facing north** south of it. Find does not remember the choice.
+
+| On Find | On the Roof step | What the app lays out |
+| --- | --- | --- |
+| **Flat, rows facing south** · "Tilted rows, the usual for a flat roof" | **Tilted rows** | Tilted rows facing the roof's edge nearest the equator, spaced so they do not shade each other in the shade-free hours. A walkway crosses the rows after 24 modules |
+| **Flat, rows facing east and west** · "Low rows back to back: more modules, less from each" | **East-west** | Units back to back at a low tilt, one face east and one west, a gap between them only where the shade-free hours need one. A walkway after 4 units |
+| **Sloped** · "Modules follow the roof pitch" | **Sloped** | Modules laid at the roof's pitch, facing the way it slopes, rows one after another with no gap for shade. A walkway after 4 rows |
+
+Build gives a sloped roof no parapet and a roof pitch of 10°: type the real pitch and the slope's direction in the Roof
+step. The type also sets the defaults of the cell temperature the strings are sized with and of the modules' heat loss,
+and a sloped roof gets no rear gain from bifacial modules. See [Roof type](/docs/rooftop/roof#roof-type).
 
 ## Build this roof
 
-**Build this roof** is ready once the outline is closed. A new design opens in
-the Studio's Roof lens, its place the middle of the outline, its name the place
-you searched for, or "Untitled roof". Built again from **Edit**, the outline,
-the place, the obstacles and the roof type go into the open design, and
-everything else stays as it was.
+The button shows once the outline is closed, and by hand: "Build this roof · &lt;area&gt; m²", such as "Build this roof
+· 3,600 m²", over "Opens the roof in 3D with the array on it." By hand it is disabled until the place and the shape are
+complete. While it works it says "Building the roof".
 
-A roof covers 30,000 m² at most. For a larger site, outline each building as
-its own design.
+The app checks that the outline does not cross itself and covers at most 30,000 m² (about 3 MWp), on Build and not
+before. It puts the design's place at the middle of the outline and sets the edges at their defaults: parapet 0.90 m
+(0 on a sloped roof), edge margin (setback) 1.00 m, walkways 0.60 m wide, clearance round obstacles 0.50 m. A refusal
+stands above the button, in the app's words, and the outline stays to correct.
 
-## By hand
+The design opens in the Roof step, in place of the design open before: **Check the roof**, "Built from your outline.
+The app set the edges: check the parapet, it shades the first row." The app lays the array out ("The array is on the
+roof"), works out the energy, then gives the energy of year 1. See [Check the roof](/docs/rooftop/roof#check-the-roof).
 
-**Enter dimensions by hand instead**, under the panel, takes what you have
-measured. The roof is drawn as you type.
+Free, no account needed. Your designs are kept on this device. A design built on one device is not on another: to
+carry it across, download its project file and open it on the other. See [Saving](/docs/rooftop/steps#saving).
 
-| Field | What to enter |
-| --- | --- |
-| **Latitude**, **Longitude** | The place, filled by the search, or typed: five decimals, north and east positive |
-| **Shape** | **Rectangle**, or **Corners** |
-| **Length**, **Width** | For a rectangle: the longer of the two is the long side |
-| **Long side faces** | For a rectangle: the direction its long side looks, in degrees clockwise from north |
-| Corner table | For corners: each corner in metres east and north of the middle of the roof, in order around it, three at least |
+## Enter the roof by hand
 
-**Draw on the map instead** returns to the map.
+Enter the roof by hand when the map has no imagery of it, when its measurements are surer than the imagery, or when the
+map cannot be shown. Press **Enter the roof by hand** in the column or under Home's search. The head says "Type the
+roof's length and width. Add its obstacles in the Studio." From the map it takes the place the search found: the
+outline drawn and its obstacles go, and the roof by hand starts empty. From Home the place is empty.
+
+<Screenshot id="rooftop-find-by-hand" />
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Latitude** (°), in **Place** | The place found, else empty | −90 to 90, 5 decimals | Where the roof stands. North positive |
+| **Longitude** (°), in **Place** | The place found, else empty | −180 to 180, 5 decimals | Where the roof stands. East positive |
+| **Shape** | **Rectangle** | **Rectangle** or **Corners** | A rectangle by its sides, or any outline by its corners |
+| **Length** (m) | Empty | 0.1–2000, 2 decimals | The longer of Length and Width is the long side, whichever field it is in |
+| **Width** (m) | Empty | 0.1–2000, 2 decimals | The other side |
+| **The long side faces** | **South** | South, East, North or West | The direction the long side looks. South and North give the same rectangle, as do East and West |
+| Each corner's **East** and **North** (m) | No rows | −5000 to 5000, 2 decimals | Each corner east and north of the place, in order. **Add a corner** adds a row; its bin removes one. A row with a blank is left out; fewer than 3 complete rows draw nothing |
+| **Roof type** | As on the map | The three types | See [The roof type](#the-roof-type) |
+
+Paste coordinates or a maps link into either Place field: the app reads them as the search does and fills both. Choose
+**Corners** for an L, a notch or a corner cut off. Once the place and the shape are complete, the stage shows a plan of
+the roof, north up on a 10 m grid; until then it says "No roof yet". On Build the design's place becomes the middle of
+the outline, so corners not centred on the place move it. Add the obstacles in the Roof step. **Draw on the map
+instead** goes back to the map: a complete roof comes as a closed outline at the place.
 
 ## Import a drawing
 
-A roof drawn already comes in from Home's **Import a drawing**, or the
-project switcher: a KMZ, KML or DXF with the roof and its obstacles. The
-largest closed shape is the roof. A KMZ or KML says where the roof is; for a
-DXF, give its latitude and longitude, and its units, metres or millimetres.
-Heights written in a shape's name or description as `h=2.5` are read; the
-others are set to 1.0 m and listed for you to check in the Roof lens. The
-roof opens in the Studio as a new design.
+A drawing opens as a design without Find. Choose **Import a drawing** under Home's search or in the project menu
+("KMZ, KML, DXF"), drop the file or press **Choose a file**, then press **Open the roof**.
+
+<Screenshot id="rooftop-find-import" />
+
+From a KMZ or KML (in a KMZ, the first KML inside, up to 20 MB) the app takes the placemarks' polygons and lines: the
+largest polygon is the roof, another a box when it makes a rectangle, else a building, and a line a wall. From a DXF,
+ASCII or binary, it takes the closed polylines and circles: the largest polyline is the roof, a circle a tank.
+
+Heights come from a shape's name as `h=2.5` or `h:2.5`, and in a KMZ or KML from a placemark's description too; a DXF
+shape's name is its layer. A DXF also needs its **DXF units** (**m** or **mm**) and its **Place** ("Where is the
+roof?"), by a search or its latitude and longitude. The design is named after the file, with the default roof type,
+and opens in the Roof step. An obstacle with no height gets 1.0 m, listed there to review: "The file has no height for
+these obstacles. The app uses 1.0 m." The app sends a drawing of about 4.7 MB at most.
 
 ## When something goes wrong
 
+<Accordions>
+<Accordion title="The map is not available, the browser cannot draw it, or the imagery does not load">
+The note stands at the head of the by-hand column. "The map is not available": enter the roof by hand, or import a
+drawing. "This browser cannot draw the map": the map needs WebGL, so open Rooftop in another browser. "The imagery does
+not load": check the connection, or go on by hand.
+</Accordion>
+<Accordion title="Address search is not available, cannot be reached, did not answer, or failed">
+"Address search is not available. Paste coordinates or a maps link.", or a note to check the connection or try again.
+Coordinates and maps links do not need it: paste them.
+</Accordion>
+<Accordion title="Nothing found for “…”">
+"Try a fuller address, or paste coordinates." Add the street, the town or the country, or paste a maps link.
+</Accordion>
+<Accordion title="Coordinates that cannot be read">
+
 | Message | What to do |
 | --- | --- |
-| "The map is not available", "This browser cannot draw the map" or "The imagery does not load" | Check the connection, try another browser, or use **Enter dimensions by hand instead**. |
-| "Nothing found for …" | Try a fuller address, or paste coordinates. |
-| "Your location is not available." | Allow it in the browser, or search for the address. |
-| "No footprint known here" | Outline the roof by its corners or as a rectangle. |
-| "The outline crosses itself." | Move the corners so that no two edges cross. |
-| "This outline covers … m²." | Outline each building as its own design, up to 30,000 m². |
+| "These look like coordinates, but they cannot be read. Write them as 12°54′50.74″N 77°29′31.16″E, or 12.91409, 77.49199." | Write them in one of the two forms |
+| "Only the latitude is here …", "Only the longitude is here …" or "Both are marked N …" | Give one angle N or S and the other E or W |
+| "−&lt;n&gt; is marked N, and a minus means south. Keep the minus or the letter, not both." (or E and west) | Keep the minus or the letter |
+| "The latitude comes first, and &lt;n&gt; is more than 90°. Did you mean this?" | Choose the row marked **Swapped** |
+| "Minutes and seconds go up to 59 …", "A latitude goes up to 90° …", "A longitude goes up to 180° …" | Check where they were copied from |
 
-## Next
+</Accordion>
+<Accordion title="Your location is not available">
+"Allow it in the browser, or search for the address." Allow the location for the site, or search for the building.
+</Accordion>
+<Accordion title="No footprint known here">
+"Outline the roof by corners or by a rectangle instead." Choose **Corners** or **Rectangle**.
+</Accordion>
+<Accordion title="The outline crosses itself. Move the corners so that no two edges cross.">
+Drag the corners until no two edges cross, then press **Build this roof** again.
+</Accordion>
+<Accordion title="This outline covers … m². SolarLayout designs one roof at a time, up to 30,000 m² (about 3 MWp).">
+"For a larger site, outline each building as its own design." Outline each building, or part of a roof, on its own.
+</Accordion>
+<Accordion title="The roof could not be built, or the server could not be reached">
+"The roof could not be built. Try again.", "The server could not be reached. Check your connection, then try again."
+or "The server did not answer. Try again in a moment." The outline stays: check the connection, then build again.
+</Accordion>
+<Accordion title="File not loaded">
+
+| Message | What to do |
+| --- | --- |
+| "&lt;name&gt; is not a KMZ, KML or DXF file. Choose a file with one of these endings." | Choose a `.kmz`, `.kml` or `.dxf` file |
+| "&lt;file&gt; has no KML file inside." or "… is not a KML file that can be read …" or "… not a DXF file that can be read …" | Export the drawing again from its program |
+| "&lt;file&gt;: the KML inside is larger than 20 MB …" or "The app can send a drawing of about 4.7 MB at most …" | Save the roof and its obstacles alone, then choose it again |
+| "&lt;file&gt; has no polygon to use as the roof." or "… no closed polyline to use as the roof." | Draw the roof as a closed shape |
+| "The file could not be read. Choose another." | Choose the file again, or another one |
+
+</Accordion>
+</Accordions>
 
 <Cards>
-  <Card title="Your first rooftop design" href="/docs/rooftop/first-design" description="From a place on the map to a design report." />
-  <Card title="The workspace" href="/docs/rooftop/workspace" description="Where each part of the app is." />
+  <Card title="Your first rooftop design" href="/docs/rooftop/first-design" description="From an address to a design, step by step" />
+  <Card title="Roof" href="/docs/rooftop/roof" description="Check the roof built: its edges, type and obstacles" />
+  <Card title="Troubleshooting" href="/docs/rooftop/troubleshooting#find" description="More problems on Find and their fixes" />
+  <Card title="Your designs and the project file" href="/docs/rooftop/projects" description="Open a design again, or carry it to another device" />
 </Cards>

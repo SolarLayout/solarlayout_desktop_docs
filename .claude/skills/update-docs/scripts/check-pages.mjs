@@ -39,8 +39,13 @@ const TREES = {
     other: /SolarLayout[ .]Desktop|SolarLayout (?:app|application)\b|\bBESS\b/,
     releases: "content/rooftop/whats-new.mdx",
     // Rooftop is a browser app (the writing guide's Rooftop section): added to the home screen, never installed or
-    // downloaded; named SolarLayout Rooftop, then Rooftop, never a desktop, web or cloud version or a tool.
-    banned: /\binstall(?:s|ed|ing|ation)?\b|\bdownload (?:the app|the application|Rooftop|SolarLayout Rooftop)\b|Rooftop Desktop|\bweb version\b|\bcloud (?:product|version)\b|\brooftop tool\b|\bsign(?:-| )in\b|\bbankable\b/i,
+    // downloaded; named SolarLayout Rooftop, then Rooftop, never a desktop, web or cloud version or a tool. Never
+    // "every" (the owner, 2026-10-13), save the field the app names "Walkway every", as its own voice scan allows.
+    banned: /\binstall(?:s|ed|ing|ation)?\b|\bdownload (?:the app|the application|Rooftop|SolarLayout Rooftop)\b|Rooftop Desktop|\bweb version\b|\bcloud (?:product|version)\b|\brooftop tool\b|\bsign(?:-| )in\b|\bbankable\b|\bevery(?:one|thing|where)?\b/i,
+    // The app's internal words its voice keeps off the screen (plan/v2/voice.md §6 in rooftop-design-app). What's new
+    // may name them: its older entries describe the app before V2, when the Studio had lenses.
+    allowed: /\bWalkway every\b/g,
+    internal: /\blens(?:es)?\b|\bworkspaces?\b|\bvitals\b|\bengine\b/i,
   },
 }
 const P = TREES[args.product]
@@ -127,7 +132,8 @@ for (const file of files) {
     if (CODEISH.test(prose)) errors.push(`${at}  code identifier / PR number: ${prose.match(CODEISH)[0]}`)
     if (BANNED.test(text)) errors.push(`${at}  banned term: ${text.match(BANNED)[0]}`)
     if (P.other.test(text.replace(/https?:\/\/\S+/g, ""))) errors.push(`${at}  names another product: ${text.match(P.other)[0]}`)
-    if (P.banned?.test(text.replace(/https?:\/\/\S+/g, ""))) errors.push(`${at}  banned for this product: ${text.match(P.banned)[0]}`)
+    if (P.banned?.test(text.replace(/https?:\/\/\S+/g, "").replace(P.allowed ?? /(?!)/g, ""))) errors.push(`${at}  banned for this product: ${text.match(P.banned)[0]}`)
+    if (!isReleases && P.internal?.test(text)) errors.push(`${at}  an internal word of the app: ${text.match(P.internal)[0]}`)
     if (!isReleases && CHANGELOG.test(text)) warns.push(`${at}  change-log phrasing? "${text.match(CHANGELOG)[0]}" — ${text.trim().slice(0, 110)}`)
     for (const m of line.matchAll(/<Screenshot\s+id="([^"]+)"/g)) {
       const f = manifest.get(m[1])

@@ -51,10 +51,14 @@ const nextConfig = {
 
   /**
    * The documentation index lives at `/docs`, where `solarlayout.app/docs` reaches it (#19). The docs domain's own
-   * root sends readers there. Not permanent, so a browser never caches it past a later change.
+   * root sends readers there. Not permanent, so a browser never caches it past a later change. Rooftop's page "The
+   * workspace" became "The five steps" when the app was rebuilt around its steps (V2, 2026-10-13).
    */
   async redirects() {
-    return [{ source: "/", destination: "/docs", permanent: false }]
+    return [
+      { source: "/", destination: "/docs", permanent: false },
+      { source: "/docs/rooftop/workspace", destination: "/docs/rooftop/steps", permanent: true },
+    ]
   },
 }
 

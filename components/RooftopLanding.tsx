@@ -1,6 +1,6 @@
 /**
  * RooftopLanding — SolarLayout Rooftop's docs landing at `/docs/rooftop`, in the `(landing)` route group as BESS's is:
- * hero, Start here, Browse by topic, footer. The sidebar order and the groups follow the approved tree (#19).
+ * hero, Start here, Browse by topic, footer. The sidebar order and the groups follow the approved tree (V2, 2026-10-13).
  */
 import Link from "next/link"
 import {
@@ -27,7 +27,7 @@ interface HighlightCard {
 
 const HIGHLIGHTS: HighlightCard[] = [
   { icon: Rocket, title: "Getting started", meta: "5 min", href: "/docs/rooftop/getting-started" },
-  { icon: LayoutGrid, title: "The workspace", meta: "5 min", href: "/docs/rooftop/workspace" },
+  { icon: LayoutGrid, title: "The five steps", meta: "5 min", href: "/docs/rooftop/steps" },
   { icon: Sparkles, title: "Your first rooftop design", meta: "20 min walkthrough", href: "/docs/rooftop/first-design" },
 ]
 
@@ -37,50 +37,50 @@ interface TopicSection {
   links: { label: string; href: string }[]
 }
 
-// Only the pages that exist: the other groups of the approved tree (#19) join as their pages are written.
+// The groups of the approved tree (2026-10-13), in the sidebar's order.
 const TOPICS: TopicSection[] = [
   {
     icon: Rocket,
-    category: "Onboarding",
+    category: "Start here",
     links: [
       { label: "What SolarLayout Rooftop does", href: "/docs/rooftop/intro" },
       { label: "Getting started", href: "/docs/rooftop/getting-started" },
       { label: "Your first rooftop design", href: "/docs/rooftop/first-design" },
-      { label: "The workspace", href: "/docs/rooftop/workspace" },
+      { label: "The five steps", href: "/docs/rooftop/steps" },
     ],
   },
   {
     icon: Map,
-    category: "The roof and the Studio",
+    category: "Roof",
     links: [
-      { label: "Find the roof", href: "/docs/rooftop/find" },
+      { label: "Find the roof: search, outline, obstacles", href: "/docs/rooftop/find" },
       { label: "Roof: type, edges and obstacles", href: "/docs/rooftop/roof" },
-      { label: "Array: module, mounting and spacing", href: "/docs/rooftop/array" },
-      { label: "Sun: shadows and the shade map", href: "/docs/rooftop/sun" },
-      { label: "Strings: voltage, inverter and options", href: "/docs/rooftop/strings" },
     ],
   },
   {
     icon: FileDown,
-    category: "Results and handover",
+    category: "The steps",
     links: [
-      { label: "Performance: the hourly energy yield", href: "/docs/rooftop/performance" },
+      { label: "Array: module, mounting and spacing", href: "/docs/rooftop/array" },
+      { label: "The Sun view: shadows and the shade map", href: "/docs/rooftop/sun" },
+      { label: "Strings: options, inverter and voltage", href: "/docs/rooftop/strings" },
+      { label: "Performance: the energy of a year", href: "/docs/rooftop/performance" },
       { label: "Handover: the report and the files", href: "/docs/rooftop/handover" },
-      { label: "Present: the tour for a client", href: "/docs/rooftop/present" },
     ],
   },
   {
     icon: BookOpen,
-    category: "Projects and reference",
+    category: "Show and keep",
     links: [
+      { label: "Present: the tour for a client", href: "/docs/rooftop/present" },
       { label: "Your designs and the project file", href: "/docs/rooftop/projects" },
-      { label: "Equipment files, limits and glossary", href: "/docs/rooftop/reference" },
     ],
   },
   {
     icon: LifeBuoy,
-    category: "Help",
+    category: "Reference",
     links: [
+      { label: "Equipment files, limits and glossary", href: "/docs/rooftop/reference" },
       { label: "Troubleshooting", href: "/docs/rooftop/troubleshooting" },
       { label: "What's new", href: "/docs/rooftop/whats-new" },
       { label: "Getting help", href: "/docs/rooftop/support" },
