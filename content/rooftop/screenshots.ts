@@ -712,3 +712,8 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
     priority: 1,
   },
 ]
+
+
+/** Lookup used by `<Screenshot id="…" />`. */
+export const SCREENSHOTS_BY_ID: Record<string, ScreenshotSpec> =
+  Object.fromEntries(SCREENSHOTS.map((s) => [s.id, s]))

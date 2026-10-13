@@ -2603,3 +2603,16 @@ Facts the page writers and reviewers needed, read in the code (2026-10-13) and c
 | The time a run takes | docs/deployment.md gives about 6 s for a roof at the limit, measured in the API's image (Phase 13); the time a deployed run takes on a user's connection is not known (part 5). Pages state no run time | docs/deployment.md:78-79 |
 | A project file opened twice | Each opening keeps it as a design of its own, under a new id: two designs | WEB/components/shell/OpenProject.tsx:93; WEB/lib/device/saving.ts:220-223 |
 | A design card's picture | A plan of the roof alone until a layout exists, then of the roof with its module positions | WEB/lib/device/kept-design.ts:24,60 |
+
+#### Product issues seen while taking the screenshots (production, 6d6d41f, 2026-10-13; not behaviour to document)
+
+1. The Sun view's timeline prints "16:00" and "sunset 17:27" over each other on the demo, and the arc's sunset label sits under the card's edge (`sun/view.jpg`).
+2. With the shade map on, its legend at the stage's foot covers the card's Day section on desktop (`sun/shade-map.jpg`), as part 4 suspected from the layout.
+3. The Design day control runs about 8 px past the work column's right edge on desktop.
+4. The Weather list on Performance is narrower than its names, which wrap.
+5. On a phone, the 3D/Plan control covers the inverter's tag on the Strings step (`strings/phone.jpg`).
+6. Facts cut short in closed rows: "Flat, rows facing east and west · back t…", "Rows 6.45 m apart · shade-free hours …", and the inverter list's "Up to 600 V: … not 15…".
+7. The Roof step's status box still reads option A's 638 modules · 357.28 kWp after the roof type changes to Sloped (1,068 modules).
+8. Detect building at the demo's point returns the roof merged with its neighbour, one footprint of 806 m² (Overture's data, not the app's code, may be the cause).
+9. Present's first scene shows satellite ground only when Imagery was on in the Studio; opened at `/present` directly it is the plain grid.
+10. The demo's Handover sizes on production (Download all 375 KB, single-line diagram 66 KB) differ by a few KB from part 6's headless export; pages state no sizes.
