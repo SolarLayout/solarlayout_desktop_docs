@@ -1589,7 +1589,7 @@ Section **On the roof** (? disc → studio.section.on-the-roof). Each row: the l
 | A saved choice the run no longer holds | The first option is shown and chosen; a toast "Your stringing no longer fits. Option {L} is used." with **Undo** and **Choose another** (to the Strings step) | CORE/project.py:340-343; WEB/lib/flow/choice-gone.ts:25-41; WEB/components/shell/use-says-choice-gone.ts:9-38 |
 | Chosen option outside the target | A note to review: title "Below the DC/AC target" (etc.), the verdict's detail, "Option {L} · Strings step" | WEB/components/shell/notes-view.ts:145-157 |
 | Demo at 1500 V | A Recommended 25 × 24 · 348.00 kWp 586.4 MWh (chosen); B Less clipping 26 × 23 · 346.84 kWp 585.4; C Less clipping 27 × 22 · 344.52 kWp 582.8; D Below target 27 × 29 · 454.14 kWp · 2 inverters 777.2; E Below target 26 × 30 · 452.40 kWp · 2 inverters 773.2; folded "2 more, below the DC/AC target". DC/AC: A 1.27, B 1.26, C 1.25, D 0.83, E 0.82. No option is "Fills the inverter" on the demo (A fills it but is Recommended) | headless run of the demo at `476c0e6` with WEB/lib/studio/option-cards.ts:36-61; A held by apps/api/tests/engine/test_demo_equipment.py:101-109 |
-| Demo at 1000 V | A Below target 17 × 46 · 2 inverters (chosen), B 18 × 43 · 2 inverters, C 18 × 24, D 17 × 24, all "Below target" (DC/AC 0.83, 0.82, 0.91, 0.86); the lengths that fit 14–18 | headless run at `476c0e6` (/tmp/rooftop-u2/n2/demo-1000.json) |
+| Demo at 1000 V | A Below target 17 × 46 · 2 inverters (chosen), B 18 × 43 · 2 inverters, C 18 × 24, D 17 × 24, all "Below target" (DC/AC 0.82, 0.82, 0.91, 0.86); the lengths that fit 14–18 | headless run at `476c0e6` (/tmp/rooftop-u2/n2/demo-1000.json) |
 
 ### 4.11 Strings step: why it fits (the proof behind Why)
 
@@ -2180,7 +2180,7 @@ The demo ("Pune demo roof", place "Pune"): a 90 × 40 m flat roof at 18.52, 73.8
 | Summary (run time) | Module "Waaree Energies Ltd. BiN-08-580 · 580 Wp"; Inverter "WattPower Systems Pvt.Ltd WP-330KTL-H1 · 275 kW · 6 MPPT"; Stringing "25 in series × 24 strings on 1 inverter"; DC capacity "348.00 kWp (600 modules)"; AC capacity "275 kW · DC/AC 1.27"; Losses "Clipping 1.5 % · LID 1.50 % · uncertainty σ 4.24 %"; Energy, year 1 "P50 586.4 MWh · P75 569.6 MWh · P90 554.5 MWh"; Yield "1,685 kWh/kWp · PR 84.3 % · CUF 24.3 % AC"; Module area "1,550 m² · 43.1 % of the roof"; CO₂ avoided "419.9 t/yr at 0.716 t/MWh". Site, Roof, Structure, Weather as before | headless run (CORE/readouts.py:325-335; CORE/export/summary.py:26-62) |
 | Notes to review on the demo | None: no module, layout or weather note, and option A is in its target with its MPPTs within their limits; the chip reads "586.4 MWh a year" with no "to review" | headless run (/tmp/rooftop-u2/s3/notes3.py); WEB/components/shell/notes-view.ts:145-156, 166-172 |
 | The demo at 600 V | No options: "No string length fits at 600 V" / "A string needs at least 14 modules for the inverter's 500 V MPPT minimum. At most 11 fit under 600 V." (re-run at `476c0e6`: the same) | run time (API/services/design.py:232-234; CORE/stringing.py:67-73) |
-| The demo at 1000 V | A 17 × 46 × 2 "Below target, 2 inverters" (DC/AC 0.83), B 18 × 43 × 2 (0.82), C 18 × 24 × 1 "Below target" (0.91), D 17 × 24 × 1 (0.86) | headless run (/tmp/rooftop-u2/s3/volts3.py) |
+| The demo at 1000 V | A 17 × 46 × 2 "Below target, 2 inverters" (DC/AC 0.82), B 18 × 43 × 2 (0.82), C 18 × 24 × 1 "Below target" (0.91), D 17 × 24 × 1 (0.86) | headless run (/tmp/rooftop-u2/s3/volts3.py) |
 
 ### Performance: messages
 
