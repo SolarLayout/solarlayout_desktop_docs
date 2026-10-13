@@ -55,13 +55,13 @@ ratio is in the target and each MPPT's current limit is known and kept.
 Press a card to choose it, or move between the cards with the arrow keys. Nothing runs again: the run has
 simulated each option already. The chosen option sets the strings on the roof, the [MPPT
 loading](#mppt-loading) and the energy Performance shows. The **Option** list in Performance chooses among
-the same options ([Option and weather](/docs/rooftop/performance#option-and-weather)).
+the same options ([Option and weather](/docs/rooftop/steps/performance#option-and-weather)).
 
 The options outside the target fold under one line with an exclamation mark, as `2 more, below the DC/AC
 target` (`above`, or `outside` for a mix). Press it to open them. It stands open when the chosen option is
 one of them, and nothing folds when no option is in the target. A chosen option outside the target is also a
 note to review, titled `Below the DC/AC target` (or above), under `Option <letter> · Strings step` ([Notes
-to review](/docs/rooftop/steps#notes-to-review)), and the step is marked as needing you.
+to review](/docs/rooftop/start/steps#notes-to-review)), and the step is marked as needing you.
 
 Under the chosen card, one line says whether its string length fits at the system voltage, as `29 modules
 per string fits at 1500 V` with a tick. **Why** opens the proof ([Why an option fits](#why-an-option-fits)).
@@ -222,7 +222,7 @@ inverter goes into the design, clears any current per MPPT you entered, and the 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Current per MPPT** (A) | The inverter file's current per MPPT, else its DC input current ÷ its MPPTs | 1 to 2000 | Replaces both current limits of each MPPT, the working and the short-circuit current. **Use the file's** gives the file's value back |
-| **AC cable per inverter** (m) | 30 | 1 to 2000 | The AC cable in the [bill of materials](/docs/rooftop/handover#bill-of-materials) |
+| **AC cable per inverter** (m) | 30 | 1 to 2000 | The AC cable in the [bill of materials](/docs/rooftop/steps/handover#bill-of-materials) |
 
 The hint under **Current per MPPT** says where the value comes from, as `65.0 A · max DC current 390 A ÷ 6
 MPPT` on the demo. When the file states no current per MPPT, a note says `Not in the OND: IMaxDC <n> A ÷ <m>
@@ -352,13 +352,13 @@ The run forms the strings along a row, out along its top line of modules and bac
 row leaves at its end runs on into the next row of the same tilt and direction, a string across rows. On an
 east-west roof a string runs along one side of a unit and on into the same side of the next, never mixing
 east and west. An option uses the least shaded strings first, by each string's string shading loss over the
-year ([Shade over the year](/docs/rooftop/sun#shade-over-the-year)).
+year ([Shade over the year](/docs/rooftop/steps/sun#shade-over-the-year)).
 
 ## When no string length fits
 
 When the fewest modules the inverter needs in a string are more than a string can hold at the system
 voltage, no string length fits, and the run builds no option, your own included. The step is marked as
-needing you, and the result chip says `Energy not computed` ([The result](/docs/rooftop/steps#the-result)).
+needing you, and the result chip says `Energy not computed` ([The result](/docs/rooftop/start/steps#the-result)).
 
 - **The head of the work column** says `No string length fits at <V> V` and `This inverter needs at
   least <n> modules in a string. At <V> V a string holds at most <m>.`, with **Choose another inverter** (opens
@@ -386,11 +386,11 @@ The other cases in which the step has no option:
 | `Too few positions for a string` · `The roof holds <n> positions, and a string takes <a> to <b> modules. A string of <s> fits. Add it as your own option.` (or `No string of that length fits.`) | No length tried forms an option | **Options**, with **Add your own option** under it when a length fits |
 | `No module fits on this roof` · `The roof has no room for a module inside the edge margin and clear of shade. Check the outline, the edge margin and the obstacles.` | The layout is empty | **Options**; the result chip offers **Open Roof** |
 
-More answers are in [Troubleshooting](/docs/rooftop/troubleshooting#sun-view-and-strings).
+More answers are in [Troubleshooting](/docs/rooftop/reference/troubleshooting#sun-view-and-strings).
 
 <Cards>
-  <Card title="Performance" href="/docs/rooftop/performance" description="The energy of the chosen option, by month and over 25 years" />
-  <Card title="The Sun view" href="/docs/rooftop/sun" description="The shade that sets which strings are used first" />
-  <Card title="Handover" href="/docs/rooftop/handover" description="The single-line diagram, the cable schedule and the bill of materials" />
-  <Card title="Array" href="/docs/rooftop/array" description="The module whose ratings size the strings" />
+  <Card title="Performance" href="/docs/rooftop/steps/performance" description="The energy of the chosen option, by month and over 25 years" />
+  <Card title="The Sun view" href="/docs/rooftop/steps/sun" description="The shade that sets which strings are used first" />
+  <Card title="Handover" href="/docs/rooftop/steps/handover" description="The single-line diagram, the cable schedule and the bill of materials" />
+  <Card title="Array" href="/docs/rooftop/steps/array" description="The module whose ratings size the strings" />
 </Cards>

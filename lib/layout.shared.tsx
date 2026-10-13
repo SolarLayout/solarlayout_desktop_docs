@@ -53,7 +53,7 @@ export const rooftopBaseOptions: BaseLayoutProps = {
   },
   links: [
     { text: "Docs", url: "/docs/rooftop" },
-    { text: "What's new", url: "/docs/rooftop/whats-new" },
+    { text: "What's new", url: "/docs/rooftop/reference/whats-new" },
     { text: "Open Rooftop", url: "https://rooftop.solarlayout.app", external: true },
   ],
 }

@@ -3,7 +3,7 @@ title: Handover
 description: The design's files for the client, the utility and the installer, what each one holds and how it is made, and the project file that carries the design.
 ---
 
-Handover is the last of the [five steps](/docs/rooftop/steps) in SolarLayout Rooftop: the files for the client, the installer and the utility. Reach it by the **Handover** step, or by **Continue to Handover** at the head of [Performance](/docs/rooftop/performance). Each file is made by the server from the design as it is at that moment, for the option the run shows: the one you chose, else the run's first.
+Handover is the last of the [five steps](/docs/rooftop/start/steps) in SolarLayout Rooftop: the files for the client, the installer and the utility. Reach it by the **Handover** step, or by **Continue to Handover** at the head of [Performance](/docs/rooftop/steps/performance). Each file is made by the server from the design as it is at that moment, for the option the run shows: the one you chose, else the run's first.
 
 ## The files
 
@@ -73,7 +73,7 @@ A PDF in A4 landscape, one page a figure, for the client. Its pages, in order:
 | --- | --- | --- |
 | 1 | Summary | The design's name and "rooftop PV design", the date on this device, and a table of the site, roof, structure, module, inverter, stringing, DC and AC capacity, weather, energy of year 1, yield, module area and CO₂ avoided. A note from the module file stands at its foot when there is one |
 | 2 | Layout and strings | The plan with the strings. The demo's page carries the string labels, the obstacles with their heights, the inverter, a north mark and a scale |
-| 3 | Shadows | The plan in shadow at the end of the [shade-free hours](/docs/rooftop/array#shade-free-hours) on the design day, with the near shading, string shading and horizon shading losses and the area kept clear, m² |
+| 3 | Shadows | The plan in shadow at the end of the [shade-free hours](/docs/rooftop/steps/array#shade-free-hours) on the design day, with the near shading, string shading and horizon shading losses and the area kept clear, m² |
 | 4 | Energy | The loss diagram of year 1 (the 21 steps), the energy each month with the highest and lowest months' values, and a table of years 1, 5, 10, 15, 20 and 25, the 25-year total, and P50, P75 and P90 |
 | 5 | String schedule and bill of materials | The first 28 strings of the cable schedule, then the bill of materials |
 | Then | String schedule, continued | 40 strings a page, after the first 28 |
@@ -94,7 +94,7 @@ A PNG at A4 landscape, 200 dpi (2338 × 1654 px), for the utility: the strings, 
 | MPPT | A block of its strings × modules on a line "MPPT &lt;j&gt; · DC"; an MPPT with no string reads "MPPT &lt;j&gt; · not used" |
 | AC side | A line "AC" to the "ACDB" box, the "Net meter" (kWh), then "Grid / LT panel" |
 
-The preview is the same diagram drawn by the app, each MPPT block in its MPPT's colour as the Strings step colours the strings, captioned "The PNG is A4, as in the report". Point at a block, tap it or focus it for its strings ("S1 · S2 · S3 · S4") and its current against the MPPT's limit, "Imp &lt;x&gt; of &lt;limit&gt; A", or "Imp &lt;x&gt; A · limit not known". [MPPT loading](/docs/rooftop/strings#mppt-loading) explains the limit.
+The preview is the same diagram drawn by the app, each MPPT block in its MPPT's colour as the Strings step colours the strings, captioned "The PNG is A4, as in the report". Point at a block, tap it or focus it for its strings ("S1 · S2 · S3 · S4") and its current against the MPPT's limit, "Imp &lt;x&gt; of &lt;limit&gt; A", or "Imp &lt;x&gt; A · limit not known". [MPPT loading](/docs/rooftop/steps/strings#mppt-loading) explains the limit.
 
 <Screenshot id="rooftop-handover-sld" />
 
@@ -112,7 +112,7 @@ A CSV for the installer, with the head `Item,Specification,Quantity,Unit`, one l
 | AC cable | "Inverter to ACDB, sized for &lt;I&gt; A at &lt;V&gt; V AC", I the inverter file's maximum AC current, else its power over √3 × V; 415 V where the inverter file (OND) gives no output voltage, which the line then says | The AC cable length of one inverter × the inverters, m |
 | AC distribution board | Its incomers and 1 outgoing | 1, pcs |
 
-The AC cable length is the design's: 30 m by default, from 1 to 2,000 m, set with the [inverter](/docs/rooftop/strings#inverter). The report's page 5 and the CSV come from the same option and the same calculation.
+The AC cable length is the design's: 30 m by default, from 1 to 2,000 m, set with the [inverter](/docs/rooftop/steps/strings#inverter). The report's page 5 and the CSV come from the same option and the same calculation.
 
 The preview is a table of Item, Specification, Qty and Unit, captioned "The bill of materials of option &lt;letter&gt;", with "In the report, page 5" and **Copy**. **Copy** puts the table on the clipboard as tab-separated text, a header line and then one line a row, and says "Copied".
 
@@ -200,7 +200,7 @@ At night the AC power is negative by the inverter's night consumption. The previ
 
 ## Project file
 
-The project file (`.rtd`) is the whole design in one file, to open again in the app. Free, no account needed. Your designs are kept on this device. A design on one device is not on another: the project file carries it across. Download it here, then open it on the other device with [Open a project file](/docs/rooftop/projects#open-a-project-file).
+The project file (`.rtd`) is the whole design in one file, to open again in the app. Free, no account needed. Your designs are kept on this device. A design on one device is not on another: the project file carries it across. Download it here, then open it on the other device with [Open a project file](/docs/rooftop/show/projects#open-a-project-file).
 
 It holds the design's name and its place's name; the roof (its outline, place, roof type, edges, walkways, clearances, roof albedo, pitch and direction, how it was entered, and its obstacles); the array; the losses; the module file and the inverter file, each with its text; the weather source, a weather CSV with its text, and the weather itself; the system voltage and who set it; the sizing temperatures, the MPPT current limit and the Voc coefficient where set; the chosen option and your own option; and the AC cable length. It holds no results: no layout, no energy, no options, no files. The design runs again when it is opened.
 
@@ -221,11 +221,11 @@ The project menu's **Download the project file** downloads it too, and so does t
 | A toast with the reason and **Try again** | A download or Download all failed | Press **Try again** |
 | "The table could not be copied. Select it and copy by hand." | The browser refused the clipboard | Select the table and copy it |
 
-When the server's answer cannot be read, the app asks for a file again, up to three tries in all. More cases are on the [troubleshooting page](/docs/rooftop/troubleshooting#handover-and-present).
+When the server's answer cannot be read, the app asks for a file again, up to three tries in all. More cases are on the [troubleshooting page](/docs/rooftop/reference/troubleshooting#handover-and-present).
 
 <Cards>
-  <Card title="Performance" href="/docs/rooftop/performance" description="The energy, the losses and the weather behind the report" />
-  <Card title="Present" href="/docs/rooftop/present" description="The design as a tour on the whole screen, for a client" />
-  <Card title="Your designs and the project file" href="/docs/rooftop/projects" description="Designs on this device, and opening a project file" />
-  <Card title="Strings" href="/docs/rooftop/strings" description="The options, the inverter and the MPPT loading the files follow" />
+  <Card title="Performance" href="/docs/rooftop/steps/performance" description="The energy, the losses and the weather behind the report" />
+  <Card title="Present" href="/docs/rooftop/show/present" description="The design as a tour on the whole screen, for a client" />
+  <Card title="Your designs and the project file" href="/docs/rooftop/show/projects" description="Designs on this device, and opening a project file" />
+  <Card title="Strings" href="/docs/rooftop/steps/strings" description="The options, the inverter and the MPPT loading the files follow" />
 </Cards>

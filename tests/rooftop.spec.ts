@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test"
 
 test("the Rooftop intro page renders with the docs chrome", async ({ page }) => {
-  const res = await page.goto("/docs/rooftop/intro")
-  expect(res?.status(), "/docs/rooftop/intro did not return 200").toBe(200)
+  const res = await page.goto("/docs/rooftop/start/intro")
+  expect(res?.status(), "/docs/rooftop/start/intro did not return 200").toBe(200)
   await expect(page.getByRole("heading", { level: 1, name: /SolarLayout Rooftop/i })).toBeVisible()
   await expect(page.locator("#nd-sidebar")).toBeVisible()
 })
@@ -13,11 +13,11 @@ test("the /docs/rooftop landing carries a Rooftop title, starts reading and open
   await expect(page.getByText("Free, no account needed. Your designs are kept on this device.")).toBeVisible()
   await expect(page.getByRole("link", { name: /Open Rooftop/ }).first()).toHaveAttribute("href", "https://rooftop.solarlayout.app")
   await page.getByRole("link", { name: /Start reading/i }).first().click()
-  await expect(page).toHaveURL(/\/docs\/rooftop\/getting-started$/)
+  await expect(page).toHaveURL(/\/docs\/rooftop\/start\/getting-started$/)
 })
 
 test("a Rooftop article page is title-branded Rooftop", async ({ page }) => {
-  await page.goto("/docs/rooftop/getting-started")
+  await page.goto("/docs/rooftop/start/getting-started")
   await expect(page).toHaveTitle(/· SolarLayout Rooftop Docs$/)
 })
 
@@ -28,7 +28,7 @@ test("the /docs/rooftop landing links back to the index", async ({ page }) => {
 })
 
 test("the product switcher lists the three products and All products, and switches", async ({ page }) => {
-  await page.goto("/docs/rooftop/getting-started")
+  await page.goto("/docs/rooftop/start/getting-started")
   await page.locator("#nd-sidebar").getByRole("button", { name: /SolarLayout Rooftop/ }).first().click()
   for (const name of ["SolarLayout Desktop", "BESS Desktop", "SolarLayout Rooftop", "All products"]) {
     await expect(page.getByRole("link", { name: new RegExp(name) }).last()).toBeVisible()
@@ -38,7 +38,7 @@ test("the product switcher lists the three products and All products, and switch
 })
 
 test("search in SolarLayout Rooftop finds a Rooftop page", async ({ page }) => {
-  await page.goto("/docs/rooftop/intro")
+  await page.goto("/docs/rooftop/start/intro")
   await page.keyboard.press("ControlOrMeta+k")
   const input = page.getByRole("searchbox").or(page.getByPlaceholder(/search/i)).first()
   await expect(input).toBeVisible()

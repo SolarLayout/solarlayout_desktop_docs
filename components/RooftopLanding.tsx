@@ -26,9 +26,9 @@ interface HighlightCard {
 }
 
 const HIGHLIGHTS: HighlightCard[] = [
-  { icon: Rocket, title: "Getting started", meta: "5 min", href: "/docs/rooftop/getting-started" },
-  { icon: LayoutGrid, title: "The five steps", meta: "5 min", href: "/docs/rooftop/steps" },
-  { icon: Sparkles, title: "Your first rooftop design", meta: "20 min walkthrough", href: "/docs/rooftop/first-design" },
+  { icon: Rocket, title: "Getting started", meta: "5 min", href: "/docs/rooftop/start/getting-started" },
+  { icon: LayoutGrid, title: "The five steps", meta: "5 min", href: "/docs/rooftop/start/steps" },
+  { icon: Sparkles, title: "Your first rooftop design", meta: "20 min walkthrough", href: "/docs/rooftop/start/first-design" },
 ]
 
 interface TopicSection {
@@ -43,17 +43,17 @@ const TOPICS: TopicSection[] = [
     icon: Rocket,
     category: "Start here",
     links: [
-      { label: "What SolarLayout Rooftop does", href: "/docs/rooftop/intro" },
-      { label: "Getting started", href: "/docs/rooftop/getting-started" },
-      { label: "Your first rooftop design", href: "/docs/rooftop/first-design" },
-      { label: "The five steps", href: "/docs/rooftop/steps" },
+      { label: "What SolarLayout Rooftop does", href: "/docs/rooftop/start/intro" },
+      { label: "Getting started", href: "/docs/rooftop/start/getting-started" },
+      { label: "Your first rooftop design", href: "/docs/rooftop/start/first-design" },
+      { label: "The five steps", href: "/docs/rooftop/start/steps" },
     ],
   },
   {
     icon: Map,
     category: "Roof",
     links: [
-      { label: "Find the roof: search, outline, obstacles", href: "/docs/rooftop/find" },
+      { label: "Find the roof: search, outline, obstacles", href: "/docs/rooftop/roof/find" },
       { label: "Roof: type, edges and obstacles", href: "/docs/rooftop/roof" },
     ],
   },
@@ -61,19 +61,19 @@ const TOPICS: TopicSection[] = [
     icon: FileDown,
     category: "The steps",
     links: [
-      { label: "Array: module, mounting and spacing", href: "/docs/rooftop/array" },
-      { label: "The Sun view: shadows and the shade map", href: "/docs/rooftop/sun" },
-      { label: "Strings: options, inverter and voltage", href: "/docs/rooftop/strings" },
-      { label: "Performance: the energy of a year", href: "/docs/rooftop/performance" },
-      { label: "Handover: the report and the files", href: "/docs/rooftop/handover" },
+      { label: "Array: module, mounting and spacing", href: "/docs/rooftop/steps/array" },
+      { label: "The Sun view: shadows and the shade map", href: "/docs/rooftop/steps/sun" },
+      { label: "Strings: options, inverter and voltage", href: "/docs/rooftop/steps/strings" },
+      { label: "Performance: the energy of a year", href: "/docs/rooftop/steps/performance" },
+      { label: "Handover: the report and the files", href: "/docs/rooftop/steps/handover" },
     ],
   },
   {
     icon: BookOpen,
     category: "Show and keep",
     links: [
-      { label: "Present: the tour for a client", href: "/docs/rooftop/present" },
-      { label: "Your designs and the project file", href: "/docs/rooftop/projects" },
+      { label: "Present: the tour for a client", href: "/docs/rooftop/show/present" },
+      { label: "Your designs and the project file", href: "/docs/rooftop/show/projects" },
     ],
   },
   {
@@ -81,9 +81,9 @@ const TOPICS: TopicSection[] = [
     category: "Reference",
     links: [
       { label: "Equipment files, limits and glossary", href: "/docs/rooftop/reference" },
-      { label: "Troubleshooting", href: "/docs/rooftop/troubleshooting" },
-      { label: "What's new", href: "/docs/rooftop/whats-new" },
-      { label: "Getting help", href: "/docs/rooftop/support" },
+      { label: "Troubleshooting", href: "/docs/rooftop/reference/troubleshooting" },
+      { label: "What's new", href: "/docs/rooftop/reference/whats-new" },
+      { label: "Getting help", href: "/docs/rooftop/reference/support" },
     ],
   },
 ]
@@ -124,7 +124,7 @@ function HeroBanner() {
 
         <div className="mt-[24px] flex flex-wrap items-center gap-[16px]">
           <Link
-            href="/docs/rooftop/getting-started"
+            href="/docs/rooftop/start/getting-started"
             className="inline-flex items-center gap-[6px] rounded-[8px] bg-fd-primary px-[16px] py-[8px] text-[13px] font-medium text-fd-primary-foreground transition-colors hover:opacity-90"
           >
             Start reading
@@ -229,7 +229,7 @@ function FooterRow() {
       <div className="text-[12px] text-fd-muted-foreground">
         Can&apos;t find what you need?{" "}
         <Link
-          href="/docs/rooftop/support"
+          href="/docs/rooftop/reference/support"
           className="text-fd-foreground underline-offset-2 transition-colors hover:underline"
         >
           Contact support
@@ -237,14 +237,14 @@ function FooterRow() {
       </div>
       <div className="flex items-center gap-[16px]">
         <Link
-          href="/docs/rooftop/getting-started"
+          href="/docs/rooftop/start/getting-started"
           className="inline-flex items-center gap-[4px] text-[12px] text-fd-muted-foreground transition-colors hover:text-fd-foreground"
         >
           Start reading
           <ArrowUpRight className="size-[12px]" aria-hidden />
         </Link>
         <Link
-          href="/docs/rooftop/whats-new"
+          href="/docs/rooftop/reference/whats-new"
           className="inline-flex items-center gap-[4px] text-[12px] text-fd-muted-foreground transition-colors hover:text-fd-foreground"
         >
           What&apos;s new

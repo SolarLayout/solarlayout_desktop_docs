@@ -52,12 +52,28 @@ const nextConfig = {
   /**
    * The documentation index lives at `/docs`, where `solarlayout.app/docs` reaches it (#19). The docs domain's own
    * root sends readers there. Not permanent, so a browser never caches it past a later change. Rooftop's page "The
-   * workspace" became "The five steps" when the app was rebuilt around its steps (V2, 2026-10-13).
+   * workspace" became "The five steps" when the app was rebuilt around its steps (V2, 2026-10-13), and Rooftop's pages
+   * moved into the sidebar's folders the same day: each old address goes to the page's new one.
    */
   async redirects() {
     return [
       { source: "/", destination: "/docs", permanent: false },
-      { source: "/docs/rooftop/workspace", destination: "/docs/rooftop/steps", permanent: true },
+      { source: "/docs/rooftop/workspace", destination: "/docs/rooftop/start/steps", permanent: true },
+      { source: "/docs/rooftop/intro", destination: "/docs/rooftop/start/intro", permanent: true },
+      { source: "/docs/rooftop/getting-started", destination: "/docs/rooftop/start/getting-started", permanent: true },
+      { source: "/docs/rooftop/first-design", destination: "/docs/rooftop/start/first-design", permanent: true },
+      { source: "/docs/rooftop/steps", destination: "/docs/rooftop/start/steps", permanent: true },
+      { source: "/docs/rooftop/find", destination: "/docs/rooftop/roof/find", permanent: true },
+      { source: "/docs/rooftop/array", destination: "/docs/rooftop/steps/array", permanent: true },
+      { source: "/docs/rooftop/sun", destination: "/docs/rooftop/steps/sun", permanent: true },
+      { source: "/docs/rooftop/strings", destination: "/docs/rooftop/steps/strings", permanent: true },
+      { source: "/docs/rooftop/performance", destination: "/docs/rooftop/steps/performance", permanent: true },
+      { source: "/docs/rooftop/handover", destination: "/docs/rooftop/steps/handover", permanent: true },
+      { source: "/docs/rooftop/present", destination: "/docs/rooftop/show/present", permanent: true },
+      { source: "/docs/rooftop/projects", destination: "/docs/rooftop/show/projects", permanent: true },
+      { source: "/docs/rooftop/troubleshooting", destination: "/docs/rooftop/reference/troubleshooting", permanent: true },
+      { source: "/docs/rooftop/whats-new", destination: "/docs/rooftop/reference/whats-new", permanent: true },
+      { source: "/docs/rooftop/support", destination: "/docs/rooftop/reference/support", permanent: true },
     ]
   },
 }

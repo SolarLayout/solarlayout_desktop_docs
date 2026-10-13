@@ -37,7 +37,7 @@ refused before it is sent.
 
 A file without `PNom`, `Voc` or `Isc` is refused, and the module of before stays. A file without `Width` and
 `Height` is read, with a note: the layout needs the module's size, so choose a PAN file that has it. See
-[Module](/docs/rooftop/array#module).
+[Module](/docs/rooftop/steps/array#module).
 
 ### Inverter file (OND)
 
@@ -57,7 +57,7 @@ A file without `PNom`, `Voc` or `Isc` is refused, and the module of before stays
 
 The file is read as UTF-8, else Latin-1, else cp1252. The chooser takes `.ond` files. A file over 256,000 bytes is
 refused before it is sent. A file without `PNomConv` or `VMPPMax` is refused, and the inverter of before stays. See
-[Inverter](/docs/rooftop/strings#inverter).
+[Inverter](/docs/rooftop/steps/strings#inverter).
 
 ### The library
 
@@ -80,7 +80,7 @@ sample inverter, WP-330KTL-H1 (275 kW, 6 MPPT, 28 inputs). Neither is in the lib
 
 **Import a drawing**, on Home or in the project menu, opens a drawing of the roof as a new design on the Roof step.
 The design is named after the file, without its ending, and its roof type is **Flat, rows facing south** (north
-south of the equator). See [Import a drawing](/docs/rooftop/find#import-a-drawing).
+south of the equator). See [Import a drawing](/docs/rooftop/roof/find#import-a-drawing).
 
 | | KMZ, KML | DXF |
 | --- | --- | --- |
@@ -126,13 +126,13 @@ hourly or more often, with times in UTC.
   with a note. Irradiance below zero is taken as 0.
 
 The file's text goes with the design and its project file, and is checked again at each run. See
-[Option and weather](/docs/rooftop/performance#option-and-weather).
+[Option and weather](/docs/rooftop/steps/performance#option-and-weather).
 
 ### Project file (.rtd)
 
 The project file is the whole design in one file: **Download the project file** in the project menu, on a design's
 card on Home, or **Project file** in Handover. **Open a project file**, on Home or in the project menu, opens it as a
-new design on this device. See [Open a project file](/docs/rooftop/projects#open-a-project-file).
+new design on this device. See [Open a project file](/docs/rooftop/show/projects#open-a-project-file).
 
 | | |
 | --- | --- |
@@ -232,8 +232,8 @@ loads the weather again for the roof's place.
 | Your own option | An option you add, with your own modules per string, strings and inverters |
 
 <Cards>
-  <Card title="Troubleshooting" href="/docs/rooftop/troubleshooting" description="The messages the app shows, what each means and what to do" />
-  <Card title="Array" href="/docs/rooftop/array" description="The module, its mounting and the row spacing" />
-  <Card title="Strings" href="/docs/rooftop/strings" description="The inverter, the system voltage and the options" />
-  <Card title="Performance" href="/docs/rooftop/performance" description="The energy, the weather and the losses" />
+  <Card title="Troubleshooting" href="/docs/rooftop/reference/troubleshooting" description="The messages the app shows, what each means and what to do" />
+  <Card title="Array" href="/docs/rooftop/steps/array" description="The module, its mounting and the row spacing" />
+  <Card title="Strings" href="/docs/rooftop/steps/strings" description="The inverter, the system voltage and the options" />
+  <Card title="Performance" href="/docs/rooftop/steps/performance" description="The energy, the weather and the losses" />
 </Cards>

@@ -10,7 +10,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-home",
     file: "rooftop/home/home.jpg",
-    page: "/docs/rooftop/getting-started",
+    page: "/docs/rooftop/start/getting-started",
     title: "Home",
     alt: "Rooftop's Home: the address search with Find the roof, the other ways to start under it, and the card to open the demo.",
     what: "Home with nothing kept on this device. Desktop 1440 × 900 at scale 2.",
@@ -21,7 +21,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-home-phone",
     file: "rooftop/home/home-phone.jpg",
-    page: "/docs/rooftop/getting-started",
+    page: "/docs/rooftop/start/getting-started",
     title: "Home on a phone",
     alt: "Home on a phone: the search, a full-width Find the roof button, the ways to start in two rows and the demo card.",
     what: "Home with nothing kept. Phone 390 × 844 at scale 3, touch.",
@@ -32,7 +32,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-steps-studio",
     file: "rooftop/steps/studio.jpg",
-    page: "/docs/rooftop/steps",
+    page: "/docs/rooftop/start/steps",
     title: "The Studio at a design's first open",
     alt: "The Roof step at its first open: the five steps and the result in the top bar, the demo roof in 3D, and Check the roof with the array and its energy confirmed, Continue to Array at the foot.",
     what: "The demo's Roof step at first open, the run landed: steps, chip \"1 to review · 617.8 MWh a year\", the status box, Next: Array. Desktop 1440 × 900 at scale 2.",
@@ -43,7 +43,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-steps-marks",
     file: "rooftop/steps/marks.jpg",
-    page: "/docs/rooftop/steps",
+    page: "/docs/rooftop/start/steps",
     title: "The steps and their marks",
     alt: "The top bar's five steps with Roof ticked, Array marked for review and Strings in hand, over the strings coloured on the roof plan.",
     what: "Roof ticked, Array with its note mark (the demo's Voc note), Strings in hand. Desktop 1440 × 900 at scale 2.",
@@ -54,7 +54,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-steps-result",
     file: "rooftop/steps/result.jpg",
-    page: "/docs/rooftop/steps",
+    page: "/docs/rooftop/start/steps",
     title: "The result's summary",
     alt: "The result panel open under the top bar: energy in year 1, modules, DC and AC capacity, DC/AC ratio, performance ratio and yield, with Open Performance.",
     what: "The result chip pressed on the demo. Desktop 1440 × 900 at scale 2.",
@@ -65,7 +65,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-steps-notes",
     file: "rooftop/steps/notes.jpg",
-    page: "/docs/rooftop/steps",
+    page: "/docs/rooftop/start/steps",
     title: "Notes to review",
     alt: "The list of notes to review with the demo's one note: the module's Voc coefficient outside the usual range, its field and a button to keep the value.",
     what: "The notes list open with the Voc note. Desktop 1440 × 900 at scale 2.",
@@ -76,7 +76,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-steps-hidden",
     file: "rooftop/steps/hidden.jpg",
-    page: "/docs/rooftop/steps",
+    page: "/docs/rooftop/start/steps",
     title: "The work column hidden",
     alt: "The Studio with its work column hidden: the roof fills the width, Show panel beside the view controls and Continue to Array floating at the corner.",
     what: "The column hidden on a kept demo. Desktop 1440 × 900 at scale 2.",
@@ -87,7 +87,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-steps-help",
     file: "rooftop/steps/help.jpg",
-    page: "/docs/rooftop/steps",
+    page: "/docs/rooftop/start/steps",
     title: "A help topic",
     alt: "The help sheet for Spacing over the Array step: what to set and what it changes.",
     what: "The ? of Spacing pressed. Desktop 1440 × 900 at scale 2.",
@@ -98,7 +98,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-steps-tablet",
     file: "rooftop/steps/tablet.jpg",
-    page: "/docs/rooftop/steps",
+    page: "/docs/rooftop/start/steps",
     title: "The Studio on a tablet",
     alt: "The Studio on a tablet: the roof in 3D on top, the result row under it, and the Roof step's column in two halves with Continue to Array in its foot bar.",
     what: "The demo's Roof step at first open. Tablet 834 × 1194 at scale 2.",
@@ -109,7 +109,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-steps-phone",
     file: "rooftop/steps/phone.jpg",
-    page: "/docs/rooftop/steps",
+    page: "/docs/rooftop/start/steps",
     title: "The Studio on a phone",
     alt: "The Studio on a phone: the roof at the top, the sheet with Check the roof and Continue to Array, and the five steps as a tab bar.",
     what: "The demo's Roof step at first open. Phone 390 × 844 at scale 3, touch.",
@@ -120,7 +120,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-walk-outline",
     file: "rooftop/find/closed.jpg",
-    page: "/docs/rooftop/first-design",
+    page: "/docs/rooftop/start/first-design",
     title: "The roof outlined",
     alt: "A roof in Pune outlined on satellite imagery with six corners and its edge lengths, beside the column with the obstacles, the roof type and Build this roof · 658 m².",
     what: "A real roof near the demo's place, outlined by Corners and closed. Desktop 1440 × 900 at scale 2.",
@@ -131,7 +131,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-walk-built",
     file: "rooftop/walk/built.jpg",
-    page: "/docs/rooftop/first-design",
+    page: "/docs/rooftop/start/first-design",
     title: "The roof built",
     alt: "The traced roof built in 3D with its stair room, tank and wall and a few rows of modules, and Check the roof with the modules and the energy of year 1.",
     what: "The walkthrough's roof just after Build this roof. Desktop 1440 × 900 at scale 2.",
@@ -142,7 +142,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-find-start",
     file: "rooftop/find/start.jpg",
-    page: "/docs/rooftop/find",
+    page: "/docs/rooftop/roof/find",
     title: "Find, the first step",
     alt: "Find at its start: the map far out, and the column with the search, Use my location and Enter the roof by hand; the later steps grey in the top bar.",
     what: "/find with nothing typed. Desktop 1440 × 900 at scale 2.",
@@ -153,7 +153,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-find-places",
     file: "rooftop/find/places.jpg",
-    page: "/docs/rooftop/find",
+    page: "/docs/rooftop/roof/find",
     title: "Places found",
     alt: "The search with an address typed and five places found, each with its kind.",
     what: "Koregaon Park, Pune searched. Desktop 1440 × 900 at scale 2.",
@@ -164,7 +164,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-find-corners",
     file: "rooftop/find/corners.jpg",
-    page: "/docs/rooftop/find",
+    page: "/docs/rooftop/roof/find",
     title: "Outlining by corners",
     alt: "Three corners placed on a roof on the map, with the lengths of the first two edges and the Corners tool pressed.",
     what: "Corners, three placed. Desktop 1440 × 900 at scale 2.",
@@ -175,7 +175,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-find-detect",
     file: "rooftop/find/detect.jpg",
-    page: "/docs/rooftop/find",
+    page: "/docs/rooftop/roof/find",
     title: "A building detected",
     alt: "A building's outline found from Overture Maps and drawn on the imagery, with its note giving its corners and area and an Undo button.",
     what: "Detect building pressed inside a building. Desktop 1440 × 900 at scale 2.",
@@ -186,7 +186,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-find-closed",
     file: "rooftop/find/closed.jpg",
-    page: "/docs/rooftop/find",
+    page: "/docs/rooftop/roof/find",
     title: "The closed outline",
     alt: "A closed six-corner outline on the map, with the column listing the obstacles, the roof types, the edges and Build this roof.",
     what: "The outline closed. Desktop 1440 × 900 at scale 2.",
@@ -197,7 +197,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-find-height",
     file: "rooftop/find/height.jpg",
-    page: "/docs/rooftop/find",
+    page: "/docs/rooftop/roof/find",
     title: "Height above the roof",
     alt: "A box drawn over a stair room on the roof, with its card asking for its height above the roof.",
     what: "A box drawn, its height not yet typed. Desktop 1440 × 900 at scale 2.",
@@ -208,7 +208,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-find-obstacles",
     file: "rooftop/find/obstacles.jpg",
-    page: "/docs/rooftop/find",
+    page: "/docs/rooftop/roof/find",
     title: "Obstacles drawn",
     alt: "Three obstacles on the roof, a box, a tank and a wall, with their labels on the map and their rows in the column.",
     what: "Box 3 m, tank 2 m, wall 1 m added. Desktop 1440 × 900 at scale 2.",
@@ -219,7 +219,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-find-by-hand",
     file: "rooftop/find/by-hand.jpg",
-    page: "/docs/rooftop/find",
+    page: "/docs/rooftop/roof/find",
     title: "Entering the roof by hand",
     alt: "The by-hand column with the place, a 90 × 40 m rectangle and its facing typed, beside the plan of the rectangle on a grid.",
     what: "By hand, a rectangle. Desktop 1440 × 900 at scale 2.",
@@ -230,7 +230,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-find-import",
     file: "rooftop/find/import.jpg",
-    page: "/docs/rooftop/find",
+    page: "/docs/rooftop/roof/find",
     title: "Import a drawing",
     alt: "The Import a drawing dialog with its drop area for a KMZ, KML or DXF file and the lines on how the roof and obstacles are read.",
     what: "The dialog empty. Desktop 1440 × 900 at scale 2.",
@@ -318,7 +318,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-array-module",
     file: "rooftop/array/module.jpg",
-    page: "/docs/rooftop/array",
+    page: "/docs/rooftop/steps/array",
     title: "The Array step",
     alt: "The Array step with the module card, its Voc coefficient note, and Mounting and Spacing closed.",
     what: "The demo's Array step at its first open. Desktop 1440 × 900 at scale 2.",
@@ -329,7 +329,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-array-picker",
     file: "rooftop/array/picker.jpg",
-    page: "/docs/rooftop/array",
+    page: "/docs/rooftop/steps/array",
     title: "Choose a module",
     alt: "The Choose a module window: the library's modules sorted by power, the search, Filter and the strip to drop a module file (PAN).",
     what: "Change pressed on the module card. Desktop 1440 × 900 at scale 2.",
@@ -340,7 +340,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-array-mounting",
     file: "rooftop/array/mounting.jpg",
-    page: "/docs/rooftop/array",
+    page: "/docs/rooftop/steps/array",
     title: "Mounting",
     alt: "The Mounting section open: tilt at 15°, portrait, two modules in tilt marked Yours, and the clearance under the lower edge.",
     what: "Mounting open on the demo. Desktop 1440 × 900 at scale 2.",
@@ -351,7 +351,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-array-spacing",
     file: "rooftop/array/spacing.jpg",
-    page: "/docs/rooftop/array",
+    page: "/docs/rooftop/steps/array",
     title: "Spacing",
     alt: "The Spacing section open: rows 6.45 m apart to stay shade-free from 09:00 to 16:00 on 21 December, the shade-free hours, the design day and the direction.",
     what: "Spacing open on the demo. Desktop 1440 × 900 at scale 2.",
@@ -362,7 +362,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-sun-view",
     file: "rooftop/sun/view.jpg",
-    page: "/docs/rooftop/sun",
+    page: "/docs/rooftop/steps/sun",
     title: "The Sun view",
     alt: "The Sun view on the demo: the sun's arc for 21 December with the sun at noon, the card of the year's shade by cause, and the timeline along the foot.",
     what: "Sun on over the Array step, 12:00. Desktop 1440 × 900 at scale 2.",
@@ -373,7 +373,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-sun-afternoon",
     file: "rooftop/sun/afternoon.jpg",
-    page: "/docs/rooftop/sun",
+    page: "/docs/rooftop/steps/sun",
     title: "The end of the shade-free hours",
     alt: "The sun at 16:00, low in the south-west at the end of the shade-free hours, with longer shadows on the roof.",
     what: "The timeline at 16:00. Desktop 1440 × 900 at scale 2.",
@@ -384,7 +384,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-sun-shade-map",
     file: "rooftop/sun/shade-map.jpg",
-    page: "/docs/rooftop/sun",
+    page: "/docs/rooftop/steps/sun",
     title: "The shade map",
     alt: "The modules coloured by their shade over the year, with the legend from 0 to 5 % and the card counting the positions in each band.",
     what: "Shade map on the modules turned on. Desktop 1440 × 900 at scale 2.",
@@ -395,7 +395,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-sun-chip",
     file: "rooftop/sun/chip.jpg",
-    page: "/docs/rooftop/sun",
+    page: "/docs/rooftop/steps/sun",
     title: "Shade over the year, folded",
     alt: "The Sun view with its card folded into the chip Shade over the year 0.93 %, the arc and the roof in view.",
     what: "The card's × pressed. Desktop 1440 × 900 at scale 2.",
@@ -406,7 +406,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-sun-phone",
     file: "rooftop/sun/phone.jpg",
-    page: "/docs/rooftop/sun",
+    page: "/docs/rooftop/steps/sun",
     title: "The Sun view on a phone",
     alt: "The Sun view on a phone: the time over the roof and the sheet with the time slider, the shade-free hours and the start of the shade card.",
     what: "Sun on over the Array step. Phone 390 × 844 at scale 3, touch.",
@@ -417,7 +417,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-strings-step",
     file: "rooftop/strings/step.jpg",
-    page: "/docs/rooftop/strings",
+    page: "/docs/rooftop/steps/strings",
     title: "The Strings step",
     alt: "The Strings step: the demo's strings coloured by MPPT on the roof plan and its options, A recommended, then the inverter and the system voltage.",
     what: "The demo's Strings step. Desktop 1440 × 900 at scale 2.",
@@ -428,7 +428,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-strings-why",
     file: "rooftop/strings/why.jpg",
-    page: "/docs/rooftop/strings",
+    page: "/docs/rooftop/steps/strings",
     title: "Why an option fits",
     alt: "Option A opened to show why 29 modules per string fit at 1500 V: the voltages on the coldest morning and the hottest afternoon.",
     what: "Why pressed on option A. Desktop 1440 × 900 at scale 2.",
@@ -439,7 +439,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-strings-your-own",
     file: "rooftop/strings/your-own.jpg",
-    page: "/docs/rooftop/strings",
+    page: "/docs/rooftop/steps/strings",
     title: "Your own option",
     alt: "The form for your own option: modules per string, strings and inverters, each with what fits, and the line saying it fits.",
     what: "Add your own option pressed, not added. Desktop 1440 × 900 at scale 2.",
@@ -450,7 +450,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-strings-mppt",
     file: "rooftop/strings/mppt.jpg",
-    page: "/docs/rooftop/strings",
+    page: "/docs/rooftop/steps/strings",
     title: "MPPT loading",
     alt: "The MPPT loading table: the strings, currents and kWp on each of the six MPPT inputs, all within limits.",
     what: "MPPT loading open. Desktop 1440 × 900 at scale 2.",
@@ -461,7 +461,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-strings-picker",
     file: "rooftop/strings/picker.jpg",
-    page: "/docs/rooftop/strings",
+    page: "/docs/rooftop/steps/strings",
     title: "Choose an inverter",
     alt: "The Choose an inverter window: the library's inverters sorted by AC power, with the strip to drop an inverter file (OND).",
     what: "Inverter ▸ Change. Desktop 1440 × 900 at scale 2.",
@@ -472,7 +472,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-strings-600v",
     file: "rooftop/strings/600v.jpg",
-    page: "/docs/rooftop/strings",
+    page: "/docs/rooftop/steps/strings",
     title: "No string length fits",
     alt: "The Strings step at 600 V where no string length fits: the problem card, Modules per string reading None fit, and the Use 1000 V button.",
     what: "System voltage 600 V on the demo. Desktop 1440 × 900 at scale 2.",
@@ -483,7 +483,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-strings-phone",
     file: "rooftop/strings/phone.jpg",
-    page: "/docs/rooftop/strings",
+    page: "/docs/rooftop/steps/strings",
     title: "The Strings step on a phone",
     alt: "The Strings step on a phone: the coloured plan on top, and the sheet with the colour switch, the legend and the first option.",
     what: "The demo's Strings step. Phone 390 × 844 at scale 3, touch.",
@@ -494,7 +494,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-performance",
     file: "rooftop/performance/by-month.jpg",
-    page: "/docs/rooftop/performance",
+    page: "/docs/rooftop/steps/performance",
     title: "Performance",
     alt: "Performance: the energy of year 1 with Likely and Conservative, the option and weather selects, three figures, and the energy by month.",
     what: "The demo's Performance at first open, By month. Desktop 1440 × 900 at scale 2.",
@@ -505,7 +505,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-performance-years",
     file: "rooftop/performance/years.jpg",
-    page: "/docs/rooftop/performance",
+    page: "/docs/rooftop/steps/performance",
     title: "Over 25 years",
     alt: "The Over 25 years tab: the energy falling year by year from year 1 to year 25, with the total.",
     what: "Over 25 years. Desktop 1440 × 900 at scale 2.",
@@ -516,7 +516,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-performance-losses",
     file: "rooftop/performance/losses.jpg",
-    page: "/docs/rooftop/performance",
+    page: "/docs/rooftop/steps/performance",
     title: "Where the energy goes",
     alt: "The Where the energy goes tab: the steps before the modules and in the system, down to the energy to the grid.",
     what: "Where the energy goes. Desktop 1440 × 900 at scale 2.",
@@ -527,7 +527,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-performance-21-steps",
     file: "rooftop/performance/21-steps.jpg",
-    page: "/docs/rooftop/performance",
+    page: "/docs/rooftop/steps/performance",
     title: "All 21 steps",
     alt: "The 21 steps from the sunlight on the ground to the energy to the grid, with their fields, followed by the summary.",
     what: "All 21 steps, the whole page. Desktop 1440 wide, 2015 tall, scale 2.",
@@ -538,7 +538,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-performance-assumptions",
     file: "rooftop/performance/assumptions.jpg",
-    page: "/docs/rooftop/performance",
+    page: "/docs/rooftop/steps/performance",
     title: "Assumptions",
     alt: "The Assumptions tab: weather, roof albedo, ageing, uncertainty and grid CO₂, each with who set it.",
     what: "Assumptions, rows closed. Desktop 1440 × 900 at scale 2.",
@@ -549,7 +549,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-performance-weather",
     file: "rooftop/performance/weather.jpg",
-    page: "/docs/rooftop/performance",
+    page: "/docs/rooftop/steps/performance",
     title: "The weather",
     alt: "The weather list open beside the energy: Typical year, 2023, measured, and Your file.",
     what: "The Weather select open. Desktop 1440 × 900 at scale 2.",
@@ -560,7 +560,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-performance-csv",
     file: "rooftop/performance/csv.jpg",
-    page: "/docs/rooftop/performance",
+    page: "/docs/rooftop/steps/performance",
     title: "Weather from a CSV",
     alt: "The Load weather from a CSV window: the columns it reads and the area to drop the file.",
     what: "Your file chosen, nothing dropped. Desktop 1440 × 900 at scale 2.",
@@ -571,7 +571,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-performance-phone",
     file: "rooftop/performance/phone.jpg",
-    page: "/docs/rooftop/performance",
+    page: "/docs/rooftop/steps/performance",
     title: "Performance on a phone",
     alt: "Performance on a phone: the year's energy, the option and weather side by side, and the figures as a list, Continue to Handover pinned.",
     what: "The demo's Performance. Phone 390 × 844 at scale 3, touch.",
@@ -582,7 +582,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-handover",
     file: "rooftop/handover/report.jpg",
-    page: "/docs/rooftop/handover",
+    page: "/docs/rooftop/steps/handover",
     title: "Handover",
     alt: "Handover: the files grouped by who they are for with their sizes, Present and Download all at the head, and the design report previewed with its page thumbnails.",
     what: "Handover with the report open. Desktop 1440 wide, 1017 tall, scale 2.",
@@ -593,7 +593,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-handover-sld",
     file: "rooftop/handover/sld.jpg",
-    page: "/docs/rooftop/handover",
+    page: "/docs/rooftop/steps/handover",
     title: "Single-line diagram",
     alt: "The single-line diagram previewed: the six MPPT inputs feeding the inverter, with the pointer on one input showing its strings and current.",
     what: "Single-line diagram, MPPT 1 hovered. Desktop 1440 × 900 at scale 2.",
@@ -604,7 +604,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-handover-bom",
     file: "rooftop/handover/bom.jpg",
-    page: "/docs/rooftop/handover",
+    page: "/docs/rooftop/steps/handover",
     title: "Bill of materials",
     alt: "The bill of materials previewed, from the PV modules to the AC distribution board, with Copy and Download CSV.",
     what: "Bill of materials. Desktop 1440 × 900 at scale 2.",
@@ -615,7 +615,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-handover-cad",
     file: "rooftop/handover/cad.jpg",
-    page: "/docs/rooftop/handover",
+    page: "/docs/rooftop/steps/handover",
     title: "CAD layout",
     alt: "The CAD layout previewed: the roof and its strings, beside the list of the DXF's layers.",
     what: "CAD layout, What is in the file open. Desktop 1440 × 900 at scale 2.",
@@ -626,7 +626,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-handover-hourly",
     file: "rooftop/handover/hourly.jpg",
-    page: "/docs/rooftop/handover",
+    page: "/docs/rooftop/steps/handover",
     title: "Hourly data",
     alt: "The hourly data previewed: the first five hours of the year with sunlight, cell temperature and DC and AC power, each column's file name under it.",
     what: "Hourly data. Desktop 1440 × 900 at scale 2.",
@@ -637,7 +637,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-handover-phone",
     file: "rooftop/handover/phone.jpg",
-    page: "/docs/rooftop/handover",
+    page: "/docs/rooftop/steps/handover",
     title: "Handover on a phone",
     alt: "Handover on a phone: the list of files with their sizes and Download all pinned at the foot.",
     what: "The demo's Handover. Phone 390 × 844 at scale 3, touch.",
@@ -648,7 +648,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-present-place",
     file: "rooftop/present/place.jpg",
-    page: "/docs/rooftop/present",
+    page: "/docs/rooftop/show/present",
     title: "Present: the place",
     alt: "The tour's first scene: the satellite view of the place with the roof on it, the panel naming Pune with its coordinates, and the design's figures at the foot.",
     what: "Scene 1 once the controls have faded. Desktop 1440 × 900 at scale 2.",
@@ -659,7 +659,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-present-day",
     file: "rooftop/present/day.jpg",
-    page: "/docs/rooftop/present",
+    page: "/docs/rooftop/show/present",
     title: "Present: the sun",
     alt: "The tour's sun scene: the sun's arc over the roof in 3D on 21 December.",
     what: "The sun scene. Desktop 1440 × 900 at scale 2.",
@@ -670,7 +670,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-present-controls",
     file: "rooftop/present/controls.jpg",
-    page: "/docs/rooftop/present",
+    page: "/docs/rooftop/show/present",
     title: "Present: the controls",
     alt: "The tour paused on the energy scene: the year's energy, the strings in colour, and the bar with the scenes, Pause or Play and Leave.",
     what: "The energy scene, Space pressed. Desktop 1440 × 900 at scale 2.",
@@ -681,7 +681,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-projects-home",
     file: "rooftop/projects/home-designs.jpg",
-    page: "/docs/rooftop/projects",
+    page: "/docs/rooftop/show/projects",
     title: "Your designs on Home",
     alt: "Home with two designs kept on this device, the demo and its copy, each a card with its plan, its roof and its yearly energy.",
     what: "Two designs on the device. Desktop 1440 × 900 at scale 2.",
@@ -692,7 +692,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-projects-menu",
     file: "rooftop/projects/card-menu.jpg",
-    page: "/docs/rooftop/projects",
+    page: "/docs/rooftop/show/projects",
     title: "A design's menu",
     alt: "A design card's menu open: Open, Rename, Duplicate, Download the project file and Delete.",
     what: "A card's menu open. Desktop 1440 × 900 at scale 2.",
@@ -703,7 +703,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
   {
     id: "rooftop-projects-open",
     file: "rooftop/projects/open.jpg",
-    page: "/docs/rooftop/projects",
+    page: "/docs/rooftop/show/projects",
     title: "Open a project file",
     alt: "The Open a project file window, waiting for a project file (.rtd) to be dropped or chosen.",
     what: "The dialog empty. Desktop 1440 × 900 at scale 2.",

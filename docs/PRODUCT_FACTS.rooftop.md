@@ -46,7 +46,7 @@ Pages follow them as they follow the code.
 | Name | **SolarLayout Rooftop**, then *Rooftop*; "the app" for the software otherwise. Never "Rooftop Desktop", a tool, the web version or the cloud product | #19, decision 2; plan/v2/voice.md:177 |
 | One name a thing | The vocabulary of plan/v2/voice.md §6 (D108). The roof types: "Flat, rows facing south" (north south of the equator), "Flat, rows facing east and west", "Sloped"; on the Roof step's buttons "Tilted rows", "East-west", "Sloped". "Modules per string". "Height above the roof" (D112) | plan/README.md:145,149 |
 | No "every" | The word "every" appears in no page, as in no screen of the app, save the field the app labels **Walkway every**, whose label #246 keeps (its voice scan allows that phrase alone) | The owner, 2026-10-13; #246 (e1faa19); WEB/lib/studio/roof-fields.ts:39-40 |
-| The tree | Seventeen pages, flat, their `##` headings as approved; each help topic links to its page and heading | The owner, 2026-10-13 (this rewrite) |
+| The tree | Seventeen pages in five sidebar folders (start, roof, steps, show, reference), their `##` headings as approved; each help topic links to its page and heading at its address in a folder, never through a redirect | The owner, 2026-10-13 (this rewrite) |
 | Help and docs | The 32 help topics are the app's own words; the docs go deeper and never contradict them; the app's help-upkeep rule extends to the docs | #19, decision 8; D107, D111 |
 | Release notes | A *What's new* page of dated entries, one per update that changes what users meet; no version numbers | #19, decision 9 |
 

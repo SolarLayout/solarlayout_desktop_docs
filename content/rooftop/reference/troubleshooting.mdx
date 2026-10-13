@@ -9,7 +9,7 @@ last result". A value outside the usual range is marked with an exclamation mark
 
 The messages below are as the app writes them. A word in angle brackets, such as &lt;file&gt; or &lt;n&gt;, stands
 for what the app fills in. If a message keeps coming back, write to SolarLayout as
-[Getting help](/docs/rooftop/support) says, with the message word for word and the design's project file.
+[Getting help](/docs/rooftop/reference/support) says, with the message word for word and the design's project file.
 
 ## Anywhere in the app
 
@@ -18,7 +18,7 @@ for what the app fills in. If a message keeps coming back, write to SolarLayout 
 The run that works out the energy failed, and there is no result before it. The result chip at the top bar's right
 says so; press it for the cause and **Try again**. On a phone the chip reads "No energy". When the design has no
 option, the cause is the reason, with **Open Roof** or **Open Strings** to put it right. See
-[The result](/docs/rooftop/steps#the-result).
+[The result](/docs/rooftop/start/steps#the-result).
 </Accordion>
 <Accordion title="Energy not updated">
 A run failed after one that worked. The figures of before stay, dimmed, marked "Showing the last result". Press the
@@ -37,12 +37,12 @@ then press **Try again**. **Details** gives the fault's own words for SolarLayou
 Notes wait: a value outside the usual range, a run or a layout that failed, a chosen option outside its DC/AC target,
 or a design the device did not save. Press the result chip, then "&lt;n&gt; to review", for the list. Each note says
 where it belongs and has one action, such as **Open Array** or **Try again**. See
-[Notes to review](/docs/rooftop/steps#notes-to-review).
+[Notes to review](/docs/rooftop/start/steps#notes-to-review).
 </Accordion>
 <Accordion title="This browser cannot draw the roof in 3D.">
 The browser has no WebGL, so the stage shows a flat plan of the roof, north up, in place of the 3D view, and the view
 controls are not shown. In Present the tour goes on over the plan. Open the app in a browser that draws 3D. See
-[What the browser needs](/docs/rooftop/getting-started#what-the-browser-needs).
+[What the browser needs](/docs/rooftop/start/getting-started#what-the-browser-needs).
 </Accordion>
 <Accordion title="The browser stopped drawing the roof in 3D.">
 The browser took back its 3D drawing while the design was open. The flat plan of the roof stands in, north up, and
@@ -64,7 +64,7 @@ does not load says "The clip did not load. The picture shows the step."
 <Accordion title="Not saved">
 Beside the design's name, a hollow dot with "Not saved" is a design not kept on this device yet: the demo, or a
 design before its first change. A change keeps it. The note mark with "Not saved" is a design the device refused to
-keep; see the next message. See [Saving](/docs/rooftop/steps#saving).
+keep; see the next message. See [Saving](/docs/rooftop/start/steps#saving).
 </Accordion>
 <Accordion title="The design could not be saved on this device: &lt;reason&gt;.">
 The browser refused to keep the design. In a browser that cannot keep designs, the reason reads "this browser cannot
@@ -76,7 +76,7 @@ Another open tab of the app blocks the change to the designs on this device. Clo
 </Accordion>
 <Accordion title="That design is no longer on this device.">
 The design was deleted from this device, so it cannot be opened. The design that was open stays open. Open its
-project file if you have one. See [Open a project file](/docs/rooftop/projects#open-a-project-file).
+project file if you have one. See [Open a project file](/docs/rooftop/show/projects#open-a-project-file).
 </Accordion>
 <Accordion title="&lt;reason&gt; The demo is open instead.">
 The design remembered as open could not be read from this device, so the demo opened. Open another design from Home.
@@ -119,7 +119,7 @@ step, the inverter on the Strings step, the weather on Performance.
 <Accordions>
 <Accordion title="The map is not available">
 The satellite map cannot be shown here. The column opens on **Enter the roof by hand**: type the roof's place and its
-length and width. See [Enter the roof by hand](/docs/rooftop/find#enter-the-roof-by-hand).
+length and width. See [Enter the roof by hand](/docs/rooftop/roof/find#enter-the-roof-by-hand).
 </Accordion>
 <Accordion title="This browser cannot draw the map · The imagery does not load">
 The browser has no WebGL, which the map needs, or the satellite tiles did not come before any was shown. Try
@@ -154,7 +154,7 @@ or Enter.
 </Accordion>
 <Accordion title="No footprint known here">
 **Detect building** found no building outline under the press. Outline the roof by **Corners** or by **Rectangle**
-instead. See [Outline the roof](/docs/rooftop/find#outline-the-roof).
+instead. See [Outline the roof](/docs/rooftop/roof/find#outline-the-roof).
 </Accordion>
 <Accordion title="The outline crosses itself. Move the corners so that no two edges cross.">
 Two edges of the outline cross. Drag the corners into their order round the roof, then build again.
@@ -171,7 +171,7 @@ A box obstacle is not a rectangle. Draw the box again, or draw what stands there
 </Accordion>
 <Accordion title="&lt;name&gt; is not a KMZ, KML or DXF file. Choose a file with one of these endings.">
 **Import a drawing** reads KMZ, KML and DXF files only. Export the drawing in one of them. See
-[Import a drawing](/docs/rooftop/find#import-a-drawing).
+[Import a drawing](/docs/rooftop/roof/find#import-a-drawing).
 </Accordion>
 <Accordion title="&lt;file&gt; has no polygon to use as the roof. · &lt;file&gt; has no closed polyline to use as the roof.">
 The drawing has no closed shape for the roof: a KMZ or KML needs a polygon, a DXF a closed polyline. Close the
@@ -218,7 +218,7 @@ the obstacles." The roof inside its edge margin, less the obstacles and the area
 <Accordion title="Row spacing &lt;p&gt; m is less than a row's depth plus 0.3 m. The app uses &lt;q&gt; m.">
 The row spacing typed is less than a row's depth on plan plus 0.3 m, so the app lays the rows out at the larger
 spacing. Type a spacing at least that large, or turn **Row spacing from the shade-free hours** on. See
-[Spacing](/docs/rooftop/array#spacing).
+[Spacing](/docs/rooftop/steps/array#spacing).
 </Accordion>
 <Accordion title="Unit gap &lt;g&gt; m keeps east-west units free of shade in the shade-free hours.">
 On a roof with rows facing east and west, the app leaves a gap between units so they do not shade each other in the
@@ -231,7 +231,7 @@ step's **Sizing temperatures** ▸ **Voc coefficient**. **Keep &lt;value&gt;** k
 </Accordion>
 <Accordion title="&lt;file&gt; gives no size of the module (Width and Height). The layout needs it: choose a PAN file that has it.">
 The module file has no size, so no module can be placed. Choose a module file that gives its width and height, or a
-module from the library. See [Module](/docs/rooftop/array#module).
+module from the library. See [Module](/docs/rooftop/steps/array#module).
 </Accordion>
 <Accordion title="Module not changed">
 The module file was refused, and the module of before stays. The reason follows, such as "&lt;file&gt; is not a
@@ -266,13 +266,13 @@ The shade map colours the modules once the run is of the layout shown. It fills 
 <Accordion title="Horizon not counted: the weather for this site came without one · Horizon not counted: this weather has none">
 The run leaves horizon shading out. The typical year came without the site's horizon this time (a note waits to
 review), or the weather is 2023's or a CSV of your own, which bring none. Choose **Typical year** on Performance to
-count the horizon. See [Shade over the year](/docs/rooftop/sun#shade-over-the-year).
+count the horizon. See [Shade over the year](/docs/rooftop/steps/sun#shade-over-the-year).
 </Accordion>
 <Accordion title="No string length fits at &lt;V&gt; V">
 "This inverter needs at least &lt;n&gt; modules in a string. At &lt;V&gt; V a string holds at most &lt;m&gt;." The
 inverter's MPPT minimum needs a longer string than the system voltage allows. Press **Choose another inverter** or
 **Change the sizing temperatures**. Where a higher voltage fits, the step's button reads **Use &lt;W&gt; V**: check
-first that the site's code allows it. See [When no string length fits](/docs/rooftop/strings#when-no-string-length-fits).
+first that the site's code allows it. See [When no string length fits](/docs/rooftop/steps/strings#when-no-string-length-fits).
 </Accordion>
 <Accordion title="Too few positions for a string">
 The roof's positions are too few for the options the app makes. The message gives how many it holds and the lengths
@@ -284,11 +284,11 @@ back, or **Choose another** to open the Strings step.
 </Accordion>
 <Accordion title="Below the DC/AC target · Above the DC/AC target · Heavy clipping">
 The chosen option's DC/AC ratio is under 1.10, between 1.30 and 1.40, or over 1.40. The Strings step is marked to
-review it. Choose an option in the target, or change the inverter. See [Options](/docs/rooftop/strings#options).
+review it. Choose an option in the target, or change the inverter. See [Options](/docs/rooftop/steps/strings#options).
 </Accordion>
 <Accordion title="MPPT current over its limit, or the limit not known">
 The option is in its DC/AC target, but an MPPT carries more current than its limit, or the inverter file gives no
-limit. Open **MPPT loading** to see which. See [MPPT loading](/docs/rooftop/strings#mppt-loading).
+limit. Open **MPPT loading** to see which. See [MPPT loading](/docs/rooftop/steps/strings#mppt-loading).
 </Accordion>
 <Accordion title="Current per MPPT not in the inverter file · Not in the OND: IMaxDC &lt;n&gt; A ÷ &lt;m&gt; MPPT. Enter the datasheet value if it differs.">
 The file gives no current per MPPT: the app shares the highest DC current among the MPPTs, or knows no limit. Type
@@ -301,7 +301,7 @@ inverter file (OND): PNomConv or VMPPMax is missing." Choose a PVsyst inverter f
 <Accordion title="A string of &lt;n&gt; does not fit at &lt;V&gt; V · Each inverter needs at least 1 string. Change your option or remove it.">
 Your own option does not fit: its modules per string are too many or too few (the detail says the longest or the
 shortest that fits, and why), or it has more inverters than strings. Change your option or remove it. See
-[Your own option](/docs/rooftop/strings#your-own-option).
+[Your own option](/docs/rooftop/steps/strings#your-own-option).
 </Accordion>
 <Accordion title="This inverter takes up to &lt;r&gt; V. Raise it only if the site's code allows.">
 The inverter is rated above the system voltage set. The app never raises the voltage. Press **Use &lt;V&gt; V** only
@@ -310,7 +310,7 @@ where the site's code allows it.
 <Accordion title="Strings sized to &lt;r&gt; V, this inverter's limit">
 The inverter, or the module, is rated under the system voltage, so the strings are sized to its rating. The bill of
 materials uses the system voltage. Press **Use &lt;V&gt; V** to set the highest voltage the rating allows. See
-[System voltage](/docs/rooftop/strings#system-voltage).
+[System voltage](/docs/rooftop/steps/strings#system-voltage).
 </Accordion>
 </Accordions>
 
@@ -329,7 +329,7 @@ Performance's title.
 The weather chosen did not load; the reason follows, and the weather of before stays. For PVGIS or NASA POWER the
 reason names the service: it has no weather for the place, it could not be reached, it answered in a form that cannot
 be read, or it failed. Check the connection and choose the weather again, or choose another source. See
-[Option and weather](/docs/rooftop/performance#option-and-weather).
+[Option and weather](/docs/rooftop/steps/performance#option-and-weather).
 </Accordion>
 <Accordion title="The weather for this site came without a horizon. The run leaves horizon shading out.">
 PVGIS gave the typical year without the site's horizon, so the energy leaves horizon shading out. The note waits in
@@ -370,7 +370,7 @@ browser asks before the page is left.
 <Accordion title="Files not made · Files not updated">
 The run failed, so the files cannot be made. After a first run that failed, each waiting row reads "Not made"; after
 one that worked, the files of before stay, marked "Showing the last result". The project file can still be
-downloaded. Press **Try again**. See [When a file is not made](/docs/rooftop/handover#when-a-file-is-not-made).
+downloaded. Press **Try again**. See [When a file is not made](/docs/rooftop/steps/handover#when-a-file-is-not-made).
 </Accordion>
 <Accordion title="Pages not made · Pages not updated · Hourly data not made">
 The report's pages, or the hourly data, did not come for the preview; pages of before stay, dimmed. Press
@@ -389,12 +389,12 @@ the inverter nearer its strings.
 </Accordion>
 <Accordion title="Updating energy">
 At the foot of Present: a run is on its way, and the tour starts when it lands. The no-options title stands there
-instead when the design has no option: put it right on the Roof or the Strings step. See [Present](/docs/rooftop/present).
+instead when the design has no option: put it right on the Roof or the Strings step. See [Present](/docs/rooftop/show/present).
 </Accordion>
 </Accordions>
 
 <Cards>
   <Card title="Reference" href="/docs/rooftop/reference" description="The files the app reads, its limits and the glossary" />
-  <Card title="The five steps" href="/docs/rooftop/steps" description="The result, the notes to review and saving" />
-  <Card title="Getting help" href="/docs/rooftop/support" description="The help in the app, these pages and SolarLayout" />
+  <Card title="The five steps" href="/docs/rooftop/start/steps" description="The result, the notes to review and saving" />
+  <Card title="Getting help" href="/docs/rooftop/reference/support" description="The help in the app, these pages and SolarLayout" />
 </Cards>

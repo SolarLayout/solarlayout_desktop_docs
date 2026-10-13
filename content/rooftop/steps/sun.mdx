@@ -9,7 +9,7 @@ view of the stage, not a step. It is there on the Roof, Array and Strings steps,
 changes only what is shown, never the design.
 
 The day the rows are spaced for is the design day, set on the Array step in [Design
-day](/docs/rooftop/array#design-day). The Sun view opens on that day, at 12:00. The shade figures are not of
+day](/docs/rooftop/steps/array#design-day). The Sun view opens on that day, at 12:00. The shade figures are not of
 the day shown: they cover each hour of the weather year.
 
 ## Turn on the Sun view
@@ -48,7 +48,7 @@ Turning the view off puts the time back to 12:00 on the design day and turns the
 Sun view the steps draw the design day at noon, still.
 
 Where the controls and the view's content stand depends on the size of the screen ([On a phone or a
-tablet](/docs/rooftop/steps#on-a-phone-or-a-tablet)):
+tablet](/docs/rooftop/start/steps#on-a-phone-or-a-tablet)):
 
 | Size | Where **Sun** is | Where the view's content stands |
 | --- | --- | --- |
@@ -171,7 +171,7 @@ off.
 | **Shadow outlines**: `The shadows the app computed, dashed, to compare` | Off | On, off | Draws the shadows of the parapet and the obstacles on the roof, as the app computes them for the day and time shown, as dashed outlines over the shadows the view draws |
 | **Shade map on the modules**: `Each module coloured by its loss to shade` | Off | On, off | Colours each module by its near shading over the year, and adds the **Shade map** section and the legend on the stage |
 
-The shade-free hours are set on the Array step, in [Shade-free hours](/docs/rooftop/array#shade-free-hours);
+The shade-free hours are set on the Array step, in [Shade-free hours](/docs/rooftop/steps/array#shade-free-hours);
 a new design has 09:00 to 16:00.
 
 Turn on **Shadow outlines** to check the view against the app's own geometry: where the dashed outlines and
@@ -230,7 +230,7 @@ The line under the tiles says which modules the three percentages are of:
 - With a chosen option, the option's modules, as `Of the 638 modules of option A`.
 - Before there is an option, all positions of the layout, as `Of all <n> positions`. The **Strings** tile
   then says why there are no options, in the words the
-  [Strings](/docs/rooftop/strings#when-no-string-length-fits) step gives, such as `No string length fits at
+  [Strings](/docs/rooftop/steps/strings#when-no-string-length-fits) step gives, such as `No string length fits at
   600 V`.
 - Before the first run, the tiles are grey placeholders.
 
@@ -243,7 +243,7 @@ A second line says where the horizon comes from:
 | `Horizon not counted: this weather has none` | **2023, measured**, from NASA POWER, or **Your file** |
 
 Where it says `Horizon not counted`, the **Horizon** tile reads zero. The weather is chosen in Performance,
-in [Option and weather](/docs/rooftop/performance#option-and-weather).
+in [Option and weather](/docs/rooftop/steps/performance#option-and-weather).
 
 On the demo, with option A: **Rows and obstacles** 0.33 %, **Strings** 0.56 %, **Horizon** 0.04 %, **Area
 kept clear** 150 m², `Of the 638 modules of option A` and `Horizon from PVGIS, highest 2.7°`.
@@ -253,7 +253,7 @@ kept clear** 150 m², `Of the 638 modules of option A` and `Horizon from PVGIS, 
 The figures change with the obstacles and their heights ([Obstacles](/docs/rooftop/roof#obstacles)), the
 parapet, the row spacing, the chosen option and the weather. Change them in their steps: the design runs
 again and the card follows. With a chosen option, the same losses stand in Performance's [Where the energy
-goes](/docs/rooftop/performance#where-the-energy-goes), as **Shade from rows, obstacles and the horizon**
+goes](/docs/rooftop/steps/performance#where-the-energy-goes), as **Shade from rows, obstacles and the horizon**
 and **Shade on a string**.
 
 ## How shading is worked out
@@ -294,7 +294,7 @@ the horizon's height taken between its points round the circle, and the diffuse 
 horizon is the site's own, from PVGIS, fetched with the weather **Typical year**. **2023, measured** and
 **Your file** have none. When PVGIS sends the weather without its horizon, a note to review says `The
 weather for this site came without a horizon. The run leaves horizon shading out.`, under `Weather ·
-Performance` ([Notes to review](/docs/rooftop/steps#notes-to-review)).
+Performance` ([Notes to review](/docs/rooftop/start/steps#notes-to-review)).
 
 ### String shading loss
 
@@ -325,12 +325,12 @@ The folded chip adds the three percentages as they are shown, each a share of it
 The area kept clear is the union of the shadows of the parapet and the obstacles, cast on the plane of the
 modules' lower edge, with the sun taken each 15 minutes through the shade-free hours of the design day. The
 layout keeps modules out of it unless **Allow shaded positions** is on, on the Array step ([How the layout
-is placed](/docs/rooftop/array#how-the-layout-is-placed)). With it on, the modules placed there take their
+is placed](/docs/rooftop/steps/array#how-the-layout-is-placed)). With it on, the modules placed there take their
 shade into the energy, through the figures above.
 
 <Cards>
-  <Card title="Array" href="/docs/rooftop/array" description="The design day and the shade-free hours the rows are spaced for" />
-  <Card title="Strings" href="/docs/rooftop/strings" description="The options, the inverter and the system voltage" />
-  <Card title="Performance" href="/docs/rooftop/performance" description="The energy of year 1 and where it goes" />
+  <Card title="Array" href="/docs/rooftop/steps/array" description="The design day and the shade-free hours the rows are spaced for" />
+  <Card title="Strings" href="/docs/rooftop/steps/strings" description="The options, the inverter and the system voltage" />
+  <Card title="Performance" href="/docs/rooftop/steps/performance" description="The energy of year 1 and where it goes" />
   <Card title="Roof" href="/docs/rooftop/roof" description="The parapet and the obstacles that cast the shade" />
 </Cards>
