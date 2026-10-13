@@ -1,315 +1,396 @@
 ---
-title: The Strings lens
-description: System voltage set by your country, the inverter and its library, the modules in series, the stringing options and your own, MPPT loading, and strings on the roof.
+title: Strings
+description: The options for wiring the modules and the proof that each fits, your own option, the inverter, the system voltage, the MPPT loading and when no length fits.
 ---
 
-The **Strings** lens in SolarLayout Rooftop sizes the strings and wires the
-roof. A **string** is a run of modules wired in series; an **MPPT** (maximum
-power point tracker) is an inverter input that holds its strings at their
-best operating point; the **DC/AC ratio** is the array's DC capacity divided
-by the inverters' rated AC power. The lens finds the lengths of string that
-fit the system voltage, the inverter and the site's temperatures, simulates a
-year of energy for each way of stringing the roof, and draws the strings on
-the roof in colour.
+The Strings step of SolarLayout Rooftop wires the modules to the inverter. A string is a run of modules
+wired one after another, in series; an MPPT is an input of the inverter that tracks a group of strings at
+their best working point. The run sizes the strings from the system voltage, the inverter, the module and
+the site's coldest and hottest hours, and offers up to five ways to wire them, the options, each simulated
+for a full year. You choose one.
 
-The lens opens at `/studio/strings`. Its sections, top to bottom:
-**Inverter**, **System voltage**, **Modules in series**, **Options** (with
-your own), **MPPT loading**, then two rows that open: **Sizing
-temperatures** and **Inverter limits and cabling**.
+The step's head says `Check the strings` and `How the modules are wired to the inverter.` Its sections, top
+to bottom: **Options**, **Inverter**, **System voltage**, **MPPT loading** (with options only), **Sizing
+temperatures** and **Inverter limits and cabling**. Each closed row gives its facts and who set it:
+`Default`, `From the weather`, `Set for <country>` or `Yours`. The **?** beside **Options**, **Inverter**,
+**System voltage** and **MPPT loading**, and on the **Modules per string** bar, opens its help topic. The
+step's primary is **Continue to Performance**.
 
-A result that does not fit carries an exclamation mark; one that fits, a
-tick.
+On a desktop, the line under the stage's title sums up the chosen option, as `22 strings of 29 modules · 1
+inverter, 6 MPPT · 152 positions not used` on the demo. Opening the step from 3D turns the stage to Plan;
+leaving it turns the stage back to 3D if the step turned it.
 
-<Screenshot id="rooftop-strings-lens" />
+<Screenshot id="rooftop-strings-step" />
 
-## System voltage
-
-The system voltage is the highest DC voltage the system is built for. It caps
-how many modules one string can hold.
-
-| Field | Default | Choices | What it does |
-| --- | --- | --- | --- |
-| **System voltage** | 600 V in the United States, its territories and Canada; 1000 V everywhere else | **600 V**, **1000 V**, **1500 V** | The limit a string's open-circuit voltage must stay under when its modules are coldest |
-
-**Your country sets where it starts.** A design made or opened without a
-voltage takes the voltage of your country, so that it is sized and run at
-once. The country is the one your connection comes from, else your device's
-time zone, else India. The roof's own place sets the sun, the weather and so
-the sizing temperatures, but not the voltage.
-
-The words beside the heading say who set it:
-
-| Words | When |
-| --- | --- |
-| `Set for` and your country, such as `Set for India` | The app set it, at your country's voltage |
-| `Set by the app` | The app set it, at a voltage other than your country's |
-| `Your choice` | You chose it |
-
-Under an app-set voltage a line says where it comes from. At your country's
-voltage, for 600 V, `600 V, the limit for homes in the United States (NEC
-690.7). Change it if the site allows more.` (for Canada, CE Code, Section 64);
-for 1000 V, `1000 V, the usual limit for rooftops in <country>. Change it if
-the site needs another.` At a voltage other than your country's, the line
-speaks of the United States and Canada for 600 V, and of rooftops outside
-them otherwise.
-
-The right voltage depends on the site, its building and the code that
-applies there. Press a choice to make it yours; the app never moves it again.
-
-<Callout type="info">
-The app never raises the voltage. When the inverter or the module is rated
-lower, the strings are sized to that rating and the voltage stays as it is.
-When both take more, the lens offers a higher one with a button. Choose it
-only where the site's code allows it.
-</Callout>
-
-**Equipment rated lower.** The rating is the lower of the inverter's highest
-DC voltage and the module's highest system voltage. Under an app-set voltage
-the lens says `Strings sized to … V, this inverter's limit.` (or `module's`).
-A module whose file gives no rating is taken as 1000 V, and the lens says
-`Strings sized to 1000 V, taken for this module: its file gives no limit.`
-Under your own, it says so with an exclamation mark, `Your system is set to …
-V. The bill of materials follows the voltage set.`, and offers **Use … V**,
-the highest of 600, 1000 and 1500 V at or under the rating, where there is
-one.
-
-**Going higher.** When the rating is above the voltage, the lens says `This
-inverter takes up to … V. Raise it only if the site's code allows.` with
-**Use … V**. When no string length fits and a higher voltage would fit one,
-it says `No string length fits under … V; at … V one does. Raise it only if
-the site's code allows.`
-
-The DC cable in the bill of materials is named by the voltage set.
-
-## Inverter
-
-The **Inverter** card shows the model, `<maker> · <AC kW> · <n> MPPT`, the
-current per MPPT and the number of inputs, and the OND file's name. A current
-you entered reads `entered`. Where no current per MPPT is known, the card
-says `Current per MPPT not in the OND` with an exclamation mark.
-
-A design built on Find starts with the WP-330KTL-H1, the sample inverter that comes with Rooftop:
-275 kW AC, MPPT window 500 to 1500 V, highest DC voltage 1500 V, nominal MPP
-voltage 1080 V, 6 MPPT and 28 inputs. Its file gives no current per MPPT, so
-it is worked out as its DC input current of 390 A shared over 6 MPPT: 65 A.
-
-### Choose an inverter
-
-**Change** opens **Choose an inverter**: the app's library of 388 inverters.
-
-| Control | What it does |
-| --- | --- |
-| Search | Every word must be found in the maker, the model or the file's name |
-| **AC power**, **MPPT**, **Max DC** | Filters by rated AC power, by MPPT count (1 to 15), and by highest DC voltage |
-| Columns | **Inverter**, **AC kW**, **MPPT**, **MPPT V** (its window), and **Max DC V** on a computer |
-| Tags | `In this design`; `Preliminary` for a file its maker calls preliminary |
-| Mark | `Up to … V: strings sized under the … V set`, with an exclamation mark, on an inverter rated under the system voltage |
-
-The list opens sorted by AC power, low to high. Choose a row and **Use this
-inverter**. On a tablet or a computer, an OND file of your own can be dropped
-on **Or drop an OND file of your own here** or chosen with **Choose a file**;
-on a phone, use **Choose an OND file of your own**. A file without the rated
-power (PNomConv) or the MPPT maximum (VMPPMax) is refused. A file that cannot
-be read leaves the inverter as it was: `This inverter was not loaded`, the
-reason, and `The inverter of before is kept.`
-
-Choosing another inverter clears any current per MPPT you entered, and the design runs
-again.
-
-### How many inverters
-
-For each length of string, the run tries every number of inverters from one
-up to the larger of the fewest that take every string and the most that keep
-DC/AC at 1.10 or above. It keeps the number that places the most strings
-within the DC/AC target.
-
-## Modules in series
-
-The **Modules in series** bar shows the lengths of string that fit. Its left
-end is the shortest, set by the `MPPT minimum`; its right end the longest,
-set by the `Voc limit` or the `MPPT maximum`, whichever is tighter. The words
-beside the heading read `… to … fit`, or `None fit`. The marker is the length
-of the chosen option. While the strings are being sized the bar says
-`Sizing the strings for … V`.
-
-<Screenshot id="rooftop-strings-series" />
-
-| End | How it is worked out |
-| --- | --- |
-| Shortest | The inverter's MPPT minimum ÷ the module's Vmp at 1000 W/m², with the cell at the highest ambient plus the cell rise, rounded up |
-| `Voc limit` | The lowest of the system voltage, the inverter's highest DC voltage and the module's highest system voltage, ÷ the module's Voc at 1000 W/m² and the lowest ambient, rounded down |
-| `MPPT maximum` | The inverter's MPPT maximum ÷ the module's Vmp at the lowest ambient, rounded down |
-| Nominal | The inverter's nominal MPP voltage ÷ the module's Vmp at STC, rounded, and held inside the range. Without a nominal voltage, the longest |
-
-The module's highest system voltage comes from its file, or is taken as
-1000 V when the file gives none. The inverter's highest DC voltage is its
-absolute maximum, else its MPPT maximum.
-
-Without a Voc coefficient entered, the cold Voc comes from the module's
-one-diode model. With one entered, it is Voc at STC × (1 + coefficient ÷ 100
-× (lowest ambient − 25 °C)), as IEC 62548-1, Annex F.
-
-Under the bar stands the engine's verdict on the chosen option: its Vmp at
-STC against the inverter's nominal voltage, its Voc at the lowest ambient
-against the limit, its Vmp at the hot cell against the MPPT minimum, its
-strings, inverters and DC/AC, and its currents where they matter. It carries
-a tick when the option is in its DC/AC target and every MPPT is within its
-limits, and an exclamation mark otherwise.
-
-### Sizing temperatures
-
-**Sizing temperatures** opens from its row, which shows the range, as
-`… to … °C`.
-
-| Field | Default | Range | What it does |
-| --- | --- | --- | --- |
-| **Lowest ambient** | The coldest hour of the weather year; 5 °C with no weather | −50 to 40 °C | Sets the cold Voc, and so the Voc limit and the MPPT maximum |
-| **Highest ambient** | The hottest hour of the weather year; 40 °C with no weather | 0 to 60 °C | With the cell rise, sets the hot Vmp, and so the shortest length |
-| **Cell rise** | 25 °C on flat roofs, 35 °C on a sloped roof | 0 to 60 °C | How far the cell runs above the ambient |
-| **Voc coefficient** | The one-diode model's, shown as `<x> %/°C, the one-diode model's` | −0.999 to −0.001 %/°C | Enter the datasheet's Voc coefficient to work out the cold Voc from it instead |
-
-Each field you change offers its way back: **Use the weather's … °C**, **Use
-the roof type's**, **Use the module's**. When the module's coefficient lies
-outside −0.35 to −0.20 %/°C, a note with an exclamation mark asks you to
-check the datasheet and enter it if it differs.
+A change on this step runs the design again, half a second after the last edit: the system voltage, the
+inverter, the sizing temperatures, the current per MPPT, the cable and your own option. The layout stays as
+it is. Choosing an option runs nothing.
 
 ## Options
 
-**Options** are the ways to string the roof that the run simulated, each for
-a full year.
+**Options** holds the run's options as cards, the best first. A card gives:
 
-The run tries up to three lengths: the nominal, the longest, and the one,
-from the nominal up, that places the most modules on the roof (or the
-longest but one, when that is one of the other two). For each length:
+- its letter, A to E (your own option takes the next letter);
+- its caption, why it is there in two or three words;
+- its modules per string × its strings and its DC capacity, as `29 × 22 · 357.28 kWp`, with `· 2 inverters`
+  when it takes more than one;
+- the energy of year 1, in MWh;
+- its mark: a tick when it fits, an exclamation mark when it does not.
 
-1. It forms strings along each row, out on its top line of modules and back
-   on the bottom one. What the rows leave at their ends runs on into the next row of
-   the same tilt and azimuth. On an east-west roof a string stays on one side
-   and never mixes east and west.
-2. It ranks the strings: those within a row before those across rows, each
-   least shaded first.
-3. It makes up to three combinations: the most strings within the DC/AC
-   target, on as many inverters as that needs; the strings that fill those
-   inverters; and every string the roof holds, on the fewest inverters that
-   take them.
+The DC/AC ratio is the modules' power over the inverters' AC power: strings × modules per string × the
+module's power ÷ (inverters × the inverter's AC power). Its target is 1.10 to 1.30. An option fits when its
+ratio is in the target and each MPPT's current limit is known and kept.
 
-Each combination is simulated for a year. Those in target come first, then
-by energy. At most five are kept, lettered from **A**; the first is
-**Recommended** only when it is in target.
-
-| Value | How it is set |
+| Caption | What it means |
 | --- | --- |
-| DC/AC | Strings × modules in series × module power ÷ (inverters × inverter AC power) |
-| DC/AC target | 1.10 to 1.30; above 1.40 is `Heavy clipping` |
-| Strings per MPPT | As many as the current per MPPT allows for both Imp and Isc, one at the least; with no current known, the inputs shared over the MPPT |
-| Strings per inverter | Strings per MPPT × MPPT count, no more than the inverter's inputs |
+| **Recommended** | The first option, when its DC/AC ratio is in the target |
+| **Fills the inverter**, **Fills the inverters** | In the target, and its strings fill its inverters: as many strings as the inverters take |
+| **Less clipping** | In the target, and it clips less than the Recommended option |
+| **Below target** | Its DC/AC ratio is under the target, below 1.10 |
+| **Above target** | Its DC/AC ratio is over the target, from 1.30 to 1.40 |
+| **Heavy clipping** | Its DC/AC ratio is over 1.40 |
+| **Your own option** | The option you added |
+| `Option <letter>` | None of the above sets it apart |
 
-<Screenshot id="rooftop-strings-options" />
+Press a card to choose it, or move between the cards with the arrow keys. Nothing runs again: the run has
+simulated each option already. The chosen option sets the strings on the roof, the [MPPT
+loading](#mppt-loading) and the energy Performance shows. The **Option** list in Performance chooses among
+the same options ([Option and weather](/docs/rooftop/performance#option-and-weather)).
 
-Each card shows its letter and a caption, `series × strings · kWp · DC/AC`,
-and the energy of the first year in MWh. The caption is one of
-`Recommended`, `Your own`, `Below target`, `Above target`, `Heavy clipping`
-(with the number of inverters when there are more than one), `Fills the
-inverter`, `Lower clipping`, or else `Option` and its letter. A tick means
-`In target`. An exclamation mark means it misses the DC/AC target, or an
-MPPT is over its current, or its limit is not known.
+The options outside the target fold under one line with an exclamation mark, as `2 more, below the DC/AC
+target` (`above`, or `outside` for a mix). Press it to open them. It stands open when the chosen option is
+one of them, and nothing folds when no option is in the target. A chosen option outside the target is also a
+note to review, titled `Below the DC/AC target` (or above), under `Option <letter> · Strings step` ([Notes
+to review](/docs/rooftop/steps#notes-to-review)), and the step is marked as needing you.
 
-Press a card, or use the arrow keys, to choose an option. Every option is in
-the run's answer already, so nothing runs again. The note under the cards
-states the target and how many strings one inverter takes, and lists the
-options that miss the target.
+Under the chosen card, one line says whether its string length fits at the system voltage, as `29 modules
+per string fits at 1500 V` with a tick. **Why** opens the proof ([Why an option fits](#why-an-option-fits)).
+While a newer run is on its way, the options stand greyed out. At the first run, with nothing before it, the
+step says `Sizing the strings · a few seconds` and grey blocks hold the cards' places.
 
-### Your own
+On the demo, at 1500 V:
 
-**Add your own** opens **Series**, **Strings** and **Inverters**, each held
-to what fits:
+| Option | Caption | Modules per string × strings | DC capacity (kWp) | Inverters | Year 1 (MWh) |
+| --- | --- | --- | --- | --- | --- |
+| A | Recommended | 29 × 22 | 357.28 | 1 | 617.8 |
+| B | Fills the inverter | 26 × 24 | 349.44 | 1 | 607.7 |
+| C | Less clipping | 28 × 22 | 344.96 | 1 | 602.9 |
+| D | Below target | 28 × 28 | 439.04 | 2 | 785.0 |
+| E | Below target | 29 × 27 | 438.48 | 2 | 784.5 |
 
-| Field | Hint |
+When an edit takes the chosen option away, the first option is chosen and a toast says `Your stringing no
+longer fits. Option A is used.`, with **Undo** and **Choose another**.
+
+### How the options are made
+
+**How the options are made**, under the cards, opens the rules with this inverter's numbers:
+
+1. `The options in the DC/AC target, 1.10 to 1.30, come first; those outside it come after, marked.`
+2. How many strings an MPPT takes, as `An MPPT takes at most 4 strings: 4 strings of 13.58 A stay under 65.0
+   A.` on the demo. When the inverter file gives no current limit, the line says so and asks for the
+   datasheet's value.
+3. `The least shaded strings are used first.`
+
+A last line names the options that miss the target, as `D and E are under the target: their DC/AC ratio is
+0.80.`
+
+In full, the run works like this:
+
+- **Lengths.** It tries up to three string lengths, longest first: the one nearest the inverter's nominal
+  MPP voltage (the longest when the file gives none), the longest that fits, and, from the nominal up, the
+  one that places the most modules. Where two coincide, it takes the longest but one.
+- **Strings per MPPT.** As many as both current limits allow, the working current and the short-circuit
+  current, and at least 1. With no current limit known, the inverter's inputs shared among its MPPTs. An
+  inverter takes the MPPTs × the strings per MPPT, up to its inputs.
+- **Inverters.** For each length the run tries 1 inverter, then more. For each count it takes the most
+  strings that the inverters take, the roof holds and the DC/AC ratio allows at 1.30 or under, and keeps the
+  count with the most strings that reaches 1.10 with at least 1 string on each inverter. Then it adds the
+  strings that fill those inverters, and all the strings the roof holds on the fewest inverters that take
+  them. These two can fall outside the target.
+- **Which strings.** Strings within a row come before those that run across rows; in each group, the least
+  shaded first.
+- **Kept.** Each option is simulated for a full year. Those in the target come first, then the most energy.
+  Five at most are kept, lettered A to E. The first is **Recommended** only when it is in the target. Your
+  own option comes after them.
+
+## Why an option fits
+
+**Why** under the chosen card opens the proof, headed `Modules per string at <V> V`:
+
+- a band of the lengths that fit, from `<min> at least` to `<max> at most`, with a marker at the chosen
+  length;
+- the coldest hour: `On the coldest morning, <t> °C`, then `A string of <n> reaches <Voc> V, under
+  the <limit> V limit` (or `over`);
+- the hottest hour: `On the hottest afternoon, <t> °C in the cell`, then `It gives <Vmp> V, over the
+  inverter's <min> V minimum` (or `under`).
+
+Voc is the string's voltage with no current flowing, its highest on a cold module. Vmp is its working
+voltage, its lowest on a hot one. The two hours are the year's extremes, whatever the time of day:
+
+- **The coldest hour** is the module at 1000 W/m² with its cells at the year's lowest ambient temperature.
+  The string's Voc then must stay at or under the lowest of the system voltage, the inverter's highest DC
+  voltage and the module's rating.
+- **The hottest hour** is the module at 1000 W/m² with its cells at the highest ambient plus the cell rise.
+  The string's Vmp then must stay at or over the inverter's MPPT minimum.
+
+On the demo, option A: `29 modules per string fits at 1500 V`, the band from `14 at least` to `29 at most`,
+`On the coldest morning, 11.9 °C` with `A string of 29 reaches 1,480 V, under the 1500 V limit`, and `On the
+hottest afternoon, 64.3 °C in the cell` with `It gives 1,097 V, over the inverter's 500 V minimum`.
+
+<Screenshot id="rooftop-strings-why" />
+
+An option that misses its DC/AC target or an MPPT's current limit has the exclamation mark on its line, as
+`<n> modules per string at <V> V`, and the proof gives the run's verdict: `Voc at <t> °C is <x> V, limit <L>
+V. Vmp at a cell temperature of <t> °C is <x> V, MPPT minimum <m> V. <s> strings on <k> inverters, DC/AC
+ratio <r>`, with what it misses. Where a current limit is the cause, a sentence names it:
+
+- `The inverter file (OND) gives no current limit per MPPT. Enter the datasheet's value.`
+- `INV-<i> · MPPT <list> carries <x> A, over the limit of <L> A.`
+- `INV-<i> · MPPT <list> has an Isc of <x> A, over the limit of <L> A.`
+
+## Your own option
+
+Press **Add your own option**, under the cards, to wire the strings your way. The form, headed `Your own
+option`, holds three fields, each held to what fits:
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Modules per string** | The chosen option's | The lengths that fit, as `14 to 29 fit` | The modules in series in each string |
+| **Strings** | The chosen option's | From the inverters' count to the strings of that length the roof holds, as `Strings of 29: 1 to 27 fit` | The strings in parallel |
+| **Inverters** | The chosen option's | 1 to the strings, 200 at most | The inverters the strings are shared among |
+
+When you change your own option later, the form starts from it. Under the fields, the form says whether the
+option is in the DC/AC target before you add it: `Fits · <kWp> kWp · DC/AC ratio <r>`, `Under the DC/AC
+target · …` or `Over the DC/AC target · …`. On the demo it starts at 29, 22 and 1: `Fits · 357.28 kWp ·
+DC/AC ratio 1.30`.
+
+<Screenshot id="rooftop-strings-your-own" />
+
+Press **Add option** (**Change option** when there is one) to add it. The app saves it in the design and
+chooses it, the design runs again, and its card says `Your own option`. **Change** and **Remove** stand
+under its card; removing it while it is chosen brings back the run's first option. **Cancel** closes the
+form. The run's options never put more strings on an MPPT than its limits allow. Your own option's strings
+are spread evenly over the MPPTs regardless, and its card then carries the exclamation mark.
+
+When the app cannot build your option, its card gives the letter, `Your own option`, `<s> × <t> · <k>
+inverters` and why, with `Change your option or remove it.`:
+
+| Title | Why |
 | --- | --- |
-| **Series** | `… to … fit`: a length in the range |
-| **Strings** | How many strings of that length the roof holds, or `No string of … fits on the roof` |
-| **Inverters** | `1 to …`: no more than the strings, 200 at most |
+| `A string of <n> does not fit at <V> V` | `At most <max> fit: Voc at <t> °C is <x> V, over the limit of <L> V.`, or its Vmp on the coldest hour is over the inverter's MPPT maximum |
+| `A string of <n> does not fit at <V> V` | `At least <min> are needed: Vmp at a cell temperature of <t> °C is <x> V, under the MPPT minimum of <m> V.` |
+| `<s> strings cannot fill <k> inverters` | `Each inverter needs at least 1 string.` |
 
-The fields start from your own option's numbers, else the chosen option's. **Add** saves your option,
-chooses it, and the design runs again; **Change** and **Remove** edit it
-later. Removing it returns to the run's first option. Your own option is not
-held to the current per MPPT; the MPPT loading shows what it puts on each.
+## Inverter
 
-When the engine cannot build it, its card says why with an exclamation mark:
-too few strings to give each inverter one, or a length whose Voc is over the
-limit, whose Vmp is over the MPPT maximum, or under the MPPT minimum. Each
-ends `Change your option or remove it.`
+The inverter's card gives its model, its maker, its AC power and its MPPTs, the current per MPPT and its
+inputs, and the file's name under the card. A design built on Find starts with the app's inverter, marked
+`Default`: the WattPower WP-330KTL-H1, 275 kW, 6 MPPT, 28 inputs, an MPPT window of 500 to 1500 V and 65.0 A
+per MPPT, worked out from its 390 A of DC input current. It is not in the library. Once you choose an
+inverter, from the library or from your own file, the row says `Yours`.
 
-When the roof holds too few positions for the run's options, **Options** says
-`Too few positions for a string` with the length that would fit; where one
-does, **Add your own** stands under the words, with **Series** set to that
-length. When no length fits, or no module fits on the roof, there is no
-**Add your own**.
+The inverter sets how the strings are sized:
 
-## MPPT loading
+- its MPPT window sets the shortest string, and can set the longest;
+- its highest DC voltage is one of the limits on a string's Voc;
+- its AC power sets each option's DC/AC ratio, and so how many inverters an option takes;
+- its MPPTs, its inputs and its current per MPPT set how many strings one inverter takes.
 
-**MPPT loading** shows the current and the power on each MPPT of the chosen
-option. Its strings, in layout order, are shared among its inverters, then
-spread over each inverter's MPPTs as evenly as they go.
+### Choose an inverter
 
-| Column | What it shows |
-| --- | --- |
-| **MPPT** | `MPPT …`, with its inverter, `INV-…`, under it |
-| **Strings** | The strings on it |
-| **Current** | Imp (strings × the module's Imp) and Isc (strings × the module's Isc), each against its limit: `… of … A` |
-| **kWp** | Strings × modules in series × the module's power |
-| Mark | `Fits`, or `Over the limit` or `Limit not known` with an exclamation mark |
+1. Open **Inverter** and press **Change**. The window **Choose an inverter** lists the app's library of
+   inverter files, or your own inverter file (OND).
+2. Type in the search: each word must be found in the maker, the model, the file's name or the power, as
+   `<kW> kW`. Or press **Filter** to narrow the list by **AC power**, **MPPT** and **Max DC**.
+3. Choose a row, then press **Use this inverter**. A double click or Enter does the same.
 
-The Imp limit is the inverter's current per MPPT from its file, else its DC
-input current shared over its MPPTs. The Isc limit is its short-circuit
-current per MPPT, else the same as the Imp limit. A current you enter
-replaces both. On a phone the rows are cards.
+The list opens sorted by AC power, low to high; press a column's head to sort by it. Its columns are
+**Inverter**, **AC kW**, **MPPT**, **MPPT V** and, on a desktop, **Max DC V**; on a phone an **Order** list
+takes their place. A row is tagged `In this design` or `Preliminary` (a file its maker calls preliminary). A
+row rated under the system voltage says `Up to <r> V: strings sized to <r> V, not <V> V`.
 
-When a limit is not known, the note under the table says why, with **Enter
-the current per MPPT**: it opens **Inverter limits and cabling** with the
-field ready.
+<Screenshot id="rooftop-strings-picker" />
+
+For an inverter the library does not hold, drop its inverter file (OND) under the list, or press **Choose a
+file**; on a phone, press **Choose your own inverter file (OND)**. A file over 256 KB is refused before it
+is sent. A file the app cannot read leaves the inverter as it was, with `Inverter not changed` and the
+reason. The files Rooftop reads are in [Equipment files](/docs/rooftop/reference#equipment-files). A new
+inverter goes into the design, clears any current per MPPT you entered, and the design runs again.
 
 ### Inverter limits and cabling
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Current per MPPT** | The file's current per MPPT, else its DC input current ÷ MPPT count | 1 to 2000 A | The limit for Imp and Isc on each MPPT. An entered value reads `entered`, with **Use the file's … A** to go back |
-| **AC cable per inverter** | 30 m | 1 to 2000 m | The length of AC cable from each inverter |
+| **Current per MPPT** (A) | The inverter file's current per MPPT, else its DC input current ÷ its MPPTs | 1 to 2000 | Replaces both current limits of each MPPT, the working and the short-circuit current. **Use the file's** gives the file's value back |
+| **AC cable per inverter** (m) | 30 | 1 to 2000 | The AC cable in the [bill of materials](/docs/rooftop/handover#bill-of-materials) |
+
+The hint under **Current per MPPT** says where the value comes from, as `65.0 A · max DC current 390 A ÷ 6
+MPPT` on the demo. When the file states no current per MPPT, a note says `Not in the OND: IMaxDC <n> A ÷ <m>
+MPPT. Enter the datasheet value if it differs.` When the file gives neither, the card says `Current per MPPT
+not in the inverter file` with an exclamation mark: type the datasheet's value here.
+
+## System voltage
+
+The system voltage is the highest DC voltage of the system. It caps the modules in a string, with the
+inverter's and the module's ratings, and the bill of materials names the DC cable by it.
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **System voltage** | 600 V in the United States, its territories and Canada; 1000 V elsewhere | **600 V**, **1000 V**, **1500 V** | Caps the modules in a string. A press makes the value yours, and the design runs again |
+
+The app sets the voltage from your country on a new design, and on a project file opened without one. The country is the one your connection comes from, else your device's
+time zone, else India. The demo is at 1500 V, marked `Yours`.
+
+Beside the heading, the words say who set it: `Set for <country>`, as `Set for India` or `Set for the United
+States`, for the app's value for your country; `Default` for the app's value for a country that is not
+yours; `Yours` for a voltage you chose.
+
+While the app's value stands, the line under the choice says where it comes from, as `1000 V, the usual
+limit for rooftops in India. Change it if the site needs another.` or `600 V, the limit for homes in the
+United States (NEC 690.7). Change it if the site allows more.` (`CE Code, Section 64` for Canada).
+
+The equipment never moves the voltage. Strings are sized to the lowest of the system voltage, the inverter's
+highest DC voltage and the module's rating; a module file without a rating is taken at 1000 V. When the
+inverter or the module is rated under the voltage, the step says so:
+
+- with the app's value, a line such as `Strings sized to <r> V, this inverter's limit.`;
+- with yours, a note with an exclamation mark that ends `Your system voltage is <V> V, and the bill of
+  materials uses it.`, and a button **Use &lt;m&gt; V** for the voltage that matches.
+
+The app never raises the voltage either; it offers it. When the inverter takes more, the step says `This
+inverter takes up to <r> V. Raise it only if the site's code allows.` with a button such as **Use 1500 V**.
+When no string length fits and a higher voltage would fit one, the offer is `No string length fits at <V> V.
+One fits at <W> V. Raise it only if the site's code allows.` Press it only where the site's code allows.
+
+## Modules per string
+
+The lengths that fit are worked out from the module at 1000 W/m², at the site's sizing temperatures:
+
+- **The shortest**: the inverter's MPPT minimum ÷ the module's Vmp at the highest ambient plus the cell
+  rise, rounded up.
+- **The Voc limit**: the lowest limit ÷ the module's Voc at the lowest ambient, rounded down.
+- **The MPPT maximum**: the inverter's MPPT maximum ÷ the module's Vmp at the lowest ambient, rounded down.
+- **The longest**: the smaller of the Voc limit and the MPPT maximum.
+
+The module's Voc on a cold morning comes from its one-diode model. With a Voc coefficient typed, it is Voc
+at STC × (1 + μ ÷ 100 × (Tmin − 25)), as IEC 62548-1 Annex F gives it.
+
+When there are no options, the **Modules per string** bar stands in their place. Its heading says `<min>
+to <max> fit` or `None fit`, and its ends name what sets them: `<min> · MPPT minimum` and `<max> · Voc limit`
+(or `· MPPT maximum`). The run's note on the limit says which rating sets it, as `Limit <L> V: the lowest of
+the system's, the module's (<m> V) and the inverter's (<i> V) ratings.`
+
+### Sizing temperatures
+
+The closed row gives the two ambients, as `11.9 to 39.3 °C` on the demo. Each field is empty while the app's
+value stands, and its hint gives that value. A value you type says `Yours · default <value>` with **Reset**.
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Lowest ambient** (°C) | `From the weather`: the weather year's lowest air temperature; 5 °C with no weather | −50 to 40 | Sets the cold Voc and the cold Vmp: the longest string |
+| **Highest ambient** (°C) | `From the weather`: the weather year's highest air temperature; 40 °C with no weather | 0 to 60 | With the cell rise, the hot Vmp: the shortest string |
+| **Cell rise** (°C) | By the roof type: 25 on a flat roof, 35 on a sloped one | 0 to 60 | Added to the highest ambient for the hottest cell |
+| **Voc coefficient** (%/°C) | Computed from the module file | −0.999 to −0.001 | The cold Voc by the datasheet's coefficient, in place of the module's model |
+
+A Voc coefficient outside the usual range for crystalline silicon, −0.35 to −0.20 %/°C, has a note under the
+field asking for the datasheet's value. On the demo the value computed from the module file is −0.164 %/°C,
+and the note shows.
+
+## MPPT loading
+
+**MPPT loading** shows the chosen option's strings on each MPPT and their current against its limit. Closed,
+the row lists the strings on each MPPT and says `within limits`, `over a limit` or `a limit not known`.
+
+Open, a table titled `Option <letter>: <n> strings on <m> MPPT, at <V> V` (with `of <k> inverters` when
+there is more than one) gives one row for each MPPT that has strings:
+
+| Column | What it gives |
+| --- | --- |
+| **MPPT** | `MPPT <j>`, with its inverter, `INV-<i>`, under it |
+| **Strings** | The strings on it |
+| **Current** | Imp, the working current, and Isc, the short-circuit current, each as `<x> of <limit> A`, or `<x> A` with no limit |
+| **kWp** | Its strings × the modules per string × the module's power, with the mark `Fits`, `Over the limit` or `Limit not known` |
+
+The app shares the option's strings among its inverters in blocks, in layout order, then over each
+inverter's MPPTs as evenly as they go. An MPPT's Imp is its strings × the module's Imp, its Isc its strings
+× the module's Isc. Imp is held to the file's current per MPPT, else the DC input current shared among the
+MPPTs; Isc to the file's short-circuit current per MPPT, else the same limit. A **Current per MPPT** you
+type replaces both.
+
+On the demo, option A: `Option A: 22 strings on 6 MPPT, at 1500 V`. MPPTs 1 to 4 take 4 strings, `54.3 of
+65.0 A` and `57.2 of 65.0 A`, 64.96 kWp; MPPTs 5 and 6 take 3, `40.7 of 65.0 A` and `42.9 of 65.0 A`, 48.72
+kWp. All fit.
+
+<Screenshot id="rooftop-strings-mppt" />
+
+When a limit is not known, the file's note stands under the table with **Enter the current per MPPT**, which
+opens **Inverter limits and cabling** with the cursor in **Current per MPPT**. Type the datasheet's value.
+Until then the option carries an exclamation mark.
 
 ## Strings on the roof
 
-While the run has an option, the roof shows its strings in colour, and the
-positions the option does not use in grey, **Not used**.
+On the Strings step the stage draws the chosen option's strings over the modules. **Colour the strings by**
+chooses **String**, **MPPT** or **Inverter**; it starts at **MPPT** and belongs to the view. Six colours
+take turns; positions the option does not use are grey, `Not used`.
 
-**Colour the strings by** chooses **String**, **MPPT** (the default) or
-**Inverter**. Six colours go round in turn. The legend sits at the bottom
-left of the view on a computer and at the bottom right on a tablet; on a
-phone it stands on the view in short form, and the switch is the sheet's
-first control.
+- **The legend**, on a desktop and a tablet, is a bar at the stage's foot, beside the switch. It gives one
+  entry a colour, as `MPPT 1` or `INV-1`, or by string the strings of each colour, as `S1 · S7 · S13 · S19`,
+  with `By string: <n> colours in turn along the rows`. On a phone the switch and a short legend head the
+  sheet. While the strings are not yet of the layout shown, it says `Wiring the strings`.
+- **One string.** On a device with a pointer, hover a string to trace it; press or tap it to select it. The
+  string turns white and the rest dim. Its callout reads `String S<n> · MPPT <j>` (`String S<n> · INV-<i>,
+  MPPT <j>` with more than one inverter) and `<m> modules · <x> % shaded · Voc cold <v> V · <l> m of cable`,
+  the shading the mean near shading of its modules. On the demo: `String S1 · MPPT 1` and `29 modules · 0.0
+  % shaded · Voc cold 1,480 V · 132 m of cable`.
+- **The inverters** stand as boxes with a chip, `INV-1`, on the edge-margin line at the point nearest the
+  middle of their strings' starts. The edge margin is set on the Roof step ([Edges and
+  access](/docs/rooftop/roof#edges-and-access)).
 
-Point at a string to trace it; press it to select it. The traced or selected
-string turns white and the others dim. Its callout reads `String … · INV-…,
-MPPT …`, then its modules, its cold Voc and its length of cable. Each
-inverter stands on the roof as a box marked `INV-…`, on the setback line,
-nearest the middle of its strings' starts.
+<Screenshot id="rooftop-strings-phone" maxWidth={320} />
 
-On a computer the line under the lens title counts the strings, their
-length, the inverters and MPPTs, and the positions not used.
+The run forms the strings along a row, out along its top line of modules and back along the bottom. What a
+row leaves at its end runs on into the next row of the same tilt and direction, a string across rows. On an
+east-west roof a string runs along one side of a unit and on into the same side of the next, never mixing
+east and west. An option uses the least shaded strings first, by each string's string shading loss over the
+year ([Shade over the year](/docs/rooftop/sun#shade-over-the-year)).
 
-## When something goes wrong
+## When no string length fits
 
-| Message | What to do |
-| --- | --- |
-| `No string length fits this inverter` | At least so many modules are needed for the MPPT minimum, but fewer fit under the limit. Change the system voltage, the inverter or the sizing temperatures. |
-| `Too few positions for a string` | The roof holds too few positions for the run's options. Where a string fits, add it as your own option at the length given. |
-| `No module fits on this roof` | Check the outline, the setback and the obstacles in the [Roof lens](/docs/rooftop/roof). |
-| `Current per MPPT not in the OND` | Enter the datasheet value under **Inverter limits and cabling**. |
-| `Over the limit` in MPPT loading | The run's options keep within the limits; your own option is not held to them. Change your option, or check the current per MPPT against the datasheet. |
-| `This inverter was not loaded` | Choose another OND file, or one from the library. The inverter of before is kept. |
+When the fewest modules the inverter needs in a string are more than a string can hold at the system
+voltage, no string length fits, and the run builds no option, your own included. The step is marked as
+needing you, and the result chip says `Energy not computed` ([The result](/docs/rooftop/steps#the-result)).
 
-## Next
+- **The head of the work column** says `No string length fits at <V> V` and `This inverter needs at
+  least <n> modules in a string. At <V> V a string holds at most <m>.`, with **Choose another inverter** (opens
+  the library) and **Change the sizing temperatures** (opens **Sizing temperatures**).
+- **The Modules per string bar** stands in place of the options and says `None fit`, its two ends marked,
+  with the reason: `A string needs at least <n> modules for the inverter's <m> V MPPT minimum. At most <k>
+  fit under <L> V.`
+- **System voltage** offers a higher voltage where the equipment takes one and it would fit a string, with a
+  button such as **Use 1000 V**.
+- **The step's primary** becomes the same button, **Use &lt;W&gt; V**, with `Check first that the site's
+  code allows it.` under it. Pressed, it sets that voltage as yours.
+
+The demo at 600 V shows the case: `No string length fits at 600 V` and `This inverter needs at least 14
+modules in a string. At 600 V a string holds at most 11.` The offer reads `No string length fits at 600 V.
+One fits at 1000 V. Raise it only if the site's code allows.`, and the primary is **Use 1000 V**. Press it
+only where the site's code allows; else choose another inverter, one whose MPPT minimum a shorter string
+reaches, or check the sizing temperatures.
+
+<Screenshot id="rooftop-strings-600v" />
+
+The other cases in which the step has no option:
+
+| Message | When | Where |
+| --- | --- | --- |
+| `Too few positions for a string` · `The roof holds <n> positions, and a string takes <a> to <b> modules. A string of <s> fits. Add it as your own option.` (or `No string of that length fits.`) | No length tried forms an option | **Options**, with **Add your own option** under it when a length fits |
+| `No module fits on this roof` · `The roof has no room for a module inside the edge margin and clear of shade. Check the outline, the edge margin and the obstacles.` | The layout is empty | **Options**; the result chip offers **Open Roof** |
+
+More answers are in [Troubleshooting](/docs/rooftop/troubleshooting#sun-view-and-strings).
 
 <Cards>
-  <Card title="Performance" href="/docs/rooftop/performance" description="The energy of the chosen option over a year" />
-  <Card title="Handover" href="/docs/rooftop/handover" description="The report, the single-line diagram and the bill of materials" />
+  <Card title="Performance" href="/docs/rooftop/performance" description="The energy of the chosen option, by month and over 25 years" />
+  <Card title="The Sun view" href="/docs/rooftop/sun" description="The shade that sets which strings are used first" />
+  <Card title="Handover" href="/docs/rooftop/handover" description="The single-line diagram, the cable schedule and the bill of materials" />
+  <Card title="Array" href="/docs/rooftop/array" description="The module whose ratings size the strings" />
 </Cards>

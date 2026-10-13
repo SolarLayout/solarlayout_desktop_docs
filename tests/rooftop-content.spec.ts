@@ -43,7 +43,7 @@ for (const url of PAGES) {
 }
 
 test("every Rooftop page is in the sidebar, and every sidebar entry is a page", () => {
-  const listed = (JSON.parse(read("meta.json")) as { pages: string[] }).pages.map((p) => `${BASE}/${p}`).sort()
+  const listed = (JSON.parse(read("meta.json")) as { pages: string[] }).pages.filter((p) => !p.startsWith("---")).map((p) => `${BASE}/${p}`).sort()
   expect(listed).toEqual(PAGES)
 })
 

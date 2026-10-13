@@ -9,7 +9,7 @@
 | Pages | `content/rooftop/**`, served at `/docs/rooftop/**` (nav: `content/rooftop/meta.json`, in the order of the approved tree) |
 | What's new | `content/rooftop/whats-new.mdx`: one dated entry per update that changes what users meet, newest first, no version numbers |
 | Screenshot manifest | `content/rooftop/screenshots.ts` → images under `public/screenshots/rooftop/…`; ids always `rooftop-`-prefixed |
-| Product repository | `SolarLayout/rooftop-design-app`, normally `../rooftop-design-app`: the browser app `apps/web`, its in-app help `apps/web/content/help` (31 topics), the API `apps/api/src/rooftop_api`, the engine `apps/api/src/rooftop_core` |
+| Product repository | `SolarLayout/rooftop-design-app`, normally `../rooftop-design-app`: the browser app `apps/web`, its in-app help `apps/web/content/help` (32 topics), the API `apps/api/src/rooftop_api`, the engine `apps/api/src/rooftop_core` |
 | The app | https://rooftop.solarlayout.app (staging https://rooftop.staging.solarlayout.app) |
 | Releases | None tagged: `main` is deployed by hand to staging and production. Ask the user which merges are live before a What's new entry says so |
 
@@ -57,7 +57,7 @@ Rooftop runs in the browser, so screenshots are taken with Playwright from the l
 3. Start from a clean browser profile. The standard design is the demo (**Open the demo** on Home). A state that needs
    another design is seeded into the browser's storage (database `rooftop`, store `designs`; the open design's id under
    the local-storage key `rooftop.open-design`), as the product repo's own capture scripts do.
-4. Wait for the run to land (the vitals show numbers, nothing says "Updating") before capturing.
+4. Wait for the run to land (the result chip shows "… MWh a year", nothing is computing or updating) before capturing.
 5. Write the manifest entry (`what`, `state`) so the frame can be taken again, and delete any image no entry references.
 
 ## Gates
