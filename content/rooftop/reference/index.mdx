@@ -46,7 +46,7 @@ A file without `PNom`, `Voc` or `Isc` is refused, and the module of before stays
 | The maker and the model | The inverter's name on the card, in the report and in the bill of materials |
 | `PNomConv` | The nominal AC power: each option's DC/AC ratio and its number of inverters |
 | The MPPT window, its minimum and `VMPPMax` | The shortest string, and the longest the MPPT takes |
-| The nominal MPP voltage | One of the string lengths the options try |
+| `VmppNom`, the nominal MPP voltage; when the file gives none, the middle of its `VNomEff`, the voltages its efficiency curves are given at | The options try the string length nearest it; with neither, the longest length stands for it |
 | `VAbsMax` | The inverter's highest DC voltage, one of the limits on a string (`VMPPMax` when it gives none) |
 | The number of MPPT and of inputs | The strings one inverter takes |
 | `IMaxMPPT`, else `IMaxDC` divided by the MPPT | The current one MPPT takes. Enter the datasheet's value on the Strings step when the file gives neither |
@@ -69,10 +69,10 @@ refused before it is sent. A file without `PNomConv` or `VMPPMax` is refused, an
 
 The list opens by power, low to high; a column's head sorts it. An inverter file its maker calls preliminary is tagged **Preliminary**. An
 inverter rated under the system voltage carries an exclamation mark and "Up to &lt;r&gt; V: strings sized to &lt;r&gt;
-V, not &lt;V&gt; V". The design's own entry is tagged **In this design**.
+V, not &lt;V&gt; V". An entry chosen from the library is tagged **In this design**.
 
-A new design starts with the app's sample module, INA-144MHC-TF-560 (560 Wp, 2.277 × 1.133 m, bifacial), and its
-sample inverter, WP-330KTL-H1 (275 kW, 6 MPPT, 28 inputs). Neither is in the library.
+A new design starts with the app's own module, BiN-08-580 by Waaree (580 Wp, 2.278 × 1.134 m, bifacial), and its
+own inverter, WP-330KTL-H1 (275 kW, 6 MPPT, 28 inputs). The module is also in the library; the inverter is not.
 
 ## Other files Rooftop opens
 
