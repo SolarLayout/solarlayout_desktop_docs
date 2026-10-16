@@ -3293,20 +3293,33 @@ cached; the app keeps working through a **3-day offline grace** window, and an
 active result is treated fresh (no network call) for 5 minutes. At launch the
 License window opens by itself only in the `none` state.
 
-**Account-level access, up to 3 devices** (server side — `solarlayout` repo,
-GH #1249): access belongs to the signed-in account (email) per app, not to a
-device; one access record per account holds the kind, status and end date
-(`DEVICE_LIMIT = 3`, `TRIAL_DAYS = 7`). Every device on the account shows the
-**same** end date and status; an extension reaches all of them; revoke ends all
-of them. Rules in order: a device already on the account is a no-op; a device
-registered under **another** account is refused (*"This device is already in
-use"*); a **fourth** device is refused (*"You have used all 3 devices"* —
-*"Your account already uses <App> on 3 devices, so this one cannot be
-added."*); an expired or revoked account may still add a device, which simply
-shows that status. **Nothing frees a slot** — support only. The activation
-page says *"This will be device N of 3 on your account."*, its button reads
-**Add this device** (or **Activate free access for this device** for the
-first), and its details card lists every device with a **This device** badge.
+**Account-level access, one device** (server side — `solarlayout` repo,
+GH #1249, #1317; verified at `solarlayout` main `323c167c5`, 2026-10-16):
+access belongs to the signed-in account (email) per app, not to a device; one
+access record per account holds the kind, status and end date
+(`mvp_api/src/modules/desktop/desktop.service.ts:53` `DEVICE_LIMIT = 1`; `:48`
+`TRIAL_DAYS = 7`). Every device on the account shows the **same** end date and
+status; an extension reaches all of them; revoke ends all of them. Rules in
+order (`desktop.service.ts:106-113`): a device already on the account is a
+no-op; a device registered under **another** account is refused (*"This device
+is already in use"*); a **second** device is refused; an expired or revoked
+account may still add its first device, which simply shows that status.
+**Nothing frees a slot** — support only. The activation page
+(`solarlayout_web/src/app/desktop/[app]/_components/DesktopAccessClient.tsx`)
+reads, verbatim: the first device's button **Activate free access for this
+device** (`:437`); a second device → heading **Your access is already on
+another device** (`:513`), subtext *"Free access is for one device per
+account."* (`:559`), card *"Your account already uses <App> on another device,
+so this one cannot be added."* (`:782`) with a **Registered device** row, a
+**This device** row (`:786`, `:792`) and a **Contact SolarLayout** button
+(`:800`). The details card's **Devices** row lists every device with a **This
+device** badge on the current one and *"1 of 1 device"* (`:631-644`). An
+account that registered more than one device under the earlier limit of 3
+keeps them all (no device was removed) and cannot add another: its card reads
+*"…on N devices…"* with **Device 1…N** rows, its details *"N devices"*
+(`:642-643`, `:782-786`). The form's *"This will be device N of …"* helper and
+**Add this device** button (`:380`, `:436`) need an account below its limit
+that already has a device, which a limit of 1 never allows — not shown.
 
 **Updates & second users.** Access is server-side and belongs to the account,
 so it survives reinstalls and updates with nothing to re-load, and a second
