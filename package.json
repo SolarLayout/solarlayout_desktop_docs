@@ -5,9 +5,9 @@
   "private": true,
   "description": "SolarLayout product documentation — Next.js + Fumadocs",
   "scripts": {
-    "dev": "next dev --port 3007 --webpack",
+    "dev": "next dev --port 3010 --webpack",
     "build": "next build --webpack",
-    "start": "next start --port 3007",
+    "start": "next start --port 3010",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx,mdx}\"",
     "typecheck": "fumadocs-mdx && next typegen && tsc --noEmit",
