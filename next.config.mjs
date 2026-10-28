@@ -50,6 +50,18 @@ const nextConfig = {
   },
 
   /**
+   * Fonts are loaded cross-origin whenever the page is reached through
+   * `solarlayout.app/docs`: the CSS comes from the asset prefix, so its
+   * `/fonts/*` URLs resolve to this origin, and browsers only use a
+   * cross-origin font that carries `Access-Control-Allow-Origin`. Vercel
+   * already sends `*` for these static files; the local dev server does not,
+   * so without this the proxied page falls back to system fonts locally.
+   */
+  async headers() {
+    return [{ source: "/fonts/:path*", headers: [{ key: "Access-Control-Allow-Origin", value: "*" }] }]
+  },
+
+  /**
    * The documentation index lives at `/docs`, where `solarlayout.app/docs` reaches it (#19). The docs domain's own
    * root sends readers there. Not permanent, so a browser never caches it past a later change. Rooftop's page "The
    * workspace" became "The five steps" when the app was rebuilt around its steps (V2, 2026-10-13), and Rooftop's pages

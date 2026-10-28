@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test"
 
-const PORT = 3007
+const PORT = 3010
 const LOCAL_URL = `http://127.0.0.1:${PORT}`
 
 /**

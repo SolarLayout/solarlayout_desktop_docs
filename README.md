@@ -22,13 +22,32 @@ documentation app, so the two read as one product family.
 
 ```bash
 bun install          # also runs `fumadocs-mdx` to generate the content index
-bun run dev          # http://localhost:3007
+bun run dev          # http://localhost:3010
 ```
 
 The dev server watches `content/` — saving an MDX file reloads the page.
 
 Adding, renaming or deleting a **file** (rather than editing one) sometimes
 needs the content index regenerating. If a new page 404s, restart `bun run dev`.
+
+Port 3010 is the one `solarlayout_web` proxies to by default: its local
+`localhost:3006/docs` rewrites to `http://localhost:3010/docs`. 3007 belongs to
+the platform's Monitoring API, which is why this site doesn't use it.
+
+To view the docs through that proxy, as `solarlayout.app/docs` serves them,
+give the site the same absolute asset prefix production uses (see Deployment,
+below), in `.env.local` (gitignored):
+
+```bash
+NEXT_PUBLIC_ASSET_PREFIX=http://localhost:3010
+```
+
+Then serve a production build — `bun run build && bun run start` — and open
+`http://localhost:3006/docs`: styled, fonts loaded, search and sidebar working.
+Under `bun run dev` the proxied page renders styled but stays non-interactive:
+the dev client's hot-reload socket connects to `localhost:3006`, which is
+`solarlayout_web`'s dev server, not this one. For editing, use
+`http://localhost:3010/docs` directly.
 
 ### Every gate, before you commit
 
@@ -48,7 +67,7 @@ bun run test:e2e     # headless; builds and serves the site itself
 bun run test:e2e:ui  # interactive
 ```
 
-The Playwright config builds the site and starts it on port 3007 on its own —
+The Playwright config builds the site and starts it on port 3010 on its own —
 you do not need a server running. First run only:
 
 ```bash
