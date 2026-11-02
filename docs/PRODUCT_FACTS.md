@@ -3294,32 +3294,46 @@ active result is treated fresh (no network call) for 5 minutes. At launch the
 License window opens by itself only in the `none` state.
 
 **Account-level access, one device** (server side — `solarlayout` repo,
-GH #1249, #1317; verified at `solarlayout` main `323c167c5`, 2026-10-16):
+GH #1249, #1317; verified at `solarlayout` main `16c163c6b`, 2026-11-02):
 access belongs to the signed-in account (email) per app, not to a device; one
 access record per account holds the kind, status and end date
-(`mvp_api/src/modules/desktop/desktop.service.ts:53` `DEVICE_LIMIT = 1`; `:48`
+(`mvp_api/src/modules/desktop/desktop.service.ts:54` `DEVICE_LIMIT = 1`; `:48`
 `TRIAL_DAYS = 7`). Every device on the account shows the **same** end date and
 status; an extension reaches all of them; revoke ends all of them. Rules in
-order (`desktop.service.ts:106-113`): a device already on the account is a
+order (`desktop.service.ts:107-114`): a device already on the account is a
 no-op; a device registered under **another** account is refused (*"This device
 is already in use"*); a **second** device is refused; an expired or revoked
 account may still add its first device, which simply shows that status.
-**Nothing frees a slot** — support only. The activation page
+The activation page
 (`solarlayout_web/src/app/desktop/[app]/_components/DesktopAccessClient.tsx`)
 reads, verbatim: the first device's button **Activate free access for this
-device** (`:437`); a second device → heading **Your access is already on
-another device** (`:513`), subtext *"Free access is for one device per
-account."* (`:559`), card *"Your account already uses <App> on another device,
-so this one cannot be added."* (`:782`) with a **Registered device** row, a
-**This device** row (`:786`, `:792`) and a **Contact SolarLayout** button
-(`:800`). The details card's **Devices** row lists every device with a **This
-device** badge on the current one and *"1 of 1 device"* (`:631-644`). An
+device** (`:444`); a second device → heading **Your access is already on
+another device** (`:520`), subtext *"Free access is for one device per
+account."* (`:568`), card *"Your account already uses <App> on another device,
+so this one cannot be added."* (`:796`) with a **Registered device** row, a
+**This device** row (`:800`, `:806`) and a **Contact SolarLayout** button
+(`:814`). The details card's **Devices** row lists every device with a **This
+device** badge on the current one and *"1 of 1 device"* (`:645-658`). An
 account that registered more than one device under the earlier limit of 3
 keeps them all (no device was removed) and cannot add another: its card reads
 *"…on N devices…"* with **Device 1…N** rows, its details *"N devices"*
-(`:642-643`, `:782-786`). The form's *"This will be device N of …"* helper and
-**Add this device** button (`:380`, `:436`) need an account below its limit
+(`:656-658`, `:796-800`). The form's *"This will be device N of …"* helper and
+**Add this device** button (`:383`, `:441`) need an account below its limit
 that already has a device, which a limit of 1 never allows — not shown.
+
+**A customer cannot free a slot; an admin can** (`solarlayout` PR #1332, GH
+#1331, verified at main `16c163c6b`). In the admin portal, **Switch device** replaces
+a device with the Device ID the customer sends
+(`mvp_api/src/modules/admin/desktop-device-switch.service.ts:174`), **Set
+device** gives an account with no device its device (same function), and
+**Remove device** frees the slot for the customer to activate
+(`desktop-admin.service.ts:177`). The end date, kind and status do not change,
+no trial starts, and a revoked account is refused. The new device reports the
+account's status on its next check; the old one reports `none`. An admin can
+move both apps together when both are on the old device; the pages do not say so
+(each tree stands alone). After a Remove, the activation form reads **Activate this device**
+(`DesktopAccessClient.tsx:525`, `:443`) with *"Your access runs until <date>."*
+(`:575`).
 
 **Updates & second users.** Access is server-side and belongs to the account,
 so it survives reinstalls and updates with nothing to re-load, and a second
