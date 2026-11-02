@@ -201,33 +201,46 @@ the License window, `_show_license_dialog`
   `apps/bess-tool/bess_tool/trial_client.py:94`).
 
 **Account-level access, one device (server side, 2026-10 — `solarlayout`
-repo, GH #1249, #1317, verified at `solarlayout` main `323c167c5`; the BESS app
+repo, GH #1249, #1317, verified at `solarlayout` main `16c163c6b`; the BESS app
 itself is unchanged).** Access belongs to the signed-in account (email) per
 app, not to a device: one access record per account holds the kind, status and
-end date (solarlayout repo, `mvp_api/src/modules/desktop/desktop.service.ts:53`
+end date (solarlayout repo, `mvp_api/src/modules/desktop/desktop.service.ts:54`
 `DEVICE_LIMIT = 1`; `:48` `TRIAL_DAYS = 7`). A device row is only a
 registration against that account, so every device shows the **same** end date
 and status, an extension reaches all of them, and revoke ends all of them.
-Server rules, in order (`desktop.service.ts:106-113`): a device already on the
+Server rules, in order (`desktop.service.ts:107-114`): a device already on the
 account is a no-op; a device registered under **another** account is refused; a
 **second** device is refused; an expired or revoked account may still add its
-first device, which simply shows that status. **Nothing frees a slot** — a used
-device counts for the life of the account; support only. The activation page
+first device, which simply shows that status. The activation page
 (`solarlayout_web/src/app/desktop/[app]/_components/DesktopAccessClient.tsx`)
 reads, verbatim: the first device's button **Activate free access for this
-device** (`:437`); a second device → heading **Your access is already on
-another device** (`:513`), subtext *"Free access is for one device per
-account."* (`:559`), card *"Your account already uses BESS Desktop on another
-device, so this one cannot be added."* (`:782`) with a **Registered device**
-row, a **This device** row (`:786`, `:792`) and a **Contact SolarLayout**
-button (`:800`); a device on another account → heading **This device is
-already in use** (`:516`), *"Another account is already using BESS Desktop on
-this device…"* (`:813`); the details card's **Devices** row lists every device
+device** (`:444`); a second device → heading **Your access is already on
+another device** (`:520`), subtext *"Free access is for one device per
+account."* (`:568`), card *"Your account already uses BESS Desktop on another
+device, so this one cannot be added."* (`:796`) with a **Registered device**
+row, a **This device** row (`:800`, `:806`) and a **Contact SolarLayout**
+button (`:814`); a device on another account → heading **This device is
+already in use** (`:523`), *"Another account is already using BESS Desktop on
+this device…"* (`:827`); the details card's **Devices** row lists every device
 with a **This device** badge on the current one and *"1 of 1 device"*
-(`:631-644`). An account that registered more than one device under the earlier
+(`:645-658`). An account that registered more than one device under the earlier
 limit of 3 keeps them all and cannot add another (its details read *"N
-devices"*, `:642-643`). The form's *"This will be device N of …"* helper and
-**Add this device** button (`:380`, `:436`) are never shown at a limit of 1.
+devices"*, `:656-658`). The form's *"This will be device N of …"* helper and
+**Add this device** button (`:383`, `:441`) are never shown at a limit of 1.
+
+**A customer cannot free a slot; an admin can** (`solarlayout` PR #1332, GH
+#1331, verified at main `16c163c6b`). In the admin portal, **Switch device** replaces
+a device with the Device ID the customer sends
+(`mvp_api/src/modules/admin/desktop-device-switch.service.ts:174`), **Set
+device** gives an account with no device its device (same function), and
+**Remove device** frees the slot for the customer to activate
+(`desktop-admin.service.ts:177`). The end date, kind and status do not change,
+no trial starts, and a revoked account is refused. The new device reports the
+account's status on its next check; the old one reports `none`. An admin can
+move both apps together when both are on the old device; the pages do not say so
+(each tree stands alone). After a Remove, the activation form reads **Activate this device**
+(`DesktopAccessClient.tsx:525`, `:443`) with *"Your access runs until <date>."*
+(`:575`).
 
 **Status model** (`check_status`,
 `apps/bess-tool/bess_tool/trial_client.py:86` –
