@@ -1091,7 +1091,7 @@ two spaces, e.g. `0.00  m/module`, `10.0  %` (`IP:2009-2010`).
 | AC cable laying: *(string)* / DC trunk laying: *(central)* | Buried directly | or Above ground, on concrete blocks | — |
 | MV cable laying: | Buried directly | or On cable tray | — |
 | DC trunk conductor *(central)* | Aluminium | or Copper | — |
-| Voltage-drop limits | *"all at defaults"* / *"N changed"* with **Advanced…** | opens Advanced settings on that subgroup (§6.9) | — |
+| Voltage-drop limits | *"all at defaults"* / *"N changed"* with **Advanced…** | opens Advanced settings on the *Checks and limits* group (`IP:1995`, §6.9) | — |
 
 Defaults changed by #289 (inter-module lead was 0.5, return run was on); the
 model agrees — `MP:166-168`.
@@ -2077,7 +2077,7 @@ bar *"Layout ready | the energy result was cleared: calculate energy again"*
 | E-04 | String voltage window | | note B | `:152` |
 | E-05 | Shading window | | note B | `:159` |
 | E-06 | ICR inverter count | the design's own cap | Fix: Site tab | `:165` |
-| E-07 | Trenches inside the plant, not under tables | 0 runs | Fix: Sketch Mode | `:209` |
+| E-07 | Trenches inside the plant, not under tables | 0 runs (the router writes the count, `SC/string_inverter_manager.py:5690-5691`; a drawn trench doesn't re-route, so by reading it can't clear this) | Fix: Sketch Mode | `:209` |
 | E-08 | DC string drop | 1.5 % | Fix: Electrical tab | `:225` |
 | E-09 | Tables inside arrester cover | 0 tables | Fix: Site tab | `:244` |
 | E-10 | Clearances | | Fix: Site tab | `:290` |
@@ -2240,7 +2240,7 @@ Tool behaviour (tooltips, `MW:1795-1861`):
 | □ Rect / ○ Circle / ◜ Arc / ⬭ Ellipse / ∿ Spline / ▨ Fill/Zone | Annotation shapes (arc: start, end, then a point on it; spline and fill: click points, right-click or double-click to finish). |
 | 🅣 Text | Click to add multi-line text (an **Add text** prompt); move it with Move. |
 | 📏 Measure | Click points; snaps to corners / edge midpoints / centres. 2 points = distance + bearing; 3 or more then double- or right-click = area + perimeter; angles at each vertex; Esc clears. Not saved. |
-| 📐 Dimension | A permanent dimension between two points (click-drag, or click a start point then type a length); saved, redrawn, exported to DXF. |
+| 📐 Dimension | A permanent dimension between two points (click-drag, or click a start point then type a length); saved and redrawn; it stays out of the package, including the DXF twin (§13.4). |
 | 🧭 Scale bar + N | Shows a metric scale bar and a north arrow (toggle). |
 | 🟢 / 🔴 / 🟩 trench | Click vertices, right-click to finish. A drawn trench **replaces every automatic run of that type** in the plot holding its middle, and the totals come from what was drawn; it **survives leaving Sketch Mode and a Generate**. Generate's status: *"Kept your drawn {DC|AC|MV} trench on {plot}: it replaces the automatic {kind} routes there."* / *"Kept your {n} drawn {kind} trenches on {plot}: they replace the automatic {kind} routes there."* (`CE:160-176`). In a central design 🔴 draws the SMB → central-inverter DC trunk. |
 | ✂ Del Trench | Click any trench (automatic or manual) to delete it. A deleted automatic run **stays deleted** on leaving Sketch when only trenches changed; a re-route would restore it, and asks first (above). With Calculate cables off nothing asks. |
@@ -2588,7 +2588,7 @@ simulation."*). The window **Simulation with AC Capacity** (880 px):
   reader's ICR L × W (`MW:9067-9081`).
 - The delivered DC lands **at or just above** target, never below. Trimmed
   tables are held in reserve and put back after later stages clear ground;
-  half tables count as 0.5 — `dc_cap.py:1-24`. After a regenerate the status
+  a half unit counts the modules it holds — `dc_cap.py:22, 34-37`. After a regenerate the status
   line reads *"… | DC target x MWp met"* or warns *"⚠ DC x MWp is BELOW the y
   MWp target — the site has no room left; reduce the AC capacity or DC/AC
   ratio"*.
@@ -2745,7 +2745,7 @@ tables, Layers only a drawing, and a drawing without tables opens on Layers
   trackers”."* (no tables); *"The most repeated rectangles are on “{layer}”
   ({n} of them)."*; otherwise *"Roles are guessed from layer names. Only the
   tables are needed; equipment and roads only change what a wide gap is blamed
-  on."* ⚠️ Changing a role or the Structure clears every ticked gap.
+  on."* Changing a role or the Structure keeps the ticks whose gap still exists; the footer says how many went (`APP/robotic_dxf_dialog.py:775, 798`).
 
 **Message page** (empty / reading / error): *"Open a plant layout DXF"* —
 *"Tables as closed rectangles or blocks · fixed tilt or tracker · any unit"*
@@ -3198,7 +3198,7 @@ A line **not ready** goes to Open items, and **its quantity is not on the BOM sh
 
 ### 12.6 BOM settings (#381) — `SC/resources/bom/profiles/solarlayout-standard.json`, `SC/settings_form.py:218-234`
 
-Reached: **Edit…** on the Profile card; File ▸ Advanced settings… ▸ **BOM**; the inspector's **All N lines**. Pill *BOM · applies now*. A change recounts only the BOM, marks the project changed, does **not** make results out of date (`MW:12067-12073`).
+Reached: **Edit…** on the Profile card; File ▸ Advanced settings… ▸ **BOM**. The inspector's **All N lines** edits the setting in place and opens no window (`APP/bom_builder_panel.py:694-704`). Pill *BOM · applies now*. A change recounts only the BOM, marks the project changed, does **not** make results out of date (`MW:12067-12073`).
 
 | Group | Label | Unit | Default | Range | Help |
 |---|---|---|---|---|---|
@@ -3601,7 +3601,7 @@ Order **D0, D1 (and continuation), D2, D4, D6, D5**, numbered through, one PDF, 
 
 Every title block: company, logo, address, project, client, location, title, drawing no., rev, status, scale, size, sheet *"1 of 13"*, drawn, checked, approved, date, basis *"Snapshot 6eba-66bc · source sample-demo.kmz (sha256 c258cb45)"*, CRS, *"Prepared with SolarLayout"* [ran].
 
-**DXF twin** (`DL/render/dxf.py:1-21`) [ran]: R2010, metres, Arial. **Model space holds the design once**, in the drawing's own coordinates (UTM minus the location's offset); **one paper layout per sheet, named by its drawing number**, viewports at the sheet's scale with other layers frozen. Layers (written only when used) use standard names, e.g. `C-SITE-BNDY`, `C-ROAD-PERI`, `C-SITE-EXCL-OBST|TLCR|WATR`, `C-BLDG`, `E-PV-TABL`, `E-PV-ZONE`, `E-INVR`, `E-IDT`, `E-ERTH-*`, `E-SLD-*`, `G-ANNO-*`, `G-BLCK-…` (`DL/sheets/symbology.py`). Tables are blocks without attributes, one per shape (`PV-TABLE-32180x4728`); devices are blocks with ID, block, strings, kWp; buildings carry their ID; piles a pattern block per table type. Table IDs not written. No logo. GEODATA when located (`DL/render/dxf_geo.py`). Sheets name `grayscale.ctb`. Same snapshot and date give the same bytes. ⛔ The old layers (`BOUNDARY`, `TABLES`, `ICR`…) are gone. Unsure, found by grep only, no sketched project read back: sketch annotations, dimensions and user layers do not reach the twin (only hand-drawn cable routes do; `DL/providers/geometry.py:96`), and street lights and contours are absent.
+**DXF twin** (`DL/render/dxf.py:1-21`) [ran]: R2010, metres, Arial. **Model space holds the design once**, in the drawing's own coordinates (UTM minus the location's offset); **one paper layout per sheet, named by its drawing number**, viewports at the sheet's scale with other layers frozen. Layers (written only when used) use standard names, e.g. `C-SITE-BNDY`, `C-ROAD-PERI`, `C-SITE-EXCL-OBST|TLCR|WATR`, `C-BLDG`, `E-PV-TABL`, `E-PV-ZONE`, `E-INVR`, `E-IDT`, `E-ERTH-*`, `E-SLD-*`, `G-ANNO-*`, `G-BLCK-…` (`DL/sheets/symbology.py`). Tables are blocks without attributes, one per shape (`PV-TABLE-32180x4728`); devices are blocks with ID, block, strings, kWp; buildings carry their ID; piles a pattern block per table type. Table IDs not written. No logo. GEODATA when located (`DL/render/dxf_geo.py`). Sheets name `grayscale.ctb`. Same snapshot and date give the same bytes. ⛔ The old layers (`BOUNDARY`, `TABLES`, `ICR`…) are gone. Sketch annotations, dimensions, user layers and street lights do not reach the twin (only hand-drawn cable routes do; `DL/providers/geometry.py:96`) [ran: a twin written from a sketched project with 82 street lights held none of them]; contours are absent too, by grep only.
 
 ### 13.5 R1 the design report — `DL/report/build.py`, `DL/render/report_pdf.py`
 
@@ -3837,6 +3837,22 @@ Licensing* (`APP/help_dialog.py:16-511`). ⚠️ Its text is older than the inte
   (the window closes by itself when it does), or quit now and discard the
   result?"* — **Wait** / **Quit now**; **Wait** also cancels a running layout (`MW:4203-4209`). Close messages: *"Closing as soon as the cables are routed..."*, *"Closing as soon as the package is cancelled..."*, *"Closing as soon as the export count stops..."*, *"Closing as soon as the current calculation finishes..."* (`MW:4164-4221`).
 
+## 17a. Confirmed during the 2026-11-05 review
+
+| Fact | Citation |
+|---|---|
+| **One outer boundary** replaces the plots with one boundary in one of two shapes: **Tight wrap** bridges gaps up to a reach (0–200 m, default 30), and a wider gap stays out, so there can be several boundaries; **Simple outline** is a convex hull and can take in land beyond the plots. A hole over 25 m² inside it becomes an area, *"Land inside the outer boundary, not in any plot"* | `BR/resolve.py:197-211`, `BR/shapes.py:155-167`, `BR/types.py:17`, `CBD:834-847, 1110-1127` |
+| Survey maps show the three modes; the review's tiles include **Plots in the layout** and **Obstructions kept**; line pieces join only within 50 m | `CBD:575, 736-738`, `BR/types.py:13`, `BR/inspect.py:173` |
+| String cable is copper; AC and MV are aluminium; the DC trunk defaults to aluminium | `CS:66-68, 92` |
+| By others, the weather station stands at the first ICR | `SC/takeoff/providers/comms.py:25` |
+| A new design window starts at its defaults | `MW:4027-4034` |
+| E-02's largest standard size, 630 mm², is fixed in code. A smaller ICR Block shortens feeders [ran: 18 → 9 MWp, string mean 159 → 120 m, max 378 → 249 m] | `CS:43-44, 185-215` |
+| ICR block colours: the list has 16 entries, 13 distinct | `SC/icr_blocks.py:31-35` |
+| NASA POWER uses an isotropic tilt correction | `SC/energy_calculator.py:7, 391` |
+| The energy chart window has a day slider and clickable month ticks; Shadow View's sun cut-off is 5° | `APP/energy_timeseries_window.py:197, 447`, `SC/shading.py:361` |
+| Robot count from DXF: the notes chip and **What was read**; layer names `E-PV-TABL` and `C-SITE-BNDY` are guessed as tables and boundary | `RDD:177-186, 249, 644-651`, `RDX:123` |
+| The Add to BOM count of cleaning robots is standard plus supported bridges | `RCD:499` |
+
 ## 18. Known stale sources — do not repeat these
 
 | Stale claim | Where it appears | Verified truth |
@@ -3966,7 +3982,7 @@ no effect for a monofacial module.
 
 **The bifacial gain is computed as a percentage** and kept on the run's basis; the Workings'
 Year-1 energy lists Bifaciality and Albedo among its inputs. There is no separate on-screen
-readout for it, and whether R1 §9 prints the gain was not verified (`SC/energy_calculator.py:710`).
+readout for it, and R1 prints only *bifacial: yes / no*, no gain (`SC/energy_calculator.py:710`, `DL/report/build.py:457`).
 
 **Loading an inverter file does NOT set the inverter efficiency.** It stores the
 nominal and maximum AC power, updates the status line, and recomputes the
