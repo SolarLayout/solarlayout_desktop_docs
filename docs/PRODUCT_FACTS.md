@@ -1437,6 +1437,55 @@ the cables are routed..."*, and the window closes itself when the queue drains
 (`MW:3619-3627, 8797-8799`). The **Generate Layout** button, the **Sketch**
 button and the Studies card are not disabled.
 
+## 5a. Grid connection by others
+
+Verified 2026-11-05 against `feat/667-grid-connection-by-others` at `92f7340`
+(product PR #670), with headless runs of the sample site in all states and a
+Windows capture. Where this section and older sections differ on the Tools card,
+this one is current.
+
+- **The card** is **Grid connection & Objects** on the Tools tab, once a layout is
+  on screen: **Grid connection**, **On this site** | **By others**; default On this
+  site (`MW:9788`, `MW:9804`). Saved in the project; a project from before it opens as
+  On this site (`MW:3602`).
+- **By others, buttons:** **Place handover point**, **Remove point**. While no point is
+  placed the card reads *"Optional. Place one to route MV and fibre to it. Without one,
+  the MV cable stops at each ICR's outgoing breaker."* (`MW:1210`, `MW:9788`).
+- **Handover point:** a position, named HP-1, HP-2…; no tables removed, no shadow, no
+  earth pits (`MP:503`). One per plot, optional; no USS by others (`MW:9392`). May stand
+  in the plot, on the fence, or outside it up to **Handover point reach**: default 200 m,
+  range 0–5,000 m, Advanced settings ▸ Layout (`SC/resources/settings/design.json:152`,
+  `SC/grid_connection.py:30`). Further out: *"This spot is more than 200 m outside the
+  boundary. Move closer to the plot."* (`SC/placement_words.py:69`). Beyond the fence the
+  route stays inside the boundary and one leg runs on from the fence (`SC/mv_cable_router.py:698`).
+- **Prompts:** *"Click the plot, its fence or just outside it to place the handover point."*;
+  with several plots *"Click a plot to place its handover point."* Result with cables on:
+  *"MV cable and fibre routed to it: n m."*; off: *"To route its MV cables, tick Calculate
+  cables and generate again."* (`SC/placement_words.py:82`).
+- **Cables:** choosing By others with nothing placed, and placing, moving or removing a point,
+  keep the DC and AC cables (`MW:9749`, `MW:9804`). Choosing By others on a plant with an MCR or USSs
+  removes them; tables return and the cables must be generated again: *"MCR removed. n tables
+  back in the layout. Generate again to route the cables."* (`SC/placement_words.py:89`).
+  Choosing On this site removes the points.
+- **Move:** Sketch Mode, as other buildings.
+- **BOM** (built-in profile v21; fact `design.grid_connection`, `SC/takeoff/__init__.py:57`):
+  by others, out: MCR building, furniture, water tank, wiring, power transformer, HT panel, HT
+  feeder, 50 kVA auxiliary transformer, MCR earth pits; the transformer's body pits and NIFPS unit
+  drop with it. With a point: MV cable, outdoor kit at the ICR, far-end kit "at the handover point"
+  (Outdoor by default), joints, fibre, conduit, MV trench strip stay. No point: those go too; ICR
+  breaker panels stay. Weather station stays, "on site" (`SC/takeoff/providers/comms.py:26`,
+  `SC/resources/bom/profiles/solarlayout-standard.json:38, 53, 91, 143, 170`). Manual lines the park may
+  cover (metering yard, modem, CCTV, CAT-6, borewell and RO, security cabin, main gate) are not changed.
+- **Outputs:** report sentences (`SC/deliverables/report/build.py:66`); SLD note and links
+  (`SC/deliverables/sheets/d5_sld.py:493`, `SC/deliverables/sheets/d5_facts.py:79`); schedules' Feeds
+  (`SC/deliverables/schedules.py:273`); check C-03 passes with a point, not applicable without
+  (`SC/deliverables/checks/completeness.py:37`); Summary and Workings read *by others*
+  (`SC/summary_sheet.py:265`, `SC/workings.py:884`).
+- **On this site with nothing placed** reads as unfinished, as before: C-03 fails.
+- **Placing an MCR:** prompt *"Click inside the boundary to place the MCR."*; outside: *"This spot
+  is outside the boundary. Move inside the plot."* The card keeps *"MCR placed in <plot>. n tables
+  removed under it and its shadow."* (`SC/placement_words.py`).
+
 ## 6. The main window: ribbon, left column, views
 
 ### 6.0 Chrome — `MW:1136-1273, 2897-2918`

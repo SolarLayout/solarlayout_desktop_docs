@@ -331,12 +331,12 @@ order to work in. See [Cables](/docs/inputs/cables).
 <Accordion title="Medium-voltage cables are missing">
 
 Medium-voltage cables run from each inverter control room to the **main control
-room**, so there is nothing to route until the main control room exists, and it is
-not placed automatically. On the **Tools** tab, click **Place MCR**, then click a
+room**, or to a handover point when the
+[grid connection is by others](/docs/layout/grid-connection), so there is nothing to
+route until one exists, and neither is placed automatically. On the **Tools** tab, click **Place MCR**, then click a
 position inside the boundary.
 
-Placing it does not route anything by itself. The card's hint reads *"MCR placed.
-Enable 'Cable Calc' and regenerate layout to route MV cables."* — the **MV cables
+Placing it does not route anything by itself: the **MV cables
 (ICR→MCR)** row of the Layers popover has nothing to draw and the Summary's **MV
 cable (m)** reads `—` until you click **Generate Layout** again with **Calculate
 cables** on. The status line then adds *"| MV cable: n m"*. On a multi-plot

@@ -5,10 +5,13 @@ description: Placing the main control room and other structures from the Tools t
 
 Some site equipment is not placed with the layout. The **MCR** — main control
 room — and any generic objects are placed by clicking a position on the plot,
-from the **Main Control Room & Objects** card of the **Tools** tab. Unit
+from the **Grid connection & Objects** card of the **Tools** tab. Unit
 substations appear on their own when a multi-plot site gets its main control
 room. Street lights are a setting on the **Site** tab that you turn on before
 you generate.
+
+If a solar park or another party provides the main control room and the substation,
+see [Grid connection by others](/docs/layout/grid-connection).
 
 The inverter control rooms — ICRs — are different: they are counted from the
 plant capacity and sited automatically. See
@@ -25,7 +28,7 @@ plant capacity and sited automatically. See
 
 Until a layout exists the **Tools** tab's tooltip reads *"Generate a layout
 first"* and the card's buttons are greyed out, **Place Object** aside. Once a
-layout is on screen, the **Main Control Room & Objects** card offers **Place
+layout is on screen, the **Grid connection & Objects** card offers **Place
 MCR**, **Remove MCR**, **Place Object** and **Remove Objects**, with a hint line
 under them that tells you what the next click on the plot will do.
 
@@ -43,8 +46,8 @@ make meanwhile waits until it finishes. See
 <Step>
 ### Click Place MCR
 
-The button changes to **Cancel Placement** while it is armed, and the hint
-reads *"Click on the plot to place the MCR."*, so you can always tell whether
+The button changes to **Cancel Placement** while it is armed, and the plot
+reads *"Click inside the boundary to place the MCR."*, so you can always tell whether
 the next click on the plot will drop a building. Click **Cancel Placement** to
 disarm it without placing anything.
 </Step>
@@ -60,16 +63,16 @@ the button returns to **Place MCR**.
 ### Keep it inside the boundary
 
 A click outside the plant boundary is refused with the message
-*"Please place inside the boundary."* Nothing is placed, and the button stays
+*"This spot is outside the boundary. Move inside the plot."* Nothing is placed, and the button stays
 armed so you can click again in the right place.
 </Step>
 
 <Step>
 ### Generate again to route the medium-voltage cables
 
-As soon as the room is dropped the hint reads *"MCR placed. Enable 'Cable
-Calc' and regenerate layout to route MV cables."* Placing the room gives the
-medium-voltage network its destination; it does not route anything. Tick
+As soon as the room is dropped the card says where it went and how many tables
+it removed. Placing the room gives the medium-voltage network its destination;
+it does not route anything. Tick
 **Calculate cables** on the **Cables** card of the Electrical tab if it is not
 already on, and click **Generate Layout**.
 </Step>
@@ -268,7 +271,7 @@ The tool is not armed. While placement is armed the button reads
 click on the plot is an ordinary click. Arm it first.
 </Accordion>
 
-<Accordion title="Please place inside the boundary.">
+<Accordion title="This spot is outside the boundary. Move inside the plot.">
 The point you clicked is outside the plant boundary. Nothing is placed and the
 tool stays armed — click again inside the boundary.
 </Accordion>

@@ -163,7 +163,7 @@ Then, in both designs:
 | **DC / AC ratio** | DC capacity divided by AC capacity. The design overload limit is 1.5 for string inverters and 1.4 for central inverters | No inverter file has been loaded |
 | **ACCBs** *(string design only)* | AC combiner boxes, from the **ACCB & Transformer** card: each ICR block's inverters ÷ **Inverters per ACCB, max**, rounded up | Before inverters are placed |
 | **Transformers (IDT)** | The inverter duty transformers and their ratings, e.g. *"4 × 16,000 kVA"* or *"2 × 12,500 + 2 × 16,000 kVA"*. Without an inverter file only the count, *"4 · rating needs OND"*; a transformer whose load fits no listed rating reads *"4 · 1 with no listed rating"* | Before inverters are placed |
-| **Power transformer (MVA)** | The whole site's power transformer at the main control room, e.g. *"63"* or *"2 × 80"*. Shown in the column of the plot that holds the MCR and in **Total**; *needs OND* when there is an MCR but no inverter file | No MCR is placed; in every other plot's column; before inverters are placed |
+| **Power transformer (MVA)** | The whole site's power transformer at the main control room, e.g. *"63"* or *"2 × 80"*; *by others* when the [grid connection is by others](/docs/layout/grid-connection). Shown in the column of the plot that holds the MCR and in **Total**; *needs OND* when there is an MCR but no inverter file | No MCR is placed; in every other plot's column; before inverters are placed |
 
 **Total** sums the ACCBs and the transformers. The three grouping rows follow
 the **ACCB & Transformer** card at once — an edit there regroups the plant and
@@ -186,7 +186,7 @@ over-orders cable or under-digs trench.
 | --- | --- | --- |
 | **String DC cable (m)** | Conductor from the tables to the string inverter or the SMB, counted twice for the positive and negative conductors | **Calculate cables** was off |
 | **AC cable to ICR (m)** *(string)* / **DC cable to central inverter (m)** *(central)* | AC from each inverter to the control room it is assigned to, counted once as a three-phase run — or the DC trunk from each box to the control room, counted twice. There is no AC leg in a central design, because the central inverter sits inside the building | **Calculate cables** was off |
-| **MV cable (m)** | Medium-voltage conductor from the control rooms to the main control room | No MCR placed, or the layout not generated again with cables on since placing it |
+| **MV cable (m)** | Medium-voltage conductor from the control rooms to the main control room or handover point; *by others* when the grid connection is by others with no point | No MCR placed, or the layout not generated again with cables on since placing it |
 | **DC trench (m)** | Trench length for the string DC cables | **Calculate cables** was off |
 | **AC trench (m)** | Trench length for the second leg | **Calculate cables** was off |
 | **MV trench (m)** | Trench length for the medium-voltage run | As **MV cable (m)** |

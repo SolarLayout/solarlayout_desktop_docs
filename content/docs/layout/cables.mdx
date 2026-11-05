@@ -207,12 +207,13 @@ destination. That is both what gets built and what costs less.
 Each branch of the network carries a **termination allowance of 10 m**, covering
 the terminations at its ends over and above the routed distance.
 
-Nothing medium-voltage is routed until the **main control room is placed** —
+Where a solar park provides the main control room, the cables run to a handover
+point instead, or stop at each control room: see
+[Grid connection by others](/docs/layout/grid-connection). Otherwise,
+nothing medium-voltage is routed until the **main control room is placed** —
 there is no destination before that — and **placing it routes nothing either**.
 The medium-voltage cables are routed on the **next Generate** after
-**Place MCR**, with **Calculate cables** on. Until then the hint under the
-placement buttons reads *"MCR placed. Enable 'Cable Calc' and regenerate layout
-to route MV cables."*, the MV row of the Layers popover has nothing to show and
+**Place MCR**, with **Calculate cables** on. Until then the MV row of the Layers popover has nothing to show and
 the Summary's **MV cable (m)** reads `—`. After that run the status line adds
 *"| MV cable: n m"*. See
 [Main control room, substations and street lights](/docs/layout/site-equipment).
