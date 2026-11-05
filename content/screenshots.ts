@@ -16,6 +16,8 @@
  * the application itself (its own render, 2× scale, 1400 × 900 window) on
  * the bundled sample site, a three-plot variant of it, and a test module and
  * inverter file — see docs/superpowers/plans/2026-09-21-desktop-docs-revamp.md.
+ * On 2026-11-05 the frames showing the Site Parameters card were recaptured the
+ * same way, and clean-boundary was added on a made-up site; the rest are 2026-09-28.
  *
  * SolarLayout Desktop has a single visual theme, so there is exactly ONE
  * image per entry — no light/dark pairs.
@@ -223,6 +225,17 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
     priority: 1,
   },
   {
+    id: "clean-boundary",
+    file: "inputs/clean-boundary.png",
+    page: "/docs/inputs/kmz-requirements",
+    title: "The Clean boundary review",
+    alt: "The Clean boundary window for demo-site.kmz: the band counts 8 plots, 5 open lines, 14 obstructions and 24.5° N; the table lists each item with Keep, Found, Action, Water and Height, a polygon inside a plot is selected with its three choices below, and the map, the Ready verdict and the area, plot and obstruction tiles sit on the right.",
+    what: "The review as it opens on a file with problems to decide, the first row selected.",
+    state: "Browse to a Google Earth file with open lines, a duplicate, a crossing outline and a polygon inside a plot.",
+    annotations: "",
+    priority: 1,
+  },
+  {
     id: "boundary-validation",
     file: "inputs/boundary-validation.png",
     page: "/docs/inputs/kmz-requirements",
@@ -403,7 +416,7 @@ export const SCREENSHOTS: ScreenshotSpec[] = [
     file: "inputs/site-parameters.png",
     page: "/docs/inputs/site",
     title: "Site Parameters",
-    alt: "The Site Parameters card at its defaults: perimeter road width, Place Lightning Arresters unticked with the radius greyed out, ICR Block and the transmission line corridor.",
+    alt: "The Site Parameters card at its defaults: perimeter road width, Place Lightning Arresters unticked with the radius greyed out, ICR Block, Line corridor (each side) at 15.0 m and Area setback at 0.0 m.",
     what: "The card only, at its defaults.",
     state: "Site tab, nothing changed.",
     annotations: "",
