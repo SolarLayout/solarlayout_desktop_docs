@@ -26,8 +26,8 @@ subtractions:
 | Subtracted | Set by |
 | --- | --- |
 | The perimeter road band around the inside of the fence | **Perimeter road width**, on [Site parameters](/docs/inputs/site) |
-| Polygon obstructions — water bodies, buildings, substations, and anything you draw by hand | The boundary file, plus [Obstructions](/docs/layout/obstructions) |
-| Transmission line, canal and road corridors, buffered on both sides of the line | **Transmission line corridor**, per side; a road line its own width |
+| Polygon obstructions — water bodies, buildings, substations, and anything you draw by hand | The boundary file, plus [Obstructions](/docs/layout/obstructions); **Area setback** around an area in the file |
+| Transmission line, canal and road corridors, buffered on both sides of the line | **Line corridor (each side)** and each line's own row |
 | Ground too steep or too uneven to build on | [Topography](/docs/inputs/topography), when enabled |
 
 Everything placed later is checked against that one area. Tables, control rooms
@@ -87,9 +87,9 @@ Every polygon obstacle read from the file is cut out of the area: water bodies,
 buildings, substations, and any obstruction you draw by hand. Line features are
 different — a transmission line or canal has no width of its own, so each is
 given a setback on **each** side of the line. The corridor cut out of the site
-is therefore twice the setback: at the default **Transmission line corridor** of
-15.0 m per side, a 30 m corridor. A line named as a road is cleared to the road
-width the file gives it instead, 5.0 m when it gives none.
+is therefore twice the setback: at the default **Line corridor (each side)** of
+15.0 m, a 30 m corridor. Each line in the file has its own row on the Site tab,
+so a road can have a narrower corridor than a transmission line.
 
 Raise the setback for a higher-voltage line. The application's own tooltip
 suggests 30 m per side for a 400 kV line.

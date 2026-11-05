@@ -36,9 +36,9 @@ Three things:
 
 If you are not sure your file is prepared correctly, read
 [Preparing a Google Earth file](/docs/inputs/kmz-requirements) first. A file
-whose boundary ring is not closed opens the **Check boundaries** window, which
-lists each problem boundary with a **Leave out** tick and offers
-**Continue without \<n\>** or **Fix in Google Earth first**.
+with something to decide, such as an open outline or overlapping plots, opens
+the **Clean boundary** window. Check what it found and click
+**Save clean KMZ and load**.
 </Step>
 
 <Step>
@@ -69,12 +69,10 @@ previews the boundary, and **Generate Layout** enables.
 
 <Screenshot id="site-loaded" />
 
-Every feature in a Google Earth file must lie **inside** a boundary polygon.
+Draw every feature in a Google Earth file **inside** a boundary polygon.
 Top-level polygons become plant boundaries; polygons fully inside one become
-obstacles. Features are classified by name, case-insensitively — a polygon
-named `Pond` or `Reservoir` is water, a line named `220kV` or `Powerline` is a
-transmission line and gets a corridor buffered either side of it, and a polygon
-with no recognised keyword is a generic obstruction such as a building.
+areas to keep clear. Every line gets a corridor either side of it. A feature
+with a water word in its name, such as `Pond` or `Reservoir`, is water.
 </Step>
 
 <Step>
@@ -101,7 +99,8 @@ is absurd for your site, and change nothing yet.
 | **Site** | **Site Parameters** | Perimeter road width | 6.0 m |
 | | | Place Lightning Arresters | off |
 | | | ICR Block | 18.000 MWp |
-| | | Transmission line corridor | 15.0 m per side |
+| | | Line corridor (each side) | 15.0 m |
+| | | Area setback | 0.0 m |
 | **Electrical** | **String Inverter** | Max strings per inverter | 20 |
 | | **Cables** | Calculate cables | off |
 

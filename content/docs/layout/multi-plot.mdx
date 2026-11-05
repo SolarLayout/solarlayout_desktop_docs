@@ -79,17 +79,17 @@ there are several.
 | Requirement | Why |
 | --- | --- |
 | Each boundary is a **closed polygon** — first and last ring coordinate identical | An open ring cannot be shrunk inward or tested for containment |
-| Boundaries must **not overlap** each other | Overlapping outlines make the containment test ambiguous, so a plant may be read as an obstacle in its neighbour |
-| Every feature must lie **inside** the boundary it belongs to | A feature outside every boundary is subtracted from nothing, so tables are placed straight over ground you meant to keep clear |
+| Boundaries must **not overlap** each other | The **Clean boundary** review stops to ask whether to merge them, cut the overlap out of one, or remove one |
+| Every feature must lie **inside** the boundary it belongs to | A polygon drawn clear of every boundary is read as another plot, and gets tables of its own |
 
-Full preparation rules, including how each feature must be named for it to be
-read as water, a canal or a transmission line, are on
+Full preparation rules, including how to name a feature so it is read as water,
+are on
 [Boundary file requirements](/docs/inputs/kmz-requirements).
 
 <Callout type="warn">
-If any ring is open, the **Check boundaries** window lists each problem boundary
-with a **Leave out** tick, ticked by default, and a **Continue without n**
-button. A boundary left out is not designed at all and does not appear in the
+If a polygon's ring is open, **Generate Layout** opens the **Check boundaries**
+window, which lists each problem boundary with a **Leave out** tick, ticked by
+default, and a **Continue without n** button. A boundary left out is not designed at all and does not appear in the
 Summary view; an unticked one is kept as it is and may produce a wrong layout.
 Use **Fix in Google Earth first** and reload the file if you need every plant.
 </Callout>

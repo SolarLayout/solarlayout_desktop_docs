@@ -31,8 +31,7 @@ Four things follow from the file being a Google Earth file:
 - **The site features come with the boundary.** Water bodies, buildings,
   substations, transmission lines, canals and roads that you have drawn inside
   the boundary are read from the same file and kept clear of module tables. The
-  application decides which is which from the **name** of each feature, so the
-  naming rules matter — see
+  drawing rules are in
   [Boundary file requirements](/docs/inputs/kmz-requirements).
 - **The latitude is known.** Latitude drives the automatic tilt angle and the
   automatic row pitch, and the latitude and longitude are what the weather
@@ -105,9 +104,11 @@ sits: at its own UTM coordinates, at a latitude and longitude, or layout only.
 An image opens the same window with a **SCALE** card first, asking how a
 distance on site maps to a distance on the drawing. **Cancel** in that window
 leaves the file unloaded. A Google Earth
-file asks nothing, because it already carries its position — unless one of its
-boundary rings is not closed, in which case the **Check boundaries** window
-opens. See [Boundary file requirements](/docs/inputs/kmz-requirements#when-a-boundary-fails-the-check).
+file already carries its position, and a well-drawn one asks nothing. If it has
+something to decide, such as an open outline, overlapping plots or a CAD export
+saved as loose lines, the **Clean boundary** window opens. Check what it found
+and click **Save clean KMZ and load**. See
+[The Clean boundary review](/docs/inputs/kmz-requirements#the-clean-boundary-review).
 </Step>
 
 <Step>
@@ -139,15 +140,13 @@ boundaries, water bodies, transmission lines and obstructions, ending in a
 quick-reference table of what must be a polygon, what must be a line, and how
 each must be named. It is the same material as
 [Boundary file requirements](/docs/inputs/kmz-requirements), available without
-leaving the application; that page also notes the two places where the guide's
-fixed text lags behind the application.
+leaving the application.
 
 ## What happens when the file is read
 
 <Callout type="warn">
-Every feature in the file must lie **inside** a plant boundary. An obstruction
-drawn outside the boundary is not subtracted from anything, so tables are
-placed straight over the ground you meant to keep clear.
+Draw every obstruction **inside** a plant boundary. A polygon drawn clear of
+every boundary is read as another plot, and tables are placed on it.
 </Callout>
 
 In order:
@@ -158,8 +157,8 @@ In order:
    All internal geometry is in metres from that point on.
 3. The boundary is shrunk inward by the **Perimeter road width** to give the
    usable area.
-4. Obstructions, water bodies and the buffered line corridors are subtracted
-   from it, followed by any excluded terrain.
+4. Obstructions and water bodies, with their **Area setback**, and the line
+   corridors are subtracted from it, followed by any excluded terrain.
 
 Module tables are then placed only where they fit entirely inside what is left.
 See [How placement works](/docs/layout/how-placement-works).

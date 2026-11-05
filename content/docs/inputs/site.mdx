@@ -1,16 +1,16 @@
 ---
 title: Site parameters
-description: The plant-wide settings — perimeter road width, lightning arrester coverage, the capacity one control room serves, and transmission line corridors.
+description: The plant-wide settings — perimeter road width, lightning arrester coverage, the capacity one control room serves, line corridors and area setbacks.
 ---
 
 **Site Parameters** holds the settings that apply to the plant as a whole rather
 than to an individual table: how much ground is kept clear around the fence,
 whether lightning arresters are placed and how far apart, how much capacity one
 control room serves, and how wide a strip is cleared either side of a
-transmission line.
+line, and how far tables stay from an area.
 
-Two of them — the perimeter road width and the transmission line corridor —
-decide how much ground is available before a single table is placed. The rest
+Three of them — the perimeter road width, the line corridor and the area setback
+— decide how much ground is available before a single table is placed. The rest
 decide what equipment is then placed on the ground that remains.
 
 The card is the second one on the **Site** tab, between the Input Boundary File
@@ -28,7 +28,8 @@ card and the two keep-clear cards, Structures & Shadow and Topography.
 | **Place Lightning Arresters** | off | — | When on, arresters are placed on a coverage grid and the tables they overlap are cleared. |
 | **LA protection radius** | 100.0 m | 10.0–500.0 m | The area one arrester is taken to protect, and the spacing of the grid they sit on. Enabled only when arresters are on. |
 | **ICR Block** | 18.000 MWp | 0.1–500.0 MWp | The DC capacity one inverter control room serves. Sets how many control rooms each piece of land gets. |
-| **Transmission line corridor** | 15.0 m per side | 0.0–500.0 m | The setback applied to each side of a line feature, so the cleared strip is twice this figure. |
+| **Line corridor (each side)** | 15.0 m | 0.0–500.0 m | No tables within this distance of a line in the boundary file, so the cleared strip is twice this figure. |
+| **Area setback** | 0.0 m | 0.0–100.0 m | No tables within this distance of an area in the boundary file. At 0 tables can go up to its edge. |
 
 ## Perimeter road width
 
@@ -182,33 +183,43 @@ how to move one, is in [Inverter control rooms](/docs/layout/icr); the tables
 wired to each room, and the summary and exports per block, are in
 [ICR blocks](/docs/layout/icr-blocks).
 
-## Transmission line corridor
+## Line corridor
 
-A transmission line crossing the site is drawn in the boundary file as a
-**line**, not as a polygon, because it has no width of its own. This field
+A transmission line, canal or road crossing the site is drawn in the boundary
+file as a **line**, not as a polygon, because it has no width of its own. This field
 supplies the width: the setback is applied to **each side** of the line, so the
 **total cleared strip is twice** the value you enter. At the default of 15 m
 per side, a line clears a 30 m strip through the array.
 
-The same setback is applied to every line feature the boundary file carries —
-transmission lines, canals, drains and similar, but not a line named as a road,
-which is cleared to its own width — so a line drawn through the
-middle of a plot splits the array into two blocks with a clear corridor between
-them.
+A line drawn through the middle of a plot splits the array into two blocks with
+a clear corridor between them.
 
 Higher-voltage lines need more room. The application's own guidance is to raise
-the setback accordingly, for example **30 m per side for a 400 kV line**. Set
-it for the highest-voltage line on the site, or split the work into separate
-runs if the site carries lines of very different voltages, because there is one
-corridor width for the whole plant.
+the setback accordingly, for example **30 m per side for a 400 kV line**. For a
+road, enter half its width.
+
+Once a boundary file is loaded, each line gets **its own row** under this field,
+with its name and length, so a nala and a transmission line can have different
+corridors. Changing the common field moves every row still at the old value; a
+row you edited keeps its own.
 
 The corridor is subtracted from the usable area before any table is placed, so
 it costs capacity in the same way the perimeter road does — but unlike the road
 it also breaks the array up, which matters for cable routing and for cleaning
 robot runs.
 
-How to name and draw a line feature so it is recognised as a transmission line
-is in [Boundary file requirements](/docs/inputs/kmz-requirements).
+How to draw a line feature is in
+[Boundary file requirements](/docs/inputs/kmz-requirements).
+
+## Area setback
+
+An area in the boundary file, such as a pond, a building or a temple, keeps
+tables off its own ground. The **Area setback** keeps them a further distance
+away, for a bund, a clearance from a nala drawn as an area, or a maintenance
+strip. At the default of 0 m, tables can go up to the area's edge.
+
+Once a boundary file is loaded, each area gets **its own row** under this field,
+with its name and size, and the rows follow the common field in the same way.
 
 ## Where to go next
 
