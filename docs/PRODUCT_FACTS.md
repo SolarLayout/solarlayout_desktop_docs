@@ -3843,7 +3843,7 @@ Licensing* (`APP/help_dialog.py:16-511`). ⚠️ Its text is older than the inte
 |---|---|---|
 | ICR is 40 m × 14 m | `README.md`, `MP:255-256` comments, `CLAUDE.md`, F1 help | 10 × 4 m, from the reader's own fields (`icr_placer.py:8` now says so) |
 | MCR is 30 m × 10 m | F1 help, `MP:265-266` comments | 15 × 8 m |
-| LA footprint is 40 m × 14 m | `la_manager.py` docstring, `MP:369-370` comments | 30 × 7 m fixed tilt; 1 × 1 m SAT |
+| LA footprint is 40 m × 14 m | `la_manager.py` docstring, `MP:369-370` comments | The mast's pile, 0.3 × 0.3 m by default, on fixed tilt and trackers (§5.2) |
 | One ICR per 18 MWp is fixed | `README.md`, `icr_placer.py` | Default 18 MWp, reader-editable 0.1–500 |
 | Module default is 580 Wp | `MP:29` | UI ships 610 Wp |
 | Module gaps default to 0 m | `MP:42-43` | UI ships 0.020 m |
