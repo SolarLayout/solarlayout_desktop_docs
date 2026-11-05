@@ -1,278 +1,214 @@
 ---
 title: Lightning arresters
-description: How arresters are placed on a coverage grid, what each one clears from the layout, the settings that control the radius and the footprint, and where they show up.
+description: How arresters are placed on a coverage grid, the ground each mast keeps clear, the settings behind them, and where they show up.
 ---
 
 An LA — lightning arrester — is a mast that protects a circular area of ground
-around it against a direct strike. When you ask for them, the application
-places arresters across the plant on a grid sized so that every part of the
-layout falls inside at least one protected circle, then clears whatever module
-tables the arrester structure itself stands on.
+around it against a direct strike. When you ask for them, the application places
+masts across the plant on a grid sized so that every table and building falls
+inside at least one protected circle, then removes the tables and trackers the
+mast's pile or its shadow touches.
 
-Arresters are **off** by default. Nothing about the layout changes until you
-tick them on, and on a fixed-tilt plant turning them on reduces capacity —
-which is why the decision belongs to you rather than to a default.
+Arresters are **off** by default. Nothing about the layout changes until you tick
+them on, and turning them on reduces capacity on a fixed-tilt plant and on a
+tracker plant alike, which is why the decision belongs to you rather than to a
+default. The rules are the same for both mountings.
 
 ## Turning arresters on
 
-Both settings live on the **Site Parameters** card of the **Site** tab. They
-are read when you click **Generate Layout**; arresters are placed late in the
-run, after the module tables and the inverter control rooms are down and before
-the inverters and cables.
+Both settings live on the **Site Parameters** card of the **Site** tab. They are
+read when you click **Generate Layout**; arresters are placed late in the run,
+after the module tables and the inverter control rooms are down and before the
+inverters and cables.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Place Lightning Arresters** | off | — | Turns arrester placement on for the run. The radius field below stays greyed out until this is ticked. |
-| **LA protection radius** | 100.0 | 10.0–500.0 | The radius, in metres, of the circle a single arrester protects. It also sets the spacing of the grid the arresters sit on. |
+| **LA protection radius** | 100.0 | 10.0–500.0 | The radius, in metres, of the circle a single arrester protects. The grid the masts start from is spaced at 1.4 times this. |
 
 <Screenshot id="site-parameters-la-on" />
 
-See [Site parameters](/docs/inputs/site) for the rest of that card. Both the
-tick and the radius are kept in a project file.
+See [Site parameters](/docs/inputs/site) for the rest of that card. Both the tick
+and the radius are kept in a project file.
 
 ## What happens when arresters are off
 
 No arresters are placed, no ground is reserved for them, and module tables fill
 the whole usable area — the plant boundary shrunk inward by the perimeter road
-width, with obstructions and terrain exclusions subtracted. The Summary view's
-**Lightning arresters** row reads zero and the **Lightning arresters** chip does
-not appear under the view.
+width, with obstructions and terrain exclusions subtracted. The Summary view has
+no **Lightning arresters** row and the **Lightning arresters** chip does not
+appear under the view.
 
-You can still add arresters individually by hand. In Sketch Mode the **➕ LA**
-tool in the **PLANT OBJECTS** group drops one wherever you click, and it clears
-the tables under its footprint exactly as an automatic one does. Leaving Sketch
-Mode recomputes the plant's module count, capacity and arrester count, so the
-Summary view follows your edits. See [Sketch Mode](/docs/editing/sketch-mode).
+The design check **C-02** *Lightning protection designed* fails until arresters
+are placed. See [Design checks](/docs/reference/design-checks).
 
-## The coverage model
+## How the masts are placed
 
-This is the part worth understanding before you change anything, because every
-other consequence — how many arresters you get, how much capacity you lose,
-where the masts land — follows from it.
-
-Two rules define it:
-
-1. **Each arrester protects a circle** of the **LA protection radius**,
-   measured from the arrester's own centre.
-2. **Arresters sit on a square grid whose spacing equals that radius.** Not
-   twice the radius, not the widest spacing the geometry would tolerate — the
-   spacing *is* the radius, whatever radius you set.
-
-Because the spacing equals the radius, neighbouring circles overlap heavily and
-every point of the grid interior is comfortably inside at least one circle.
-
-### Why the spacing equals the radius
-
-The worst-served point inside a square grid cell is the centre of the cell —
-the point farthest from all four arresters around it. For a grid whose spacing
-equals the radius, that worst-case gap works out at the radius × √2 ⁄ 2, or
-about **0.707** of the radius. It is inside the protected circle with roughly
-**29 %** of the radius still in hand, and that margin is the minimum overlap
-between neighbouring circles anywhere on the grid.
-
-The margin is the whole point. A wider grid would still cover the
-cell centres on paper, but only just, and coverage would then depend on the
-grid landing neatly on the site, on the boundary not clipping positions away,
-and on the radius you typed being achieved in practice by the mast you actually
-build. Setting the spacing equal to the radius is the conservative choice: the
-circles overlap rather than meet, so the protection survives a ragged edge and
-a dropped position.
-
-### Which grid positions are kept
-
-Only grid positions whose centre lies **inside the usable area** are kept.
-An arrester is therefore never placed on the perimeter road, in a water body,
-inside a transmission line or canal corridor, or on ground excluded by the
-slope limits. The consequence is visible on the plot: the arrester grid is
-regular across the middle of the plant and ragged wherever the boundary or an
-obstruction cuts into it.
-
-### Completing the coverage
-
-Dropping positions at the edges would leave outlying tables unprotected, so a
-second pass fixes it. Every table is measured against every arrester already
-placed. Any table whose centre is **farther than the protection radius from
-every arrester** gets an extra arrester, placed at the nearest valid position
-to it.
-
-Coverage is therefore *completed* rather than left with a hole. On a compact
-rectangular site the second pass adds nothing. On a long, thin or awkwardly
-notched site it adds the handful of arresters the regular grid could not reach,
-and those are the ones you will see sitting off the grid lines.
-
-<Screenshot id="arresters" />
-
-## The footprint, and what it clears
-
-The circle is the protection. The footprint is the physical structure, and it
-differs by mounting type — which matters, because on one of the two it costs
-you modules.
-
-<Tabs items={["Fixed Tilt", "Single Axis Tracker"]}>
-<Tab value="Fixed Tilt">
-
-The arrester occupies a rectangle of **30 m east–west × 7 m north–south**. Any
-MMS table overlapping that rectangle is removed, and the plant's module count
-and DC capacity are recomputed afterwards from what survives.
-
-So on a fixed-tilt plant, arresters cost capacity. How much depends on how many
-positions the grid produces, which depends on the protection radius and the
-size and shape of the site. Generate once without arresters and once with them,
-and compare the **DC capacity (MWp)** row of the Summary view to see the exact
-figure for your site rather than an estimate.
-
-<Screenshot id="arresters-detail" />
-
-</Tab>
-<Tab value="Single Axis Tracker">
-
-The arrester is drawn as a **1 m × 1 m** square pole marker, and **no tracker
-units are removed**.
-
-Each grid position's east–west coordinate is snapped to the centre of the
-nearest gap between tracker columns, so the pole lands in the service gap
-rather than on a torque tube. The grid spacing still follows the protection
-radius, so coverage is unchanged; only the mast's east–west position moves, by
-at most half a tracker pitch.
-
-Capacity is therefore the same with arresters on as with them off.
-
-<Screenshot id="arresters-tracker" />
-
-</Tab>
-</Tabs>
-
-<Callout type="warn">
-Because arresters clear tables on a fixed-tilt plant and clear nothing on a
-tracker plant, a capacity comparison between the two mounting types is not
-like-for-like unless arresters are set the same way in both runs.
-</Callout>
-
-## Raising or lowering the protection radius
-
-The radius does two jobs at once — it sizes the protected circle *and* the grid
-spacing — so changing it changes the arrester count more than you might expect.
-
-| Change | Arresters placed | Overlap between circles | Tables cleared (fixed tilt) |
-| --- | --- | --- | --- |
-| **Raise** the radius | Fewer | Less | Fewer |
-| **Lower** the radius | More | More | More |
-
-Two things to hold in mind:
-
-- The grid spacing follows the radius in both directions, so the number of
-  positions changes with the *area* of a grid cell, not with its side. A modest
-  change to the radius moves the arrester count noticeably.
-- The radius is a claim about the mast you will build. Raising it to thin out
-  the grid only reduces cost if the installed arrester genuinely protects that
-  far. The application takes the number you give it and does not check it
-  against a protection standard.
-
-## Arrester height and pile
-
-Two further arrester fields sit on the **Structures & Shadow (keep-clear)**
-card of the Site tab, alongside the building footprints:
-
-| Field | Default | Range | Unit |
-| --- | --- | --- | --- |
-| **LA** height | 9.0 | 0.0–100.0 | m |
-| **LA** pile Ø | 0.30 | 0.0–5.0 | m |
-
-**Neither field affects the design.** The height does not size the footprint,
-cast a shadow or clear a table; the pile diameter does not reach the pile count
-or the materials list. Both are saved with the project, printed among the input
-parameters of the Word report, and — like any other input — changing one
-[marks the results out of date](/docs/workspace/out-of-date-results) until you
-generate again. Enter the mast you intend to
-build, and carry the real structural figures in your structural and civil
-documents.
-
-The arrester is also **not** one of the structures whose shadow clears tables.
-The **Clear tables in shadows** option on the same card names the ICR, the
-MCR and placed objects, and nothing else — so a taller mast never costs you a
-module. What clears tables is the arrester's own footprint, above. See
-[Structures and shadow](/docs/inputs/structures-and-shadow) for the shadow
-window and what it does.
-
-## Reading arresters on the plot and in the outputs
-
-- **On the plot.** The **Lightning arresters** row of the **Layers ▾** popover
-  is **OFF** by default, even on a run that placed them — switch it on to see
-  the arrester rectangles, their labels and their protection circles, which are
-  drawn orange-red. See [Views](/docs/workspace/views) for the popover.
-- **In the Summary view.** The **Lightning arresters** row reports the count
-  for each plant, with a Total column on a multi-plot site, and the
-  **Lightning arresters** chip under every view appears once some are placed.
-  Because arresters are placed after the tables, the module and capacity rows
-  already account for the tables the arresters cleared.
-- **On the report drawing.** The site layout plan in the Word report — and the
-  PDF with piles — **always draws the arresters and their labels, and never the
-  protection circles**, whatever the Layers row is set to. The on-screen state
-  is restored after the export. See
-  [The project report](/docs/exports/project-report).
-- **In the CAD drawing.** The arrester symbols are written to their own `LA`
-  layer, present only when arresters were actually placed. See
-  [CAD export](/docs/exports/dxf).
-- **In the Google Earth file.** Arresters are exported with the rest of the
-  plant.
-
-## Arresters and cleaning robots
-
-An arrester footprint on a fixed-tilt plant interrupts the run of tables a
-cleaning robot drives along. The robot sizing tool lists every gap too wide for
-a standard inter-table bridge, separating gaps blocked by equipment —
-arresters, buildings, obstructions — from gaps in open ground, so you can
-decide which to bridge. See
-[Robotic module cleaning](/docs/simulation/robotic-cleaning).
-
-## Earthing the arresters
-
-The earth pits under each arrester are sized in **Earthing Design** (on the
-**Tools** menu and in the **Studies** card), not here. It gives every arrester
-a ring of earth pits — at least **Min. pits per LA**, three by default — and
-adds pits until the ring meets the **LA earth pit** target, 10 Ω by default,
-following IEC 62305-3 (type A arrangement). The strip that joins the ring is
-sized there too, and its bill of quantities carries a test joint for each
-arrester's down conductor. See [Earthing design](/docs/simulation/earthing).
-
-## Placing an arrester by hand
-
-Use this to add protection the grid did not reach, or to place arresters on a
-plant generated with the option off.
+Four steps, in this order, on every run with the option on.
 
 <Steps>
 <Step>
-### Generate the layout
+### Lay the grid
 
-Hand placement acts on an existing layout, so generate first.
+Grid positions are laid out on a square grid centred on the usable area, with a
+spacing of **1.4 times the protection radius**: 140 m at the default 100 m.
+
+The worst-served point in a grid square is its centre. At this spacing that point
+is the spacing ÷ √2 from the masts around it, or **0.99 of the radius**, so the
+circles just cover the square with a little to spare.
 </Step>
 
 <Step>
-### Switch Sketch Mode on
+### Move each position into a gap
 
-Click **Sketch** in the Layout view's tools. The left column changes to the
-tool palette under an orange **● Sketch Mode** banner.
+A mast stands in the ground between structures, not on one. On a fixed-tilt plant
+each position moves north or south to the nearest gap between rows. On a tracker
+plant it moves east or west to the nearest gap between columns.
+
+The moved position is kept only if it lies **inside the usable area**, so a mast
+is never placed on the perimeter road, in a water body, inside a line corridor or
+on excluded ground. Two positions that land on the same spot count once. The
+result is regular across the middle of the plant and ragged wherever the boundary
+or an obstruction cuts into it.
 </Step>
 
 <Step>
-### Pick ➕ LA and click a position
+### Complete the coverage
 
-**➕ LA** is in the **PLANT OBJECTS** group. Each click places one arrester and
-clears the tables under its footprint.
+Dropping positions at the edges would leave outlying equipment unprotected, so a
+second pass measures every table, ICR, main control room and unit substation
+against the masts already placed. Anything whose centre is **farther than the
+radius from every mast** gets one more, in the nearest gap.
+
+On a long, thin or awkwardly notched site this pass adds the masts the regular
+grid could not reach, and those are the ones you will see off the grid lines.
 </Step>
 
 <Step>
-### Leave Sketch Mode
+### Clear the keep-clear
 
-Click **Exit Sketch Mode — apply edits, recalc totals** in the banner. The
-plant totals — modules, capacity and the arrester count — are recomputed on
-the way out, so the Summary view and the chips match what is on the plot.
+Every table or tracker unit touched by a mast's pile, or by its shadow, is removed.
+The next section covers what that means.
 </Step>
 </Steps>
 
-A hand-placed arrester does not extend the automatic coverage check. The grid
-and the completion pass run during **Generate Layout**, so anything you place
-afterwards is yours to position.
+<Screenshot id="arrester-coverage" />
+
+## The keep-clear, and what it costs
+
+The circle is the protection. The keep-clear is the ground the mast itself takes
+from the plant, and it has two parts:
+
+- **The pile.** A square of the **LA** pile Ø, and never less than 0.2 m.
+- **The shadow.** The mast's shadow swept over the **Shadow Window** on every day
+  of the year. It reaches further the taller the mast and the wider the window.
+
+A table or a tracker unit touched by either is removed whole. The plant's module
+count and DC capacity are recomputed from what survives, and the land account
+books the ground as arrester keep-clear. Without a known latitude, or with the
+height at 0, only the pile clears.
+
+<Screenshot id="arrester-keep-clear" />
+
+To see the figure for your own site, generate once without arresters and once with
+them and compare the **DC capacity (MWp)** row of the Summary view. On the bundled
+sample site at the defaults, a fixed-tilt plant of 54.28 MWp and 1,589 tables takes
+26 masts, 17 from the grid and 9 from the coverage pass, and they remove 89 tables,
+or 3.04 MWp. The **Lightning arresters** row of the [Workings](/docs/workspace/workings)
+view gives the count and capacity removed on your own plant.
+
+On a tracker plant the masts stand in the gaps between columns, and the same rule
+removes any unit a pile or shadow touches.
+
+<Screenshot id="arresters-tracker" />
+
+<Callout type="warn">
+Arresters clear tables, so a capacity comparison between two designs is not
+like-for-like unless arresters are set the same way in both runs.
+</Callout>
+
+## The settings behind the keep-clear
+
+Two further arrester fields sit on the **Structures & Shadow (keep-clear)** card of
+the Site tab, alongside the building footprints:
+
+| Field | Default | Range | Unit | What it does |
+| --- | --- | --- | --- | --- |
+| **LA** height | 9.0 | 0.0–100.0 | m | Sets the mast's shadow, and prints in the arrester's line of the bill of materials. At 0 the mast casts no shadow |
+| **LA** pile Ø | 0.30 | 0.0–5.0 | m | Sets the mast's footprint on the ground |
+
+The **Shadow Window** on the same card, 9.0 to 15.0 solar hours by default, sets the
+span of each day the shadow is swept over. Changing any of these fields
+[marks the layout out of date](/docs/workspace/out-of-date-results) until you
+generate again. See [Structures and shadow](/docs/inputs/structures-and-shadow).
+
+## Raising or lowering the protection radius
+
+The radius sizes the protected circle and spaces the grid, so changing it changes
+the mast count more than you might expect.
+
+| Change | Masts placed | Tables removed |
+| --- | --- | --- |
+| **Raise** the radius | Fewer | Fewer |
+| **Lower** the radius | More | More |
+
+Two things to hold in mind:
+
+- The grid spacing follows the radius in both directions, so the number of positions
+  changes with the *area* of a grid square, not with its side. Doubling the radius
+  gives about a quarter of the grid positions.
+- The radius is a claim about the mast you will build. Raising it to thin out the
+  grid only reduces cost if the installed arrester genuinely protects that far. The
+  application takes the number you give it and does not check it against a
+  protection standard.
+
+## Reading arresters on the plot and in the outputs
+
+- **On the plot.** The masts and their *LA-n* labels draw with the **Plant layout**
+  row of the **Layers ▾** popover. **Arrester coverage**, off by default, adds the
+  protection circles in orange-red. **Shadows (keep-clear)**, off by default, shows
+  the ground kept clear. See [Views](/docs/workspace/views) for the popover.
+- **In the Summary view.** The **Lightning arresters** row is in the Electrical group
+  when the design has arresters, with a Total column on a multi-plot site, and the
+  **Lightning arresters** chip under every view appears once some are placed. Because
+  arresters are placed after the tables, the module and capacity rows already account
+  for the tables they removed.
+- **In the design checks.** **C-02** *Lightning protection designed* reads whether
+  they are placed, and **E-09** *Tables inside arrester cover* counts any table left
+  outside a circle against a limit of 0 tables, which you can change in
+  [Advanced settings](/docs/workspace/advanced-settings).
+- **In the bill of materials.** The arrester's line carries the mast height. See
+  [Bill of materials](/docs/bom/overview).
+- **In the KMZ.** Arresters are labelled points in a folder of their own, with the
+  protection radii hidden. See
+  [Schedules and KMZ](/docs/exports/schedules-and-kmz).
+
+## Arresters and cleaning robots
+
+A mast's keep-clear interrupts the run of tables a cleaning robot drives along. The
+robot sizing tool lists every gap too wide for a standard bridge between tables, and
+separates the gaps at equipment from the others, so you can decide which to bridge.
+See [Robotic module cleaning](/docs/simulation/robotic-cleaning).
+
+## Earthing the arresters
+
+The earth pits under each arrester are sized in **Earthing Design** (on the **Tools**
+menu and in the **Studies** card), not here. It gives every arrester a ring of at
+least **Pits per LA** earth pits, and adds pits until the ring meets the **LA earth
+pit** target, 10 Ω by default, following IEC 62305-3 (type A arrangement). Its bill of
+quantities carries a test joint for each arrester. See
+[Earthing design](/docs/simulation/earthing).
+
+## An arrester placed by hand
+
+Sketch Mode's **➕ LA** tool, in the **PLANT OBJECTS** group, stands a mast at the point
+you click, not moved to a gap, and removes the tables under its pile and shadow. See
+[Sketch Mode](/docs/editing/sketch-mode).
+
+The plant's arrester design comes from **Place Lightning Arresters** and **Generate
+Layout**: the grid, the coverage pass and the checks above all work from it. To change
+how many masts the plant carries and where they fall, change the radius and generate
+again.
 
 ## Where to go next
 
@@ -283,6 +219,11 @@ afterwards is yours to position.
     description="The perimeter road, the arrester option and the capacity block, field by field"
   />
   <Card
+    title="Structures and shadow"
+    href="/docs/inputs/structures-and-shadow"
+    description="The mast's height and pile, and the Shadow Window its keep-clear is swept over"
+  />
+  <Card
     title="Earthing design"
     href="/docs/simulation/earthing"
     description="Earth pits for every arrester, conductor sizes and the earthing BoQ"
@@ -291,10 +232,5 @@ afterwards is yours to position.
     title="Obstructions"
     href="/docs/layout/obstructions"
     description="Every kind of ground kept clear of modules, and how the usable area is built"
-  />
-  <Card
-    title="Sketch Mode"
-    href="/docs/editing/sketch-mode"
-    description="Placing, moving and deleting equipment on a generated layout"
   />
 </Cards>

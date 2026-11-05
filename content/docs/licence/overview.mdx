@@ -27,10 +27,13 @@ matters once you ask it to generate a layout or hand you a result.
 | Action | Needs active access |
 | --- | --- |
 | **Generate Layout** | Yes |
-| The exports on the **Export ▾** menu — KMZ, DXF, ICR-block DXF and PDF, cable schedule, the report, the PDF with piles | Yes |
-| The exports elsewhere — **Export TMY data CSV** on the Yield tab, the SLD and BOM exports, the pile editor's **Export to Excel…**, an ICR block window's **PDF…** | Yes |
+| The **Export ▾** menu — opening **Export deliverables…**, **BOM · Excel workbook…**, **BOM · PDF…**, **Earthing layout (DXF)…** and **Export Image (PNG)** | Yes |
+| The exports elsewhere — **Export TMY data CSV** on the Yield tab, the SLD's **PDF…** and **DWG…**, the Earthing Design window's exports | Yes |
+| **Robot count from DXF…**, to open it and again for its report | Yes |
 | Filing a support ticket from the **Support** button | Yes |
-| Reading and changing every input, loading a boundary file, opening a project | No |
+| Reading and changing every input, loading a boundary file | No |
+| Saving and opening a project | No |
+| The clean KMZ copy of a boundary file, a BOM profile file, a company file, and **Copy** to the clipboard | No |
 | The **SLD** and **BOM** views | No |
 
 Because almost everything downstream is computed *from* a generated layout, a
@@ -66,7 +69,8 @@ The buttons depend on the state:
 - While active: **Access Details**, which opens the same web page as
   activation for this device, and **Support cases**, which opens your list of
   support cases.
-- While not active: **Get Free Access** and **Contact Us**.
+- On a device with no access yet: **Get Free Access** and **Contact Us**.
+- When access has expired or been revoked: use **Contact Us**.
 - Always: **Refresh** and **Close**.
 
 The **Device ID** sits behind a **Having trouble?** disclosure at the bottom:
@@ -90,12 +94,12 @@ walks through the full flow.
 
 ## Working offline
 
-When this device cannot reach the server, a good check it already made is
-cached, and the application keeps working under that cached status for up to
-**3 days** before it needs to check in again; the ribbon chip reads
+When this device cannot reach the server, a good check of active access it already
+made is cached, and the application keeps working for up to **3 days** before it needs
+to check in again; the ribbon chip reads
 **● Active — until &lt;date&gt; (offline)** meanwhile. An active result is
 treated as fresh for 5 minutes, so the application does not call the server on
-every check. If it cannot reach the server and has no usable cached check, the
+every check. If it cannot reach the server and has no cached active check, the
 window reads **Access status unavailable**.
 
 ## A second device
@@ -118,8 +122,8 @@ Two things to know:
   different email, the page reads **This device is already in use** — sign in
   with that account instead, or contact SolarLayout.
 
-An expired or revoked account may still activate its first device; the device
-simply shows that status.
+Activating a first device on an expired or revoked account does not restore
+access: the device shows that status. Use **Contact Us** instead.
 
 ## Updates, reinstalls, and other accounts
 

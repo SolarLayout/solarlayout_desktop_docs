@@ -1,0 +1,162 @@
+---
+title: Schedules and KMZ
+description: The package's schedules workbook, bill of materials, Google Earth file, piles.csv and manifest - what each holds, column by column.
+---
+
+Beside the drawings and the report, the package writes the design as rows and as a
+map: **S1**, the schedules workbook; **S2**, the bill of materials; **K1**, the KMZ
+for Google Earth; and two small files, `piles.csv` and `manifest.json`. Each is a
+row in [Export deliverables](/docs/exports/deliverables), written from the same
+snapshot as the drawings.
+
+## S1, the schedules workbook
+
+One workbook for the plant, with eight sheets, always all present. Each has a
+frozen header and an autofilter, with numbers as numbers and no merged cells, so
+it sorts and filters as it opens.
+
+| Sheet | Columns |
+| --- | --- |
+| **README** | The project, code, client, company, boundary file and coordinates; then a description of each sheet and column, and an empty sheet's reason |
+| **Blocks** | Block, Plot, ICR, Tables, Strings, Modules, DC (kWp), Devices, ACCBs, IDTs, IDT rating (kVA), Feeds, Feeder runs, Feeder length (m) |
+| **Tables** | Table, Plot, Block, Device, Unit, Strings, Modules, Easting (m), Northing (m), Latitude, Longitude, Piles |
+| **Inverters** | Device, Kind, Plot, Block, ICR, ACCB, Tables, Strings, DC (kWp), AC (kVA), DC:AC, Feeder circuit, Feeder length (m), Feeder size (mm²), Feeder drop (%), Flag |
+| **Cables** | Circuit, Class, Plot, Block, From, To, Strings, Cores, Runs, Size (mm²), Length (m), Cable (m), Before Y (m), Before Y size (mm²), Current (A), Drop (%), Flag |
+| **Trenches** | Plot, Class, Laying, Routes, Drawn by hand, Route length (m), Trench length (m), DC drawn sample |
+| **Piles** | Plot, Block, Unit, Tables, Piles per unit, Piles |
+| **Area account** | Plot, Item, Area (m²), Area (ha), Net (m²), Length (m), Count, Note |
+
+The **Cables** sheet's classes are DC string, AC feeder, DC trunk, LV to IDT and MV.
+How the routes and sizes are worked out is on [Cable routing](/docs/layout/cables).
+
+The **Area account** has rows per plot and then for the plant: gross site, each
+exclusion, layout area, usable for tables, under tables, coverage, fence and
+closure.
+
+### An empty sheet
+
+A sheet with nothing to list keeps its header, and the README gives its reason.
+
+| Reason | What to do |
+| --- | --- |
+| *"No cable routes were drawn: tick Calculate cables and Generate"* | Turn on **Calculate cables** on the Electrical tab and generate again |
+| *"No table carries a pile pattern."* | Define a pattern. See [Piles](/docs/editing/piles) |
+| *"The plant has no ICR blocks."* | |
+| *"The plant has no cable circuits."* | |
+| *"The plant has no inverters or SMBs."* | |
+| *"The plant has no tables."* | |
+
+## S2, the bill of materials
+
+S2 is the BOM's own workbook under its package name, written from the BOM as it
+stands at that moment. Its lines, its **Block-wise** sheet and its **Open items**
+sheet are described on [Bill of materials](/docs/bom/overview). An issued package
+adds Revision and Issued rows to its header.
+
+The **Check** column on the **Block-wise** sheet is a sum check, *"✓ adds up"*, and
+not a design check. No design check reaches this file.
+
+## K1, the KMZ
+
+K1 writes the plant at its real location for Google Earth, organised into folders
+you can switch on and off. It has two jobs: handing the design to somebody without
+CAD, such as a landowner, a client's commercial team or a contractor walking the
+site; and your own check of the plant against real ground.
+
+| Folder | Contents |
+| --- | --- |
+| **Site** | A polygon per plot |
+| **Perimeter road** | The road band |
+| **Exclusions** | Water, Obstacle, Transmission-line corridor, Road, Steep ground and Drawn obstruction, as far as they are present |
+| **Blocks** | Each block's outline, its ICR, its tables and its devices |
+| The MCR, USSs and handover point | Each where the design has one |
+| **Arresters** | Labelled points, with their protection radii hidden |
+| MV routes | *MV route n* |
+
+The file's name in Google Earth reads like *"AUD · K1 · 2026-11-05"*, and its
+pop-up gives the plant's DC MWp, AC MW, Tables (full + half), Modules, Strings,
+Inverters, ICRs, Arresters and Area ha.
+
+Inside **Blocks**, the placemark *B01* opens a pop-up with the block's Tables (full +
+half), Modules, Strings, DC MWp, Inverters, ACCBs, AC MVA, DC:AC, IDT kVA and Area ha.
+*B01-ICR* marks its control room. A folder *B01* holds **Tables** and each device as a
+labelled point such as *B01-INV-01*. **Tables** is one geometry with no per-table
+pop-up, and it draws once you are close enough to the block.
+
+### What the KMZ leaves out
+
+DC and AC routes, piles, street lights and terrain contours are not in the file. Take
+the routes and the piles from the [drawing set](/docs/exports/drawing-set) and the
+schedules. Ground excluded for slope does appear, as Steep ground.
+
+### When it can't go
+
+A site continued as **Layout only** has no location, so the **KMZ** row is unticked
+and disabled: *"The site's location is unknown (layout only), so a KMZ would put the
+plant in the wrong place."* To write one, pick the boundary file again, say where the
+drawing sits in the **Site reference** window, and generate again. See
+[CAD boundaries](/docs/inputs/cad-boundary). A plant with no block grouping has no KMZ
+either.
+
+### Checking the design against real ground
+
+Your boundary file is a claim about the site, and the imagery is a record of it.
+Compare them on every project, because it catches errors nothing else catches.
+
+1. **Is the plant where you expect it?** A boundary file with a coordinate problem
+   produces a correct layout in the wrong place. Over imagery this is obvious at once.
+2. **Do the exclusions match the ground?** A pond that has moved, a canal that was
+   never drawn or a track worn across the site shows on the imagery and may not be in
+   your file. Each difference is a table that should not have been placed, or ground
+   given away for nothing.
+3. **Is the boundary the parcel you control?** Field boundaries and access tracks are
+   usually visible. Resolve a plant boundary that crosses one before you issue.
+4. **Is access plausible?** Roads, gates and the route heavy equipment must take are on
+   the imagery and not in the layout.
+
+Anything that fails these checks is a problem in the input. Fix the boundary file and
+generate again. See [Boundary file requirements](/docs/inputs/kmz-requirements).
+
+The tick boxes in Google Earth's places panel make this easier: switch the tables off
+and the exclusions stay, so you see the ground the layout kept clear.
+
+<Callout type="info">
+**Satellite**, among the Layout view's tools, makes the same comparison inside the
+application. It needs a site whose location is known, and an internet connection.
+</Callout>
+
+Imagery has a date and a position error. Treat a small offset between your boundary
+and a feature on the imagery as a question to investigate, not as proof that either is
+wrong. A CAD or image boundary placed by latitude and longitude lands where you typed,
+so check that point first. The file is a map and not a drawing: take dimensions from
+the [drawing set](/docs/exports/drawing-set).
+
+## The small files
+
+### piles.csv
+
+Written beside the drawing set when the D4 pile layout sheets exist. It has one row per
+pile, in UTF-8.
+
+| Column | Holds |
+| --- | --- |
+| `pile_id` | The pile's ID, such as `P1-B01-T0001-P01` |
+| `table`, `block`, `plot` | Where it belongs |
+| `easting_m`, `northing_m` | Its position in the drawing's coordinates, to the millimetre |
+| `latitude`, `longitude` | To 7 decimal places; blank when the site's location is unknown |
+
+### manifest.json
+
+Always written. It records the snapshot's ID, the application version, when the package
+was created, the revision, the purpose, the issue's details, and a SHA-256 hash of every
+other file in the folder, `piles.csv` included. Use it to confirm that a file a recipient
+holds is the file you sent. It carries no check results.
+
+## Where to go next
+
+<Cards>
+  <Card title="Export deliverables" href="/docs/exports/deliverables" description="Choosing which of these to write" />
+  <Card title="Bill of materials" href="/docs/bom/overview" description="The builder behind S2" />
+  <Card title="Piles" href="/docs/editing/piles" description="The pattern behind piles.csv" />
+  <Card title="Multi-plot sites" href="/docs/layout/multi-plot" description="How plots appear in these files" />
+</Cards>

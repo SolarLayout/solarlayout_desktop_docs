@@ -1,0 +1,412 @@
+---
+title: Line reference
+description: Every entry in the built-in BOM profile, by category, with its unit, how it is counted and when it applies, and what feeds the quantities.
+---
+
+This page lists every entry in **SolarLayout standard**, the built-in
+[BOM profile](/docs/bom/profiles), in the order of the
+[BOM view](/docs/bom/overview). An entry gives a line when it applies to your design
+and the layout has something to count. A company or client profile starts from this
+list and changes or adds to it.
+
+## Reading the tables
+
+**How it is counted:**
+
+| Wording | Meaning | Source in the BOM view |
+| --- | --- | --- |
+| Measured | Counted or measured from the design | **Measured** |
+| A number per something | That factor times the count. Change it in **Factor** | **Rule** |
+| Factor you enter | The rule is set and the factor is blank, so the line starts as **! Needs factor** | **Rule** |
+| You enter it | The line starts as **! Needs quantity** | **Manual** |
+
+**When and how:**
+
+| Wording | Meaning |
+| --- | --- |
+| — | Applies to every design, with a line whenever the layout has any to count |
+| A design condition | The entry applies only then. Otherwise it is under **Not for this design** on the **Profile** card |
+| Works | Installation or civil work rather than a supply item |
+| Spare | The allowance follows **Spare for discrete consumables**, 5 % by default |
+| Off by default | Listed under **Switched off** on the **Profile** card, with no line in the BOM |
+
+Units are as the application prints them: Nos, set, m, t, m³, LS (lump sum) and MWp.
+The abbreviations used are MMS (module mounting structure), SMB (string monitoring
+box), ACCB (AC combiner box), ICR (inverter control room), IDT (inverter duty
+transformer), MCR (main control room) and USS (unit substation).
+
+## PV modules
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| PV module | Nos | Measured | — |
+
+## Inverters & DC collection
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| String inverter | Nos | Measured | String inverter plants |
+| Central inverter | Nos | Measured | Central inverter plants |
+| String monitoring box (SMB) | Nos | Measured | Central inverter plants |
+| Inverter mounting stand | Nos | 1 per string inverter | String inverter plants |
+
+## Structure & foundations
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| MMS table (supply package) | Nos | Measured | Fixed tilt |
+| Module mounting structure steel | t | Factor you enter, kg per table | Fixed tilt · Off by default |
+| Tracker (supply package) | set | Measured | Trackers |
+| MMS pile | Nos | Measured | Fixed tilt |
+| MMS pile · tracker posts, when not in the OEM's package | Nos | Measured | Trackers · Off by default |
+| Tracker control system | LS | Measured | Trackers |
+| Module mounting bolt set | set | 4 per module | Spare · Off by default |
+| Module earthing washer | Nos | 4 per module | Spare · Off by default |
+| MMS fasteners | t | Factor you enter, kg per table | Fixed tilt · Off by default |
+
+## DC cabling & connectors
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| DC solar cable | m | Measured | — |
+| DC connector, male | Nos | 1 per string | Spare |
+| DC connector, female | Nos | 1 per string | Spare |
+| DC connector set with inline fuse | set | 1 per string | String fuses inline, or inline and inside the device · Spare |
+| Y connector set | set | 1 per string pair | Y harness, with string fuses inside the device or none · Spare |
+| Y connector set with fused arms | set | 1 per string pair | Y harness, with string fuses inline, or inline and inside the device · Spare |
+| DC trunk cable (SMB → central inverter) | m | Measured | Central inverter plants |
+| Cable gland, single compression | Nos | 1 per conductor end | Central inverter plants · Spare |
+| Cable lug, copper | Nos | 1 per conductor end | Central inverter plants · Spare |
+| DC cable lug, bimetallic | Nos | 1 per conductor end | Central inverter plants · Spare |
+| HDPE DWC conduit · for DC cables | m | Measured | DC string cable in conduit, buried or above ground |
+| Cable tie · DC cable along the tables and trackers | Nos | Measured | Spare |
+| Conduit fitting · coupler | Nos | You enter it | DC string cable in conduit, buried or above ground · Spare |
+| Conduit fitting · T joint | Nos | You enter it | DC string cable in conduit, buried or above ground · Spare |
+| Conduit fitting · L joint | Nos | You enter it | DC string cable in conduit, buried or above ground · Spare |
+| Conduit fitting · 3-way | Nos | You enter it | DC string cable in conduit, buried or above ground · Spare |
+| Conduit fitting · 4-way | Nos | You enter it | DC string cable in conduit, buried or above ground · Spare |
+| UPVC clamp · above-ground laying | Nos | Measured | DC string cable above ground · Spare |
+| UPVC clamp · above-ground laying of LV AC cable | Nos | Measured | AC cable above ground · Spare |
+
+## LV AC system
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| AC combiner box (ACCB) | Nos | Measured | String inverter plants |
+| LV AC cable | m | Measured | String inverter plants |
+| Cable gland | Nos | 1 per cable end | String inverter plants · Spare |
+| Cable lug, bimetallic · source end | Nos | 3 per source-end cable end | String inverter plants · Spare |
+| Cable lug, aluminium · receiving end | Nos | 3 per receiving-end cable end | String inverter plants · Spare |
+| LV AC cable · ACCB / central inverter → transformer | m | Measured | — |
+| Cable gland · ACCB / central inverter → transformer | Nos | 1 per cable end | Spare |
+| Cable lug, bimetallic · ACCB / central inverter → transformer, at the ACCB / inverter | Nos | 3 per source-end cable end | Spare |
+| Cable lug, aluminium · ACCB / central inverter → transformer, at the transformer | Nos | 3 per receiving-end cable end | Spare |
+| Ladder cable tray · at the ICR | m | Factor you enter, per ICR | — |
+| Cable tray canopy and support · at the ICR | m | Factor you enter, per ICR | — |
+| Ladder cable tray · for MV cable | m | Measured | MV cable on cable tray |
+
+## MV system
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| Inverter duty transformer | Nos | Measured | — |
+| MV cable | m | Measured | — |
+| MV termination kit · at the IDT | Nos | 1 per cable end | — |
+| MV termination kit · at the MCR | Nos | 1 per cable end | Grid connection on this site |
+| MV termination kit · at the handover point | Nos | 1 per cable end | Grid connection by others |
+| Power transformer | Nos | Measured | — |
+| MV breaker panel (ICOG) | Nos | 1 per ICR | — |
+| HT panel · at the MCR | Nos | 1 per MCR | — |
+| HT panel · at a USS | Nos | 1 per USS | — |
+| HT feeder panel · for the auxiliary transformer | Nos | 1 per MCR | — |
+| MV straight-through joint kit | Nos | 1 per joint | — |
+| Metering yard | set | You enter it | — |
+
+## Earthing & lightning protection
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| Lightning arrester, ESE | Nos | Measured | — |
+| Earth pit · for arresters | Nos | Measured | — |
+| Earthing strip · for arresters | m | 50 per arrester | — |
+| Earthing cable · for string inverters | m | 15 per string inverter | String inverter plants |
+| Earth pit · for string inverters | Nos | Measured | String inverter plants |
+| Earth pit · for transformers (body) | Nos | Measured | — |
+| Earth pit · for other equipment at the ICR | Nos | Measured | — |
+| Earth pit · for other equipment at the MCR | Nos | Measured | — |
+| Earth pit · for the USSs | Nos | Measured | — |
+| Earth pit · to meet the plant grid target | Nos | Measured | — |
+| Earth pit · for the fence, poles and other equipment | Nos | Measured | — |
+| Earthing strip · main earthing ring | m | Measured | — |
+| Earth pit · for the main earthing ring | Nos | Measured | — |
+| Earthing strip · array mesh | m | Measured | — |
+| Earthing strip · in the cable trenches | m | Measured | — |
+| Earthing strip · round the ICRs, MCR and USSs | m | Measured | Grid connection on this site |
+| Earthing strip · round the ICRs | m | Measured | Grid connection by others |
+| Earthing strip · for the fence, poles and other equipment | m | Measured | — |
+| Earthing strip · copper | m | You enter it | — |
+| Earthing bolt set · array mesh jumpers | set | 2 per jumper or bridge | Spare |
+| Earthing cable lug · for string inverters | Nos | 4 per string inverter | String inverter plants · Spare |
+| Earthing cable · for central inverters | m | Factor you enter, per central inverter | Central inverter plants |
+| Earthing cable lug · for central inverters | Nos | Factor you enter, per central inverter | Central inverter plants · Spare |
+| Earthing cable · for SACU, PLC box and SMB | m | You enter it | — |
+| Earthing cable lug · for SACU, PLC box and SMB | Nos | You enter it | Spare |
+
+## Communication, SCADA & security
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| SACU (smart array control unit) | Nos | 1 per ICR block | Power-line communication |
+| CCTV system | set | You enter it | — |
+| Weather monitoring station | set | 1 at the MCR | Grid connection on this site |
+| Weather monitoring station · on site | set | 1 on site | Grid connection by others |
+| PLC box | Nos | 1 per ICR | Power-line communication |
+| RTU panel | set | 1 per ICR | — |
+| Modem for remote monitoring | set | You enter it | — |
+| RS485 cable | m | Measured | RS485 communication |
+| RS485 cable · to the weather stations | m | 50 per weather station | — |
+| CAT-6 cable | m | You enter it | — |
+| Optical fibre cable | m | Measured | — |
+| Conduit for communication cable | m | Measured | — |
+| Conduit for communication cable · for the weather station links | m | 50 per weather station | — |
+| Communication cable termination · RS485 | Nos | 8 per cable end (one per core of the 4-pair cable) | RS485 communication · Spare |
+| Communication cable termination · RS485, to the weather stations | Nos | 16 per weather station (8 at each end) | Spare |
+| Communication cable termination · CAT-6 | Nos | You enter it | Spare |
+| Weather monitoring station · module temperature only | set | 1 per ICR | — |
+
+## Aux power & lighting
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| Street light (perimeter) | set | Measured | — |
+| ACDB panel | Nos | 1 per ICR | — |
+| Auxiliary transformer · part of the ACCB panel | Nos | 1 per ICR | String inverter plants |
+| Auxiliary transformer · part of the LT panel / ACDB | Nos | 1 per ICR | Central inverter plants |
+| Auxiliary transformer · outdoor, fed by the HT feeder | Nos | 1 per MCR | — |
+| UPS | Nos | 1 per ICR | — |
+| Equipment-yard light · equipment yard | set | Factor you enter, per ICR | — |
+| Aux power cable · 3C × 25 mm² Al | m | You enter it | — |
+| Aux power cable · 4C × 10 mm² Cu | m | You enter it | — |
+| Aux power cable · 4C × 16 mm² Al | m | You enter it | — |
+| Aux power cable · 4C × 35 mm² Al | m | You enter it | — |
+| Aux power cable · 2C × 4 mm² Cu | m | You enter it | — |
+| Aux power cable · 2C × 2.5 mm² Cu | m | You enter it | — |
+| Control cable · 19C × 1.5 mm² | m | You enter it | — |
+| Control cable · NIFPS to ICOG panel | m | You enter it | — |
+| Control cable · 2C × 1.5 mm² | m | You enter it | — |
+| Gland for aux and control cable · 2C × 1.5 mm² | Nos | You enter it | Spare |
+| Gland for aux and control cable · 19C × 1.5 mm² | Nos | You enter it | Spare |
+| Gland for aux and control cable · 2C × 2.5 mm² | Nos | You enter it | Spare |
+| Gland for aux and control cable · 2C × 4 mm² | Nos | You enter it | Spare |
+| Gland for aux and control cable · 3C × 25 mm² | Nos | You enter it | Spare |
+| Gland for aux and control cable · 4C × 10 mm² | Nos | You enter it | Spare |
+| Gland for aux and control cable · 4C × 16 mm² | Nos | You enter it | Spare |
+| Lug for aux and control cable · pin, 1.5 mm² | Nos | You enter it | Spare |
+| Lug for aux and control cable · bimetallic pin, 2.5 mm² | Nos | You enter it | Spare |
+| Lug for aux and control cable · bimetallic ring, 2.5 mm² | Nos | You enter it | Spare |
+| Lug for aux and control cable · bimetallic pin, 4 mm² | Nos | You enter it | Spare |
+| Lug for aux and control cable · bimetallic ring, 10 mm² | Nos | You enter it | Spare |
+| Lug for aux and control cable · bimetallic ring, 16 mm² | Nos | You enter it | Spare |
+| Lug for aux and control cable · bimetallic ring, 25 mm² | Nos | You enter it | Spare |
+
+## Civil works
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| ICR building | Nos | Measured | — |
+| Fence · boundary | m | Measured | — |
+| Gate · main | Nos | You enter it | — |
+| Road · perimeter | m | Measured | Works · Off by default |
+| Cable trench | m | Measured | Works · Off by default |
+| Equipment foundation · for string inverters | Nos | 1 per string inverter | String inverter plants · Works · Off by default |
+| Equipment foundation · for transformers | Nos | 1 per transformer | Works · Off by default |
+| Hume pipe · road crossings | Nos | You enter it | — |
+| MCR building | Nos | Measured | — |
+| MCR furniture and air conditioning | set | You enter it | Grid connection on this site |
+| MCR wiring and lighting | LS | You enter it | Grid connection on this site · Works · Off by default |
+| Security cabin | set | You enter it | — |
+| Fence · ICR yard | m | 120 per ICR | — |
+| Gate · ICR yard | Nos | 2 per ICR | — |
+| Gravel · ICR yard | m³ | 40 per ICR | — |
+| Road · internal | m | You enter it | Works · Off by default |
+| Road · approach | m | You enter it | Works · Off by default |
+| Drain | m | You enter it | Works · Off by default |
+| Concrete block for above-ground laying · DC conduit, above ground | Nos | Measured | DC string cable above ground |
+| Concrete block for above-ground laying · LV AC cable, above ground | Nos | Measured | AC cable above ground |
+| Concrete block for above-ground laying · DC trunk cable, above ground | Nos | Measured | DC trunk above ground |
+| Equipment foundation · for central inverters | Nos | 1 per central inverter | Central inverter plants · Works · Off by default |
+| Equipment foundation · for SMBs | Nos | 1 per SMB | Central inverter plants · Works · Off by default |
+| Equipment foundation · for ACCBs | Nos | 1 per ACCB | String inverter plants · Works · Off by default |
+| Equipment foundation · for ACDB panels | Nos | 1 per ICR | Works · Off by default |
+| Equipment foundation · for ICOG panels | Nos | 1 per ICR | Works · Off by default |
+| Equipment foundation · for NIFPS | Nos | 1 per IDT | Works · Off by default |
+| Equipment foundation · for PLC boxes | Nos | 1 per ICR | Power-line communication · Works · Off by default |
+| Equipment foundation · for the HT panel | Nos | 1 per HT panel | Works · Off by default |
+
+## Safety & fire
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| Fire extinguisher | set | You enter it | — |
+| Fire bucket stand | set | You enter it | — |
+| First-aid box | Nos | You enter it | — |
+| Danger and notice board | Nos | You enter it | — |
+| Safety kit | set | You enter it | — |
+| NIFPS (nitrogen injection fire protection) | set | 1 per transformer | — |
+
+## O&M & water
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| Cleaning robot | Nos | Measured | Once a cleaning fleet is sized |
+| Cleaning robot bridge | Nos | Measured | Once a cleaning fleet is sized |
+| Water tank · module cleaning | set | You enter it | — |
+| Water tank · MCR | set | You enter it | Grid connection on this site |
+| Borewell and RO plant | set | You enter it | — |
+
+## Services
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| Installation of structure and modules | MWp | Measured | Works · Off by default |
+| Installation and commissioning, DC side | MWp | Measured | Works · Off by default |
+| Cable termination works · communication cables | LS | You enter it | Works · Off by default |
+
+## Mandatory spares
+
+| Item | Unit | How it is counted | When and how |
+| --- | --- | --- | --- |
+| Mandatory spares | LS | You enter it | — |
+
+## What feeds the lines
+
+Most quantities come straight from the layout. These lines also read a design choice,
+so they are the ones that move when you change it.
+
+### Structure
+
+The structure is bought as a package, not in parts.
+
+- **MMS table (supply package)** has one line per table type, and its specification
+  prints the table, module, tilt, clearance, wind and finish. For example: *"2P × 28
+  portrait, full table (56 modules); module 2,380 × 1,130 mm, 580 Wp; tilt 8.4°; clearance
+  0.5 m; wind …; Hot-dip galvanised"*. It includes the structure, fasteners and module
+  mounting hardware, as per the supplier's design.
+- **Tracker (supply package)** includes the structure, posts, drive, controller and
+  module mounting hardware, as per the OEM. It is not split into interior and perimeter
+  trackers. **Tracker control system** is one lump sum.
+- **MMS pile** needs a pile pattern. See [Piles](/docs/editing/piles).
+
+### DC protection
+
+These lines read the Isc from the PAN file, and **Bifacial module** and **Max series
+fuse** from the Array tab. The design Isc is the module's Isc, plus **Bifacial current
+gain** when the module is bifacial.
+
+| Item | Rule |
+| --- | --- |
+| Inline string fuse | **String fuse factor** × design Isc, then the next listed size |
+| SMB input fuse | **String fuse factor** × strings per input × design Isc, then the next listed size |
+| DC disconnector | **DC disconnector factor** × the most strings on an SMB × design Isc, then the next listed size |
+| SMB inputs | The most strings on an SMB. With a Y that pairs, the most inputs any SMB uses |
+
+The **Line** card prints the working, such as *"String fuse: 1.56 × 15.62 A = 24.3672 A
+→ 25 A (Isc 14.2 A + 10 % bifacial)"*. Two warnings can appear, and neither changes the
+status: *"The &lt;item&gt; needs &lt;n&gt; A, above the largest size in its list (&lt;largest&gt;
+A)."* and *"The &lt;a&gt; A string fuse is above the module's &lt;b&gt; A maximum series
+fuse."* The size lists are [BOM settings](/docs/bom/overview#bom-settings).
+
+### DC harness and string fuses
+
+**DC harness** and **String fuses** on the Electrical tab decide the connector lines.
+
+| Harness | String fuses | Connector lines |
+| --- | --- | --- |
+| One string per input | Inline, or inline and inside the device | **DC connector, male** and **female**, plus **DC connector set with inline fuse** |
+| One string per input | Inside the device, or none | **DC connector, male** and **female** |
+| Y | Inline, or inline and inside the device | **Y connector set with fused arms**, one per pair |
+| Y | Inside the device, or none | **Y connector set**, one per pair |
+
+Under a Y, a string with a cable of its own keeps its own connectors. The DC solar cable
+splits: each string's own cable before the Y is at **String
+cable size**, and the shared cable after it at **Y pair cable size**.
+
+### Cable laying
+
+The laying choices on the [Cables card](/docs/inputs/cables) reach the BOM at the next
+Generate.
+
+| Laying | Lines it brings |
+| --- | --- |
+| DC string cable in conduit, buried or above ground | **HDPE DWC conduit · for DC cables**, along the route, and five manual conduit fittings |
+| DC string cable, AC cable or DC trunk above ground | **Concrete block for above-ground laying**, the route divided by **Concrete block spacing**, rounded up |
+| DC string cable above ground | **UPVC clamp · above-ground laying**, one per block |
+| AC cable above ground | **UPVC clamp · above-ground laying of LV AC cable**, each cable divided by the spacing, rounded up |
+| MV cable on tray | **Ladder cable tray · for MV cable**, along the MV route |
+
+**Cable tie · DC cable along the tables and trackers** is counted with or without cables,
+from **Cable tie spacing**.
+
+### Communication and weather stations
+
+| Choice | Lines |
+| --- | --- |
+| **Power-line, over the AC cable** | **SACU** and **PLC box**, one per ICR |
+| **RS485, daisy-chained** | **RS485 cable**, and **Communication cable termination · RS485**, eight per cable end |
+| A weather station | The station, 50 m of RS485 cable, 50 m of conduit and 16 terminations |
+| Module sensors at every ICR | **Weather monitoring station · module temperature only**, one per ICR |
+
+Each ICR with an MV run has **Optical fibre cable** as long as that run, so there is no
+fibre without an MCR, USS or handover point. A chain longer than the limit in
+[Advanced settings](/docs/workspace/advanced-settings) puts a remark on the RS485 line.
+
+### MV network
+
+The network is radial.
+
+- **MV breaker panel (ICOG)**: one per ICR, with an incomer per IDT.
+- **HT panel · at the MCR**: its incomers are the feeders and the USS links. **HT panel ·
+  at a USS** follows the same idea. A handover point has no panel.
+- **MV cable**: one row per cable schedule row, length × runs.
+- **MV straight-through joint kit**: runs × one fewer than the number of drums a run
+  takes, from **MV cable drum length**.
+- **Inverter duty transformer**: split per rating and winding count, such as *"16,000
+  kVA, 33 kV / 800 V, 5-winding, ONAN, Aluminium windings"*. See
+  [ACCB and transformers](/docs/inputs/accb-and-transformers).
+
+When a solar park provides the main control room, several of these go. See
+[Grid connection by others](/docs/layout/grid-connection).
+
+### Earthing
+
+Earthing is measured from the project's earthing design, without opening its window:
+pits by duty, strips by class, and two bolt sets per jumper or bridge. See
+[Earthing design](/docs/simulation/earthing).
+
+### Cleaning fleet and arresters
+
+**Cleaning robot** and **Cleaning robot bridge** appear once a fleet is sized in
+[Robotic module cleaning](/docs/simulation/robotic-cleaning), with one bridge line per
+kind, standard or supported. **Lightning arrester, ESE** prints the protection level
+and mast height in its specification, such as *"Level IV, 9 m mast"*. See
+[Lightning arresters](/docs/layout/lightning-arresters).
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Bill of materials"
+    href="/docs/bom/overview"
+    description="The BOM view, its statuses and how a line is edited"
+  />
+  <Card
+    title="BOM profiles"
+    href="/docs/bom/profiles"
+    description="Change these entries for every project with a profile of your own"
+  />
+  <Card
+    title="Cables"
+    href="/docs/inputs/cables"
+    description="The laying choices and allowances behind the cable lines"
+  />
+</Cards>

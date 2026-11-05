@@ -11,10 +11,10 @@ between them, and counts the robots those lines need — the same count as
 drawing instead of a generated layout.
 
 It needs no layout and no boundary file, and **nothing is added to the current
-project** — not to the layout, the Summary or the bill of materials. The answer
+project**: not to the layout, the Summary or the bill of materials. The answer
 lives in the window and in the PDF it exports. That makes it the tool for
 checking a layout from another designer, a tender drawing, or a plant already
-built.
+built. It needs active access, to open and again for the PDF.
 
 ## Opening it
 
@@ -29,6 +29,11 @@ The window opens empty, reading *"No drawing open"*. Click **Open DXF…** and
 pick the drawing; the file dialog takes `.dxf` files only. A large drawing
 takes a few seconds to read.
 
+Reopened in the same session, the window keeps **Travel per charge**, **Skip lines
+up to** and **Out and back**, and a second button, **Open &lt;name&gt; again**, reads
+the last drawing while the file exists and puts back its roles, structure, span and
+ticks. None of this is saved.
+
 <Screenshot id="robot-dxf" />
 
 ## The window
@@ -37,7 +42,8 @@ Across the top a strip gives the answer's headline — **n cleaning lines** and
 the direction the robots travel, *west–east along each table row* on fixed
 tilt or *north–south along each tracker column* on trackers — with chips for
 the table count (and how many are half tables), the structure, and the unit the
-drawing was read in. Before a drawing is read the strip says what state the
+drawing was read in. If the reading left notes, a chip reads *"! n notes"*; its
+tooltip lists them, and a click opens them under **Layers**. Before a drawing is read the strip says what state the
 window is in: *"No drawing open"*, *"Reading drawing…"*, *"Drawing not read"*
 or *"No tables found"*.
 
@@ -90,8 +96,8 @@ you will bridge, under Gaps, to lower the count."*
 | --- | --- |
 | **Standard bridges** | The gaps a standard bridge crosses, with *"gaps up to x m"* |
 | **Wide gaps** | Every gap wider than that, as *"k bridged · m split"* |
-| **Longest segment** | The longest stretch one robot serves, in metres, with *"+n robots for range"*, its out-and-back distance, or *"one way"* |
-| **One full pass** | The distance of one complete pass by the whole fleet — in km from 1,000 m up — *"all robots together"* |
+| **Longest segment** | The longest stretch one robot serves, in whole metres, with *"+n robots for range"*, its out-and-back distance, or *"one way"* |
+| **One full pass** | The distance of one complete pass by the whole fleet, in whole metres, *"all robots together"* |
 
 ## The four views
 
@@ -142,6 +148,11 @@ a list you can change:
 Only the tables are needed. Equipment and roads change only what a wide gap is
 blamed on, and the boundary only whether a bridge is flagged as leaving the
 site.
+
+Under the list, **What was read** gives the reading's notes, the same ones as on the
+PDF's first page. Ticks survive a change of role or of **Structure** wherever the gap
+still exists; the footer says how many no longer do: *"n ticked gaps no longer exist
+and were dropped."*
 
 <Screenshot id="robot-dxf-layers" />
 
@@ -196,9 +207,9 @@ Set the role of the layer that holds them to “MMS tables / trackers”."* Set 
 and the count follows.
 
 <Callout type="info">
-A drawing from this application reads cleanly: its tables sit on a layer named
-`TABLES`, its units are metres, and its boundary, arrester, control-room and
-obstacle layers are recognised by name. See [CAD export](/docs/exports/dxf).
+The DXF of a drawing set from this application reads cleanly: its tables are
+blocks on the layer `E-PV-TABL`, its units are metres, and its boundary layer is
+recognised by name. See [Drawing set](/docs/exports/drawing-set).
 </Callout>
 
 ## Working a drawing
@@ -230,15 +241,15 @@ figure: the fleet with no extra bridges.
 <Step>
 ### Tick the gaps you will bridge
 
-Under **Gaps**, filter to **Inside the boundary** first — open ground, the
-cheaper bridges — then **At equipment**. Tick only the gaps you will really
+Under **Gaps**, filter to **Inside the boundary** first — open ground — then
+**At equipment**. Tick only the gaps you will really
 bridge; the verdict moves with each tick.
 </Step>
 
 <Step>
 ### Export the PDF
 
-Click **Export PDF…** to keep the answer. Nothing else records it.
+Click **Export PDF…** to keep the answer. Nothing else records it after the session.
 </Step>
 </Steps>
 
@@ -251,9 +262,10 @@ layer first"* beside **Close**. The file is offered beside the drawing, named
 `<drawing name> - robot count.pdf`.
 
 - **Page one** — *"Robot count — &lt;file&gt;"*, with the structure, unit and date;
-  the verdict; the key figures (cleaning lines, tables, standard bridges, wide
-  gaps split and bridged, longest segment, one full pass, and the robot inputs);
-  the wide gaps by cause; notes on how the drawing was read; and the plan.
+  the verdict; the key figures (cleaning lines, tables, standard bridges with their
+  span and the 0.25 m tolerance, wide gaps split and bridged, longest segment, one
+  full pass, and the robot inputs); the wide gaps by cause; notes on how the drawing
+  was read; and the plan.
 - **Cleaning lines** — one row per line: tables, segments, longest segment and
   robots, with a total.
 - **Wide gaps** — each gap's row, width, cause, and whether it is bridged.
@@ -269,6 +281,8 @@ If the file is open in another program the export stops with *"&lt;file&gt; is o
 in another program. Close it and export again."* After a save the footer reads
 *"Saved &lt;file&gt;"*.
 
+<Screenshot id="robot-dxf-exported" />
+
 ## Where to go next
 
 <Cards>
@@ -278,9 +292,9 @@ in another program. Close it and export again."* After a save the footer reads
     description="The same count on a generated layout, added to the BOM"
   />
   <Card
-    title="CAD export"
-    href="/docs/exports/dxf"
-    description="The layered drawing this window reads without adjustment"
+    title="Drawing set"
+    href="/docs/exports/drawing-set"
+    description="The layered DXF this window reads without adjustment"
   />
   <Card
     title="Earthing design"

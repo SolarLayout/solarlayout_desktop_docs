@@ -28,7 +28,7 @@ layout then places that table as many times as it fits.
 | **Gap between modules N-S** | 0.020 m | 0.0–5.0 m | Clear space between the stacked rows on the same table |
 | **Gap between MMS-Tables** | 1.0 m | 0.0–20.0 m | Clear space east to west, between one table and the next in the same row |
 | **Maximize placement** | off | — | Positions each row of tables independently to hug the boundary |
-| **Add half tables** | off | — | Allows a half-width table where a full one will not fit |
+| **Add half tables** | off | — | Allows a half table, holding whole strings, where a full one will not fit |
 
 ## Orientation
 
@@ -89,9 +89,10 @@ here, at the table, and hardest to catch after the layout has been placed.
 
 <Callout type="warn">
 The second figure is the length of the tilted face — the collector width — not
-the footprint it casts on the ground. The footprint is shorter by the cosine of
-the tilt angle, which is why the row pitch calculation projects it before adding
-the shading clearance.
+the table's size on the ground. On the ground it is shorter by the cosine of the
+tilt angle: at 8.43° a 4.78 m face covers 4.728 m. Placement, the drawing and the
+visible gap between rows all use that ground figure; the row pitch formula and the
+ground coverage ratio use the length of the face.
 </Callout>
 
 ## Gaps
@@ -175,19 +176,39 @@ Both options are covered together, with the placement behaviour drawn out, on
 
 ## Half tables
 
-**Add half tables** ships off. A half table is half the east–west width of a
-full table, carrying half the strings, and it is dropped into any position
-where a full table will not fit.
+**Add half tables** ships off. A half table is dropped into any position where
+a full table will not fit, and every module on it sits on a whole string.
 
-- The dimension that halves is the east–west width, and a half table carries
-  half the strings a full table carries.
-- Half tables are reported separately in the Summary view, on the **Half
-  tables** row under **Full tables**, and count as half a table wherever tables
-  are weighted.
-- Nothing is placed anywhere a full table would already have gone. Half tables
-  only ever occupy leftover ground.
-- Half tables can also be placed one at a time in Sketch Mode, whatever this
-  option is set to.
+- A half table is half the modules wide, rounded up, and keeps the **full height**
+  of the table.
+- It holds half the full table's strings, rounded down. Each string runs along one
+  half row and back along the next.
+- With an odd number of rows, one row stays empty. A three-row table's half holds
+  one string, and the card says so: *Each half table carries 1 string; its third
+  row stays empty.*
+- A one-row table has no half: half of it would hold half a string. **Add half
+  tables** is then greyed out, with the line *A half table here would hold only
+  half a string.*
+
+<Screenshot id="table-half-hint-3p" maxWidth={420} />
+
+<Screenshot id="table-half-disabled" maxWidth={420} />
+
+| Rows × modules | Full table | Half table | Share of the full table's modules |
+| --- | --- | --- | --- |
+| 1 × 28 | 32.18 m, 1 string | none | — |
+| 2 × 28 | 32.18 m, 2 strings | 16.08 m, 1 string, 28 modules | 0.5 |
+| 3 × 28 | 32.18 m, 3 strings | 16.08 m, 1 string, 28 modules | 0.333 |
+| 4 × 28 | 32.18 m, 4 strings | 16.08 m, 2 strings, 56 modules | 0.5 |
+
+That share of modules is the half table's weight when control rooms are counted and
+blocks are balanced, so it is one half only on an even number of rows. Half tables
+are reported separately in the Summary view, on the **Half tables** row under
+**Full tables**.
+
+Nothing is placed anywhere a full table would already have gone: half tables only
+ever occupy leftover ground. They can also be placed one at a time in Sketch Mode,
+whatever this option is set to, as long as the table has a half.
 
 Leave it off for a first pass, so the layout you review is the clean grid case.
 Turn it on when you are chasing the last of the capacity out of an awkward

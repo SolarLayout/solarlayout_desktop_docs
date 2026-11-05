@@ -1,136 +1,98 @@
 ---
 title: Exporting the diagram
-description: Three routes out of the SLD view — the report's diagram page, a standalone PDF of the sheet, and a CAD drawing whose symbols are real entities.
+description: The SLD view's two exports — a PDF of the sheet and a CAD drawing whose symbols are real entities — and how they relate to the deliverables package.
 ---
 
-A finished **single-line diagram** — SLD — leaves the application by three
-routes. All three write the same sheet, frame and all; what differs is what
-the receiving end can do with it.
+A **single-line diagram** — SLD — leaves the SLD view by two routes, both on the
+**EXPORT** card in the left column. Both write the diagram as you built, edited or
+traced it, frame and title block included. What differs is what the receiving end can
+do with it.
 
-| Route | How | What you get |
+| Button | What you get |
+| --- | --- |
+| **PDF…** | The sheet on its own, as a one-page PDF |
+| **DWG…** | The sheet as a CAD drawing, with the symbols written as real entities |
+
+Both need active access. See [Building the single-line diagram](/docs/sld/overview).
+
+## When the buttons wait
+
+The **EXPORT** card's note says why the buttons are off.
+
+| State | What the card says | What to do |
 | --- | --- | --- |
-| **The report's diagram page** | **Export ▾ ▸ Export Detailed Project Report** in the view header | The diagram as the **Single Line Diagram** annexure of the Word document; the same page is in **Export PDF (with Piles)** |
-| **A standalone PDF** | **⬇ Export SLD to PDF** on the SLD TOOLS panel | The sheet on its own, as a PDF |
-| **A CAD drawing** | **⬇ Export SLD to DWG** on the SLD TOOLS panel | The sheet as a drawing file, with the symbols written as real CAD entities |
+| Nothing on the sheet | *"There is no SLD to export yet."* | Generate a layout, or draw by hand |
+| The layout is out of date | The reason the results are out of date | Generate again. See [Out-of-date results](/docs/workspace/out-of-date-results) |
+| An edited diagram is out of date | *"Exports wait until you rebuild or keep this diagram (see the note above the drawing)."* | Click **Rebuild** or **Keep this diagram** over the drawing |
+| A kept diagram | *"Exports this diagram as it is (a MWp); the layout is b MWp."* | Nothing: the buttons work, and the note tells you the two differ |
 
-The two SLD buttons sit at the foot of the tools panel, which takes over the
-left column while the **SLD** tab is up. The **Export ▾** menu sits beside
-**Save project** in every view. See
-[Building the single-line diagram](/docs/sld/overview).
+## The deliverables package has its own diagram
 
-## The diagram page in the report
+The [deliverables package](/docs/exports/deliverables) carries a single-line diagram in
+its [drawing set](/docs/exports/drawing-set), but that is a separate, automatic diagram
+drawn from the design. Your edits and tracing do not reach it, and the package does not
+wait for this view. Anything you added by hand leaves only through **PDF…** and
+**DWG…**.
 
-The Detailed Project Report carries the diagram automatically. You do not
-export it separately: build the diagram, then choose **Export ▾ ▸ Export
-Detailed Project Report**, and the diagram is written in as the **Single Line
-Diagram** annexure — after the **Site Layout Plan** and the **Design Summary**,
-before the **Bill of Materials**. The document is A3 landscape throughout, so
-the diagram page and the layout drawing come out on the same paper. The full
-content order is on [The Detailed Project Report](/docs/exports/project-report).
+## A PDF of the sheet
 
-The report uses the diagram stored in the session — the one on the SLD sheet —
-and builds the automatic one only when there is none. A stored diagram is not
-redrawn when the layout, the **ACCB & Transformer** card or the inverter file
-changes, so choose **Automatic** again in the SLD view before you export if any
-of them has changed since the diagram was built. That rebuilds the sheet, so
-edits made on it have to be made again.
-
-While the pile overlay is on, **Export ▾ ▸ Export PDF (with Piles)** writes a
-PDF report whose third page is the same diagram sheet.
-
-<Screenshot id="report-page-sld" caption="The diagram page as it comes out of Export PDF (with Piles)" />
-
-One behaviour to know about in the PDF with piles: **if the diagram fails to
-draw, that page is skipped silently and the rest of the report is still
-produced.** A report is never lost because of a problem with the diagram. The
-consequence for you is that a missing diagram page is not announced — so if
-the diagram matters to the document, open the file and confirm the page is
-there.
-
-## A standalone PDF of the sheet
-
-**⬇ Export SLD to PDF** writes the sheet as a PDF on its own.
+**PDF…** opens a save window, *Export SLD to PDF*, with the file name `SLD.pdf`. The
+status bar then reads *"SLD exported to"* and the path.
 
 <Screenshot id="sld-page" />
 
-This is the review copy. It carries the border, the zone grid, the legend band
-and the title block, so a reviewer can mark it up against a zone reference and
-hand it back, and it needs nothing but a PDF reader at the far end.
+This is the review copy. It carries the border, the zone grid, the legend band and the
+title block, so a reviewer can mark it up against a zone reference and hand it back. A
+traced background prints at full strength.
 
-The sheet is written at A3 proportions. For a full SLD with many feeders the
-physical paper size grows — A3, then A1, then A0 — while those proportions
-hold, so a long diagram is printed on bigger paper rather than being squeezed
-into A3.
+The paper follows the diagram: A3, A1 or A0 by the number of rows.
 
 ## A CAD drawing
 
-**⬇ Export SLD to DWG** writes the sheet as a `.dxf` drawing file for a
-drafting team. Despite the button's name, expect a `.dxf`: it is the CAD
-interchange format every CAD program reads, and it is usable as it stands. If
-your drawing office wants `.dwg` specifically, open the `.dxf` in the CAD
-program and save it as `.dwg` there. (The export produces a `.dwg` directly
-only when the free ODA File Converter happens to be installed on the machine,
-which the application does not include.)
+**DWG…** opens a save window, *Export SLD to CAD*, with the file name `SLD.dwg`,
+offering *AutoCAD Drawing (\*.dwg)* and *DXF Drawing (\*.dxf)*. Choose `.dxf`: it is
+the CAD interchange format every CAD program reads. A `.dwg` needs the free ODA File Converter, which the application does
+not include, and without it the file is saved as DXF and the message says so.
 
-### The symbols come across as geometry, not as a picture
+### The symbols come across as geometry
 
-This is the point of the CAD route. Each symbol's shape is written into the
-drawing file as **real CAD entities**, rotated as it sits on screen. The
-result is a drawing a drafter can select, move, copy and edit — not an image of
-your screen dropped into a drawing frame.
+This is the point of the CAD route. Each symbol's shape is written into the drawing
+file as **real CAD entities**, rotated as it sits on screen: a drawing a drafter can
+select, move, copy and edit, not an image of your screen dropped into a frame.
 
-Practically: the diagram you see is the diagram they open. A transformer
-placed already rotated to line up with the bus arrives rotated the same way,
-and a symbol you turned with **⟲ 90°** or a typed angle arrives at that angle.
-
-The same holds for a symbol you traced yourself. An imported image symbol is
-stored as outlines rather than as a picture, which is why it too exports as
-real geometry. See
+The same holds for a symbol you traced yourself, because it is stored as strokes rather
+than as a picture. See
 [Importing diagrams and custom symbols](/docs/sld/import-and-custom-symbols).
 
 <Callout type="warn">
-The one exception is an imported background. A diagram brought in with
-**📄 Import PDF / DXF** is a picture on the sheet, so it stays a picture — it
-cannot become CAD geometry. If the CAD file is the deliverable, redraw the
-imported content with palette symbols, or accept that only what you drew on
-top arrives as geometry.
+The one exception is a traced background. A scanned page is a picture on the sheet and
+is not written to the CAD file at all. If the CAD file is the deliverable, redraw that
+content with palette symbols, or send the PDF as well.
 </Callout>
 
 ### The sheet frame comes across too
 
-The outer border, the inner frame, the zone grid, the legend and notes band
-and the title block are all in the CAD file, in the same positions they occupy on
-screen.
-
-That matters more than it sounds. A drafting team receiving the diagram alone
-would have to drop it into their own frame and re-letter the zones; receiving
-the framed sheet, they can work on the drawing itself. Anything you typed into
-the title block with **📝 Text** travels with it — and anything you left blank
-arrives blank.
+The frame and the title block are in the CAD file. A drafting team receiving the framed
+sheet can work on the drawing itself rather than dropping it into their own frame. The
+title block carries what the project gave it, and **—** where a field has nothing.
 
 ## Exporting is not saving
 
-All three routes produce a document for somebody else. None of them is how
-you keep the diagram.
-
-The diagram is part of the session, and the session is saved as a project
-file. A saved project holds the inputs, the layout, the hand edits, the
-diagram and the materials list together, so reopening it brings the diagram
-back exactly as you left it — editable, on the same sheet. Save the project as
-well as exporting, or the next revision starts from the PDF you sent out. See
-[Projects](/docs/projects).
+Both routes produce a document for somebody else. Neither is how you keep the diagram.
+The diagram is part of the project: **Save project** keeps its elements, its form, its
+paper and any traced background, and reopening the project brings it back editable. The
+undo history does not come with it. See [Projects](/docs/projects).
 
 ## Which route to use when
 
 | You are sending it to | Use | Why |
 | --- | --- | --- |
-| A bid or tender pack | The report's diagram page | One document carries the drawing, the summary, the materials list and the energy figures together |
-| A reviewer or an internal approval | **⬇ Export SLD to PDF** | The sheet on its own, with the zone grid to refer to, openable by anyone |
-| A drafting office or a detailed-design team | **⬇ Export SLD to DWG** | Real entities they can edit, inside the sheet frame |
+| A bid or tender pack | The [deliverables package](/docs/exports/overview) | One package carries the drawing set, the design report, the schedules and the BOM together, with its automatic diagram |
+| A reviewer or an internal approval | **PDF…** | Your diagram on its own, with the zone grid to refer to, openable by anyone |
+| A drafting office or a detailed-design team | **DWG…** | Real entities they can edit, inside the sheet frame |
 
-If you are unsure, send the standalone PDF for agreement and the CAD file for
-work. The PDF settles what the diagram says; the drawing file is what somebody
-builds on.
+If you are unsure, send the PDF for agreement and the CAD file for work. The PDF settles
+what the diagram says; the drawing file is what somebody builds on.
 
 ## Before you export
 
@@ -138,31 +100,29 @@ builds on.
 <Step>
 ### Check the ratings and the equipment
 
-The automatic build's annotations come from the grouping on the **ACCB &
-Transformer** card and the inverter file, not from your purchase order. Read
-them once more. See
+The automatic build's annotations come from the grouping on the **ACCB & Transformer**
+card and the inverter file, not from your purchase order. See
 [Building a diagram from the plant](/docs/sld/auto-build).
 </Step>
 
 <Step>
-### Complete the title block
+### Read the title block
 
-The document number, the revision and the project name ship empty. A drawing
-issued without them is a drawing nobody can file.
+Click **Sheet** at the bottom right of the drawing. The title block is filled from
+**File ▸ Company…** and the project details. **DRAWING NO.** and **REV.** print **—** on
+this sheet. See [Building the single-line diagram](/docs/sld/overview#the-title-block).
 </Step>
 
 <Step>
-### Fit the sheet
+### Check that nothing sits outside the frame
 
-Use **⤢ Fit** so you are looking at the whole sheet, and check that nothing
-sits outside the frame.
+**Sheet** shows the page as it prints, whatever the zoom.
 </Step>
 
 <Step>
 ### Export, then open what you exported
 
-Confirm the diagram page is present in the report, and check the extension of
-the CAD file.
+Check the extension of the CAD file, and that the page reads as you expect.
 </Step>
 </Steps>
 
@@ -170,19 +130,19 @@ the CAD file.
 
 <Cards>
   <Card
-    title="The Detailed Project Report"
-    href="/docs/exports/project-report"
-    description="Where the diagram page sits, and what every other section carries"
+    title="Export overview"
+    href="/docs/exports/overview"
+    description="Everything the application writes, and from where"
   />
   <Card
-    title="CAD drawing export"
-    href="/docs/exports/dxf"
-    description="The layout's own drawing file and its layers"
+    title="The drawing set"
+    href="/docs/exports/drawing-set"
+    description="The package's sheets and its CAD twin, the automatic diagram among them"
   />
   <Card
     title="Building the single-line diagram"
     href="/docs/sld/overview"
-    description="The sheet, the tools, and the title block you fill in"
+    description="Review, the sheet, and the editing tools"
   />
   <Card
     title="Importing diagrams and custom symbols"

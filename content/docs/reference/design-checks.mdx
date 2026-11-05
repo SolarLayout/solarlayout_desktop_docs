@@ -1,0 +1,168 @@
+---
+title: Design checks
+description: Every design check by ID — what it tests, the limit it uses, the link that fixes it, the sentences it writes and what to change to clear it.
+---
+
+The application runs 29 design checks on every generated layout, in three
+families: **reconciliation** (R), **completeness** (C) and **engineering** (E). A
+check never blocks anything. How to read and accept them is on
+[the Checks view](/docs/workspace/checks).
+
+A limit below is an [Advanced setting](/docs/workspace/advanced-settings) under
+*Checks and limits*, shown at its default. Each row's title is the application's
+own.
+
+## Reconciliation
+
+Two figures for the same thing must agree. None of these has a Fix link or can be
+accepted: the row carries the note *"No setting changes this: send us the
+project"*. If one fails, send the project file to SolarLayout.
+
+| ID | Title | Compares | Limit |
+| --- | --- | --- | --- |
+| R-01 | **Modules = Σ tables × modules per table** | The layout's module count against each table's modules, summed | |
+| R-02 | **Strings agree: per inverter = per table** | Each inverter's strings, from its capacity, against the strings on its tables | |
+| R-03 | **Block quantities sum to the plant** | Every table, module and string in exactly one ICR block | |
+| R-04 | **S1 cable totals = takeoff** | Each cable class's metres in the schedules workbook against the quantities | ± 0.5 % |
+| R-05 | **Land account closes** | Gross site less every exclusion, booked in order, against the usable land | ± 0.01 ha |
+| R-06 | **Drawn trench = scheduled** | The trench the drawings show against the trench the quantities book | ± 0.5 % |
+| R-07 | **SLD counts and ratings = snapshot** | The counts and ratings on the package's single-line diagram against those every other deliverable prints | |
+
+R-04 does not apply when there are no cable records, and R-06 does not apply when
+every cable class is above ground.
+
+## Completeness
+
+What a package needs. A failing row reads *"1 missing"* or *"9 missing"*.
+
+| ID | Title | Passes when | Fix |
+| --- | --- | --- | --- |
+| C-01 | **Location surveyed or confirmed** | The site is surveyed, or placed by you in **Site reference** | **Fix: Site tab** |
+| C-02 | **Lightning protection designed** | Lightning arresters are placed (**Place Lightning Arresters** on the Site tab) | **Fix: Site tab** |
+| C-03 | **MV collection designed** | An MCR or a USS is placed, or the grid connection is set to **By others**. By others, it passes with a handover point and does not apply without one | **Fix: Tools tab** |
+| C-04 | **Module and inverter from datasheets** | The module's PAN and the inverter's OND file are loaded | **Fix: Array tab**; **Fix: Electrical tab** when only the OND is missing |
+| C-05 | **Project and title-block fields complete** | Company name, Company logo, Drawing-number pattern, Project name, Project code, Client, Location, Drawn by, Checked by and Approved by are all filled | **Fix: Project details** |
+| C-06 | **Cables computed** | **Calculate cables** is on, and the layout generated | **Fix: Electrical tab** |
+| C-07 | **Pile pattern defined** | A pile pattern exists | **Fix: Piles** |
+
+## Engineering
+
+| ID | Title | Tests | Limit | Fix |
+| --- | --- | --- | --- | --- |
+| E-01 | **IDT loading** | Each inverter duty transformer's load against its standard rating | 100 % | **Fix: Electrical tab** |
+| E-02 | **LV feeder drop and MV drop** | Inverter-to-ACCB feeders against the feeder limit and the plant's current-weighted budget, and MV runs against theirs | 2.5 %, 1.5 %, 2.0 % | **Fix: Electrical tab** |
+| E-03 | **Inverter DC:AC band** | Each inverter's DC:AC against the plant's own ratio | ± 15 % | **Fix: Electrical tab** |
+| E-04 | **String voltage window** | Done by hand; always reads can't check | | |
+| E-05 | **Shading window** | Done by hand; always reads can't check | | |
+| E-06 | **ICR inverter count** | The devices each ICR carries against its rating, the design's own cap | | **Fix: Site tab** |
+| E-07 | **Trenches inside the plant, not under tables** | Feeder and trunk trenches that could not be kept inside the plant or clear of the tables | 0 runs | **Fix: Sketch Mode** |
+| E-08 | **DC string drop** | Every DC string, table to its inverter, as the cable schedule sizes it | 1.5 % | **Fix: Electrical tab** |
+| E-09 | **Tables inside arrester cover** | Every corner of every table within an arrester's protection radius | 0 tables | **Fix: Site tab** |
+| E-10 | **Clearances** | Every table inside the boundary setback (the perimeter road) and clear of every transmission-line corridor | | **Fix: Site tab** |
+| E-11 | **Every block's ICR placed** | The ICRs each plot needs against those that found room | | **Fix: Site tab** |
+| E-12 | **DC trunks buildable** | Each DC trunk's drop, as parallel runs of the largest conductor. Central-inverter designs only | 2 runs | **Fix: Electrical tab** |
+| E-13 | **Building shadows cleared** | Tables in the year-round shadow of the ICRs and other buildings removed, from the site's latitude | | **Fix: Site tab** |
+| E-14 | **Central inverter DC/AC** | Each central inverter's DC against the AC simulation's overload limit. Central-inverter designs that ran the simulation only | The simulation's limit | **Fix: Tools tab** |
+| E-15 | **Transformer forms** | Each transformer against the allowed forms: every LV winding carries an ACCB, or an inverter on a central design | | **Fix: Electrical tab** |
+
+### When a check can't run
+
+| The row says | What to do |
+| --- | --- |
+| *"Load the inverter file (OND) for the IDT loads."* (E-01) | Load the OND file on the Electrical tab, and generate |
+| *"Load the inverter file (OND) for the inverters' AC rating."* (E-03) | As above |
+| *"The cables are not routed. Turn on Calculate cables and generate the layout."* (E-02, E-08, E-12) | Tick **Calculate cables**, and generate |
+| *"No lightning arresters are placed (C-02)."* (E-09) | Tick **Place Lightning Arresters** on the Site tab, and generate |
+| *"Not checked in this version: … by hand."* (E-04, E-05) | Do the check yourself, then [accept it](/docs/workspace/checks#the-two-checks-done-by-hand) |
+
+### When a check does not apply
+
+- E-12: *"A string-inverter plant has no DC trunks."*
+- E-14: *"A string-inverter plant has no central inverters."*, or *"Without an
+  AC-capacity simulation the central inverters are counted from the SMBs, and no
+  DC/AC limit applies."*
+
+## What a finding says
+
+The application writes each finding with your design's figures. The examples show
+the wording. On a multi-plot site the plot's name leads the sentence, and in a
+central-inverter design the wording follows the equipment: *SMBs* for inverters,
+*DC trunk trenches* for AC trenches.
+
+| Check | Sentence |
+| --- | --- |
+| E-02 | *"5 AC feeders drop more than 2.5 % (worst 2.98 %): 321–372 m (longest: ICR3-INV-42)."* |
+| E-02 | *"1 AC feeder carries 812 A, more than one 630 mm² run can."* |
+| E-02 | *"The plant's LV AC drop averages 1.56 %, over the 1.5 % budget."* |
+| E-06 | *"ICR 3 carries 60 inverters; it is rated for 53."* With several: *"4 ICRs carry more inverters than their rating of 53: ICR 2 (60), ICR 4 (58), …"* |
+| E-07 | *"1 AC trench runs outside the plant boundary; it keeps its original route in the drawing, the DXF and the quantities."* |
+| E-07 | *"2 AC trenches still run under a table."* |
+| E-08 | *"3 DC string runs drop more than 1.5 % (worst 1.82 %)."* |
+| E-11 | *"2 of the 6 ICRs this plot needs found no room in it."* |
+| E-12 | *"1 DC trunk is too long for 1.5 % drop even as 2 parallel 630 mm² runs: …"*, ending with the SMB and the length |
+| E-13 | *"Building-shadow clearance skipped: the site has no latitude, so tables in the shadow of the ICRs and other buildings were not removed."* |
+| E-14 | *"3 of the 20 central inverters carry more DC than the 1.40 DC/AC limit (worst 1.46, ICR 2). Lower the DC/AC ratio or the strings per SMB, size the ICR blocks by AC, or raise the overload limit."* |
+| E-15 | *"ICR 2: 3 ACCBs on a 5-winding transformer, 1 LV winding spare. Add a 4-winding form or change the block."* |
+
+## Clearing a finding
+
+A check clears when its result passes. An input that makes the layout out of date
+needs a regenerate before you read the result again. An edit on the **ACCB &
+Transformer** card and a limit with the pill *Checks · applies now* need no Generate.
+What to look at:
+
+| Check | What to look at |
+| --- | --- |
+| E-01 | A transformer whose load fits no listed rating at or under the size limit has no rating, and fails. Look at **Standard transformer ratings (kVA):**, **Transformer size limit:** and the forms on the **ACCB & Transformer** card (**Transformer** on a central design). See [ACCBs and transformers](/docs/inputs/accb-and-transformers) |
+| E-02 | A feeder over its drop, or the plant's drop over budget: shorter runs. A smaller **ICR Block** gives more ICRs, each nearer the inverters it serves. A feeder *"more than one 630 mm² run can"* carry is about the inverter's current, so its length doesn't change that finding. A limit you have agreed otherwise goes in Advanced settings under **Limits…** |
+| E-03 | The inverters on the row's *Affects* line, and the inverter card on the Electrical tab. See [Inverter](/docs/inputs/inverter) |
+| E-06 | The number of ICRs and each one's rating both follow **ICR Block** on the Site tab. See [Inverter control rooms](/docs/layout/icr) |
+| E-07 | Switch on the AC cables layer (DC trunks in a central design) and find the run. In Sketch Mode, move the ICR it serves, which routes the cables again. See [Cable routing](/docs/layout/cables) |
+| E-08 | With a Y harness, **Y pair cable size** and **String cable size** in Advanced settings, under *Cables*: a Y pair keeps its size whatever its drop. A string on its own is already sized to stay within the limit |
+| E-09 | **LA protection radius** on the Site tab. Placement covers each table's centre, and the check reads every corner, so tables at the edge of a circle can show here. See [Lightning arresters](/docs/layout/lightning-arresters) |
+| E-10 | **Perimeter road width** and **Line corridor (each side)** on the Site tab, and the tables on the row's *Affects* line |
+| E-11 | Each ICR must fit entirely inside the usable area at the **ICR** length and width in **Structures & Shadow**. A smaller footprint is easier to place, and a larger **ICR Block** asks the plot for fewer rooms |
+| E-12 | A trunk's drop follows its length, its current and its conductor. Shorter runs, as for E-02; fewer strings per SMB; or **DC trunk conductor** on the **Cables** card, since copper drops less than aluminium. A limit you have agreed otherwise goes in **DC trunk parallel runs**, under **Limits…** |
+| E-13 | Pick the boundary file again and give the site its location or latitude in **Site reference** |
+| E-14 | The finding's own sentence names the levers. See [Sizing from an AC capacity](/docs/simulation/ac-capacity) |
+| E-15 | Add the form the finding names on the card, or change the block |
+
+## In the BOM view
+
+A failed check's sentence appears as *"Check: &lt;ID&gt; · &lt;sentence&gt;"* on the
+lines it concerns, in the BOM view only, never in a file:
+
+| Finding | Line |
+| --- | --- |
+| ICR over its rating or not placed | The ICR building |
+| Central inverter over its limit | Central inverter |
+| Spare transformer winding | Inverter duty transformer |
+| AC feeder over its limit, over one run, or the plant's drop over budget | LV AC cable |
+| DC trunk too long | DC trunk cable |
+| DC string drop | DC solar cable |
+| Building shadows skipped | PV module |
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="The Checks view"
+    href="/docs/workspace/checks"
+    description="Reading a row, Fix, Show on layout, accepting a finding and the badges"
+  />
+  <Card
+    title="Advanced settings"
+    href="/docs/workspace/advanced-settings"
+    description="Every limit above, and how to change it for one project"
+  />
+  <Card
+    title="Cable routing"
+    href="/docs/layout/cables"
+    description="How feeders and trenches are routed, and what the lengths mean"
+  />
+  <Card
+    title="Inverter control rooms"
+    href="/docs/layout/icr"
+    description="How the ICR count follows the ICR Block size"
+  />
+</Cards>

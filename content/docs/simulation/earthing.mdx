@@ -1,31 +1,37 @@
 ---
 title: Earthing design
-description: A preliminary IEC earthing calculation for the generated layout — earth pits, GI strip and Cu cable sizes, the earthing plan, a report and a BoQ.
+description: "The project's earthing design on the IEC calculation: earth pits, GI strip and Cu cable sizes, the plan, a report and a BoQ, and where the design goes."
 ---
 
-**Earthing Design** is a preliminary earthing calculation for the layout you
-have generated. It works out how many earth pits the plant needs and where they
-go, which GI strip or Cu cable size each earthing connection needs, whether the
-plant grid meets its resistance target and the touch-voltage limit, and what
-all of it adds up to as a bill of quantities. It draws the earthing plan over
-the plant and exports the plan, the calculation and the quantities.
+**Earthing Design** is the project's earthing design. It works out how many
+earth pits the plant needs and where they go, which GI strip or Cu cable size
+each earthing connection needs, whether the plant grid meets its resistance
+target and the touch-voltage limit, and what all of it adds up to as a bill of
+quantities. It draws the earthing plan over the plant and exports the plan, the
+calculation and the quantities.
 
 The design basis is IEC. IS 3043 and IEEE 80 figures are worked out alongside
 as cross-checks and printed next to the IEC ones, so a reviewer working to
-either can see both.
+either can see both. The one place a cross-check enters the result is the plant
+grid resistance, carried forward as the larger of the IEC and IEEE 80 values.
+
+The design belongs to the project. Its inputs are saved with the project, and
+the bill of materials, the plan, the deliverables package and the Layers popover
+all read the design without the window being open.
 
 ## Opening it
 
-Two routes open the same window:
+Two routes open the same window, and both are greyed out until a layout exists:
 
-- **Tools ▸ Earthing Design…** on the menu bar. Before a layout exists it
-  answers with **Generate first** — *"Generate a layout first, then open
-  Earthing Design."*
+- **Tools ▸ Earthing Design…** on the menu bar.
 - **⚡ Earthing Design**, the last of the five buttons in the **Studies** card
-  on the **Tools** tab. It is greyed out until a layout exists.
+  on the **Tools** tab.
 
-The window works on every plot of the layout that holds tables; water plots and
-plots with no tables are left out.
+<Screenshot id="tools-menu-locked" maxWidth={320} />
+
+There is one window: opening it again brings the open one forward. It works on
+every plot of the layout that holds tables; water plots and plots with no tables
+are left out.
 
 ## The window
 
@@ -37,28 +43,51 @@ and **BoQ**; the exports are in the footer.
 
 <Screenshot id="earthing-layout" />
 
-**There is no Run button.** The window calculates as it opens, and again a
-moment after you stop changing an input — about a third of a second. Every
-field applies to every design: fixed tilt or tracker, string or central
-inverter. The system frequency is taken as 50 Hz.
+**There is no Run button.** The window calculates as it opens, and again about
+a third of a second after you change an input. The system frequency is taken as
+50 Hz.
+
+**The window follows the layout.** When the layout is replaced, by a Generate,
+opening a project, a cable refresh or a regroup, the window closes; open it
+again for the new layout. Your inputs are kept. While the inputs of the run are
+out of date the banner reads ***Out of date.*** *These figures are from the last
+run, and n inputs have changed since. Regenerate the layout to update them.*, and
+the exports are off with *"Inputs changed since the last run. Regenerate first."*
+
+Editing an earthing input re-feeds the bill of materials and marks the project
+changed. It does not make the layout
+[out of date](/docs/workspace/out-of-date-results).
 
 ## Inputs
 
-Seven groups, in the order they appear.
+Eight groups, in the order they appear.
+
+### Array earthing
+
+| Field | Default | Options | What it does |
+| --- | --- | --- | --- |
+| **Rule** | **Jumpers and a ring** | **Jumpers and a ring** / **A strip along each row** | How the tables are bonded. See [What gets earthed](#what-gets-earthed) |
 
 ### Soil & site
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Soil resistivity** (Ω·m) | 100.0 | 1–100,000 | The measured soil resistivity, from a Wenner four-pin test. Multiplied by the season factor, it gives the design resistivity used everywhere |
+| **Soil resistivity** (Ω·m) | 50.0 | 0–100,000; 0 shows **Unknown** | The measured soil resistivity, from a Wenner four-pin test; 50 Ω·m is assumed until it is measured. Multiplied by the season factor, it gives the design resistivity |
 | **Season factor** | 1.50 | 1–5 | The dry-season multiplier, for a test done in the wet season |
-| **Gravel resistivity** (Ω·m) | 3000 | 0–100,000 | The gravel or crushed-rock layer at the ICR and MCR yards — the surface layer in the touch and step limits |
+| **Gravel resistivity** (Ω·m) | 3000 | 0–100,000 | The gravel or crushed-rock layer at the ICR and MCR yards: the surface layer in the touch and step limits |
 | **Gravel thickness** (m) | 0.10 | 0–1 | Used in the IEEE 80 surface-layer factor |
 | **Soil corrosion** | Medium | Low / Medium / High | Sets **Corrosion allowance** to 15, 25 or 40 % |
 | **Corrosion allowance** (%) | 25 | 0–200 | Extra cross-section added to every GI strip for corrosion over the design life |
 | **Design life** (years) | 25 | 1–60 | Printed in the report |
 
-With the defaults the design resistivity is 150 Ω·m.
+With the defaults the design resistivity is 75 Ω·m.
+
+**Unknown soil.** Set **Soil resistivity** to 0 and it reads **Unknown**: one pit
+at each earthing point, nothing sized from the soil, and the grid not checked.
+The banner reads *"n earth pits · soil resistivity unknown"* and asks for a
+measured value.
+
+<Screenshot id="earthing-unknown-soil" />
 
 ### Fault data
 
@@ -76,7 +105,7 @@ With the defaults the design resistivity is 150 Ω·m.
 | **Show HV in report** | off | — | The design stops at the MCR; when ticked, the HV switchyard strip size is shown in the report only |
 | **Touch / step duration** (s) | 1.00 | 0.05–5 | The fault duration used for the touch and step voltages |
 | **Split factor** | 1.00 | 0.05–1 | The share of the MV earth-fault current that flows into the grid |
-| **X/R** | 10.0 | up to 60 | The system X/R ratio, for the decrement factor |
+| **X/R** | 10.0 | 0.1–60 | The system X/R ratio, for the decrement factor |
 
 ### Targets
 
@@ -85,7 +114,7 @@ With the defaults the design resistivity is 150 Ω·m.
 | **Whole plant** (Ω) | 1.00 | 0.05–50 | The plant grid target. Drives the verdict and the supplementary pits |
 | **Each earth pit** (Ω) | 5.0 | 0.1–100 | The target for each equipment earthing point |
 | **LA earth pit** (Ω) | 10.0 | 0.1–100 | The target for each lightning arrester's ring of pits |
-| **Pit rule** | One pit per point, bonded to grid | or **Add pits until each point meets target** | How many pits each equipment point gets — see [Earth pits](#earth-pits) |
+| **Pit rule** | One pit per point, bonded to grid | or **Add pits until each point meets target** | How many pits each equipment point gets. See [Earth pits](#earth-pits) |
 
 ### Earth pit (maintenance-free)
 
@@ -108,27 +137,29 @@ With the defaults the design resistivity is 150 Ω·m.
 | **Cu cable sizes** (mm²) | 4, 6, 10, 16, 25, 35, 50, 70, 95, 120 | text | The Cu earthing cable sizes you can buy |
 | **Wastage** (%) | 5 | 0–50 | Added to every strip and cable total |
 
-The size lists take commas or semicolons, `×` for `x`, in any case. An entry
-that cannot be read turns the banner to **Check the size lists** — *"GI strip
-sizes are width x thickness (e.g. 25x6, 50x10); Cu cable sizes are mm² (e.g.
-16, 35)."* — greys out the three exports with *"Fix the inputs to export"*, and
-leaves the results at the last calculation that worked.
+The size lists are read when you press Enter or leave the field. A list that
+cannot be read is put back to the last good one, with a hint under the field
+saying why, such as *"“abc” is not width x thickness (e.g. 50x6). The last list
+is kept."*
 
 ### Equipment rules
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **IDT per ICR (fallback)** | 2 | 0–10 | Used only when the layout has no transformer grouping |
-| **Pits per ICR / USS** | 2 | 0–8 | Pit groups at the corners of each ICR and USS ring |
-| **Neutral pits per IDT** | 2 | 0–8 | Pit groups south of each ICR, per transformer |
-| **Pits for MCR** | 2 | 0–8 | Pit groups at the corners of the MCR ring |
+| **Pits per ICR / USS** | 10 | 0–30 | Pits spread on the ring of each ICR and USS |
+| **Body pits per IDT** | 2 | 0–8 | Body pits beside each IDT (inverter duty transformer) |
+| **Neutral pits per IDT** | 0 | 0–8 | Neutral pits per transformer |
+| **Pits for MCR** | 10 | 0–30 | Pits spread on the MCR ring |
+| **Pits per power transformer** | 2 | 0–8 | Body pits for each power transformer, at the MCR |
+| **Pits per string inverter** | 1 | 0–4 | Pits at each string inverter. A central plant's SMBs bond to the table structure |
 | **Aux transformer at MCR** | on | — | Adds auxiliary-transformer neutral pits and a body link |
 | **Aux TX neutral pits** | 2 | 0–8 | Their number |
-| **Min. pits per LA** | 3 | 1–12 | The smallest ring of pits round an arrester |
+| **Pits per LA** | 2 | 1–12 | At least this many in the ring round an arrester, more when **LA earth pit** needs them |
 | **Fence pit every** (m) | 50 | 0–1000 | Fence pit spacing; 0 means no fence pits |
-| **Gates** | 1 | 0–20 | One pit per gate |
-| **CCTV pole every** (m) | 100 | 0–2000 | CCTV pole spacing; 0 means no CCTV poles |
-| **Weather stations** | 1 | 0–10 | Pits beside the MCR |
+| **Gates per plot** | 1 | 0–20 | Each plot has its own fence and gates |
+| **CCTV pole every** (m) | 0 | 0–2000 | CCTV pole spacing; 0 means no CCTV poles |
+| **Weather stations** | 0 | 0–10 | For the whole site, next to the MCR |
 | **Serrated washers / module** | 4 | 0–12 | Serrated washers per module, for frame bonding |
 | **Tracker bonding jumper** (mm²) | 16 | 6–120 | Trackers: the flexible tinned Cu braid across each bearing and the slew drive |
 | **Jumper length** (m) | 0.50 | 0.1–5 | The length of each jumper |
@@ -138,40 +169,77 @@ leaves the results at the last calculation that worked.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
+| **Jumper: the gap +** (m) | 0.30 | 0–2 | **Jumpers and a ring:** a jumper is the gap plus this |
+| **A break: a gap over** (m) | 2.0 | 0.1–50 | A gap wider than this is a break, not a jumper |
+| **Longest break bridged** (m) | 50 | 2–1000 | A longer break splits its row in two, each part joined at its ends |
+| **Ring inside the fence** (m) | 1.0 | 0–20 | Where the main ring runs |
+| **Ring pit every** (m) | 100 | 0–1000 | Pit spacing on the main ring; 0 means no ring pits |
 | **Strip in AC / MV trenches** | on | — | Lays strip along the MV and AC cable routes and any trenches you drew. When off, or with no MV route, an L-shaped MV backbone joins each ICR ring to the USS or MCR ring |
-| **MMS link length** (m) | 2.0 | 0–20 | Strip per MMS table, for the riser and clamp — counted, not drawn |
+| **MMS link length** (m) | 2.0 | 0–20 | **A strip along each row** only: strip per MMS table, for the riser and clamp. Counted, not drawn |
 | **Equipment link length** (m) | 5.0 | 0–50 | Strip per equipment body link |
 | **Fence / pole link length** (m) | 3.0 | 0–50 | Strip per fence, CCTV and street-light pit |
-| **Row runner gap split** (m) | 15 | 1–200 | A row runner is broken at any gap bigger than this |
-| **Max cross-link length** (m) | 30 | 1–200 | The longest row-to-row cross link |
+| **Row runner gap split** (m) | 15 | 1–200 | **A strip along each row** only: a row runner is broken at any gap bigger than this |
+| **Max cross-link length** (m) | 30 | 1–200 | **A strip along each row** only: the longest row-to-row cross link |
 
 ## What gets earthed
 
-The network is built plot by plot:
+The network is built plot by plot. **Rule** decides how the tables are bonded:
 
-- a GI **row runner** along every table row — east–west near the south edge on
-  fixed tilt, north–south along the centre line on trackers — broken at gaps
-  wider than **Row runner gap split**, with **cross links** between rows within
-  **Max cross-link length**, and an **MMS link** allowance for every table;
-- a **Cu cable** from each inverter or SMB to the nearest row runner;
-- **strip along the MV and AC trenches**, when that option is on;
-- a **ring** 1.5 m round each **ICR**, with pit groups at its corners and
-  transformer-neutral pits south of it — the transformer count comes from the
-  [electrical grouping](/docs/inputs/accb-and-transformers), or the fallback;
-- **USS** and **MCR** rings with their pits, and the auxiliary-transformer
-  pits; **weather-station** pits beside the MCR;
+<Tabs items={["Jumpers and a ring", "A strip along each row"]}>
+<Tab value="Jumpers and a ring">
+
+The default.
+
+- a **GI jumper** across each gap between neighbouring tables of a row, as long
+  as the gap plus **Jumper: the gap +**. The tables' structure carries the bond
+  between jumpers, and is not counted;
+- a **break bridge** across a gap wider than **A break: a gap over**, if it stays
+  inside the fence and is no longer than **Longest break bridged**. A longer one,
+  or one that would leave the plot, splits the row;
+- **straight strips** joining row ends row to row, at both ends;
+- a **main ring** on the MV duty, **Ring inside the fence** inside each fence,
+  with a pit every **Ring pit every**.
+
+</Tab>
+<Tab value="A strip along each row">
+
+- a GI **row runner** along every table row, broken at gaps wider than **Row
+  runner gap split**;
+- **cross links** between rows, within **Max cross-link length**;
+- an **MMS link** allowance for every table.
+
+<Screenshot id="earthing-strip-along-rows" />
+
+</Tab>
+</Tabs>
+
+Under either rule:
+
+- a **Cu cable** from each inverter or SMB to the nearest array conductor;
+- **strip along the MV, AC and hand-drawn trench routes**, when that option is on;
+- a **ring** 1.5 m round each **ICR**, **USS** and **MCR**, with its pits spread
+  on the ring;
+- **IDT body and neutral pits** south of each ICR. The transformer count comes
+  from the [electrical grouping](/docs/inputs/accb-and-transformers), or the
+  fallback;
+- **power transformer body pits** north of the MCR and **auxiliary neutral pits**
+  south of it; **weather-station** pits on one plot;
 - a **ring of pits round each lightning arrester**;
-- **fence**, **gate**, **CCTV** and **street-light** pits — local pits, not
-  bonded to the grid and not drawn with a strip, each counted with its link
-  allowance;
-- L-shaped strips tying any isolated part of the network to the rest;
-- on **trackers only**, a bonding jumper at each pile of the
+- a **fence strip** along the whole fence, joining its pits; **gate** pits on the
+  first fence; **CCTV** and **street-light** pits;
+- a string inverter's own pits, on string plants only;
+- on **trackers**, a bonding jumper at each pile of the
   [pile pattern](/docs/editing/piles), or estimated from the bearing spacing
   when there is none.
 
 Each strip and cable total is the drawn length plus the allowances, plus
 **Wastage**. A site with several plots gets one network and one grid check per
 plot; the banner reports the worst.
+
+Pits are counted by category: ICR body, USS body, IDT body, IDT neutral, MCR
+body, power transformer body, string inverter, main ring, aux transformer
+neutral, lightning arrester, fence and gate, CCTV pole, street light pole,
+weather station and supplementary (grid).
 
 ## Method and standards
 
@@ -187,25 +255,25 @@ plot; the banner reports the worst.
 ### Conductor sizes
 
 Each connection is sized for its fault duty from `S = I·√t / k`, with k for
-galvanised steel taken from the initial and final temperatures — 68.7 on the
+galvanised steel taken from the initial and final temperatures: 68.7 on the
 defaults. The required area is the larger of that and 90 mm², plus the
 corrosion allowance, and the strip chosen is the smallest in your list that
 meets it **and is at least 3 mm thick**. There are four duties: **Main grid**
 (the ICR and MCR rings, transformer bodies and neutrals, the HT panel, the MV
 backbone), **Array field — LV** (row runners, cross links, MMS links, AC-trench
 strip, central inverters), **Lightning arrester**, and **Fence, gates &
-poles** — the last two at the minimum size. **Show HV in report** adds an HV
-switchyard duty to the report only. On the defaults that gives
-**50x10** for the main grid and **25x6** for the rest.
+poles**, the last two at the minimum size. **Show HV in report** adds an HV
+switchyard duty to the report only. On the defaults that gives **50x10** for the
+main grid and **25x6** for the rest.
 
 The Cu cable is sized from the LV fault with k = 143 and a 6 mm² minimum, and
-carries no corrosion allowance — **35 mm²** on the defaults. If no listed size
+carries no corrosion allowance: **35 mm²** on the defaults. If no listed size
 is big enough for a duty, the report says so and asks for a larger size.
 
 ### Earth pits
 
-One pit on the defaults comes to 32.45 Ω by the IEC method (34.87 Ω by IS
-3043). The **Pit rule** decides what happens next:
+One pit on the defaults comes to 16.24 Ω by the IEC method (17.44 Ω by IS 3043).
+The **Pit rule** decides what happens next:
 
 - **One pit per point, bonded to grid** (the default): each equipment point
   gets one pit, bonded to the main grid, so the whole-plant value applies at
@@ -213,14 +281,16 @@ One pit on the defaults comes to 32.45 Ω by the IEC method (34.87 Ω by IS
   it and the banner adds *"One pit alone is R Ω; bonded to the grid it takes the
   plant value."*
 - **Add pits until each point meets target**: pits are added in a line at each
-  point until it meets **Each earth pit** on its own — ten pits on the
-  defaults.
+  point until it meets **Each earth pit** on its own, up to 50 pits. Section 4 of
+  the report states the count, as in *"1 → 16.24 Ω (! Not met vs 5 Ω); IS 3043
+  needs 5"* on the default rule.
 
-Each arrester gets a ring of at least **Min. pits per LA**, grown until it meets
-**LA earth pit** — five pits on the defaults. The report also gives the
-electrode length one pit would need to meet its target alone, and warns when
-the electrode is shorter than 2.5 m, the rod thinner than 15 mm, or the pit
-spacing less than twice the electrode length.
+Each arrester gets a ring of at least **Pits per LA**, grown until it meets **LA
+earth pit**: two pits on a ring come to 9.11 Ω on the defaults, within the 10 Ω
+target. The report also gives the electrode length one pit would need to meet its
+target alone, 13.3 m on the defaults, and warns when the electrode is shorter than
+2.5 m, the rod thinner than 15 mm, or the pit spacing less than twice the electrode
+length.
 
 ### Plant grid and touch voltage
 
@@ -229,35 +299,43 @@ resistivity**: adding strip or pits does not lower it. The IEEE 80 figure does
 respond to the network, and the resistance carried forward is the larger of the
 two. When the IS 3043 or IEEE 80 figure misses **Whole plant**, supplementary
 pits are added along the array until both meet it. When the plot's area alone
-puts the target out of reach, no pits are added and the report says so,
-suggesting a grid extended outside the array (counterpoise) or soil treatment.
+puts the target out of reach, the report says so, suggesting a grid extended
+outside the array (counterpoise) or soil treatment.
 
 For touch and step, the grid current is the MV fault current × **Split
 factor** × a decrement factor from **X/R** and the duration; the earth
 potential rise is that current × the grid resistance. The IEC check passes when
 the earth potential rise, or failing that the mesh touch voltage, is within the
-permissible touch voltage — allowing for footwear and the gravel layer.
+permissible touch voltage, allowing for footwear and the gravel layer.
 
 ## Results
 
 ### The verdict banner
 
-The banner reads *"n earth pits · plant grid R Ω (target ≤ T Ω)"*, with the
-strip lengths by size and the Cu cable length under it. It is green when every
-plot meets the **Whole plant** target and passes the IEC touch check, and amber
-otherwise, adding *"The grid misses its IEC target or touch limit — see
-Calculation."* Per-point and arrester targets do not change it; they are marked
-in the report.
+With a soil resistivity set, the banner reads *"n earth pits · plant grid R Ω
+(target ≤ T Ω)"*, with the strip lengths by size and the Cu cable length under it.
+At the assumed value it adds *"Soil resistivity assumed at 50 Ω·m, not measured:
+enter the measured value to confirm the grid."*
 
-<Screenshot id="earthing-warn" />
+It turns amber, with an exclamation mark, when something needs your attention:
+
+| Detail line | What to do |
+| --- | --- |
+| *"No listed size fits the &lt;duty&gt; — extend the size list."* | Add a larger size to **GI strip sizes** or **Cu cable sizes** |
+| *"Each equipment point needs more than 50 pits to reach T Ω — treat the soil or lower the target."* | Treat the soil, or lower **Each earth pit** |
+| *"The grid misses its IEC target or touch limit — see Calculation."* | Open **Calculation**. The touch limit can fail while the resistance target is met |
+
+If a calculation fails on the inputs, the banner reads **Could not calculate with
+these inputs** and names the fields to check. The plan and tables show the last
+good result and the exports are off, with the reason *"Fix the inputs to export"*.
 
 ### Layout
 
-The earthing plan over the plant — boundary, tables, ICRs, the MCR and the
-inverters in the background — with the strips coloured by duty (main grid red,
-array and AC trench blue, arresters purple, fence and poles grey, Cu cable
-green dashed), a marker for each kind of pit, and a legend with the count of
-each. The plot toolbar zooms and pans it.
+The earthing plan over the plant, with the boundary, tables, ICRs, the MCR and the
+inverters in the background. The strips are coloured by duty (main grid red, array
+and AC trench blue, arresters purple, fence and poles grey, Cu cable green dashed),
+with a marker for each kind of pit and a legend with the count of each. The plot
+toolbar zooms and pans it.
 
 ### Calculation
 
@@ -274,9 +352,9 @@ fault)**, **7. Where each earthing connection goes**, **8. Earth pit count**,
 
 **S.No · Description · Qty · Unit · Remark**: the maintenance-free earth pit,
 with the pit count by category in the remark; one row per GI strip size,
-including wastage; the Cu earthing cable; the MMS earthing connections; the
-serrated washers; the tracker bonding jumpers, on a tracker plant; and a test
-joint for each arrester's down conductor.
+including wastage; the Cu earthing cable; the jumpers and break bridges, or the
+MMS earthing connections under **A strip along each row**; the serrated washers;
+the tracker bonding jumpers, on a tracker plant; and the arrester test joints.
 
 <Screenshot id="earthing-boq" />
 
@@ -288,28 +366,38 @@ joint for each arrester's down conductor.
 | **Export DXF…** | `Earthing_Layout.dxf` | The plan in the layout's own coordinates: the layout on `REF_LAYOUT`, one layer per strip size and duty (such as `EARTH_GI_50X10_MV`, `EARTH_GI_25X6_LV`), one for the Cu cable, and one per kind of pit |
 | **Export BoQ…** | `Earthing_BoQ.csv` | The BoQ as CSV, with the columns `S.No,Description,Qty,Unit,Remark` |
 
-After a save the footer reads *"Saved &lt;path&gt;"*.
+After a save the footer reads *"Saved &lt;path&gt;"*. Each export needs active
+access, and each waits for a layout or cable run to finish and for an out-of-date
+layout to be generated again.
 
 <Screenshot id="earthing-pdf" />
 
-## How it relates to the rest of the application
+## Where the design goes
 
-- **Its quantities stay in this window.** Earthing materials are not in the
-  [bill of materials](/docs/bom/overview), the Summary, the **Export ▾** menu,
-  the layout DXF, the KMZ or the Word report. Take them from the BoQ tab and
-  its CSV.
-- **Its inputs are not saved with the project.** They are remembered while the
-  application window stays open — reopening Earthing Design brings back your
-  last values — and **File ▸ New Project** starts them again at the defaults.
-  Note the values you used, or keep the PDF, which prints the key inputs.
-- **It works on the layout it was opened on.** An open window does not follow a
-  later **Generate Layout** or an edit to the layout, and is not marked out of
-  date. After changing the layout, open Earthing Design again.
+The design needs no opening of this window to reach the rest of the application.
+
+| Place | What it carries |
+| --- | --- |
+| The project file | The inputs that differ from the defaults. **File ▸ New Project** starts them again at the defaults |
+| **Layers ▾ ▸ Earthing** | The strips, jumpers and pits on the plan, off by default and in the **Cables** group. It follows your edits and hides with **Plant layout** |
+| [Bill of materials](/docs/bom/overview) | Strip by class, jumpers, pits by kind and bolt sets, as measured lines. The trench strip drops out with **Calculate cables** off |
+| **Export ▾ Earthing layout (DXF)…** | The earthing layout on its own, as `Earthing_Layout.dxf`. See [Exports](/docs/exports/overview) |
+| [Drawing set](/docs/exports/drawing-set) | The D6 earthing sheets, and their layers in the DXF twin |
+| [Design report](/docs/exports/design-report) | Section 8, **Earthing**: inputs, conductor sizing, the earth grid check and quantities |
+
+<Screenshot id="earthing-on-plan" />
+
+The Summary has no earthing row.
+
+**The BOM and this window's BoQ can differ.** The BOM takes the inverters' Cu
+earthing cable by its own rule, 15 m for each, and adds its own rule lines, while
+the BoQ measures the design.
 
 <Callout type="warn">
-This is a preliminary design from the soil resistivity and fault levels you
-enter. Confirm it against a measured soil model and the actual fault study
-before it is issued for construction.
+The design is worked from the soil resistivity and fault levels you enter. Until
+a soil test confirms it, the grid check rests on an assumed 50 Ω·m. Confirm it
+against a measured soil model and the actual fault study before it is issued for
+construction.
 </Callout>
 
 ## Where to go next
@@ -323,7 +411,7 @@ before it is issued for construction.
   <Card
     title="Inverter control rooms"
     href="/docs/layout/icr"
-    description="The rooms whose rings and neutral pits the design earths"
+    description="The rooms whose rings and pits the design earths"
   />
   <Card
     title="Robot count from DXF"

@@ -1,6 +1,6 @@
 ---
 title: Spacing and tilt
-description: Tilt angle and row pitch are derived from the site latitude and the winter solstice unless you override them, plus what ground coverage ratio reports.
+description: Tilt from the site latitude, and row pitch shade-free across the Shadow Window on 21 December, unless you override them; plus what ground coverage ratio reports.
 ---
 
 The **Spacing & Tilt** card holds two numbers — the tilt angle of the module
@@ -21,7 +21,7 @@ launch removes this card; see [Tracker configuration](/docs/inputs/tracker).
 | --- | --- | --- | --- |
 | **Override tilt angle** | off — the line under it reads *Auto (latitude-based)* | — | Off, tilt is derived from the site latitude. On, enables the tilt field |
 | **Tilt angle** | 20.0° | 0.0–90.0° | The angle of the module plane from horizontal, used when the override is on |
-| **Override row pitch** | off — the line under it reads *Auto (no-shading, latitude-based)* | — | Off, pitch is derived from the no-shading condition. On, enables the pitch field |
+| **Override row pitch** | off — the line under it reads *Auto (no-shading, latitude-based)* | — | Off, pitch keeps rows shade-free across the Shadow Window on 21 December. On, enables the pitch field |
 | **Row pitch** | 7.0 m | 1.0–50.0 m | The repeat distance from one row of tables to the next, used when the override is on |
 
 Two definitions before going further. **Tilt** is the angle between the module
@@ -40,13 +40,13 @@ where the site is and pitch is derived from that tilt.
 The tilt angle follows a latitude rule of thumb:
 
 ```
-tilt ≈ latitude × 0.76 + 3.1°
+tilt = 0.76 × |latitude| + 3.1°, clipped to 5°–40°
 ```
 
 Latitude is the site latitude in degrees, taken from the geographic position of
-the boundary file. The rule tracks the well-established result that the
-best fixed tilt for annual yield sits somewhat below the site latitude, and
-flattens further as you approach the equator.
+the boundary file; a southern site uses its size, without the sign. The rule tracks
+the well-established result that the best fixed tilt for annual yield sits somewhat
+below the site latitude, and flattens further as you approach the equator.
 
 A KMZ or KML boundary carries its position already. A CAD drawing or an image
 does not necessarily, which is why those two inputs open the **Site reference**
@@ -57,22 +57,23 @@ derivation has what it needs.
 <Callout type="warn">
 Choose **Layout only** in that window and the site has no location. The
 automatic tilt and pitch then use the latitude you typed in the window, if you
-typed one. Without it they have nothing to work from: give a latitude, or tick
-both overrides here and set the tilt angle and row pitch by hand before you
-generate.
+typed one. Without it **Generate Layout** stays disabled, with the links **Set tilt
+and pitch** and **Enter a latitude** under it: give a latitude, or tick both
+overrides here and set the tilt angle and row pitch by hand.
 </Callout>
 
 Energy yield is a separate matter: on a layout-only site **Calculate Energy**
 is disabled outright, latitude or not, so no misleading generation figure is
 produced. See [CAD drawing boundaries](/docs/inputs/cad-boundary).
 
-### Pitch from the winter solstice
+### Pitch from the Shadow Window
 
-The automatic pitch is the closest row spacing that produces **no inter-row
-shading at solar noon on the winter solstice**:
+The automatic pitch is the closest row spacing that keeps rows **shade-free across
+the [Shadow Window](/docs/inputs/structures-and-shadow#the-shadow-window) on 21
+December**, 09:00 to 15:00 solar time by default. For one solar hour:
 
 ```
-pitch = L × cos(tilt) + L × sin(tilt) ÷ tan(solar elevation)
+pitch = L × cos(tilt) + L × sin(tilt) × cos(azimuth) ÷ tan(elevation)
 ```
 
 Every term:
@@ -81,27 +82,34 @@ Every term:
 | --- | --- |
 | `L` | The table height measured in the tilt plane — the length of the tilted face from its lower edge to its upper edge |
 | `tilt` | The tilt angle, derived or overridden |
-| `L × cos(tilt)` | The ground the tilted table itself covers: its footprint, north to south |
+| `L × cos(tilt)` | The ground the tilted table itself covers: its size in the plant, north to south, which placement and the drawing use |
 | `L × sin(tilt)` | The vertical height of the table's upper edge above its lower edge |
-| `solar elevation` | The angle of the sun above the horizon, at solar noon on the winter solstice, for the site latitude |
-| `L × sin(tilt) ÷ tan(solar elevation)` | The shadow that height casts along the ground — the clear space that must be left behind each row |
+| `azimuth` | The sun's bearing that hour, measured from the equator: 0 at solar noon |
+| `elevation` | The angle of the sun above the horizon that hour on 21 December, for the size of the site latitude. Never taken below 5° |
+| `L × sin(tilt) × cos(azimuth) ÷ tan(elevation)` | The shadow that height casts towards the next row — the clear space that must be left behind each row |
 
-So the pitch is the table's own footprint plus the length of the shadow its top
-edge throws at the chosen moment.
+The formula is worked at three hours: the window's start, its end and solar noon.
+The largest result wins, rounded **up** to the millimetre. So the pitch is the
+table's own ground size plus the longest shadow its top edge throws across the
+window, usually at the window's edge.
 
-### What the winter solstice condition buys
+For the default table, with `L` = 4.78 m:
 
-The winter solstice is the day of the year the midday sun sits lowest in the sky,
-so it casts the longest midday shadow. Sizing the pitch for solar noon on that
-day means:
+| Latitude | Automatic tilt | Plan depth (m) | Noon only (m) | 09–15 pitch (m) | 09–16 pitch (m) |
+| --- | --- | --- | --- | --- | --- |
+| 12° | 12.22° | 4.672 | 5.393 | 5.633 | 6.012 |
+| 20° | 18.30° | 4.538 | 5.961 | 6.427 | 7.240 |
+| 28° | 24.38° | 4.354 | 6.830 | 7.708 | 9.479 |
 
-- **No inter-row shading at solar noon on any day of the year.** Every other
-  day's midday sun is higher, so its shadow is shorter than the spacing you have
-  already allowed for.
-- **Not "no shading ever".** Early in the morning and late in the afternoon the
-  sun is low on any day, and rows do shade one another. That residual loss is
-  what the shading figure in the energy settings accounts for; it is not
-  designed away by the pitch.
+Noon only is what a window of 12 to 12 gives. The window is on the Site tab, and a
+wider one widens every row gap.
+
+### What the shade-free condition buys
+
+- **No row shades the next inside the window on 21 December.**
+- **Not "no shading ever".** Outside the window the sun is low, and rows do shade
+  one another. That residual loss is what the shading figure in the energy settings
+  accounts for; it is not designed away by the pitch.
 
 This is the standard, defensible starting point for a fixed-tilt plant, and it is
 deliberately conservative. Sites where land is expensive routinely accept a
@@ -117,8 +125,10 @@ spread over:
 GCR = table height ÷ row pitch
 ```
 
-The table height here is the same `L` as above, the tilted face length, so GCR is
-a plain number between zero and one. It is not a field: you never enter it. It is
+The table height here is the same `L` as above, the tilted face length, not the
+table's ground size, so GCR is a plain number and the visible gap between rows is
+the pitch less the ground size. On one sample site, `L` of 4.78 m at 8.43° covers
+4.728 m of ground, at a pitch of 5.287 m and a GCR of 0.9041. It is not a field: you never enter it. It is
 reported from the geometry once tilt and pitch are settled, and it feeds two
 calculations — the row-to-row shading loss, which is computed from GCR
 automatically unless you switch that off, and the rear-side irradiance of a
@@ -198,25 +208,24 @@ runs.
 </Step>
 </Steps>
 
-In the Summary view, a value on the **Tilt (°)** or **Pitch (m)** row that was
-derived rather than entered carries a trailing asterisk, so a copied or printed
-summary always says which of the two figures you chose and which the
-application worked out. The marking appears in fixed-tilt designs only.
+The Summary view reports both on its **Tilt (°)** and **Pitch (m)** rows. The
+[Workings view](/docs/workspace/workings) says how each was reached: the rule, the
+arithmetic, and whether your figure or a rule decided it.
 
 ## Tilt and pitch are coupled
 
 Tilt appears twice in the pitch formula — once projecting the table onto the
 ground and once setting the height of its upper edge — so **a change of tilt is
 a change of automatic pitch**. A steeper array stands taller, throws a longer
-midday shadow in midwinter, and needs more room behind it.
+shadow in the window, and needs more room behind it.
 
 That makes the four combinations meaningfully different:
 
 | Overrides | What you get |
 | --- | --- |
 | Neither | Tilt from latitude, pitch derived for that tilt. Internally consistent |
-| Tilt only | Your tilt, and a pitch re-derived for it. Still meets the no-shading condition |
-| Pitch only | Your spacing, with tilt from latitude. The no-shading condition no longer holds |
+| Tilt only | Your tilt, and a pitch re-derived for it. Rows stay shade-free across the window |
+| Pitch only | Your spacing, with tilt from latitude. Nothing keeps the rows shade-free across the window |
 | Both | Both figures exactly as entered. Nothing is derived and nothing is checked |
 
 Overriding one and leaving the other automatic is a deliberate choice, not a
@@ -245,6 +254,6 @@ both only when an external constraint gives you both numbers.
   <Card
     title="Summary view"
     href="/docs/reference/summary-columns"
-    description="Where tilt and pitch are reported, and what the asterisk means"
+    description="Where tilt and pitch are reported"
   />
 </Cards>

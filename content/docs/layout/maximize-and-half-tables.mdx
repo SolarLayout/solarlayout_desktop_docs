@@ -16,8 +16,8 @@ what you buy is capacity and what you pay is regularity.
 
 | Option | Default | What it changes | What it costs |
 | --- | --- | --- | --- |
-| **Maximize placement** | Off | Each row is positioned independently, hugging the boundary edge | Table columns no longer line up across rows; longer to compute on a large site |
-| **Add half tables** | Off | A half-size unit is dropped wherever a full one will not fit | A second unit type in the plant, counted separately |
+| **Maximize placement** | Off | Each row is positioned independently, hugging the boundary edge | Table columns do not line up across rows; longer to compute on a large site |
+| **Add half tables** | Off | A shorter unit holding whole strings is dropped wherever a full one will not fit | A second unit type in the plant, counted separately |
 
 Both live at the bottom of the **MMS-Table Configuration** card on the Array
 tab — or the **Tracker Configuration** card in a tracker design — alongside the
@@ -49,8 +49,8 @@ because the shared origin already reaches both edges.
 **Table columns will not be vertically aligned across rows.** That is not a
 cosmetic detail:
 
-- **The drawing reads as untidy.** On the layout sheet of the report, and in the
-  CAD drawing, the north–south lines that a reviewer's eye follows are broken.
+- **The drawing reads as untidy.** On the general arrangement sheet of the drawing
+  set, and in its DXF twin, the north–south lines that a reviewer's eye follows are broken.
   Rows step in and out relative to each other.
 - **Generation takes longer on a large site.** Every row is fitted against the
   boundary separately instead of being derived from a single grid.
@@ -68,42 +68,75 @@ option off, note the table count and capacity in the Summary view, turn it on,
 generate again, and compare. Nothing else in the design changes, so the
 difference is entirely the option.
 
+A layout edited in [Sketch Mode](/docs/editing/sketch-mode) is re-plotted on the
+aligned grid at the next **Generate Layout**, with this option off for that run, so
+that pile coordinates stay uniform for construction.
+
 ## Half tables
 
-A **half table** is half the east–west width of a full MMS-Table — the module
-mounting structure carrying the modules — and carries half the strings. It is
-dropped wherever a full table will not fit: the end of a row, and the narrow
-strips along an angled boundary.
+A **half table** is a shorter MMS-Table — the module mounting structure carrying
+the modules — that holds whole strings only. It is dropped wherever a full table
+will not fit: the end of a row, and the narrow strips along an angled boundary.
 
-Everything else about it is the same as a full table. It sits on the same row
-pitch, at the same tilt, inside the same usable area, and it is placed only
-where it fits entirely inside it. A half table is not a partly-clipped full
-table — it is a shorter structure, which is why it can stand in ground a full
-one cannot.
+It is half the modules wide, rounded up, and keeps the full table's height. Each of
+its strings runs along one half row and back along the next, so it holds half the
+full table's strings, rounded down. That rule decides what a half table is on your
+configuration:
+
+| Rows per MMS-Table | Half table holds | Share of a full table's modules |
+| --- | --- | --- |
+| 1 | No half table exists | — |
+| 2 | 1 string | One half |
+| 3 | 1 string; the third row stays empty | One third |
+| 4 | 2 strings | One half |
+
+Everything else about it is the same as a full table. It sits on the same row pitch,
+at the same tilt, inside the same usable area, and it is placed only where it fits
+entirely inside it. A half table is not a partly-clipped full table — it is a shorter
+structure, which is why it can stand in ground a full one cannot.
+
+### What the card tells you
+
+The card works this out as you change **Rows per MMS-Table** or **Modules per row**.
+With one row per table, **Add half tables** is greyed out and the hint under it reads
+*"A half table here would hold only half a string."* With an odd number of rows the
+hint says how many strings a half table carries and which row stays empty. Sketch
+Mode's **➕ Half Table** tool is greyed out with the same words.
+
+<Screenshot id="table-half-hint-3p" maxWidth={320} />
 
 ### On a tracker plant
 
-The tracker equivalent is a **half tracker**, and it is halved along the other
-axis. A tracker unit is long north to south, because the strings run along the
-torque tube, so halving the strings halves the **north–south length**. The
-option reads **Add half trackers** and is off by default, like its fixed-tilt
-counterpart.
+The tracker equivalent is a **half tracker**, and it is halved along the other axis:
+half the **north–south length**, by whole strings. The option reads **Add half
+trackers** and is off by default, like its fixed-tilt counterpart.
 
-The place a half tracker earns its keep is the north and south ends of a
-column, where a full-length unit runs out of ground before the boundary does.
+| Tracker | Half tracker holds | Share of a full tracker's modules |
+| --- | --- | --- |
+| 1 string, 1 module across | No half tracker exists | — |
+| 2 strings, 1 module across | 1 string | One half |
+| 3 strings, 1 module across | 1 string | One third |
+| 1 string, 2 modules across | 1 string | One half |
+
+With a single module across, it holds half the strings rounded down. With two or more
+across, it is half the length and holds half the strings on the whole tracker, rounded
+down.
+
+The place a half tracker earns its keep is the north and south ends of a column, where
+a full-length unit runs out of ground before the boundary does.
 
 ### How half units are counted
 
-Half units are never mixed into the full-unit count. The Summary view reports
-them in their own row, and wherever a count feeds another calculation the
-half unit is weighted at **half**:
+Half units are never mixed into the full-unit count. The Summary view reports them in
+their own row, and where a count feeds another calculation the rule depends on the
+calculation:
 
 | Where it appears | How half units are treated |
 | --- | --- |
 | The Summary view | Two separate rows — **Full tables** and **Half tables** (**Full trackers** and **Half trackers** on a tracker plant) |
 | Plant capacity and module count | A half unit contributes its own modules, so it lifts capacity by less than a full one |
-| The number of control rooms | Counted as 0.5 of a table, both when the rooms are counted and when the tables are divided between them. See [Inverter control rooms](/docs/layout/icr) |
-| Sizing the plant to a target capacity | Counted as 0.5 of a unit throughout |
+| The number of control rooms | Counted at its share of a full unit's modules, both when the rooms are counted and when the tables are divided between them. See [Inverter control rooms](/docs/layout/icr) |
+| Sizing the plant to a DC target | Counted as 0.5 of a unit |
 | Cleaning fleet sizing | Counted as 0.5 when a line's length is judged too short to justify a robot |
 | Piles | Each half unit carries the half pile pattern — derived from the full one, or your own — and counts its own piles. See [Pile layout](/docs/editing/piles) |
 
@@ -120,7 +153,7 @@ a second bill-of-materials line, a second pile pattern, and a second erection
 method on site, for a capacity contribution that is by definition small.
 
 You can also place a half unit by hand. Sketch Mode's **➕ Half Table** tool
-(**➕ Half Tracker** on a tracker plant) drops one anywhere you click, which is
+(**➕ Half Tracker** on a tracker plant) places one where you click, which is
 the better route when you want two or three of them in specific places rather
 than every one the application can find. See
 [Sketch Mode](/docs/editing/sketch-mode).
@@ -162,7 +195,7 @@ meaningful:
   is left. Neither option lets a table encroach on ground the site rules kept
   clear.
 - **The equipment stages are unchanged.** More tables mean more capacity, which
-  can mean an extra control room and more arresters — and those clear tables in
+  can mean an extra control room and more arresters — and those remove tables in
   turn. The extra capacity you read in the Summary view is the figure after all
   of that, not before it.
 
@@ -199,6 +232,6 @@ prepared to build.
   <Card
     title="Sizing to a target capacity"
     href="/docs/simulation/ac-capacity"
-    description="Where half units are weighted at 0.5"
+    description="Holding the plant to a DC target, where half units count 0.5"
   />
 </Cards>

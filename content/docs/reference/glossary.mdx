@@ -18,11 +18,15 @@ hidden and a gold **Get Free Access** button shows instead. See
 **AC combiner box (ACCB)** — In a string-inverter design, the box a group of
 string inverters lands on, inside an ICR block; each ACCB takes one
 low-voltage winding of an inverter duty transformer. How many inverters share
-a box and how many boxes share a transformer are set on the **ACCB &
-Transformer** card — 15 and 4 as shipped. See
+a box, 15 at most as shipped, and which transformer forms take the boxes are set on
+the **ACCB & Transformer** card. See
 [ACCB and transformers](/docs/inputs/accb-and-transformers).
 
 **ACCB** — See **AC combiner box**.
+
+**Advanced settings** — The rare design inputs, such as check limits and BOM settings,
+kept per project and opened from **File ▸ Advanced settings…**. See
+[Advanced settings](/docs/workspace/advanced-settings).
 
 **Aperture** — On a tracker, the east–west width of the module array on one
 unit: the modules across the torque tube multiplied by their east–west
@@ -39,26 +43,44 @@ fraction of its front-side efficiency. Shipped at 0.70, with a typical range of
 0.65 to 0.80, and used only when the module is marked bifacial. See
 [Bifacial gain](/docs/energy/bifacial).
 
+**Bill of materials (BOM)** — The materials list for the design, counted from the
+layout under a profile, with your edits kept. See
+[Bill of materials](/docs/bom/overview).
+
+**BOM profile** — The list of entries and rules a bill of materials is counted by. The
+application ships a built-in profile, and you can save your own. See
+[BOM profiles](/docs/bom/profiles).
+
 ## C
 
 **Capacity factor** — Year-one generation as a percentage of what the plant
-would produce running at its full DC capacity for all 8 760 hours of the year.
-Reported as the **CUF (%)** row of the Summary view and as a tile on the Energy
-view.
+would produce running at its full capacity for all 8 760 hours of the year. Reported
+on DC and on AC, as the **CUF on DC (%)** and **CUF on AC (%)** rows of the Summary
+view and as tiles on the Energy view.
 
 **Capacity utilisation factor (CUF)** — The application's name for the capacity
 factor. See **Capacity factor**.
 
 **Central inverter** — A large inverter housed **inside** the control room
 building, fed by DC trunks from the string monitoring boxes out in the array.
-They are counted per ICR block, and at most 4 are housed in one building;
-because they are inside there is no AC cable leg. See
+They are counted per ICR block from its monitoring boxes, or from the plant's AC
+capacity after an AC-capacity simulation; because they are inside there is no AC cable
+leg. See
 [Choosing a design mode](/docs/design-modes).
+
+**Clean boundary** — The review a Google Earth file goes through on loading, and the
+window it opens when there is something to decide. It saves a corrected copy named
+`<your file>_clean.kmz` beside the original. See
+[Clean boundary](/docs/inputs/clean-boundary).
 
 **Clearness index** — The ratio of the irradiance reaching the ground to the
 irradiance arriving above the atmosphere. It is what allows a single global
 horizontal figure to be split into its beam and diffuse parts before the tilt
 model transposes them onto the module plane.
+
+**Company** — The name, logo, address and drawing-number pattern printed on the title
+blocks, saved on this computer from **File ▸ Company…**, with a copy in each project
+that uses it. See [Company](/docs/exports/company).
 
 **Conductor length** — Cable to be procured, as distinct from trench to be dug.
 DC runs are counted twice, for the positive and negative conductors; AC runs
@@ -80,25 +102,30 @@ first-year figure applied once, shipped at 1.0 %, and an annual figure applied
 compounding from year two, shipped at 0.4 % per year. See
 [Lifetime and P-values](/docs/energy/lifetime-and-p-values).
 
+**Deliverables package** — See **Package**.
+
+**Design check** — One of the 29 tests the finished design is read against, listed in
+the **Checks** view: reconciliation (R), completeness (C) and engineering (E). A check
+informs and never blocks an export or an issue, and no exported file carries the
+results. See [Design checks](/docs/workspace/checks).
+
 **Design chip** — The item in the ribbon that names the current design —
 *"Fixed tilt · String inverter ▾"*, *"Tracker · Central inverter ▾"* and so on.
 Clicking it opens the New design window and launches another window for a
 different combination; the current window stays open. See
 [Choosing a design mode](/docs/design-modes).
 
-**Design warning** — A note that the finished layout falls outside a design
-rule — a control room over its rating or not placed, a trench outside the plant
-or under a table, a feeder or a voltage drop over its limit. A warning never
-blocks anything. It shows in a banner on the Summary view, a chip under every
-view, the PDF summary page and the bill of materials. See
-[Design warnings](/docs/reference/design-warnings).
+**Draft** — A package exported without issuing it: stamped DRAFT on every sheet and
+page, with no revision on its sheets. See
+[The deliverables window](/docs/exports/deliverables).
 
 ## E
 
 **Earth pit** — A maintenance-free earth electrode: a copper-bonded rod in a
 bore filled with backfill compound, bonded to the plant's earthing grid by
 galvanised-iron (GI) strip. How many the plant needs, and the strip and cable
-sizes, come from the **Earthing Design** study, not the bill of materials. See
+sizes, come from the **Earthing Design** study, and the bill of materials counts
+them. See
 [Earthing design](/docs/simulation/earthing).
 
 **Exceedance probability** — The probability that actual generation equals or
@@ -148,9 +175,9 @@ row-to-row shading loss is derived from it. See [Shading](/docs/energy/shading).
 over to the party that provides the substation, when the grid connection is by others. It
 removes no tables. See [Grid connection by others](/docs/layout/grid-connection).
 
-**Half table** — A unit half the east–west width of a full table, carrying half
-the strings, dropped only where a full table will not fit. It is reported in its
-own row of the Summary view and counts as 0.5 wherever tables are weighted. See
+**Half table** — A unit about half the east–west width of a full table, on whole
+strings, dropped only where a full table will not fit. It is reported in its own row of
+the Summary view. A one-row table has no half table. See
 [Maximize placement and half tables](/docs/layout/maximize-and-half-tables).
 
 ## I
@@ -159,10 +186,14 @@ own row of the Summary view and counts as 0.5 wherever tables are weighted. See
 
 **ICR block** — One inverter control room and the tables wired to it through
 their inverters or string monitoring boxes. The combiner boxes and transformers
-are grouped per block, and each block can be shown on the plot and opened in a
-summary window of its own. See [ICR blocks](/docs/layout/icr-blocks).
+are grouped per block. The **ICR blocks** layer colours each block on the plot, and
+the Summary's **By block** sheet sets out their figures. See [ICR blocks](/docs/layout/icr-blocks).
 
 **IDT** — See **Inverter duty transformer**.
+
+**Issue** — To export a package as a numbered revision for review, approval or
+construction. The revision and its design are kept in the project file. See
+[Revisions](/docs/exports/revisions).
 
 **In-plane irradiance (GTI)** — The annual solar energy falling on the tilted
 module plane, in kWh/m² per year. This, not GHI, is the figure the yield is
@@ -189,18 +220,23 @@ rating at or above that load. See
 
 **Landscape** — See **Module orientation**.
 
-**Layers popover** — The panel opened by **Layers ▾** in the view tools, with
-nine ON/OFF rows: Plant layout, Legend, Lightning arresters, ICR blocks, the
-three cable rows, Contour / terrain and Plant totals. It is where every drawing
-switch lives. See [Views](/docs/workspace/views).
+**Layers popover** — The panel opened by **Layers ▾** in the view tools, with ten
+ON/OFF rows in three groups: Equipment (Plant layout, Arrester coverage, ICR blocks),
+Cables (the AC or DC trunk, DC string and MV rows, and Earthing), and Site & analysis
+(Shadows, Contour / terrain, Checks). It is where the drawing switches live. See
+[Views](/docs/workspace/views).
 
-**Lightning arrester (LA)** — A mast providing strike termination over the
-array. Each protects a circular area of the protection radius, shipped at
-100.0 m, and the masts sit on a square grid of that same spacing so neighbouring
-circles overlap. On fixed tilt the keep-clear footprint is 30 m east–west by 7 m
-north–south and the tables inside it are removed; on a tracker it is a 1 m by
-1 m pole marker in a gap between columns and no units are removed. See
-[Lightning arresters](/docs/layout/lightning-arresters).
+**Lightning arrester (LA)** — A mast providing strike termination over the array. Each
+protects a circle of the protection radius, shipped at 100.0 m. The masts sit on a
+square grid of 1.4 × the radius, each moved to the nearest gap in the rows, with one more
+wherever a table or building would be left outside every circle. Tables touched by a
+mast's pile, or by its shadow swept over the Shadow Window through the year, are removed.
+See [Lightning arresters](/docs/layout/lightning-arresters).
+
+**Line corridor** — The strip cleared either side of a line feature crossing the
+site — a transmission line, a canal, a road. It is set **per side** and ships at
+15.0 m, so the cleared strip is twice it, and each line can have its own.
+Higher-voltage lines need more, for example 30 m per side for a 400 kV line.
 
 **LID** — Light-induced degradation: the initial drop in module output during
 its first exposure to sunlight. It is the application's **1st year
@@ -216,7 +252,7 @@ north–south, 5.0 m high, and it is placed by hand rather than automatically. S
 **Maximize placement** — An option that positions each row of tables, or each
 column of trackers, independently so it hugs the exact edge of the usable area
 instead of starting from a shared origin. It fits extra units against diagonal
-and curved boundaries, at the cost of columns no longer lining up across the
+and curved boundaries, at the cost of columns not lining up across the
 plant and a longer generation run.
 
 **MCR** — See **Main control room**.
@@ -247,19 +283,20 @@ fixes how many modules may be wired in series. See
 
 **Obstruction** — Any area excluded from placement: a polygon carried in the
 boundary file, such as a building or a substation, or one you draw yourself with
-**Draw Rectangle** or **Draw Polygon** on the Tools tab. The **🚧 Road** tool in
-[Sketch Mode](/docs/editing/sketch-mode) is different in shape: you drag a
-straight centre-line and enter a road width, and the corridor of that width is
-cleared. Every label calls the result an obstruction. See
+**Draw Rectangle** or **Draw Polygon** on the Tools tab. See
 [Obstructions](/docs/layout/obstructions).
 
 ## P
 
+**Package** — What **Export deliverables…** writes into one folder from one frozen copy
+of the design: the drawing set as PDF and DXF, the design report, the schedules workbook,
+the BOM workbook, the KMZ and a manifest, with `piles.csv` when there is a pile pattern.
+See [Exports](/docs/exports/overview).
+
 **Performance ratio (PR)** — The fraction of the theoretically available energy
 the plant actually delivers, once every loss has been taken off: inverter,
 cables, soiling, temperature, mismatch, shading, availability, transformer and
-the rest. Multiplied by the in-plane irradiance it gives the specific yield.
-Monthly figures follow IEC 61724-1, where PR is the final yield divided by the
+the rest. Monthly figures follow IEC 61724-1, where PR is the final yield divided by the
 reference yield.
 
 **Perimeter road** — The band between the plant boundary and the usable area.
@@ -287,13 +324,12 @@ inside one becomes an obstacle. One file may carry several boundaries, and each
 becomes its own plant with its own column in the Summary view. See
 [Boundary file requirements](/docs/inputs/kmz-requirements).
 
-**Plant chips** — The row of plant totals under every view: DC capacity, site
-area, plants (multi-plot only), tables or trackers, modules, ICR blocks,
-lightning arresters when placed, and year-one P50 energy, led by an **Out of
-date** chip while the inputs differ from the last run and a **Design warnings**
-chip while the design has warnings. Clicking a chip opens the Summary view; the
-energy chip opens the Energy view. The **Plant totals** row of the Layers
-popover hides the row. See [Views](/docs/workspace/views).
+**Plant chips** — The row of plant totals under every view: site area, DC capacity,
+plants (multi-plot only), tables or trackers, modules, ICR blocks, lightning arresters
+when placed, and year-one P50 energy, led by an **Out of date** chip while the inputs
+differ from the last run and a **Design checks** chip while checks are open. Clicking a
+chip opens the Summary view; the energy chip opens the Energy view and the **Design
+checks** chip the Checks view. See [Views](/docs/workspace/views).
 
 **Portrait** — See **Module orientation**.
 
@@ -317,10 +353,11 @@ name has to be read rather than assumed. See
 
 **SAT** — See **Single-axis tracker**.
 
-**Shadow window** — The daily span of solar hours, shipped at 9.0 to 15.0, over
-which the year-round shadow footprint of the control rooms, objects and street
-lights is swept. Tables inside that footprint are cleared when the option to do
-so is on. See [Structures and shadow](/docs/inputs/structures-and-shadow).
+**Shadow window** — The daily span of solar hours, shipped at 9.0 to 15.0, over which
+the year-round shadow footprint of the control rooms, objects, street lights and
+arrester masts is swept. Tables inside the buildings' footprint are cleared when the
+option to do so is on. Automatic row pitch uses the same window, on 21 December. See
+[Structures and shadow](/docs/inputs/structures-and-shadow).
 
 **Single-axis tracker (SAT)** — A mounting structure that rotates its modules
 about a horizontal north–south axis, so the module plane sweeps east to west
@@ -333,14 +370,14 @@ reports a tilt.
 **Soiling** — The loss from dust, dirt and bird droppings on the module glass. A
 performance-ratio input, shipped at 2.0 %.
 
-**Specific yield** — Annual energy per kWp installed, in kWh/kWp: the annual
-in-plane irradiance multiplied by the performance ratio. Multiplying it by the
-plant's DC capacity gives the year-one energy.
+**Specific yield** — Year-one energy per kWp installed, in kWh/kWp: the IEC final
+yield. Multiplying it by the plant's DC capacity gives the year-one energy.
 
 **Stage tabs** — The five tabs the inputs live on, under the pinned **Generate
 Layout** button: **Site · Array · Electrical · Yield · Tools**. Every card on a
 tab is a collapsible group. The Tools tab can always be opened, but its
-buttons are greyed out until a layout exists, except **Robot count from DXF…**.
+buttons are greyed out until a layout exists, except **Robot count from DXF…** and,
+with a boundary, **Place Object**.
 See [The main window](/docs/workspace/main-window).
 
 **String** — Modules wired in series so their voltages add. **In this
@@ -358,8 +395,8 @@ See [Inverter settings](/docs/inputs/inverter).
 **String monitoring box (SMB)** — In central-inverter mode, the box out in the
 array that collects the strings from nearby tables and feeds a DC trunk back to
 the control room. It takes the place a string inverter would occupy in the other
-mode, and its capacity multiplied by the boxes per inverter gives the central
-inverter's capacity.
+mode, and its capacity multiplied by the most boxes per inverter gives the central
+inverter's DC limit.
 
 ## T
 
@@ -368,17 +405,11 @@ modules: the unit the plant is tiled from and the thing counted in the Summary
 view's full and half table rows.
 
 **Tilt** — The angle of the module plane from horizontal. Derived from the site
-latitude, roughly latitude × 0.76 + 3.1°, unless you override it, in which case
-the field ships at 20.0°. A trailing asterisk in the Summary view means the
-reported tilt was derived rather than entered.
+latitude, as latitude × 0.76 + 3.1° kept between 5° and 40°, unless you override it,
+in which case the field ships at 20.0°.
 
 **Torque tube** — The beam a tracker's modules are mounted on, and which rotates
 with them. In L config the module's long edge lies along it.
-
-**Line corridor** — The strip cleared either side of a line feature crossing the
-site — a transmission line, a canal, a road. It is set **per side** and ships at
-15.0 m, so the cleared strip is twice it, and each line can have its own.
-Higher-voltage lines need more, for example 30 m per side for a 400 kV line.
 
 **Trench** — The excavation the cables are laid in. A trench total is the
 de-duplicated path length for that cable type, so a stretch several cables share
@@ -404,19 +435,25 @@ only where it fits **entirely** inside it. See
 
 **UTM zone** — Universal Transverse Mercator: the local metric map projection
 a located site is worked in — a KMZ boundary, or a CAD drawing located by its
-own coordinates — and the coordinates its CAD export is written in. A CAD or
+own coordinates — and the coordinates its DXF is written in. A CAD or
 image boundary placed by latitude and longitude, or laid out without a
 location, keeps the drawing's own coordinates instead. A contour file supplied
 as a CAD drawing must be in the boundary file's coordinates. See
-[CAD drawing](/docs/exports/dxf).
+[The drawing set](/docs/exports/drawing-set).
 
 ## V
 
-**Views** — The five tabs across the top of the right side — **Layout ·
-Summary · Energy · BOM · SLD** (**Ctrl+1** to **Ctrl+5**) — each showing the
+**Views** — The seven tabs across the top of the right side — **Layout · Summary ·
+Checks · Workings · Energy · BOM · SLD** (**Ctrl+1** to **Ctrl+7**) — each showing the
 same plant a different way and each taking the whole area under the view
 header. The tools right of the tabs change with the view. See
 [Views](/docs/workspace/views).
+
+## W
+
+**Workings** — The view that shows how each number was reached: the rule, the
+arithmetic, the inputs it used and which rule decided it. See
+[Workings](/docs/workspace/workings).
 
 ## Where to go next
 

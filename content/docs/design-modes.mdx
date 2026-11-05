@@ -60,7 +60,7 @@ plant's geometry.
 south in the northern hemisphere, north in the southern. Rows run east to west
 and repeat northward at a row pitch. The tilt and the pitch are derived from
 the site latitude unless you override them, and the pitch is what keeps one row
-from shading the row behind it in midwinter.
+from shading the row behind it inside the design's Shadow Window.
 
 **Single-axis tracker.** Modules are carried on a **horizontal, north–south
 axis** and rotate about it through the day, so the panels sweep from facing
@@ -153,7 +153,7 @@ modules within an MMS-table.
 
 String monitoring boxes — SMBs — take the place of distributed inverters. Each
 collects the strings around it, and the central inverters themselves sit
-**inside the control room buildings**, up to four to a building.
+**inside the control room buildings**.
 
 Cabling therefore has no AC leg at all:
 
@@ -163,7 +163,9 @@ Cabling therefore has no AC leg at all:
 Because the inverter is inside the building, its AC output never crosses open
 ground. **Max strings per SMB** sizes each monitoring box, and
 **Max SMB per Central Inverter** — 10 by default — sizes the central inverter:
-its capacity is the monitoring box capacity multiplied by that number.
+its capacity is the monitoring box capacity multiplied by that number. After a
+[Simulation with AC capacity](/docs/simulation/ac-capacity) the central inverter
+count comes from the plant's AC instead.
 
 </Tab>
 </Tabs>
@@ -185,9 +187,9 @@ of equipment are placed.
 | MOUNTING chip on the Array tab | *Fixed-tilt MMS tables* | *Single-axis tracker* |
 | Array cards | **MMS-Table Configuration** and **Spacing & Tilt** | Both replaced by a single **Tracker Configuration** card |
 | Unit rows in the Summary view | **Full tables** and **Half tables** | **Full trackers** and **Half trackers** |
-| Angle row | **Tilt (°)**, with a trailing `*` when auto-calculated | **Max tracking angle (°)** |
+| Angle row | **Tilt (°)** | **Max tracking angle (°)** |
 | Plant chip | **Tables** | **Trackers** |
-| Lightning arrester footprint | A 30 m by 7 m rectangle; tables overlapping it are removed | A 1 m by 1 m pole marker, snapped into the nearest gap between tracker columns, so **no tracker units are removed** |
+| Lightning arrester mast | In the nearest gap between rows | In the nearest gap between tracker columns |
 | Cleaning robot lines | Run west to east along each table row | Run north to south along each tracker column |
 | Sketch palette units | Table and Half Table | Tracker and Half Tracker |
 
@@ -198,14 +200,16 @@ of equipment are placed.
 | Electrical card title | **String Inverter** | **SMB – String Monitoring Box** |
 | Strings field | **Max strings per inverter** | **Max strings per SMB** |
 | Extra field | — | **Max SMB per Central Inverter** |
-| Grouping card | **ACCB & Transformer** — inverters per AC combiner box (ACCB), ACCBs per transformer | **Transformer** — central inverters per transformer |
-| Equipment rows in the Summary view | **String inverters** · **Inverter rating (kWp)** · **ACCBs** | **SMBs** · **SMB rating (kWp)** · **Central inverters** · **Central inverter rating (kWp)** |
+| String fuses, default | Inline, at the connector | Inside the SMB |
+| Communication, default | Power-line, over the AC cable | RS485, daisy-chained, fixed |
+| Grouping card | **ACCB & Transformer** — inverters per AC combiner box (ACCB), and the transformer forms | **Transformer** — the transformer forms |
+| Equipment rows in the Summary view | **String inverters** · **Largest DC load per inverter (kWp)** · **ACCBs** | **SMBs** · **Largest DC load per SMB (kWp)** · **Central inverters** · **DC limit per central inverter (kWp)** |
 | Cable row | **AC cable to ICR (m)** | **DC cable to central inverter (m)** |
 | Second cable row in the Layers popover | **AC cables (Inv→ICR)** | **DC cables (SMB→CI)** |
+| Cables card | **AC cable laying** | **DC trunk laying** and **DC trunk conductor** |
 | Loss rows | **String DC cable losses**, **AC cable losses (Str. Inv. → ICR)** | The same rows read MMS → SMB and **DC cable losses (SMB → Central Inv.)** |
 | Efficiency row | **String Inverter efficiency** | **Central Inverter efficiency** |
-| CAD export layer | `INVERTERS` | `SMB` |
-| Auto-built diagram | PV → String Inverter → ACCB → Transformer → MV Panel → Grid | PV → SMB → Central Inverter → Transformer → MV Panel → Grid |
+| Auto-built diagram | PV → String Inverter → ACCB → Transformer → MV panel | PV → SMB → Central Inverter → Transformer → MV panel |
 | Default overload limit when sizing from an AC capacity | 1.5 | 1.4 |
 
 The full row list, in order, is in
@@ -230,7 +234,7 @@ understates:
 <Callout type="warn">
 The new window does not inherit the work in progress. Its boundary file and its
 inputs are entered again there, and the layout, hand edits, diagram and
-materials list of the window you came from stay with that window. Save each
+bill of materials of the window you came from stay with that window. Save each
 one with **Save project** to its own project file.
 </Callout>
 

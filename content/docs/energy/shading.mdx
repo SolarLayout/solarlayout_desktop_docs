@@ -10,9 +10,8 @@ rather than of the site or the equipment: pitch, tilt and latitude fix it
 between them.
 
 The application can either compute it from that geometry or take a percentage
-you enter. Computed is the default, and computed is what you should defend to a
-lender, because a fixed allowance carried over from another project has no
-relationship to the pitch you have actually drawn.
+you enter. Computed is the default, because a fixed allowance carried over from
+another project has no relationship to the pitch you have actually drawn.
 
 ## Two ways to set it
 
@@ -55,7 +54,7 @@ Every term:
 | `s` | The shaded length measured up the face of the collector behind, from its lower edge upward |
 | `L` | The collector slope length — the dimension of the collector measured up its tilted face, from lower edge to upper edge. Not the flat footprint the table occupies on the ground |
 | `s/L` | The shaded fraction of the rear collector: 0 is fully lit, 1 is fully shaded |
-| `GCR` | Ground coverage ratio — the collector width as a fraction of the row pitch. The application reports it as table height divided by row pitch, and it is the single number in which pitch enters this relation |
+| `GCR` | Ground coverage ratio — the collector width as a fraction of the row pitch. The application reports it as the table's slope length divided by row pitch, and it is the single number in which pitch enters this relation |
 | `β` | The collector tilt angle from horizontal — the tilt derived from latitude, or your override |
 | `ψ` | The solar profile angle — the apparent elevation of the sun as seen in the vertical plane perpendicular to the row axis. This, not the true solar elevation, is what decides how far a shadow reaches across the pitch |
 | `α` | The true solar elevation angle above the horizon |
@@ -146,9 +145,7 @@ as entered. Legitimate reasons to do it:
 
 <Callout type="warn">
 An override does not change the Shadow View picture or the geometry — it only
-replaces the number entering the performance ratio. If your typed value and the
-computed value disagree substantially, one of them is describing a different
-plant. Find out which before reporting either.
+replaces the number entering the performance ratio.
 </Callout>
 
 ## The Shadow View window
@@ -163,9 +160,11 @@ latitude: pick the boundary file again and enter one."*
 
 <Screenshot id="shadow-view" />
 
-**The picture is driven by the same model as the loss number, so the two always
-agree.** The cross-section is not an illustration drawn to a different set of
-assumptions — it is the same geometry evaluated at the one sun position the
+Both tabs carry the same two sliders, **Day of year** (1–365, opening on day 355,
+*21 Dec*) and **Solar time** (5.0–19.0 h in steps of 0.1, opening on *12:00*). They
+are one moment: moving either tab's slider moves the other's.
+
+**The same model feeds the picture and the loss number.** The cross-section is it the same geometry evaluated at the one sun position the
 sliders select, rather than summed over a year. And everything in the window is
 analysis only, as its note says: *"Analysis only — the layout is unchanged"*.
 Changing an input here moves the picture and its verdict, never a table.
@@ -181,33 +180,57 @@ along it — with the sun's rays drawn onto it.
 | **Tilt angle** | The collector tilt the section is drawn at |
 | **Row pitch** | The distance between rows |
 | **Lower-edge height** | The height of each collector's lower edge above ground, which places the rows vertically. The **Module ground clearance** field on the Yield tab feeds this picture and nothing else |
-| **Day of year** slider | Which day the sun follows. Ships at day 355 — the winter solstice |
-| **Solar time** slider | The solar hour, from 5 to 19 h. Ships at 12 — solar noon |
+| **Day of year** slider | Which day the sun follows |
+| **Solar time** slider | The solar hour |
 
-Above the picture a verdict answers the question the tab is for. When the rear
-row is clear it reads along the lines of *"The rear row is shade-free …"* with
-a tick; when it is not, *"n % of the rear row is shaded …"*. A detail line
-under it gives the sun elevation, the profile angle, and how far up the
-collector's slope the shadow reaches — *"lower s m of the L m slope"*.
+The ranges are **Tilt angle** 0–60°, **Row pitch** 1–60 m and **Lower-edge
+height** 0–5 m.
+
+Above the picture a verdict answers the question the tab is for, for the moment the
+sliders select: *"The rear row is shade-free at 12:00 on 21 Dec"* with a tick, or
+*"n % of the rear row is shaded at 12:00 on 21 Dec"*. Early or late in the day it
+can read *"The sun is below the horizon …"* or *"The sun is behind the array plane
+…"*. A detail line under it gives the sun elevation, the profile angle, and how far
+up the collector's slope the shadow reaches: *"lower s m of the L m slope"*.
 
 ### Object shadow (plan / keep-clear)
 
-The second tab is the plan view of one object — a building, a pole, a tank —
-and the ground its shadow sweeps over the course of a solar-time window.
+The second tab is the plan view of one object, such as a lightning arrester, a
+building, a tree or a wind turbine, and the ground its shadow sweeps over the year
+within a solar-time window.
 
-| Control | What it does |
-| --- | --- |
-| **Object length (E–W)** | The object's footprint along the east–west axis |
-| **Width (N–S)** | Its footprint along the north–south axis |
-| **Height** | Its height, which sets how far the shadow reaches |
-| **Solar time from … to …** | The window of solar hours the shadow is swept over |
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Object length (E–W)** | 2.0 m | 0.1–200 m | The object's footprint along the east–west axis |
+| **Width (N–S)** | 2.0 m | 0.1–200 m | Its footprint along the north–south axis |
+| **Height** | 10.0 m | 0.5–200 m | Its height, which sets how far the shadow reaches |
+| **Solar time from** | 9.0 h | 4–12 h | The start of the window the shadow is swept over |
+| **to** | 15.0 h | 12–20 h | The end of the window |
+| **Day of year** slider | day 355 | 1–365 | The day of the moment drawn in red |
+| **Solar time** slider | 12.0 h | 5.0–19.0 h | The hour of the moment drawn in red |
 
-The verdict states the ground to keep clear: *"Keep a m² clear — the shadow
-reaches up to r m"*, or *"This object casts no shadow in the chosen window"*
-when nothing falls inside it. It is the same idea as the keep-clear footprints
+The plan draws three things: the **Keep-clear zone** in grey, swept over the year
+in the window; the object in navy; and the shadow at the sliders' moment in red.
+The legend names the moment, *"Shadow at 09:00 on 21 Dec"*, or *"No shadow at 06:00
+on 21 Dec: sun too low"* when the sun is under 5°. The sliders move only the red
+shadow; the grey zone stays as it is.
+
+<Screenshot id="shadow-view-object" />
+
+The verdict is about the zone, not the moment. It states the ground to keep clear:
+*"Keep a m² clear — the shadow reaches up to r m"*, or *"This object casts no shadow
+in the chosen window"* when nothing falls inside it. It is the same idea as the keep-clear footprints
 placed structures get on the Site tab — see
 [Structures and shadow](/docs/inputs/structures-and-shadow) — applied to an
 object of your own dimensions without placing it.
+
+### What the window remembers
+
+In the same session the window comes back with the day, the time, the object, the
+window and the tab you left it on. **Tilt angle**, **Row pitch** and **Lower-edge
+height** start again from the layout every time. None of it is saved with the
+project. The **Shadows** row of **Layers ▾** is a separate thing: it draws the
+layout's own keep-clear on the plan.
 
 ### How to use the row view
 
@@ -223,7 +246,7 @@ the ones in force, whether derived or overridden.
 <Step>
 ### Go to the worst case first
 
-The window opens on the winter solstice at solar noon. Drag **Solar time**
+The window opens on 21 December at solar noon. Drag **Solar time**
 towards the early morning. That is when the sun is lowest and furthest round in
 azimuth, the profile angle is at its smallest, and the shadow reaches furthest
 across the pitch. If the verdict still reads shade-free there, the design has

@@ -90,18 +90,19 @@ rather than three — an image has no coordinates of its own to use:
 **Place by latitude and longitude** is the one to use. The traced outline is
 moved so its centre sits at the point you typed — never scaled or rotated — and
 the site then has a position: automatic tilt and row pitch, energy yield, the
-Google Earth export and the satellite image all work.
+package's Google Earth file and the satellite image all work.
 
 **Layout only** leaves the site's location unknown. The layout is still
 generated, but there is no energy yield — **Calculate Energy** is disabled —
-no Google Earth export and no satellite image. Automatic tilt and row pitch
-need a latitude: give one in the window, or set tilt and pitch by hand in
+no Google Earth file in the package and no satellite image. On a fixed-tilt design
+**Generate Layout** stays disabled until there is a latitude or both overrides are
+ticked: give one in the window, or set tilt and pitch by hand in
 [Spacing and tilt](/docs/inputs/spacing-and-tilt). The Shadow View needs the
 latitude too.
 
 Either way the drawing keeps its own coordinates: the plot's units note reads
-*"Drawing coordinates · metres"*, and the exported CAD drawings come back in the
-image's own frame. The fields, the banners and the full table of what each
+*"Drawing coordinates · metres"*, and the package's DXF comes back in the image's
+own frame. The fields, the banners and the full table of what each
 choice gives are on
 [CAD drawing boundaries](/docs/inputs/cad-boundary#the-site-reference-window).
 

@@ -1,17 +1,17 @@
 ---
 title: Structures and shadow
-description: Footprints and heights for the control rooms, unit substations, objects, arresters and street lights on the Site tab — and the shadow they clear tables out of.
+description: Footprints and heights for the control rooms, unit substations, arresters and street lights on the Site tab, and the shadow they clear tables out of.
 ---
 
-**Structures & Shadow (keep-clear)** describes every building and pole on the
+**Structures & Shadow (keep-clear)** describes the buildings and poles on the
 site. The numbers you enter here do two separate jobs.
 
 First, they set the **physical footprint** of each structure — the rectangle it
 occupies on the ground. That rectangle is what is drawn on the plot, what is
-reserved out of the array, and what is carried into the exported drawings. Any
-table overlapping it is removed.
+reserved out of the array, and what reaches the drawings. Any table overlapping it
+is removed.
 
-Second, the **heights** of the buildings and objects drive a **year-round shadow
+Second, the **heights** of the buildings drive a **year-round shadow
 footprint**. The application sweeps the sun through a working window of the day,
 across the whole year, and takes the ground each structure's shadow covers at any
 point in that sweep. Tables inside that footprint are cleared rather than placed,
@@ -27,7 +27,7 @@ Everything on this card is saved with the project. Changing any of it after a
 run marks the layout
 [out of date](/docs/workspace/out-of-date-results) until you generate again.
 
-## The four structures
+## The three buildings
 
 Every footprint is entered as **L** — length, east–west — by **W** — width,
 north–south — with **H**, the height, beside it. The fields carry no unit; the
@@ -40,9 +40,8 @@ is placed and drawn at the size you asked for.
 | **ICR (m):** | 10.0 | 4.0 | 5.0 |
 | **MCR (m):** | 15.0 | 8.0 | 5.0 |
 | **USS (m):** | 5.0 | 4.0 | 5.0 |
-| **Object (m):** | 0.0 | 0.0 | 0.0 |
 
-The ranges are the same for all four rows: length 0.0–500.0 m, width
+The ranges are the same for all three rows: length 0.0–500.0 m, width
 0.0–500.0 m, height 0.0–200.0 m, to one decimal place.
 
 ### ICR — inverter control room
@@ -64,7 +63,9 @@ circuit terminates at. Unlike the inverter control rooms it is **not** placed
 automatically — you place it yourself, once, from the **Grid connection &
 Objects** card on the **Tools** tab: arm **Place MCR** and click a position on
 the plot. A position outside the boundary is refused with *This spot is outside the
-boundary. Move inside the plot.* The buttons on that card come on once a layout exists.
+boundary. Move inside the plot.* **Place MCR** comes on once a layout exists. With
+the grid connection [by others](/docs/layout/grid-connection) there is no main
+control room or unit substation.
 
 Its footprint is the largest of the three buildings by default, so place it
 where the array is already interrupted — beside the entrance, next to the
@@ -76,8 +77,8 @@ inverter control room's circuit runs back to this building, and the circuits are
 routed as one shared network rather than as parallel runs, so nearby rooms merge
 into a single trench. A position central to the control rooms costs materially
 less cable than a corner does. The medium-voltage cables are routed on the next
-**Generate Layout** with cable calculation on — after placing the room the card
-says so — and the total then appears on the status line and in the Summary
+**Generate Layout** with cable calculation on — after placing the room the bar over
+the plot says so — and the total then appears on the status line and in the Summary
 view. See [Cable routing](/docs/layout/cables).
 
 ### USS — unit substation
@@ -86,47 +87,41 @@ A local step-up substation for a plot that does not contain the main control
 room. See [Unit substations in a multi-plot file](#unit-substations-in-a-multi-plot-file)
 below for when one appears.
 
-### Object
+### Objects
 
-A generic structure you place by hand — a store, a pump house, a security post,
-a switchyard building, anything on the site the boundary file did not carry.
-On the **Tools** tab, arm **Place Object**, click the plot, and repeat for as
-many as you need; **Remove Objects** clears them. **Place Object** becomes
-available as soon as the object has a size.
+A store, a pump house, a security post, a switchyard building, anything on the site
+the boundary file did not carry, is placed by hand and has no row on this card. On
+the **Tools** tab, **Place Object** opens a window asking its length, width and
+height, 5.0 × 5.0 × 10.0 m the first time and the last size used after that. See
+[Site equipment](/docs/layout/site-equipment).
 
-All three of its fields ship at **0**, which means *not configured*. Set the
-length, width and height **before** placing objects, or you are placing a
-structure with no footprint and no shadow.
+An object behaves like a building here: its footprint is reserved out of the array,
+tables overlapping it are removed, and its height casts the same year-round shadow
+a control room does.
 
-Once sized, an object behaves like a building in every respect that matters
-here: its footprint is reserved out of the array, tables overlapping it are
-removed, and its height casts the same year-round shadow a control room does.
-The card carries one set of object dimensions, so every object you place takes
-that same size. On a site with a large store and a small security post, size for
-the structure whose shadow you care about and draw the rest as annotations.
-
-The heights of these four structures are used for shadow geometry. They are not
-a structural design, and nothing here is checked against a load case.
+The heights of these structures are used for shadow geometry. They are not a
+structural design, and nothing here is checked against a load case.
 
 ## Unit substations in a multi-plot file
 
 On a site made up of several separate boundaries, the medium-voltage collection
 cannot all run to one building without crossing ground you do not own. The
-application handles this the moment you place the main control room:
+application handles this when you place the main control room:
 
 <Steps>
 <Step>
-### Place the main control room in one plot
+### Click each plot in turn
 
-Arm **Place MCR** and click inside each plot in turn. The last unassigned plot
-you click receives the main control room.
+Arm **Place MCR**. The bar over the plot reads *Click a plot to place its USS. The
+last plot gets the MCR.*
 </Step>
 
 <Step>
-### A unit substation appears in every other plot
+### One plot gets the main control room, the others a unit substation
 
-A unit substation of the size set above is dropped into **every plot except**
-the one holding the main control room — one per plot.
+A unit substation of the size set above goes into each plot you click, and the last
+one receives the main control room, so **every plot except** the one holding it
+has one unit substation.
 </Step>
 
 <Step>
@@ -157,28 +152,19 @@ above.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **LA (m):** pile Ø | 0.30 m | 0.0–5.0 m | No effect on the design. A figure you record for the report. |
-| **LA (m):** height | 9.0 m | 0.0–100.0 m | No effect on the design. A figure you record for the report. |
+| **LA (m):** height | 9.0 m | 0.0–100.0 m | With the Shadow Window, sets the shadow the mast sweeps. It also prints in the arrester's line in the bill of materials, such as *Level IV, 9 m mast* |
+| **LA (m):** pile Ø | 0.30 m | 0.0–5.0 m | Sets the mast's square footprint on the ground, never under 0.2 m |
 
-<Callout type="warn">
-Neither of these two fields changes the design. The mast height casts no shadow
-and clears no tables; the pile diameter reaches no quantity and no pile
-schedule. Both are saved with the project and printed among the input
-parameters of the project report, and, like any input, changing one after a run
-marks the layout out of date. The arrester mast and its foundation belong in
-your own structural and civil documents.
-</Callout>
-
-The tables cleared around an arrester come from the arrester's own keep-clear
-footprint, which is a fixed rectangle for the mounting type rather than anything
-derived from the height — see
+Both shape the design. Every table or tracker unit touched by the pile or the swept
+shadow is removed, so a taller mast costs more tables. At a height of 0, or on a
+site with no latitude, only the pile clears. Details and worked figures are on
 [Lightning arresters](/docs/layout/lightning-arresters).
 
 ## The shadow window
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Shadow Window (h):** | 9.0 to 15.0 | 4–12 / 12–20 solar hours | The part of the day the year-round shadow footprint is swept over. |
+| **Shadow Window (h):** | 9.0 to 15.0 | 4–12 / 12–20 solar hours | The part of the day the design keeps shade-free: the year-round shadow footprint is swept over it, and the automatic row pitch keeps rows clear across it on 21 December. |
 | **Clear tables in shadows:** | on | — | Removes tables and tracker units that fall inside that footprint. |
 
 The window is set in **solar hours**, so 12.0 is solar noon at the site rather
@@ -186,9 +172,10 @@ than noon on a clock. The first field is the start of the window and the second
 is the end, and their ranges are arranged so the window always spans solar noon.
 
 The default window runs from 9.0 to 15.0 — the six hours around solar noon. As
-the field's own tooltip puts it, this is the usual shadow-free design window,
-and the winter solstice governs it. A later end adds the low-sun afternoon tail
-and roughly doubles the ground each 5 m building sterilises. Narrowing the
+the field's own tooltip puts it, this is the usual design window, and the winter
+solstice governs it. A wider window widens every row gap, through the
+[automatic pitch](/docs/inputs/spacing-and-tilt#pitch-from-the-shadow-window), and
+roughly doubles the ground each 5 m building sterilises. Narrowing the
 window shrinks the footprint, because the early-morning and late-afternoon
 shadows, which are the long ones, are left out of the sweep.
 
@@ -209,12 +196,11 @@ than placing it on the pole-facing edge.
 
 On by default. It removes every table or tracker unit falling inside the
 year-round shadow footprint of the inverter control rooms, the main control
-room, the unit substations and any objects you placed. The status line after a
-run counts them: *n tables cleared for building shadows*.
-
-**Arrester masts are not in that list** — no
-arrester shadow clears a table, at any height you enter — and street-light
-shadows are handled by the street-light option rather than by this one.
+room, the unit substations, any objects you placed and the street lights. The
+status line after a run counts them: *n tables cleared for building shadows*. The
+ground kept clear shows on the **Shadows (keep-clear)** row of the **Layers ▾**
+popover, whatever this box says. An arrester mast's keep-clear follows its own
+[height and pile](#arrester-pile-and-height).
 
 The reasoning is straightforward. A module that spends the productive part of
 every day in a building's shadow does not earn its place: it produces a fraction
@@ -223,10 +209,9 @@ through mismatch, and it still costs a full set of modules, piles and cable. It
 is better removed than placed. The plant's capacity, module count and bill of
 materials all report the smaller, honest number.
 
-Turning it off places tables everywhere they geometrically fit, shadow or not.
-That is useful when you want to see the maximum capacity a site can carry, or
-when you have not yet decided where the buildings go. It is not the
-configuration to issue a design from.
+Turning it off leaves tables standing in those shadows. That shows what the
+shadows cost in capacity, and it suits a layout whose buildings are not yet
+decided.
 
 Row-to-row shading between the tables themselves is a different matter — it is
 never a reason to remove a table, and it is handled as a loss in the energy
@@ -282,8 +267,8 @@ control room and the objects on the plot.
     description="Where the rooms are placed, and how to move one"
   />
   <Card
-    title="CAD drawing export"
-    href="/docs/exports/dxf"
-    description="The layers each structure is written to"
+    title="The drawing set"
+    href="/docs/exports/drawing-set"
+    description="The sheets and the DXF twin each structure is drawn on"
   />
 </Cards>

@@ -9,10 +9,8 @@ with AC Capacity** works the other way. You state the AC capacity you are
 contracted for and the DC/AC ratio you want to build at, and the plant is sized
 to match it.
 
-That is the shape most utility-scale projects actually arrive in. The connection
-agreement fixes the megawatts you may export, the tariff is set against them,
-and the design question is not how much the site could hold but how much of the
-site you should use to deliver exactly what you have sold.
+Use it when a connection agreement fixes the megawatts you may export, and the
+design question is not how much the site could hold but how much of it to use.
 
 ## Where it is, and what it needs
 
@@ -109,7 +107,7 @@ sizing:
 | --- | --- |
 | **Inverters** | The whole number of inverters the target needs |
 | **Strings per inverter** | Parallel strings per inverter, from the inverter's own limits |
-| **Installed AC** | Inverter count × rated AC output — always at or above the target |
+| **Installed AC** | Inverter count × rated AC output, always at or above the target, with *"requested x MW"* under it |
 | **Target DC** | Requested AC × the DC/AC ratio |
 | **DC/AC ratio** | The ratio the figures are built at |
 | **DC per inverter** | The DC behind each inverter at that sizing |
@@ -119,12 +117,8 @@ target:
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **ICR block AC** (kW) | 0, shown as **Not set** | 0–5,000,000 | The AC capacity one ICR block serves. Beside it the window answers *"→ n blocks of x.xxx MWp DC"*; while it is not set, *"keeps the input panel's x MWp blocks"*. See [ICR blocks from an AC capacity](#icr-blocks-from-an-ac-capacity) |
-| **Strings per SMB** | 20 | 1–500 | Central-inverter designs only. The window answers *"→ n SMBs per inverter"*. It can be changed only while the verdict is **Fits this layout**; otherwise its answer reads `—` |
-
-**ICR block AC** opens at **Not set** every time the window opens; it is not
-remembered between openings or saved with the project. Only its effect — the
-**ICR Block** value that a regeneration writes — is kept.
+| **ICR block AC** (kW) | 0, shown as **Not set** | 0–5,000,000 | The AC capacity one ICR block serves. Beside it the window answers *"→ n blocks of x.xxx MWp DC"*; while it is not set, *"keeps the input panel's x MWp blocks"*; with invalid inputs, `—`. See [ICR blocks from an AC capacity](#icr-blocks-from-an-ac-capacity) |
+| **Strings per SMB** | 20 | 1–500 | Central-inverter designs only. See [Central inverters](#central-inverters) |
 
 <Screenshot id="ac-capacity-icr-block" />
 
@@ -136,6 +130,12 @@ The verdicts:
 | **Needs x MWp more than this layout holds** | The first run already used all the usable area there is | *"… Lower the target, or make room in the layout (tighter pitch, more area) and generate again."*, with fix buttons **Set AC capacity to … kW** and **Set ratio to …** |
 | **DC/AC ratio is over the inverter's limit** | *"You asked for r; the overload limit is m. DC beyond the limit is clipped. Figures below use the limit."* | **Set ratio to …** and **Raise limit to …** |
 | **Missing input** | *"Module Pmax and modules-per-string are required."* or *"Inverter rated AC power (Pac_rated) is required."* | Fill the field, or the matching value under **Override nameplate values** |
+
+If the layout was saved while capped, by an earlier version, its uncapped DC may
+not be recorded. The strip then reads *"This layout's full DC is **not known**"*,
+the verdict reads **This layout's full DC is not known**, Headroom reads `—`, and
+the primary button is greyed with *"The layout's full DC is not known."* The figures
+are right; whether they fit the layout cannot be checked.
 
 ### The footer
 
@@ -188,7 +188,46 @@ inverter and a slightly higher installed figure — deliberately, because the
 alternative is a plant that cannot deliver what it was contracted for.
 
 **The target DC** is then the requested AC capacity multiplied by the DC/AC
-ratio — the **Target DC** tile, and the figure in the primary button's label.
+ratio: the **Target DC** tile, and the figure in the primary button's label.
+
+On a string plant the count is a floor for the plant. On a central plant it is the
+count exactly; see the next section.
+
+## Central inverters
+
+On a central-inverter design the AC sets the inverters and the SMBs follow. With the
+simulation on, the central inverter count is `ceil(AC capacity ÷ rated AC)` exactly,
+not derived from the SMBs.
+
+**Strings per SMB** (default 20, range 1–500) sizes the SMBs for the target DC, and
+they are shared evenly between the inverters. The window answers beside the field:
+*"→ 12–13 SMBs per inverter  DC/AC up to 1.319"*, or, when the busiest inverter would
+go over the **Overload limit**, *"⚠ DC/AC up to x > limit"* in warning colour. It is
+a warning, never a refusal; lower the DC/AC ratio or the strings per SMB, or raise the
+limit.
+
+**ICR block AC** also decides how the inverters split between the blocks. A full ICR
+takes as many inverters as fit in the block AC, rounded down; full ICRs come first and
+the rest go in the last. Without a block AC the inverters are spread evenly. The
+answer beside the field reads:
+
+*"→ **n** blocks of **x** MWp DC · f inverters, y MW each · split inverters"*
+
+with the split in a form like `10 × 3 + 2`: ten ICRs of three and one of two. If the
+blocks hold fewer inverters than the count, the blocks are counted from the split:
+*"→ **m** blocks (f inverters, y MW each) · split inverters"*.
+
+For example, 100,000 kW of 3,200 kW inverters at a ratio of 1.3, with 28 modules of
+580 W to a string and a block AC of 12,500 kW, gives 32 inverters, 102.4 MW installed,
+a 130 MWp target and blocks of 16.25 MWp. Each full ICR takes three inverters, and the
+split is `10 × 3 + 2`, so 11 ICRs. At 20 strings to an SMB that is 401 SMBs for 8,005
+strings, 12–13 per inverter, DC/AC up to 1.319.
+
+After a regeneration, **Max SMB per Central Inverter** on the **Electrical** tab holds
+the busiest inverter's SMBs and is greyed, with the hint *"Set by the AC simulation:
+the busiest inverter's SMBs. The inverter count comes from the plant AC."* See
+[Inverters](/docs/inputs/inverter). An inverter over the overload limit is reported by
+[the design checks](/docs/reference/design-checks), and never adds another inverter.
 
 ## DC overload and the DC/AC ratio
 
@@ -216,16 +255,13 @@ Deliberately fitting more DC than the inverter can pass fills that gap. The
 array reaches the inverter's limit more often and for longer, the inverter runs
 nearer its efficient operating region, and on the handful of hours when the array
 would exceed the limit the inverter **clips** the surplus — it holds its output
-at the rating and the extra DC is not converted. The energy given up in
-clipping is small; the energy gained across every other hour is not. This is why
-utility-scale plants are routinely DC-overloaded rather than matched.
+at the rating and the extra DC is not converted.
 
 <Callout type="warn">
 The **Overload limit** is the **design** overload figure, not the inverter's
 nameplate maximum DC input. Do not read 1.5 as a hardware rating you can push
 to. Check the manufacturer's own maximum DC input power and voltage before
-raising the field, and keep the warranty conditions in view — clipping is a
-design choice, over-driving an input is a defect. Ask for a ratio above the
+raising the field. Ask for a ratio above the
 limit and the window says so, sizes at the limit, and offers to set the ratio
 down or the limit up.
 </Callout>
@@ -315,42 +351,54 @@ failure to deliver the design.
 
 **Trimmed tables are held back and returned afterwards.** The stages that run
 after placement clear more ground: control rooms are re-placed against the
-reduced capacity, lightning arresters take their footprints, inverter pads take
-theirs. Ground that was occupied when the trim was calculated may be free by the
+reduced capacity, lightning arresters clear the tables under their piles and
+shadows, inverter pads take theirs. Ground that was occupied when the trim was calculated may be free by the
 time those stages finish. So the trimmed tables are kept in reserve and put back
 after them, and any whose ground has since been taken by other equipment is
 skipped.
 
-**Half units are weighted at half throughout.** A half table counts as 0.5
-wherever tables are counted in this process, so a plant using half tables is
-trimmed on the same weighted basis as one without them.
+**Half units are weighted by the modules they hold.** The trim counts each table
+at its own modules, so a plant using half tables lands on the target just as one
+without them does.
 
 The consequence: **the empty ground on a capped plant is deliberate.** It is the
-capacity you chose not to build, and it is where a future extension goes if the
-connection is ever increased.
+capacity you chose not to build.
 
 ## Where the result appears
 
-Three rows in the **ELECTRICAL** group of the **Summary** view carry the
-outcome:
+The **Capacity** group of the **Summary** view's Plant sheet carries the outcome:
 
 | Row | What it reports |
 | --- | --- |
-| **AC capacity (MWac)** | The plant's AC capacity |
-| **Inverter capacity (MW)** | The installed inverter capacity |
-| **DC / AC ratio** | The delivered DC/AC ratio |
+| **Plant AC capacity (MWac)** | The AC capacity you typed, shared by units while the cap is on |
+| **DC / AC ratio** | DC capacity over the plant AC |
+| **Inverter AC capacity (MW)** | The installed inverter capacity. Shown only when it differs from the plant AC |
+| **DC / AC on inverters** | DC capacity over the installed inverter AC. Shown with the row above |
 
-Read all three together, and read them against the target you typed. **DC / AC
-ratio** is the check that matters: it is the delivered ratio, computed from what
-was actually placed, and it is the figure that tells you the cap did what you
-asked. A delivered ratio marginally above the target is the expected result of
-rounding inverters up and landing DC just above target. The **DC capacity**
-chip under the view shows the capped figure. See
-[Summary view](/docs/reference/summary-columns) for the full row set.
+Read them together, and read them against the target you typed. **DC / AC ratio**
+is the check that matters: it is the delivered ratio, computed from what was
+actually placed, and it is the figure that tells you the cap did what you asked. A
+delivered ratio marginally above the target is the expected result of landing DC
+just above target. The **DC capacity** chip under the view shows the capped figure.
+See [Summary view](/docs/reference/summary-columns) for the full row set.
 
-The capped layout carries into everything downstream unchanged — the report, the
-drawing exports, the bill of materials and the energy calculation all describe
-the capped plant, so run the energy calculation again after a regeneration.
+**CUF on AC** on the Energy view and the Summary is worked against the same plant
+AC. The capped layout carries into everything downstream unchanged: the
+[deliverables package](/docs/exports/overview), the bill of materials and the energy
+calculation all describe the capped plant, so run the energy calculation again after
+a regeneration.
+
+## What the window keeps
+
+The window reopens on the inputs it closed with, whether you closed it or
+regenerated: **AC capacity**, **DC/AC ratio**, **Overload limit**, **ICR block AC**,
+**Modules per string**, **Module Pmax**, **Inverter rated AC**, **Let me choose where
+placement starts**, **Strings per SMB**, and a `.PAN` or `.OND` you loaded in the
+window. **Modules per string** and the files come back only while the panel's are
+unchanged; otherwise the panel's win.
+
+The inputs are saved with the project, except a `.PAN` or `.OND` loaded only in this
+window. Loading a new boundary file clears them.
 
 ## Where it fits in the design sequence
 

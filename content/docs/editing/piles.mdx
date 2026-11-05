@@ -1,6 +1,6 @@
 ---
 title: Pile layout
-description: Define the pile pattern of a full table, and of a half table — derived or your own — in the Pile layout window, then count, draw and export every pile.
+description: Define the pile pattern of a full table, and of a half table, derived or your own, in the Pile layout window. Every pile is then counted, drawn and exported.
 ---
 
 The pile layout feature produces a construction document: the position of every
@@ -62,7 +62,7 @@ The consequence is practical. A pattern entered against a portrait table does
 not transfer to a landscape one, and a pattern entered before you changed the
 modules per row no longer sits where you meant it to. If you change the table
 configuration, open the window again and check the pattern against the new
-frame before exporting.
+frame before you issue anything.
 
 ### What a pile is
 
@@ -82,9 +82,9 @@ unit's own south-west corner. So a pile's position on the ground is:
 
 > the unit's south-west corner, **X** metres east and **Y** metres north.
 
-That relation lets you check the export by hand. Take any table, take its
+That relation lets you check the coordinates by hand. Take any table, take its
 south-west corner, step east by the pattern's X and north by its Y, and that is
-the coordinate the export gives for that pile. The coordinates are in metres:
+the coordinate `piles.csv` gives for that pile. The coordinates are in metres:
 UTM for a Google Earth boundary or a CAD drawing located by its own
 coordinates, and the drawing's own coordinates for a CAD or image boundary
 placed by hand or laid out without a location.
@@ -135,7 +135,7 @@ which you can edit directly. Set the **Pile radius** once for the whole design.
 inset 6% from the ends and 10% from the sides*, and **replaces the piles placed
 so far**. Its button reads **Place n piles**. It works on the unit you are
 editing, so on the Half tab the grid fits the half unit, and it remembers the
-counts you last used.
+counts you last used for the session.
 </Step>
 
 <Step>
@@ -160,8 +160,7 @@ The status line after applying reads, on a tracker design with *tracker* for
 | With half units | *"Piles applied: n per full table, m per half table · N piles."* |
 | Pattern emptied | *"Piles removed from all N tables."* — the button reads **Remove piles from all N tables** |
 
-**Export to Excel…** in the footer writes the coordinates to a workbook — see
-below — and **Close** leaves without applying anything.
+**Close** leaves without applying anything.
 
 ## Half tables: the Full / Half switch
 
@@ -233,11 +232,9 @@ on the half pattern stays as you drew it when the full one changes.
 
 <Screenshot id="pile-editor-half-own" />
 
-<Callout type="warn">
-**Clear** on the Half side makes your own half pattern an empty one, so every
-half unit is left with no piles. To go back to the pattern derived from the full
-table, use **Reset to derived** instead.
-</Callout>
+To go back to the pattern derived from the full table, use **Reset to derived**.
+**Clear** on the Half side counts as an edit: it leaves your own half pattern
+empty, and half units with no piles.
 
 With no full pattern yet, the Half side's tools are disabled: place piles on
 the full unit first.
@@ -252,6 +249,8 @@ Click **Review** to look at it, then keep it or use **Reset to derived**.
 
 <Screenshot id="pile-editor-half-changed" />
 
+<Screenshot id="pile-editor-half-changed-half" />
+
 ## Checking the pattern against the ground
 
 Once applied, the piles are drawn on every unit — each full unit with the full
@@ -259,8 +258,6 @@ pattern, each half unit with the half pattern — with coordinate labels for the
 piles in view.
 
 <Screenshot id="piles-overlay" />
-
-<Screenshot id="view-header-piles-on" />
 
 The **Piles: ON** overlay stays visible even with **Plant layout** switched off
 in the **Layers ▾** popover. That combination — piles on, layout off — is the
@@ -281,7 +278,7 @@ switches, so you can leave either behind the piles.
 The full pattern, the half pattern and the radius are design inputs:
 
 - They are **saved in the project** and come back when it is opened. The
-  overlay's ON / OFF state is not saved.
+  overlay's ON / OFF state is not saved: it is off when a project opens.
 - They **survive Generate Layout** and loading a new boundary file, and are
   applied to whatever tables the new layout has.
 - Editing them does **not** make the layout out of date — piles are applied to
@@ -290,10 +287,11 @@ The full pattern, the half pattern and the radius are design inputs:
 
 ## What the Summary view reports
 
-The **Piles** row of the Summary view is the plant's total pile count: each
-unit counts its own piles, so it is the full units times the full pattern plus
-the half units times the half pattern. The row is filled whenever a full
-pattern exists, whether or not the overlay is on, and reads `—` until then.
+The **Piles** row of the Summary view, in the **Array** group and on **By block**
+too, is the pile count: each unit counts its own piles, so it is the full units
+times the full pattern plus the half units times the half pattern. The row is
+filled whenever a full pattern exists, whether or not the overlay is on. Until then
+it reads *no pile pattern*, a link to the window.
 
 Two things follow:
 
@@ -301,55 +299,46 @@ Two things follow:
   and the row rises by one per full table — and by whatever the derived half
   pattern gains on each half table.
 - **Change the table count and the total changes.** Anything that adds or
-  removes tables — an obstruction, an arrester footprint, a hand edit in
-  [Sketch Mode](/docs/editing/sketch-mode) — moves the pile total with it.
+  removes tables, such as an obstruction, an arrester or a hand edit in
+  [Sketch Mode](/docs/editing/sketch-mode), moves the pile total with it.
 
 The full row list is in [Summary rows](/docs/reference/summary-columns).
 
-## Exporting the piles
+## Where the piles go
 
-Every output that counts or draws piles counts each unit's own piles, half
-units with the half pattern.
+Every output that counts or draws piles counts each unit's own piles, half units
+with the half pattern. **A pattern is enough:** the overlay's ON / OFF state matters
+only on the plot.
 
 | Output | When it carries piles | What it carries |
 | --- | --- | --- |
-| **Export to Excel…**, in the Pile layout window | A full pattern exists | Every pile's coordinates, on a sheet **Pile Coordinates** — from the patterns in the window, applied or not |
-| **Export ▾ Export PDF (with Piles)** | The item is on the menu only while **Piles** is on, a pattern exists and a layout exists | The PDF report, with each unit's piles drawn and labelled on the first page and a **Piles** column on the summary page |
-| **Export ▾ Export DXF** | **Piles** is on **and** a pattern exists | A `PILES` layer: a circle of the pile radius per pile, with its easting and northing |
-| An ICR block's summary window, and **Export ICR-Block PDF** | A pattern exists | A **Piles** row per block |
-| **Export ICR-Block DXF** | **Piles** is on **and** a pattern exists | A **Piles** row per block, and the `PILES` layer |
-| The Google Earth file, the Word project report | Never | — |
+| **Summary**, **Piles** row | A full pattern exists | The total, as above |
+| The plot | A pattern exists and **Piles: ON** | Circles, with coordinate labels for the piles in view |
+| **D4 pile layout** sheets in the [drawing set](/docs/exports/drawing-set), and their DXF layouts | A pattern exists. Without one D4 is left out and the register says so: *"Not in this set: D4, Pile layout. Piles are placed from the pile pattern, and none is defined."* | A typical pile pattern sheet, both units dimensioned at 1:150, then a sheet per block with a dot per pile and setting-out points SP1, SP2 and SP3 with their coordinates |
+| `piles.csv` in the [deliverables package](/docs/exports/deliverables) | Written with the drawing set when D4 exists | Every pile's coordinates, below |
+| The DXF twin of the drawing set | A pattern exists | A pattern block per table type |
+| The schedules workbook, S1 | A pattern exists; otherwise *"No table carries a pile pattern."* | A **Piles** column on the **Tables** sheet, and a **Piles** sheet. See [Schedules and KMZ](/docs/exports/schedules-and-kmz) |
+| [Bill of materials](/docs/bom/overview), **MMS pile** | Fixed tilt, with a pattern. Without one the line needs a design input, and **Go** opens this window | The pile count |
+| [Design checks](/docs/reference/design-checks), C-07 | Always | Whether a pile pattern is defined |
+| The KMZ | Never | — |
 
-A pattern alone is not enough for the CAD drawings: switch **Piles** on before
-you export them if they are to carry the piles. See
-[CAD export](/docs/exports/dxf) and [ICR blocks](/docs/layout/icr-blocks).
+### piles.csv
 
-<Screenshot id="export-menu-piles" />
+One row per pile, for the setting-out team, with this header:
 
-### The Excel workbook
-
-**Export to Excel…** opens a save dialog titled **Export Pile Coordinates**,
-with the name `pile_coordinates.xlsx` suggested, and reports *"Exported n pile
-coordinates → …"* when it is done. Its columns, in order:
+```
+pile_id,table,block,plot,easting_m,northing_m,latitude,longitude
+```
 
 | Column | What it holds |
 | --- | --- |
-| **Pile ID** | The pile's reference |
-| **Plant** | The plant the pile is in |
-| **Table No.** | The table or tracker it belongs to |
-| **Unit** | `Full` or `Half` |
-| **X local (m)**, **Y local (m)** | The pile's offset in the pattern |
-| **Easting (m)**, **Northing (m)** | The pile's position on the ground — headed **X drawing (m)** and **Y drawing (m)** for a site placed by hand or laid out without a location |
-| **Longitude**, **Latitude** | The same position in degrees; blank when the site's location is unknown |
-| **Pile Ø (m)** | The pile diameter, twice the radius |
+| `pile_id` | The pile's ID, the table's ID with the pile's number, such as `P1-B01-T0001-P01` |
+| `table`, `block`, `plot` | The table or tracker it belongs to, its block and its plot |
+| `easting_m`, `northing_m` | The pile's position in the drawing's coordinates, to the millimetre |
+| `latitude`, `longitude` | The same position in degrees, to seven places. Blank when the site's location is unknown |
 
-It needs active access, and it is refused while the layout is out of date.
-
-**Export PDF (with Piles)** is the document to hand a survey or setting-out
-team. Its first page is drawn at **300 dpi**, because a pile drawing is printed
-large and zoomed into on site, and its other pages are the design summary, the
-single-line diagram, the bill of materials and, when energy was calculated,
-the energy pages. See [The project report](/docs/exports/project-report).
+The file is UTF-8. It comes from the package's single snapshot, so its IDs match the
+D4 sheets and the schedules.
 
 ## Limits
 
@@ -383,9 +372,9 @@ the energy pages. See [The project report](/docs/exports/project-report).
     description="Hand-edit the layout — the table count drives the pile total"
   />
   <Card
-    title="The project report"
-    href="/docs/exports/project-report"
-    description="The Word report, and the PDF with piles beside it"
+    title="Drawing set"
+    href="/docs/exports/drawing-set"
+    description="The D4 pile layout sheets, and the DXF that carries them"
   />
   <Card
     title="Summary rows"

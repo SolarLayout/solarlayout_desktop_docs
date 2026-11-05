@@ -10,12 +10,13 @@ belongs to your account and covers one device; see
 [How access works](/docs/licence/overview).
 
 On a device that has never been activated the ribbon shows no access chip —
-only a gold **Get Free Access** button, which does exactly what the button in
-the **License / Subscription** window does. On that device the window also
+only a gold **Get Free Access** button, which opens your browser on the
+activation page directly. On that device the window also
 opens by itself at launch.
 
-Until access is active, **Generate Layout** and the exports will not run.
-Everything else in the application works, including the SLD and BOM views.
+Until access is active, **Generate Layout**, the file exports and **Robot count from
+DXF…** will not run. Everything else in the application works, including saving a
+project and the SLD and BOM views.
 
 <Steps>
 
@@ -63,7 +64,7 @@ checks immediately if you prefer.
 A device with active access shows **✓ Active — until &lt;date&gt;**, with
 *"You have access until &lt;date&gt;."* under it, and **Access Details**,
 **Support cases**, **Refresh** and **Close** in place of the earlier buttons.
-The ribbon chip now reads **● Active — until &lt;date&gt;**.
+The ribbon chip reads **● Active — until &lt;date&gt;**.
 
 <Screenshot id="licence-active" />
 
@@ -93,8 +94,8 @@ again.
 
 ## Working offline
 
-A successful check is cached, so the application keeps working for up to three
-days without an internet connection; the ribbon chip reads
+A successful check of active access is cached, so the application keeps working for
+up to three days without an internet connection; the ribbon chip reads
 **● Active — until &lt;date&gt; (offline)** meanwhile. If it cannot reach the
 server and has no usable cached result, the window reads **Access status
 unavailable** — *"We couldn't reach the SolarLayout server. Check your

@@ -1,1 +1,12 @@
-{"title": "Exports", "pages": ["project-report", "kmz", "dxf"]}
+{
+  "title": "Exports",
+  "pages": [
+    "overview",
+    "deliverables",
+    "drawing-set",
+    "design-report",
+    "schedules-and-kmz",
+    "revisions",
+    "company"
+  ]
+}

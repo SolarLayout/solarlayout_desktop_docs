@@ -25,8 +25,8 @@ card and the two keep-clear cards, Structures & Shadow and Topography.
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Perimeter road width** | 6.0 m | 0.0–50.0 m | Shrinks the plant boundary inward by this distance. Nothing is placed in the band that is left. |
-| **Place Lightning Arresters** | off | — | When on, arresters are placed on a coverage grid and the tables they overlap are cleared. |
-| **LA protection radius** | 100.0 m | 10.0–500.0 m | The area one arrester is taken to protect, and the spacing of the grid they sit on. Enabled only when arresters are on. |
+| **Place Lightning Arresters** | off | — | When on, arresters are placed on a coverage grid and the tables under each mast's pile and shadow are cleared. |
+| **LA protection radius** | 100.0 m | 10.0–500.0 m | The circle one arrester is taken to protect. The grid they sit on is 1.4 times this. Enabled only when arresters are on. |
 | **ICR Block** | 18.000 MWp | 0.1–500.0 MWp | The DC capacity one inverter control room serves. Sets how many control rooms each piece of land gets. |
 | **Line corridor (each side)** | 15.0 m | 0.0–500.0 m | No tables within this distance of a line in the boundary file, so the cleared strip is twice this figure. |
 | **Area setback** | 0.0 m | 0.0–100.0 m | No tables within this distance of an area in the boundary file. At 0 tables can go up to its edge. |
@@ -46,9 +46,8 @@ at once; the capacity you lose is roughly the perimeter length multiplied by the
 extra width.
 
 The band is computed once from the boundary and reused everywhere the plant is
-drawn — the plot on screen, the report, the Google Earth file and the CAD
-drawing — so the road you see on the screen is the road that reaches the
-contractor.
+drawn, on screen and in the deliverables, so the road you see on the screen is the
+road that reaches the contractor.
 
 Entering 0 leaves no band at all, and tables are placed right up to the
 boundary. That is worth doing only when the boundary you supplied already
@@ -57,8 +56,8 @@ excludes the road.
 <Callout>
 DC string cables are kept off the perimeter road band. AC feeders, and the DC
 trunks of a central-inverter design, are held inside the plant boundary
-wherever a route exists; a run that cannot be kept inside is reported as a
-design warning rather than hidden. See [Cable routing](/docs/layout/cables).
+wherever a route exists; a run that cannot be kept inside is reported by design
+check **E-07** rather than hidden. See [Cable routing](/docs/layout/cables).
 </Callout>
 
 ## Place Lightning Arresters
@@ -71,55 +70,45 @@ usable area. Nothing is reserved for them, and the plant's capacity is the
 capacity of a fully packed field.
 
 **With the option on**, arresters are placed on a square coverage grid once the
-tables are down, and **every table overlapping an arrester's keep-clear
-footprint is removed**. On a fixed-tilt plant that footprint is a rectangle of
-30 m east–west by 7 m north–south, which is why the arrester count has a
-visible effect on capacity. On a tracker plant the arrester is a 1 m by 1 m
-pole marker snapped into the gap between tracker columns, and **no tracker
-units are removed at all.**
+tables are down, each mast moved to the nearest gap between rows or tracker
+columns, and **every table or tracker unit touched by a mast's pile, or by its
+shadow swept over the Shadow Window through the year, is removed**. The rules are
+the same for fixed tilt and trackers. The pile and the mast height are on the
+[Structures & Shadow](/docs/inputs/structures-and-shadow#arrester-pile-and-height)
+card.
 
 Arresters only ever sit inside the usable area, so the grid never puts a mast
 in the perimeter road band, in a water body or on excluded ground.
 
-Because arresters cost capacity on a fixed-tilt plant, the usual sequence is to
-generate the layout with the option off, agree the field, and then turn it on
-for the run you issue. The tick and the radius are both kept in the project
-file.
-
-You can also leave it off and add arresters one at a time by hand in
-[Sketch Mode](/docs/editing/sketch-mode) — the plant totals are recomputed when
-you leave it, so a hand-placed arrester clears tables and changes the capacity
-exactly as an automatic one does.
+Arresters cost capacity. On the sample site, at the defaults, 26 masts removed 89 of 1,589 tables on fixed tilt,
+and 21 masts removed 90 of 582 tracker units. The tick and the radius are both kept
+in the project file.
 
 The placed count appears on the **Lightning arresters** row of the Summary view
-and, once any are placed, on a **Lightning arresters** chip in the row of plant
-chips under the plot. The arresters themselves are hidden on the plot until you
-switch the **Lightning arresters** row on in the **Layers ▾** popover.
+and on a **Lightning arresters** chip in the row of plant chips under the plot.
+The masts draw with the **Plant layout** layer; the **Arrester coverage** row in
+the **Layers ▾** popover shows their protection circles, and **Shadows (keep-clear)**
+the ground they keep clear.
 [Lightning arresters](/docs/layout/lightning-arresters) covers the grid, the
-coverage circles and the footprints in full.
+coverage circles and the keep-clear in full.
 
 ## LA protection radius
 
 Enabled only when **Place Lightning Arresters** is ticked.
 
-This one field does two jobs at once:
+This is the **radius of the circular area** one arrester is taken to protect,
+measured from the mast. The **square grid** the arresters are placed on follows
+from it: its spacing is **1.4 times the radius**, 140 m at the default. The
+farthest point of a grid square is then just inside one radius of a mast.
 
-1. It is the **radius of the circular area** one arrester is taken to protect,
-   measured from the mast.
-2. It is the **spacing of the square grid** the arresters are placed on.
+The grid alone can leave something at the edge of the array uncovered, so after the
+grid pass any table, ICR, MCR or USS whose centre lies beyond the radius from every
+placed arrester gets an extra arrester in the nearest gap.
 
-Because the two are the same number, every point inside the array is within one
-radius of an arrester, and neighbouring protection circles always overlap. The
-grid alone can leave a table at the edge of the array uncovered, so after the
-grid pass any table whose centre lies beyond the radius from every placed
-arrester gets an extra arrester at the nearest valid position.
-
-The consequence of tying spacing to radius is that the radius is the only lever
-on the arrester count, and it is a strong one: doubling it doubles the grid
-spacing in both directions, so roughly a quarter as many masts are placed.
-Halving it does the reverse. On a fixed-tilt plant that change in count feeds
-straight through to lost tables, because each arrester clears its own
-footprint.
+The radius is the main lever on the arrester count, and it is a strong one:
+doubling it doubles the grid spacing in both directions, so roughly a quarter as
+many masts are placed. Halving it does the reverse. That change in count feeds
+straight through to lost tables, because each mast clears its own pile and shadow.
 
 <Callout type="warn">
 Raising the radius does not make the protection cheaper — it asserts that one
@@ -141,8 +130,8 @@ into it to the kilowatt.
 The count follows from it, **for each separate piece of land**. Tables linked
 by gaps of no more than 300 m are one piece; internal roads, corridors and
 setbacks never split one. Each piece gets its capacity divided by the block
-size, **rounded up** to the next whole room, with a half table counted at half
-a table's capacity, and the plant's count is the sum over its pieces:
+size, **rounded up** to the next whole room, with a half table counted at its
+share of a full table's modules, and the plant's count is the sum over its pieces:
 
 - On a site in one piece, that is the plant's DC capacity divided by the block
   size, rounded up. A plant whose capacity exceeds a multiple of the block size
@@ -172,10 +161,6 @@ Choosing the block size is a cabling trade-off:
 | Shorter AC or DC runs from the array to each room | Longer runs, heavier conductor, higher cable loss |
 | More ground lost to building footprints | Less ground lost |
 | More medium-voltage circuits back to the main control room | Fewer, larger circuits |
-
-In a central-inverter design there is a second constraint worth knowing before
-you set the block: a maximum of **4** central inverters are housed in one
-control room building. See [Inverter settings](/docs/inputs/inverter).
 
 The footprint and height of the room itself are not set here — they are in the
 **Structures & Shadow (keep-clear)** card below. How the rooms are placed, and

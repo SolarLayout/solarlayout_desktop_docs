@@ -108,15 +108,18 @@ reported in acres. See [Topography](/docs/inputs/topography).
 The year-round shadow of a building or an object is also treated as ground to
 keep clear. With **Clear tables in shadows** on — which is the default — any
 table falling inside the shadow footprint of an inverter control room, the main
-control room or a placed object across the shadow window is removed.
+control room, a unit substation or a placed object across the shadow window is
+removed. **Shadows (keep-clear)** in the **Layers** popover shows that ground as a
+grey hatch, and showing it changes nothing in the layout.
 
-This is how you exclude a tree, a mast or an existing shed: place an object with
-a realistic height and let its shadow clear the modules. See
+This is how you exclude a tree, a mast or an existing shed: place an object, give it
+a realistic height in the **Place object** window, and let its shadow clear the
+modules. See
 [Structures and shadow](/docs/inputs/structures-and-shadow) and
 [Main control room, substations and street lights](/docs/layout/site-equipment).
 
-Lightning arresters clear tables under their own footprint on a fixed-tilt
-plant — a different mechanism, described in
+Lightning arresters clear the tables touched by the mast's pile or by its shadow,
+on fixed tilt and on trackers alike. See
 [Lightning arresters](/docs/layout/lightning-arresters).
 
 ## Drawing an obstruction by hand
@@ -145,40 +148,37 @@ The application calls all of these **Obstruction**, whatever the ground is
 actually for. Tables overlapping a hand-drawn obstruction are removed the same
 way as for one read from the file, and the status line reports the cost at
 once: *"Obstruction added — n tables | m modules | x MWp"*. After **Clear All**
-the status line reads *"All roads cleared."* — the same thing under an older
-name.
+the status line reads *"All roads cleared."*
 
 Each draw, **Undo Last** and **Clear All** places the inverters again and, with
-**Calculate cables** on, routes their cables again. One cable run happens at a
+**Calculate cables** on, routes their cables again and recomputes the DC, AC and MV
+trench totals on that run. If that re-route would restore automatic trenches you
+deleted, the [Re-route cables](/docs/editing/sketch-mode#the-re-route-cables-question)
+question comes first. The bill of materials recounts when next opened.
+
+One cable run happens at a
 time: while it runs, the **Obstructions** and **Grid connection & Objects**
 cards are disabled, and their tooltip and the status bar read *"Cables are
 being routed… Obstruction, MCR and object tools and ICR dragging are back when
 they finish."* A change you make meanwhile waits, and runs as soon as the
 current routing finishes.
 
-<Callout type="warn">
-After a hand-drawn obstruction the **String DC cable (m)** and **AC cable to
-ICR (m)** rows of the Summary view are re-measured, but the **DC trench (m)**
-and **AC trench (m)** rows keep their previous figures, and the bill of
-materials is not rebuilt, until the next full cable run — **Generate Layout**,
-or leaving Sketch Mode after a change. Generate again before quoting trench
-lengths.
-</Callout>
+<Screenshot id="obstruction-controls-routing" maxWidth={360} caption="The card while cables are being routed" />
 
 ### The obstruction tools in Sketch Mode
 
-Sketch Mode's **PLANT OBJECTS** group carries two corridor tools, and both work
-the same way: drag a straight **centre-line** on the plot, then enter a width.
+Sketch Mode's **PLANT OBJECTS** group carries two corridor tools, drawn the same
+way: drag a straight **centre-line** on the plot, then enter a width. They treat the
+tables differently.
 
 | Tool | Prompt | Default width | What it does |
 | --- | --- | --- | --- |
-| **🚧 Road** | **Road width** | 5.0 m | Places a road corridor of that width along the line and removes the tables under it |
+| **🚧 Road** | **Road width** | 5.0 m | Places a road and moves the rows on each side apart to make room; a road at a slant to the rows removes the tables under it. See [Roads move rows](/docs/editing/sketch-mode#roads-move-rows) |
 | **⚡ T-Line** | **Transmission line corridor** | 10.0 m | Draws the red centre-line, records a corridor of that width as a keep-out and removes the tables inside it |
 
 The **DRAW** group's **╱ Line** and **⌒ Polyline** ask for a **Line width** as
 well: **0** draws a line only, and anything more than 0 makes it a corridor that
-removes the tables under it — a third way to clear an irregular strip. See
-[Sketch Mode](/docs/editing/sketch-mode).
+removes the tables under it — a way to clear an irregular strip.
 
 A hand-drawn transmission line **does not use the Line corridor** on the Site
 tab. The width you enter is the whole corridor: the centre-line is
@@ -190,10 +190,10 @@ into the other. To match a 15 m setback each side, enter a corridor width of
 
 ### What Generate does to hand-drawn obstructions
 
-Hand-drawn obstructions, roads and corridors **survive** a later
-**Generate Layout**. They are collected and handed to the placement as ground to
-keep clear, so the plant is rebuilt around them. What does *not* survive is any
-table you placed or deleted by hand in Sketch Mode — Generate re-places every
+Hand-drawn obstructions, roads, corridors and drawn trenches **survive** a later
+**Generate Layout**. Obstructions and corridors are handed to the placement as
+ground to keep clear, so the plant is rebuilt around them. What does *not* survive is
+any table you placed or deleted by hand in Sketch Mode — Generate re-places every
 table from scratch. Draw the obstructions first, generate, and hand-edit
 individual tables last. The full rule is on
 [Sketch Mode](/docs/editing/sketch-mode#what-generate-layout-does-to-your-edits).
@@ -208,35 +208,27 @@ alone:
 - **Cable routes.** DC string runs are clipped to the usable area, so they stay
   off the ground an exclusion takes. See
   [Cable routing and trenches](/docs/layout/cables).
-- **Lightning arrester positions.** Only grid positions whose centre falls inside
-  the usable area are kept, so an obstruction thins the arrester grid locally and
-  the coverage is completed afterwards from the nearest valid ground.
+- **Lightning arrester positions.** A grid point is kept only if its place in the
+  nearest gap falls inside the usable area, so an obstruction thins the arrester
+  grid locally, and the coverage is completed afterwards with extra masts.
 - **Control room siting.** A control room must be **fully contained** in the
   usable area, so an exclusion can push a room away from the centre of the group
   of tables it serves.
 - **Reported area.** Excluded terrain is reported in acres, so you can see how
-  much ground the slope limits took. The **Plant area (acres)** row of the
-  Summary view is the gross boundary area, so it does not fall as exclusions
-  grow.
+  much ground the slope limits took. The **Plant area (acres)** row of the Summary
+  view is the gross boundary area, so it does not fall as exclusions grow. The land
+  account in the [Workings view](/docs/workspace/workings) books each kind of
+  exclusion.
 
-## What reaches the drawing
+## What reaches the deliverables
 
-Hand-drawn obstructions are exported to the CAD drawing on **their own layer**,
-separate from the exclusions that came out of the boundary file. That separation
-is deliberate and useful: a contractor opening the drawing can see at a glance
-which ground was excluded by the survey and which ground *you* decided to keep
-clear.
+The [deliverables package](/docs/exports/deliverables) carries the exclusions from one
+record of the design, so the drawings and the Google Earth file agree.
 
-| What it is | CAD layer |
+| Output | Where the exclusions are |
 | --- | --- |
-| Exclusions from the boundary file | `OBSTACLES` |
-| Water bodies | `WATER` |
-| Hand-drawn obstructions | `OBSTRUCTIONS` |
-| Terrain contour lines | `TERRAIN` |
-
-See [CAD export](/docs/exports/dxf). The Google Earth export carries the
-exclusion zones alongside the boundary and the tables; see
-[Google Earth export](/docs/exports/kmz).
+| The CAD twin of the [drawing set](/docs/exports/drawing-set) | Layers `C-SITE-EXCL-WATR` for water, `C-SITE-EXCL-TLCR` for line corridors, and `C-SITE-EXCL-OBST` for obstacles and hand-drawn obstructions |
+| The [Google Earth file](/docs/exports/schedules-and-kmz) | The **Exclusions** folder: Water, Obstacle, Transmission-line corridor, Road, Steep ground and Drawn obstruction, those present |
 
 ## Checking your exclusions before you trust the layout
 

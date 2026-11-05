@@ -1,18 +1,27 @@
 ---
 title: Views, layers and tools
-description: The five views of the plant, the tools beside the view tabs, the Layers popover, the plant chips, and the Summary and Energy views.
+description: The seven views of the plant, the tools beside the view tabs, moving round the plot, the Layers popover and the plant chips.
 ---
 
-The right side of the main window shows one plant five ways. The **Layout**
-view is the drawing; **Summary** is the per-plant figures as a sheet;
-**Energy** is the yield result; **BOM** is the bill of materials; **SLD** is
-the single-line diagram. They are tabs across the top of the right side, and
-each takes the whole area under the header.
+The right side of the main window shows one plant seven ways. They are tabs
+across the top of the right side, and each takes the whole area under the
+header.
+
+| Tab | Keys | What it shows |
+| --- | --- | --- |
+| **Layout** | **Ctrl+1** | The drawing |
+| **Summary** | **Ctrl+2** | The figures as a sheet, by plant or by ICR block |
+| **Checks** | **Ctrl+3** | The design checks and their results |
+| **Workings** | **Ctrl+4** | How each number was reached |
+| **Energy** | **Ctrl+5** | The yield result |
+| **BOM** | **Ctrl+6** | The bill of materials |
+| **SLD** | **Ctrl+7** | The single-line diagram |
 
 <Screenshot id="view-header" />
 
-Switch with a click or with **Ctrl+1** to **Ctrl+5** in tab order. The Energy
-tab reads *"Energy •"* when a result landed while another view was up.
+The Energy tab reads *"Energy •"* when a result landed while another view was
+up. Leaving Layout for any other view stops a building placement and leaves
+Sketch Mode.
 
 ## The tools row
 
@@ -21,31 +30,48 @@ The tools sit to the right of the tabs and change with the view.
 | Tool | View | What it does |
 | --- | --- | --- |
 | **Save project** | every view | Writes the session to a project file — [Saving and reopening projects](/docs/projects) |
-| **Export ▾** | every view | The export menu: the Google Earth file, the CAD drawing, the ICR-block drawing set and PDF, the cable schedule, the Word report and the plot as an image. Every item is disabled while the layout is out of date — [The project report](/docs/exports/project-report) |
-| **Satellite** | Layout, SLD | An aerial photograph behind the layout, aligned to the site's position. Needs an internet connection; disabled until a layout exists. Refused on a site loaded as layout only, which has no position — *"Satellite imagery needs the site's location."* |
-| **Wireframe** | Layout, SLD | Draws tables or tracker units as outlines only |
-| **Piles: OFF** / **Piles: ON** | Layout, SLD | The pile overlay. The first use opens the pile editor; disabled until a layout exists — [Piles](/docs/editing/piles) |
-| **Layers ▾** | Layout, SLD | The popover of drawing layers, below |
-| **Sketch** | Layout, SLD | Switches Sketch Mode on — [Sketch Mode](/docs/editing/sketch-mode). Leaving the Layout view switches it off again |
-| **Home**, **Pan**, **Zoom** | Layout, SLD | The three navigation tools. **Home** fits the whole plant |
-| **⛶** | Layout, SLD | Opens the plot in the Expanded View window, below |
-| **Copy** | Summary, Energy | Puts the sheet on the clipboard as tab-separated text |
-| **Open in window** | Summary, Energy | Opens the sheet in its own window, which follows the layout |
+| **Export ▾** | every view | The export menu: **Export deliverables…**, **BOM · Excel workbook…**, **BOM · PDF…**, **Earthing layout (DXF)…** and **Export Image (PNG)** — [Exports](/docs/exports/overview) |
+| **Satellite** | Layout | An aerial photograph behind the layout, aligned to the site's position. Needs an internet connection; disabled until a layout exists. Refused on a site loaded as layout only, which has no position — *"Satellite imagery needs the site's location."* |
+| **Wireframe** | Layout | Draws tables or tracker units as outlines only |
+| **Piles: OFF** / **Piles: ON** | Layout | The pile overlay. The first use opens the pile editor; disabled until a layout exists — [Piles](/docs/editing/piles) |
+| **Layers ▾** | Layout | The popover of drawing layers, below |
+| **Sketch** | Layout | Switches Sketch Mode on — [Sketch Mode](/docs/editing/sketch-mode) |
+| **Home**, **Pan**, **Zoom** | Layout | The three navigation tools. **Home** fits the whole plant |
+| **⛶** | Layout | Opens the plot in the Expanded View window, below |
+| **Open in window** | Summary, Energy | Opens the sheet and the monthly energy in a separate window, for example on a second monitor |
+| **Copy** | Energy | Puts the monthly energy table on the clipboard, to paste into Excel |
 
-### Zooming and the persistent view
+Checks, Workings and BOM add nothing to **Save project** and **Export ▾**. The
+SLD view's own controls sit on its canvas — see
+[Single-line diagram](/docs/sld/overview).
 
-The mouse wheel zooms at the cursor in every view but SLD. Whatever framing
-you set stays through redraws — a layer toggle, a moved control room, a
-drawn obstruction — until you click **Home**, generate a layout, or load a
-boundary file. There are no back and forward arrows; the wheel and **Home**
-are the way about.
+### Moving round the plot
+
+| Gesture | What it does |
+| --- | --- |
+| Mouse wheel | Zooms at the cursor |
+| Trackpad pinch | Zooms at the pointer |
+| Middle button drag | Pans, always: on the Layout view, in Sketch Mode, while placing a building or drawing an obstruction |
+| **Space** + left drag | Pans; the cursor is a hand while **Space** is held |
+| Plain left drag | Pans when nothing else claims the press: no Sketch Mode, no obstruction being drawn, no click awaited to place a building or an AC start point |
+| **F** | Fits the whole plant. Needs the plot to have the keyboard, which a pan press gives it |
+
+While the toolbar's **Pan** or **Zoom** is on, these gestures do nothing.
+
+The Layout view is read-only: with Sketch off, a drag on an ICR, the main control
+room (MCR), a substation (USS), a handover point or an object pans the view. In
+Sketch Mode the same drag moves the building.
+
+Whatever framing you set stays through redraws — a layer toggle, a moved control
+room, a drawn obstruction — until you click **Home**, generate a layout, or load
+a boundary file. These gestures belong to the plot; the SLD view has its own.
 
 ### When the window is narrow
 
 Every tool stays reachable at every width. When **Satellite**, **Wireframe**
-and **Piles** no longer fit beside the tabs, they move to the top of the
-Layers popover as ON/OFF rows — *Satellite image*, *Wireframe tables*,
-*Piles* — and the button reads **Layers ▾ +3**.
+and **Piles** do not fit beside the tabs, they move to the top of the Layers
+popover as ON/OFF rows — *Satellite image*, *Wireframe tables*, *Piles* — and
+the button reads **Layers ▾ +3**.
 
 <Screenshot id="view-header-folded" />
 
@@ -62,26 +88,26 @@ Expanded View window. Close that window to return the plot here."*
 
 ## The Layers popover
 
-**Layers ▾** opens a small popover of ON/OFF pills. Rows in order, with the
-state each starts in after a layout:
+**Layers ▾** opens a small popover of ON/OFF pills: ten rows in three groups.
 
-| Row | Default | What it shows |
-| --- | --- | --- |
-| **Plant layout** | ON | The placed tables and equipment. OFF leaves only the boundary and obstacles |
-| **Legend** | OFF | The legend — the same switch as the **Legend ▾** chip on the plot |
-| **Lightning arresters** | OFF | The arrester rectangles, their labels and their protection circles |
-| **ICR blocks** | OFF | Each control room's block — the ICR and the tables wired to it — filled in its own colour and outlined. Enabled once inverters are placed. With it ON, clicking a block, or picking one with the arrow keys and pressing **Enter**, opens that block's summary window — [ICR blocks](/docs/layout/icr-blocks) |
-| **DC string cables (Tbl→Inv)** | OFF | Enabled only when cables were calculated |
-| **AC cables (Inv→ICR)** — reads **DC cables (SMB→CI)** on a central-inverter design | OFF | Enabled only when cables were calculated |
-| **MV cables (ICR→MCR)** | OFF | Needs a main control room or a handover point placed, and cables calculated |
-| **Contour / terrain** | OFF | The elevation contours, with an *RL:* readout of the range and the excluded ground |
-| **Plant totals** | ON | The plant chip row under the view; OFF hides it |
+| Group | Row | Default | What it shows |
+| --- | --- | --- | --- |
+| Equipment | **Plant layout** | ON | The plant: tables, buildings, inverters, arresters, street lights and roads. OFF leaves only the boundary and obstacles |
+| | **Arrester coverage** | OFF | Each lightning arrester's protection circle. The masts and their *LA-n* labels belong to **Plant layout** |
+| | **ICR blocks** | OFF | Each block filled in its own colour and outlined. Enabled once inverters are placed. It only colours — [ICR blocks](/docs/layout/icr-blocks) |
+| Cables | **AC cables (Inv→ICR)** — reads **DC cables (SMB→CI)** on a central-inverter design | OFF | Enabled only when cables were calculated |
+| | **DC string cables (Tbl→Inv)** | OFF | Enabled only when cables were calculated |
+| | **MV cables (ICR→MCR)** | OFF | Needs an MCR or a handover point placed, and cables calculated |
+| | **Earthing** | OFF | The project's earthing design on the plan: its strips, jumpers and pits. The first show works it out under the card *"Working out the earthing…"*. Hidden with **Plant layout** off |
+| Site & analysis | **Shadows (keep-clear)** | OFF | A grey hatched patch over the ground kept clear for the shadows of buildings, arresters and street lights. Showing it changes nothing in the layout. Hidden with **Plant layout** off |
+| | **Contour / terrain** | OFF | The elevation contours, with an *RL:* readout of the range and the excluded ground. Needs terrain data |
+| | **Checks** | OFF | A badge on each object an open design check touches — [Design checks](/docs/workspace/checks#badges-on-the-plot) |
 
 <Screenshot id="layers-popover" />
 
-A first layout is therefore drawn as the placement alone: cables, arresters
-and contours have been computed where you asked for them, but stay off until
-you switch them on. The plot carries a units note in its bottom-left corner:
+A first layout is therefore drawn as the placement alone: cables, coverage and
+contours have been computed where you asked for them, but stay off until you
+switch them on. The plot carries a units note in its bottom-left corner:
 *"UTM 38N · metres"* (with the site's own zone) for a Google Earth file or a CAD
 drawing located by its own coordinates, and *"Drawing coordinates · metres"* for
 a CAD drawing or an image placed by hand or loaded as layout only — see
@@ -95,7 +121,9 @@ link that opens the list of changes.
 
 The legend is folded away by default so it never sits on the drawing. A small
 **Legend ▾** chip in the plot's top-right corner (Layout view only) unfolds it;
-the chip then reads **Legend ▴**, and the open legend can be dragged.
+the chip then reads **Legend ▴**, and the open legend can be dragged and keeps
+its place across a rebuild. It lists only what shows, so *LA Protection Zone*,
+for example, is absent while **Arrester coverage** is off.
 
 <Screenshot id="legend-open" />
 
@@ -106,73 +134,67 @@ the plant totals are shown — the status bar does not carry them.
 
 <Screenshot id="kpi-strip" />
 
-| Chip | Value |
-| --- | --- |
-| **DC capacity** | Installed DC, in MWp |
-| **Site area** | The gross boundary area, in acres |
-| **Plants** | The number of plots — shown only for a multi-plot file |
-| **Tables** or **Trackers** | Units placed |
-| **Modules** | Modules across the plant |
-| **ICR blocks** | Inverter control rooms placed |
-| **Lightning arresters** | Shown only once some are placed |
-| **Year-1 P50 energy** | Year-one generation in MWh, or *—* before an energy run |
+| Chip | Value | A click opens |
+| --- | --- | --- |
+| **Out of date** | Amber, value *Out of date*, caption *figures from the last run*, while any input differs from the last run. Every other chip is greyed meanwhile, except **Design checks** | Summary |
+| **Design checks** | *1 check* or *N checks*, in the warning colour: the checks that are open or to re-confirm, can't-check rows included | Checks |
+| **Site area** | The gross boundary area, in acres | Summary |
+| **DC capacity** | Installed DC, in MWp | Summary |
+| **Plants** | The number of plots — shown only for a multi-plot file | Summary |
+| **Tables** or **Trackers** | Units placed | Summary |
+| **Modules** | Modules across the plant | Summary |
+| **ICR blocks** | Inverter control rooms placed | Summary |
+| **Lightning arresters** | Shown only once some are placed | Summary |
+| **Year-1 P50 energy** | Year-one generation in MWh at the first exceedance probability, or *—* before an energy run | Energy |
 
-Clicking any chip opens the Summary view; the energy chip opens the Energy
-view. When the row is too narrow the lowest-priority chips hide first —
-Lightning arresters, Plants, ICR blocks, Site area, Tables, Modules — and DC
-capacity and energy go last. Water-body results are left out of the totals.
+<Screenshot id="kpi-strip-checks" />
 
-Two more chips can lead the row. Both open the Summary view when clicked, and
-neither is ever hidden for width:
+When the row is too narrow, a chip that does not fit is hidden, never clipped:
+Lightning arresters first, then Plants, ICR blocks, Tables and Modules; Site
+area, DC capacity and energy go last, and the two state chips never. Before
+**Generate Layout**, a boundary preview fills **Site area** and **Plants**, and
+the others read *—*.
 
-| Chip | When it shows |
-| --- | --- |
-| **Out of date** | Amber, value *Out of date*, caption *figures from the last run* — while any input differs from the last run. Every other chip is greyed meanwhile |
-| **Design warnings** | In the warning colour with an exclamation disc; the value is the number of warnings — while the design has any. It follows the **Out of date** chip when both show |
+**Design checks** reads *Checking…* before the first report and *Checks didn't
+run* if a run failed.
+
+The energy chip's caption stays *Year-1 P50 energy* when you change the first
+exceedance probability; its value follows that probability. Check the setting on
+the Yield tab before quoting the figure.
 
 <Screenshot id="kpi-strip-energy" />
 
 ## The Summary view
 
-The Summary view is the per-plant figures as a sheet turned on its side: a
-**Metric** column, one column per plant, and a **Total** column when there are
-two or more plants. A plant's column header reads *"\<plant\> ›"*, and clicking
-it shows that plant on the Layout view.
+The Summary view is the plant's figures as a sheet, with a **Plant | By block**
+switch above it. **By block** gives one column per ICR block, then **Shared** and
+**Total**; **Plant** gives one column per plant. A reason in a cell stands where
+a figure can't be given yet, and links to the input it needs; **How?** on a row
+opens that figure's working.
 
-<Screenshot id="summary-view" />
+<Screenshot id="summary-by-block" />
 
-The rows are grouped:
+Above the sheet, when they apply: the out-of-date banner, a line on the failed
+design checks with **Open Checks**, and a note listing the settings changed in
+Advanced settings with **Edit…**.
 
-| Group | What it holds |
-| --- | --- |
-| **SITE** | Plant area, boundary length, ICR blocks, lightning arresters, street lights, cleaning robots, piles |
-| **ARRAY** | Full and half tables (or trackers), modules, tilt (or max tracking angle), pitch |
-| **ELECTRICAL** | DC capacity, inverters or monitoring boxes and their ratings (and central inverters on a central-inverter design), AC capacity, inverter capacity, the DC / AC ratio, then **ACCBs** (string designs only), **Transformers (IDT)** and **Power transformer (MVA)** |
-| **CABLES** | The string DC, AC or DC-trunk, and MV conductor lengths, and the three trench lengths |
-| **ENERGY** | Year-one energy at each of your three exceedance probabilities, CUF, and the lifetime total |
+**Open in window** opens a separate window with a **Summary** tab and a **Monthly
+energy (Year 1)** tab — the second enabled once energy exists — that follows the
+layout as you work. Every row, reason and note is on
+[Summary view](/docs/reference/summary-columns).
 
-A trailing `*` on tilt or pitch means the value was auto-calculated (fixed tilt
-only). A `—` means not computed — the cable rows before cables are calculated,
-the energy rows before a run. The three grouping rows read `—` until inverters
-are placed; **Power transformer (MVA)** is the whole plant's figure, shown on the
-plot that holds the main control room and in the Total column. Before any layout
-the view reads *"Generate a layout to see the per-plant summary here."*
+## The Checks view
 
-Two banners can sit above the sheet. The **out-of-date banner** lists what
-changed since the last run; the sheet is then greyed and **Copy** is disabled.
-The **design warnings banner** — *"1 design warning"*, *"2 design warnings"* —
-lists each warning under the sentence *"The layout is complete, but … outside
-the design rules."* The first is described on
-[Out-of-date results](/docs/workspace/out-of-date-results#the-summary-view-and-its-window),
-the second on [Design warnings](/docs/reference/design-warnings#the-summary-view).
+The Checks view lists the design checks with their results, a Fix link for what
+can be fixed, and **Accept…** for a finding the design stands by. The checks run
+by themselves whenever the summary refreshes. See
+[Design checks](/docs/workspace/checks).
 
-**Copy** puts the whole sheet on the clipboard as tab-separated text, ready
-for a spreadsheet or a document. **Open in window** opens **SolarLayout —
-Summary**, a separate window with a **Summary** tab and a **Monthly energy
-(Year 1)** tab — the second enabled once energy exists — that follows the
-layout as you work. It carries the out-of-date banner too, but not the design
-warnings. Every row is defined in
-[Summary rows](/docs/reference/summary-columns).
+## The Workings view
+
+The Workings view shows how each number was reached: the rule, the arithmetic,
+the inputs it used and which rule decided it. See
+[Workings](/docs/workspace/workings).
 
 ## The Energy view
 
@@ -180,24 +202,25 @@ Before a run the view reads **No energy result yet**, explains what the run
 will use, and offers a gold **Calculate energy** button — the same action as
 **Calculate Energy** on the Yield tab. On a site loaded as layout only the note
 reads *"Energy yield is off: the site's location is unknown (layout only)."*
-After a run it shows four tiles — **Year-1 energy**, **Specific yield**,
-**Performance ratio**, **CUF** — the monthly table to IEC 61724-1, an
-irradiation and performance-ratio chart, and the monthly energy bars.
+After a run it shows five tiles — **Year-1 energy**, **Specific yield**,
+**Performance ratio**, **CUF on DC**, **CUF on AC** — the monthly table to IEC
+61724-1, an irradiation and performance-ratio chart, and the monthly energy bars.
+CUF is the capacity utilisation factor.
 
 The result belongs to the layout it was calculated for. While that layout is
-out of date a banner sits above the tiles and the figures are greyed; a new
+out of date a banner sits above the tiles and the figures are greyed; a further
 **Generate Layout** clears the result, and the view then reads **Layout
 regenerated** until you calculate again. See
 [How yield is calculated](/docs/energy/overview).
 
 ## The BOM and SLD views
 
-**BOM** shows the editable bill of materials on the right and hands the left
-column to the **BOM TOOLS** panel under a green banner; **SLD** shows the
-drawing sheet and hands the column to **SLD TOOLS** under a blue banner. Each
-banner carries the **Exit** button that gives the column back. See
-[Bill of materials](/docs/bom/overview) and
-[Single-line diagram](/docs/sld/overview).
+**BOM** shows the bill of materials on the right and hands the left column to the
+builder under a green **Bill of Materials** banner; select a line to see how it
+is counted. **SLD** opens on the automatic diagram for review, with its panel on
+the left under a blue **SLD Preparation** banner. Each banner carries the **Exit**
+button that gives the column back. See [Bill of materials](/docs/bom/overview)
+and [Single-line diagram](/docs/sld/overview).
 
 ## Where to go next
 
@@ -208,18 +231,18 @@ banner carries the **Exit** button that gives the column back. See
     description="The ribbon, the stage tabs and the status bar"
   />
   <Card
-    title="Summary rows"
+    title="Summary view"
     href="/docs/reference/summary-columns"
-    description="Every row of the Summary view, group by group"
+    description="Every row of the Plant and By block sheets"
   />
   <Card
-    title="Cable routing"
-    href="/docs/layout/cables"
-    description="What the three cable layers draw, and where the lengths come from"
+    title="Design checks"
+    href="/docs/workspace/checks"
+    description="What the Checks view shows and how to work through it"
   />
   <Card
     title="Out-of-date results"
     href="/docs/workspace/out-of-date-results"
-    description="The banners, the greyed figures and the refused exports after an input changes"
+    description="The banners, the greyed figures and the held-back exports after an input changes"
   />
 </Cards>

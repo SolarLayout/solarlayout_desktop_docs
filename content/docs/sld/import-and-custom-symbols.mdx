@@ -1,146 +1,133 @@
 ---
 title: Importing diagrams and custom symbols
-description: Bringing an existing diagram in as a background to draw over, and tracing your own image into a vector symbol that exports to CAD as real geometry.
+description: Tracing an existing diagram onto the sheet, as editable elements or as a scanned background, and turning your own image into a symbol under My symbols.
 ---
 
-The SLD view takes two kinds of import, and they behave differently on
-purpose. An existing **single-line diagram** — SLD — comes in as a
-**background picture** you draw over. An image of a symbol comes in as a
-**vector symbol** you can place like any other. Knowing which is which saves a
-wasted afternoon: the first cannot be edited, the second can.
+The SLD view takes two kinds of import. An existing **single-line diagram** — SLD —
+comes onto the sheet with **Trace over a PDF / DXF…**. An image of a symbol becomes a
+symbol of your own with **Import image…**. Both are in the editing panel: click
+**Edit diagram** in the [SLD view](/docs/sld/overview).
 
-| What you import | What you get | Editable |
+| What you import | How | What you get |
 | --- | --- | --- |
-| An existing diagram, with **📄 Import PDF / DXF** | A high-resolution picture placed behind the sheet | No — only what you draw on top of it |
-| An image of a symbol, with **🖼 Import Image Symbol** | A vector symbol added to your palette | Yes — it is a symbol like any other |
+| A DXF drawing or a PDF with vector lines | **More ▸ Trace over a PDF / DXF…** | Editable lines, wires and labels on the sheet |
+| A scanned PDF, with no vector lines | **More ▸ Trace over a PDF / DXF…** | A background picture to draw over |
+| An image of a symbol | **My symbols ▸ Import image…** | A symbol traced into strokes, on a tile of your own |
 
-Both buttons sit on the **SLD TOOLS** panel, which takes over the left column
-while the **SLD** tab is up. See
-[Building the single-line diagram](/docs/sld/overview).
+## Tracing an existing diagram
 
-## Importing an existing diagram
+**Trace over a PDF / DXF…** reads the file and places it in the sheet's drawing area,
+with its proportions kept. What it becomes depends on what the file contains. A
+`.dwg` also works if you have installed the free ODA File Converter, which the
+application does not include; otherwise save the drawing as `.dxf`.
 
-**📄 Import PDF / DXF** brings a diagram you already have onto the sheet. The
-**first page** of the file is drawn to a high-resolution image, and that image
-is placed as a **background** on the drawing sheet. You then overlay editable
-symbols, wires and text on top of it, and the whole thing — background and
-overlay together — carries into the exports and into the report's diagram
-page.
+### A DXF or a vector PDF becomes editable
 
-### Why it comes in as a picture
+Lines come in as polylines and wires, and text as labels, each an element you can
+select, move and delete. The status bar reads *"Imported n editable elements. Ctrl+Z
+undoes the import."* They are the drawing's own lines rather than typed equipment
+symbols: a file records lines, arcs and text, and not which of them were a circuit
+breaker.
 
-A vector diagram cannot be reliably read back into typed equipment symbols.
-What a drawing file contains is lines, arcs and text; what it does not contain
-is any record of which lines were a circuit breaker, which were a current
-transformer, and which were the border. Reconstructing that from geometry
-alone is guesswork, and a diagram silently reassembled from guesses is worse
-than one that is plainly a picture.
+The sheet is a hand drawing from then on. The **DIAGRAM** card reads **Drawn by hand**
+and it doesn't follow the layout.
 
-So the import does the honest thing instead. It keeps the drawing exactly as
-it looks, at high resolution, and puts it behind your work. The longest side
-of that image is capped at **2600 pixels**, which is what keeps a large sheet
-legible when you zoom into it without the file becoming unwieldy.
+A CAD file with nothing to draw reports **Nothing to Import**: *"No drawable geometry
+(lines, polylines, circles, text) was found in this CAD file."*
 
-### What this means in practice
+### A scanned PDF becomes a background
+
+A PDF with no vector lines has nothing to read as elements, so its **first page**
+comes in as a picture behind your work, with its longest side capped at **2600
+pixels**. The status bar reads *"This PDF has no vector lines (it may be scanned), so
+it is a background to trace over. Draw on top, then export."*
 
 <Callout type="warn">
-The imported part is a picture. You cannot move a symbol inside it, change a
-rating on it, re-space its bus, or re-flow it to fit the sheet. Only the
-symbols, wires and text **you** place on top are editable.
+A background is a picture. You cannot move a symbol inside it or change a rating on
+it; only what you place on top is editable. It shows faint on screen so that your work
+stands out, prints at full strength in **PDF…**, and is not written to a CAD file.
 </Callout>
 
-Read that as a working method rather than a limitation:
+Read that as a working method:
 
-- **To annotate an existing diagram**, import it and add your notes and labels
-  over the top. Nothing underneath moves, which is exactly what you want for a
-  mark-up.
-- **To extend an existing diagram**, import it, then draw the new bays,
-  feeders or blocks beside it with real symbols. The new part is editable and
-  exports as geometry; the old part travels as the picture it is.
-- **To redraw an existing diagram properly**, import it and trace over it with
-  palette symbols, then remove the background when you no longer need it. You
-  end with a diagram made entirely of real symbols.
+- **To annotate a scanned diagram**, add your notes and labels over the top. Nothing
+  underneath moves.
+- **To extend it**, draw the additional bays or feeders beside it with real symbols.
+- **To redraw it properly**, trace over it with palette symbols, then click **Remove
+  the traced background** under **More ▸**. You end with a diagram made entirely of
+  real symbols.
 
-**✖ Remove BG** removes the background and leaves everything you drew on top
-untouched.
+### When something is already on the sheet
 
-### The background and the CAD export
+Tracing over a diagram or a background asks first, inline in the panel: *"Replace the
+diagram with “file”?"*
 
-Because a background is a picture, it stays a picture. Symbols you place are
-written into a CAD export as real drawing entities; the imported background is
-not, and cannot be. If the CAD file is the deliverable, either redraw the
-imported content with palette symbols or accept that only your overlay reaches
-CAD as geometry. See [Exporting the diagram](/docs/sld/export).
+| Button | What it does |
+| --- | --- |
+| **Replace diagram** | Discards your elements and any traced background |
+| **Add on top** | Keeps them and adds the file over them |
+| **Cancel** | Changes nothing |
 
-## Drawing over the background
+With only a background on the sheet, the first button reads **Replace background**.
+**Ctrl+Z** undoes a blank sheet, a clear, a trace, or removing the traced background.
+
+## Drawing over an existing diagram
 
 <Steps>
 <Step>
-### Open the SLD view
+### Open the editing panel
 
-Click the **SLD** tab. If no diagram exists yet, choose **Manual** on the
-**Generate:** row for a blank sheet. Tick **Hide Layout & Energy Summary** if
-the sheet needs the extra height.
+Click the **SLD** tab, then **Edit diagram**. To start from nothing, choose **More ▸
+Start a blank sheet**.
 </Step>
 
 <Step>
-### Import the file
+### Trace the file
 
-Click **📄 Import PDF / DXF** and pick the diagram. Its first page appears as
-the background of the sheet.
+Click **More ▸ Trace over a PDF / DXF…** and pick the diagram. Answer the question if
+the sheet already holds something.
 </Step>
 
 <Step>
 ### Draw what you need on top
 
-Place palette symbols, connect them with **╱ Wire**, and label with
-**📝 Text**. Everything you add is editable and moves independently of the
-picture beneath it.
+Place symbols, connect them with **Wire**, and label with **Text**.
 </Step>
 
 <Step>
 ### Remove the background when you are done with it
 
-Click **✖ Remove BG**. Your overlay stays. If you were tracing the imported
-diagram, this is the point at which the sheet becomes a real diagram rather
-than a drawing over a photocopy.
+If the file came in as a background, click **More ▸ Remove the traced background**.
+Your work stays.
 </Step>
 
 <Step>
 ### Export
 
-The background and the overlay both carry into the PDF exports and the
-report's diagram page. Only the overlay carries into a CAD file as geometry.
-See [Exporting the diagram](/docs/sld/export).
+See [Exporting the diagram](/docs/sld/export). The project keeps the traced background
+with the rest of the diagram.
 </Step>
 </Steps>
 
 ## Importing your own symbol
 
-**🖼 Import Image Symbol** adds a symbol the palette does not carry — a
-make-specific device, a customer's block symbol, a standard glyph your drawing
-office uses.
+**Import image…** under **My symbols** adds a symbol the palette does not carry — a
+make-specific device, a customer's block symbol, a glyph your drawing office uses. It
+reads PNG, JPG, BMP and GIF images.
 
-The important part is what happens to the image. It is **traced into a vector
-symbol** — a set of outlines — rather than pasted in as a picture. Two
-consequences follow, and both matter:
+The image is **traced into strokes** rather than pasted in as a picture. Two
+consequences follow:
 
-- **It draws as crisp line art.** Zoom in and you get lines, not enlarged
-  pixels, and it sits alongside the built-in symbols without looking
-  different.
-- **It exports to CAD as real vectors.** The outlines are written into the
-  drawing file as geometry a drafter can select, move and edit — the same
-  treatment the built-in symbols get.
+- **It draws as crisp line art.** Zoom in and you get lines, not enlarged pixels.
+- **It exports to CAD as real vectors**, the same treatment the built-in symbols get.
 
-Imported symbols are **stored per user** and stay available across sessions,
-so a symbol you trace once is there in later projects without importing it
-again. They appear in the symbol grid after the built-in symbols.
+Your symbols are stored in the `SolarLayout_Symbols` folder in your home folder and
+stay available across projects. They appear under **My symbols**.
 
 ### The Symbol Editor
 
-Tracing is automatic, and automatic tracing is never perfect. So the
-**Symbol Editor — edit, then Accept** window opens first, showing the traced
-strokes before anything is added to the palette.
+Tracing is automatic, and automatic tracing is never perfect. So the **Symbol Editor —
+edit, then Accept** window opens first, showing the traced strokes.
 
 <Screenshot id="sld-symbol-editor" />
 
@@ -150,18 +137,23 @@ strokes before anything is added to the palette.
 | **🧽 Erase** | Removes a stroke — for a speck, a stray edge, or a piece of the background that came through |
 | **🗑 Clear** | Removes every stroke, so you can start the drawing again |
 
-Work through the trace before accepting it: close the outlines that matter,
-erase what is not part of the symbol, and check the shape reads correctly at
-the size it will sit on the sheet.
+**Accept** moves on to naming the symbol. **Reject** discards the trace and adds
+nothing.
 
-Two buttons close the editor. **Accept** adds the symbol, as you have edited
-it, to your palette. **Reject** discards the trace and adds nothing.
+### Naming it
 
-### Deleting a custom symbol
+The **Symbol name** window takes the **Name** — *"Shown on its tile under My symbols ·
+an existing name is replaced"* — and **Save symbol** adds it. The status bar reads
+*"Saved the symbol “name”. It is under My symbols."*
 
-**🗑 Delete Image Symbol** removes one of your imported symbols. Because these
-symbols are stored for your user rather than with a project, deleting one
-removes it from later sessions too.
+### Removing one
+
+Right-click its tile and choose *"Remove “name” from My symbols…"*. The panel asks
+inline, *"Its file is deleted. Undo can't bring it back."*, with **Remove symbol** and
+**Cancel**.
+
+Copies you have already placed keep their strokes, so removing a symbol does not change
+a drawing that uses it, and a project opens with them on another computer too.
 
 ## Tracing a symbol, step by step
 
@@ -169,59 +161,52 @@ removes it from later sessions too.
 <Step>
 ### Prepare the image
 
-Crop it to the symbol alone, on a plain background, with the line work as dark
-and as sharp as you can get it.
+Crop it to the symbol alone, on a plain background, with the line work as dark and as
+sharp as you can get it.
 </Step>
 
 <Step>
 ### Import it
 
-Click **🖼 Import Image Symbol** and pick the file. The Symbol Editor opens on
-the traced strokes.
+Open **My symbols**, click **Import image…** and pick the file. The Symbol Editor opens
+on the traced strokes.
 </Step>
 
 <Step>
 ### Clean up the trace
 
-Erase anything that is not part of the symbol with **🧽 Erase**, and add the
-strokes the trace missed with **✏ Pen**. **🗑 Clear** starts the drawing over
-if the trace is beyond repair.
+Erase anything that is not part of the symbol with **🧽 Erase**, and add the strokes
+the trace missed with **✏ Pen**.
 </Step>
 
 <Step>
-### Click Accept
+### Accept and name it
 
-The symbol is added for your user, so it is available in this session and in
-later ones. **Reject** closes the editor without adding anything.
+Click **Accept**, type a **Name** and click **Save symbol**.
 </Step>
 
 <Step>
 ### Place it like any other symbol
 
-Click it, then click the sheet. Rotate it with **⟲ 90°** or a typed angle,
-wire it in, and label it with **📝 Text**.
+Click its tile, then click the drawing. Turn it with **Rotate 90°**, wire it in, and
+label it with **Text**.
 </Step>
 </Steps>
 
 ## What traces well
 
-The trace follows outlines, so give it outlines to follow.
+The trace follows outlines, so give it outlines to follow: a clean line drawing with
+strong contrast. Expect to repair anything fainter in the editor.
 
-| Source image | How it traces |
-| --- | --- |
-| A clean line drawing, black on white, no shading | Well — this is the case the trace is for |
-| A crisp screen capture of a symbol from a drawing | Well, if the lines are sharp and the background is plain |
-| A scan with speckle, or a faint or broken line | Poorly — expect to repair strokes in the editor |
-| A photograph of a printed drawing | Poorly — uneven lighting and page curl both read as outlines |
-| A shaded or three-dimensional view of the equipment | Poorly — there is no line work to follow, and shading traces as noise |
+An image with no outline to follow reports *"Could not extract an outline from this
+image."* and asks for a clearer line drawing or a higher-contrast image. Accepting an
+empty editor reports *"The symbol is empty — nothing to save."*
 
-Two practical habits help more than anything else:
+Two habits help more than anything else:
 
-- **Crop to the symbol.** Anything else in the frame — a title block, a
-  neighbouring device, a caption — traces too, and then has to be erased.
-- **Raise the contrast before importing** rather than repairing the result
-  afterwards. A drawing that is plainly black on plainly white traces cleanly;
-  one that is grey on cream does not.
+- **Crop to the symbol.** Anything else in the frame — a title block, a neighbouring
+  device, a caption — traces too, and then has to be erased.
+- **Raise the contrast before importing** rather than repairing the result afterwards.
 
 ## Where to go next
 
@@ -239,7 +224,7 @@ Two practical habits help more than anything else:
   <Card
     title="Exporting the diagram"
     href="/docs/sld/export"
-    description="Why traced symbols reach CAD as geometry and a background does not"
+    description="Why traced elements reach CAD as geometry and a background does not"
   />
   <Card
     title="Building a diagram from the plant"

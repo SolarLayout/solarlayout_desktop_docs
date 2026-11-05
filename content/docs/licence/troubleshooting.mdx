@@ -27,7 +27,7 @@ at the bottom of the window with a **Copy** button.
 reads *"You have access until &lt;date&gt;."* and the buttons are **Access
 Details**, **Support cases**, **Refresh** and **Close**.
 
-<Screenshot id="licence-active" />
+<Screenshot id="active-window" />
 
 **Nothing to fix.** **Generate Layout** and the exports work.
 
@@ -95,11 +95,11 @@ with a **Contact Us** button.
 usable cached result to fall back on. The line reads *"We couldn't reach the
 SolarLayout server. Check your connection and press Refresh."*
 
-A good check is cached, so a brief outage does not stop work: the application
-keeps working under its last known status for up to **3 days** without a
-connection, and the ribbon chip reads **● Active — until &lt;date&gt;
-(offline)** meanwhile. This state only appears once that offline grace has run
-out, or on a machine that has never checked in successfully.
+A good check of active access is cached, so a brief outage does not stop work: the
+application keeps working for up to **3 days** without a connection, and the ribbon
+chip reads **● Active — until &lt;date&gt; (offline)** meanwhile. This state appears
+once that offline grace has run out, when the last known status was expired or revoked,
+or on a machine that has never checked in successfully.
 
 **Fix.** Reconnect to the internet and click **Refresh**. If the state
 persists on a machine that is definitely online, contact SolarLayout — see
@@ -115,8 +115,8 @@ persists on a machine that is definitely online, contact SolarLayout — see
 
 <Accordion title="Generate Layout or an export is blocked">
 
-Clicking **Generate Layout** or an export without active access opens the
-**License / Subscription** window itself — there is no separate message. Read
+Clicking **Generate Layout**, an export or **Robot count from DXF…** without active
+access opens the **License / Subscription** window itself — there is no separate message. Read
 the headline and find that state above. The SLD and BOM views are not blocked;
 they simply have no layout to work from.
 
@@ -175,8 +175,9 @@ below.
 
 Without active access the **Support** button in the ribbon shows *"You'll need
 active access to file a support ticket. Start a free trial, or contact us
-directly."* with **Get Free Access**, **Contact Us** and **Cancel**. Use
-**Contact Us**, or write to
+directly."* with **Get Free Access**, **Contact Us** and **Cancel**. On a device
+that has never had access, [activate it](/docs/licence/activate). When access has
+expired or been revoked, use **Contact Us**, or write to
 [sales@solarlayout.app](mailto:sales@solarlayout.app).
 
 </Accordion>

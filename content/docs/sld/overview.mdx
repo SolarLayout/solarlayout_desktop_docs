@@ -1,276 +1,292 @@
 ---
 title: Building the single-line diagram
-description: The SLD view — the A3 drawing sheet, the Generate choice, the drawing tools, and how the finished diagram reaches the project report, a standalone PDF and a CAD file.
+description: The SLD view — the diagram built from your layout, how it follows the layout, the printed sheet, and the editing tools for changing it or drawing your own.
 ---
 
-The **SLD** tab (**Ctrl+5**) is where you draw the plant's **single-line
-diagram** — SLD, the one-line electrical schematic that shows how the modules
-reach the grid. The drawing sheet takes the place of the plot, and the left
-column hands its inputs over to the **SLD TOOLS** panel. You draw on a proper
-sheet, with a border, a zone grid, a legend band and a title block, and the
-finished sheet goes into the Detailed Project Report as its own page. It can
-also leave on its own, as a PDF or as a CAD drawing.
+The **SLD** tab (**Ctrl+7**) holds the plant's **single-line diagram** — SLD,
+the one-line electrical schematic that shows how the modules reach the grid.
+With a layout on screen the diagram is built as soon as you open the view, and
+you review it first: the left column says whether it still matches the layout,
+and you open the editing tools only when you want to change something.
 
-The diagram is a drawing, not an electrical study. The automatic build lays
-down a starter chain from the plant's own equipment counts, and the symbol
-palette carries the switchgear and instrumentation an SLD normally shows — but
-the ratings you print, the protection you draw and everything a grid connection
-needs are yours to put on the sheet.
+The diagram is a drawing, not an electrical study. The automatic build draws the
+chain from the plant's own equipment counts and ratings. The protection,
+switching and instrumentation an issued SLD carries are yours to add.
 
-## The SLD view
+## Opening the view
 
-Click the **SLD** tab, or press **Ctrl+5**. The right side shows the drawing
-sheet; the left column shows a blue banner **● SLD Preparation** with an
-**Exit SLD** button, and under it the **SLD TOOLS** panel. The tools panel
-replaces the stage tabs and the **Generate Layout** button while the view owns
-the column; **Exit SLD** hands the column back. The view tabs and the tools
+Click the **SLD** tab, or press **Ctrl+7**. The right side shows the diagram.
+The left column shows a blue banner **SLD Preparation** with an **Exit SLD**
+button, and under it the **DIAGRAM** and **EXPORT** cards and **Edit diagram**.
+They replace the stage tabs and the **Generate Layout** button while the view
+owns the column; **Exit SLD** hands the column back. The view tabs and the tools
 beside them are described on [Views](/docs/workspace/views).
 
-**Nothing is generated when you enter.** The view shows the diagram already
-stored with the session, if there is one. The first row of the tools panel,
-**Generate:**, asks you to choose:
+What you find depends on the project:
 
-| Choice | What happens |
+| When you open the view | What you see |
 | --- | --- |
-| **Automatic** | The diagram is built from the layout, the electrical grouping set on the **ACCB & Transformer** card, and the inverter file — never from the bill of materials. The status line reads *"Auto-built SLD (simple feeder) — edit as needed."* See [Building a diagram from the plant](/docs/sld/auto-build) |
-| **Manual** | A blank sheet, for drawing from the palette. If a diagram already exists you are asked *"Start a blank SLD for manual drawing? This clears the current diagram."* |
+| A layout, and no diagram yet | The automatic diagram, built on entry with no question. See [Building a diagram from the plant](/docs/sld/auto-build) |
+| A diagram already in the project | That diagram, with its state on the **DIAGRAM** card |
+| No layout and no diagram | *"No layout yet"*, *"Generate a layout and the single line diagram is built from it."* and **Back to Layout**. **Draw by hand** on the left starts a blank sheet instead |
 
-<Screenshot id="sld-blank" />
+<Screenshot id="sld-no-layout" />
 
-Three things are worth knowing before you choose:
+## The DIAGRAM card
 
-- **Generate the layout first if you intend to use Automatic.** The automatic
-  build reads the plant that is currently placed, so it has nothing to work
-  from until a layout exists. The drawing tools themselves work on whatever is
-  on the sheet.
-- **A stored diagram is not redrawn on its own.** After a new layout, a change
-  on the **ACCB & Transformer** card or a newly loaded inverter file, choose
-  **Automatic** again to rebuild it.
-- **Tick Hide Layout & Energy Summary to gain height.** The option hides the
-  row of plant chips under the view, so the sheet gets the full height of the
-  window. Despite its label, what it hides is the chip row, not a table.
-  Untick it and the chips come back.
+The top of the card says what the diagram is and whether it matches the layout.
+The status bar carries the same news on entry, such as *"SLD up to date with the
+layout."*
 
-## The drawing sheet
+| Verdict | What it means |
+| --- | --- |
+| **Waiting for a layout** | Nothing to build from yet. **Summary** and **Full** are off, with the note *"Available once a layout exists."* |
+| **Up to date with the layout** | The automatic diagram matches the plant. The line under it gives the figures, such as *"Automatic · 54.28 MWp · 159 inverters · 8 transformers"*, and counts your edits once there are any. An edited diagram also offers **Rebuild — discards 1 edit** |
+| **Out of date** | The layout changed after this diagram was built. See [When the layout changes](#when-the-layout-changes) |
+| **Drawn by hand** | A drawing that doesn't follow the layout. **Replace with the automatic diagram…** asks inline before it replaces your drawing and any traced background; Undo brings both back |
+| **Couldn't build the diagram** | The reason follows. A diagram already on screen is kept |
 
-The sheet is an **A3 landscape** frame — 420 × 297 drawing units, the
-proportions of an A3 page in millimetres. Everything you place sits inside it,
-and the frame itself is drawn for you.
+Under the verdict, **Summary | Full** chooses between one chain for the whole
+plant and a row for every ACCB or central inverter. It applies to the automatic
+diagram only, and on an edited diagram the switch rebuilds and discards your
+edits, which you can undo.
+
+A notice under the switch names anything the sheet cannot print yet, with the
+button that fixes it:
+
+| Notice | Button | On the sheet meanwhile |
+| --- | --- | --- |
+| *"Transformer ratings need the inverter file (OND)."* | **Load OND…** | *— kVA* and *33 kV / — V* |
+| A count of transformers that fit no listed rating | **Electrical tab…** | *— kVA* on those transformers |
+| *"The inverter file has no output voltage, so the sheet prints “— V”."* | — | *— V* |
+
+## When the layout changes
+
+The diagram follows the layout in a way that depends on whether you have touched
+it.
+
+| The diagram is | When the layout changes |
+| --- | --- |
+| **Automatic, untouched** | It rebuilds at once, as one undo step. The status bar reads *"SLD rebuilt from the new layout"*, with the capacity, and *"It had no edits."* |
+| **Automatic, edited** | It is kept and marked out of date, so that your edits are not lost without your say |
+| **Drawn by hand** | Nothing. A hand drawing never follows the layout |
+
+A marked diagram has a banner over the drawing, *"The layout changed after this
+diagram was built"*, with the figures for both.
+
+<Screenshot id="sld-out-of-date" />
+
+| Button | What it does |
+| --- | --- |
+| **Rebuild — discards 1 edit** | Builds the diagram again from the layout. Your edits go, and **Undo** in the toast that appears brings them back. The button names how many edits it discards |
+| **Keep this diagram** | Leaves the drawing as it is. A chip *"Kept · out of date"* stays on it with both capacities, and a further layout change marks it again. Keep cannot be undone |
+
+The diagram's **PDF…** and **DWG…** wait until you choose one or the other. A
+kept diagram exports as it stands, and the **EXPORT** card says so.
+
+## Diagram and Sheet
+
+Two controls at the bottom right of the drawing choose what you look at, and
+neither is saved with the project.
+
+| Control | What it shows |
+| --- | --- |
+| **Diagram** | The drawing alone, framed to fill the view. The view opens here |
+| **Sheet** | The sheet as it prints, with its frame, legend, notes and title block |
+
+### What the sheet holds
+
+<Screenshot id="sld-page" caption="The sheet as it prints" />
 
 | Part of the sheet | What it is |
 | --- | --- |
-| **Outer border** | An orange rule around the whole sheet |
-| **Inner frame** | The frame the drawing area sits inside |
-| **Zone grid** | Numbers 8 down to 1 across the sheet and letters F down to A down its side, so a note or a revision can name the zone it refers to |
-| **LEGENDS** | A panel in the right-hand band, keyed automatically to the symbols on the sheet |
-| **NOTES** | A second panel in the right-hand band, carrying four standard notes |
-| **Title block** | The block at the foot of the right-hand band, carrying the drawing's identity |
+| **Outer border** and **inner frame** | The frame the drawing area sits inside |
+| **Zone grid** | Numbers 8 down to 1 across the sheet and letters F down to A along its side, so a comment can name the zone it refers to |
+| **LEGENDS** | A panel in the right-hand band, keyed to the symbols on the sheet |
+| **NOTES** | Three standard notes: the ratings are indicative and to be confirmed against the final GTP and BOM, cable sizing and protection are to be finalised separately, and quantities marked ×N are per-plant multiplicities |
+| **Title block** | The block at the foot of the right-hand band |
 
-### What the frame fills in, and what it leaves to you
+### The title block
 
-The frame fills in three things for you:
+The title block fills itself from the project's company and project details, so
+you do not type into it. Set the company with **File ▸ Company…**; see
+[Company details](/docs/exports/company). The project details are edited in the
+[Export deliverables](/docs/exports/deliverables) window. A field with nothing to
+print shows **—**.
 
-- **LEGENDS** lists the symbols on the sheet — the automatic build's chain, or
-  the kinds of symbol you have placed on a manual sheet — each with its
-  symbol.
-- **NOTES** carries four standard notes: the ratings are indicative and to be
-  confirmed against the final GTP and BOM, cable sizing and protection are to
-  be finalised separately, quantities marked ×N are per-plant multiplicities,
-  and any symbol or label can be edited in the SLD view.
-- **The title block** reads **DRAWING TITLE** *SINGLE LINE DIAGRAM*,
-  **SCALE : NTS** and **SHEET :** with the paper size.
-
-Nothing identifies the project, the plant or your organisation: **DOC. NO.**
-and **REV.** are empty, and there is no company or project name. The sheet
-leaves your machine as your drawing, under your own identity — write those in
-with the **📝 Text** tool, in the same way you would label anything else on the
-sheet, before you export. Notes your own drawing standard requires go on the
-same way.
-
-### Paper size on a large plant
-
-The automatic build's full form draws one row per combiner box or central
-inverter, and a plant with many of them needs more paper. The **physical**
-paper size therefore grows — A3 up to 10 feeders, A1 up to 28, A0 beyond —
-while the drawing box keeps A3 proportions. The simple feeder always fits A3.
-
-The consequence is the useful part: the diagram is not re-scaled or re-flowed
-to fit A3. The geometry you drew is the geometry that prints, on a larger
-sheet. What you position at one end of the sheet stays at that end.
-
-## The drawing tools
-
-Four tools sit at the top of the tools grid, above the symbols.
-
-| Tool | What it does |
+| Field | What it prints |
 | --- | --- |
-| **↖ Move/Select** | Click an element to select it, then drag it to a new position. Shift-click adds to the selection |
-| **╱ Wire** | Click-drag to draw a connection between two points |
-| **📝 Text** | Click to drop a label; a label can run to several lines |
-| **🗑 Delete** | Click an element to remove it |
+| **COMPANY** | The company's name, with its logo |
+| **PROJECT** | The project's name and code, or the file name in muted italic |
+| **CLIENT** · **LOCATION** | From the project details |
+| **DRAWING TITLE** | *Single line diagram — Summary*, *— Full*, or *Single line diagram* on a hand drawing |
+| **DRAWN** | The project's entry, else the company's initials |
+| **CHECKED** · **APPROVED** | From the project details |
+| **DRAWING NO.** · **REV.** | **—** on this sheet |
+| **DATE** | Today |
+| **SCALE** · **SHEET** · **PAPER** | *NTS*, *1 of 1* and the paper size |
 
-Symbols are not on this list because they come from the palette rather than a
-tool: click the symbol you want, then click the sheet where it goes. The full
-set is on [Symbol reference](/docs/sld/symbols).
+### Paper size
 
-### Drawing a wire
+A diagram with many rows needs more paper, so the paper size follows the number
+of rows: **A3** up to 10, **A1** up to 28, **A0** beyond.
 
-**╱ Wire** draws the connection between two points as a click-drag: press where
-the run starts, release where it ends. A wire is an element in its own right,
-so **↖ Move/Select** repositions it and **🗑 Delete** removes it without
-disturbing the symbols at either end.
+## Getting around
 
-Draw the bus first and hang the symbols off it. A single-line diagram is read
-along its bus, and a bus drawn afterwards through symbols already placed tends
-to end up as a row of short segments rather than one run.
-
-### Labelling with text
-
-**📝 Text** drops a label wherever you click, and a label can run to several
-lines — which is what makes it usable for a rating stacked under a device name,
-or for a title-block field with a value under its caption.
-
-Anything you write on the sheet yourself goes on with this tool: extra notes,
-the title-block fields, and any annotation you want beside a symbol. Each one is an element you place, and **↖ Move/Select** repositions
-it afterwards.
-
-## Rotating a symbol
-
-The **Rotate** row acts on the current selection:
-
-| Control | What it does |
+| Gesture | What it does |
 | --- | --- |
-| **⟲ 90°** | Rotates by ninety degrees |
-| the angle field and **⟳ Apply** | Turns the selection to the angle in the field — 0–360°, in steps of 15°, 90° to begin with |
+| Mouse wheel | Zooms at the pointer, from 25 % to 800 % of the fitted view |
+| Plain drag | Pans, while you are reviewing |
+| **Space** + drag, or the middle button | Pans while you are editing, where a plain drag belongs to the tool |
+| **−** · **+** (keys or buttons; **=** also zooms in) | Zoom out or in by 20 % |
+| **Fit**, the percentage button, or **F** | Fits the drawing to the view |
 
-Ninety degrees covers most of the work on an SLD, where symbols sit either
-along the bus or across it. The typed angle is there for the cases that do not
-— an incoming line drawn at a slant, or a symbol imported from elsewhere that
-arrives at the wrong attitude.
+Text keeps its sheet size against the drawing as you zoom.
 
-### The inverter and the transformers arrive already rotated
+## Editing the diagram
 
-The inverter and **every** transformer are placed **pre-rotated to 270°**, so
-that they line up with the horizontal bus the rest of the diagram is built
-along. This holds in both electrical topologies — the string-inverter chain and
-the central-inverter chain alike.
+Click **Edit diagram** — *"Move symbols, add text, or draw your own."* The left
+column changes to the editing panel. The status bar reads *"Editing the SLD.
+Ctrl+Z undoes."*
 
-So when you place an inverter or a transformer and it appears turned relative
-to its palette icon, nothing has gone wrong. It has been oriented for the bus.
-The symbols that are **not** pre-rotated are placed as drawn in the palette,
-and it is those you will occasionally need **⟲ 90°** for.
+<Screenshot id="edit-panel" maxWidth={360} />
 
-## Grouping and copying
+The header stays pinned at the top: **Editing diagram**, **Undo**, **Redo**, and
+**Done**, with a line that counts your changes. **Done** returns to the review
+panel, and any changes are counted in *"The diagram is marked edited."*
 
-| Control | What it does |
+### Select, Wire and Text
+
+**Select | Wire | Text** chooses what a press on the drawing does, and a hint at
+the bottom left of the drawing repeats it.
+
+| Tool | What you do |
 | --- | --- |
-| **🔗 Group** | Binds the selection into one element, so it moves as a unit |
-| **✂ Ungroup** | Releases a group back into its parts |
-| **⧉ Copy** | Duplicates the selection |
+| **Select** | Click to select. Drag a selected element to move it. Drag on empty space for a marquee. **Shift** adds to the selection. Double-click a text or a relay to edit it |
+| **Wire** | Press where the run starts and release where it ends |
+| **Text** | Click where the label goes. The **SLD text** window takes the text, which can run to several lines, and its **Font**, **Size** (4–96 pt, 8 to begin with) and **Colour** |
 
-The case for grouping is repetition. A feeder bay — breaker, current
-transformer, voltage transformer, meter, isolator — is the same handful of
-symbols and wires every time. Draw it once, group it, then copy the group along
-the bus. Correct one bay afterwards and you can ungroup, edit, and group again.
+A wire is an element in its own right, so **Select** moves it and **Delete**
+removes it without disturbing the symbols at either end.
 
-## Getting around the sheet
+### Symbols
 
-The **View** row holds three controls:
+The **SYMBOLS** card holds the palette, in groups with one open at a time. Click
+a tile and then click the drawing; the tile stays armed until you press it again
+or press **Esc**. See [Symbol reference](/docs/sld/symbols).
 
-| Control | What it does |
+### The Selection card
+
+The **SELECTION** card acts on what you have selected. With nothing selected it
+reads *"Nothing selected"* and its buttons are off.
+
+| Button | What it does |
 | --- | --- |
-| **✋ Pan** | Drag the sheet under the view |
-| **🔍 Zoom** | Zoom into a part of the sheet |
-| **⤢ Fit** | Fit the whole sheet back into the view |
+| **Rotate 90°** | Turns the selection by a quarter turn |
+| **Copy** | Duplicates the selection 8 mm right and 8 mm down on the sheet, selected and ready to drag |
+| **Delete** | Removes the selection. The **Delete** and **Backspace** keys do the same |
+| **Group** | Binds two or more elements so they move as one |
+| **Ungroup** | Releases a group back into its parts |
 
-**✋ Pan** and **🔍 Zoom** are switches: while one is on, a drag moves or zooms
-the sheet rather than editing it, so turn it off before you go back to placing
-and moving. The mouse wheel zooms the plot in every other view but not here —
-use **🔍 Zoom**. **⤢ Fit** is the one to reach for after a zoom, and the one to
-use before an export, so that you are looking at the same sheet the export will
-write.
+The case for grouping is repetition. A feeder bay — breaker, current transformer,
+voltage transformer, meter, isolator — is the same handful of symbols and wires
+every time. Draw it once, group it, and copy the group along the bus.
 
-## Starting over
+### More
 
-**🗑 Clear SLD** empties the sheet — every symbol, wire and label you have
-placed. The sheet frame, its zone grid, the standard notes and the title
-block remain, because they are the sheet rather than the drawing.
+**More ▸** at the foot of the panel folds away the choices that replace what is on
+the sheet.
 
-The diagram is part of the session, not a separate file. Saving the project
-saves the diagram with it, along with the inputs, the layout and the hand
-edits, and opening that project brings the diagram back as you left it. See
-[Projects](/docs/projects).
+| Choice | What it does |
+| --- | --- |
+| **Start a blank sheet** | Empties the sheet for a drawing of your own |
+| **Trace over a PDF / DXF…** | Brings an existing drawing onto the sheet. See [Importing diagrams and custom symbols](/docs/sld/import-and-custom-symbols) |
+| **Remove the traced background** | Takes away a scanned page. It shows only when there is one |
+| **Clear the diagram** | Removes every symbol, wire and label |
 
-## Building a diagram
+### Undo
+
+**Undo** holds 100 steps. Every edit and every choice that replaces the drawing
+is one step: a rebuild, a replace, a blank sheet, a clear, a switch between
+**Summary** and **Full**, the diagram following the layout, a trace, a change of
+background. **Ctrl+Z** undoes and **Ctrl+Shift+Z** or **Ctrl+Y** redoes, in the
+review panel as well as while editing. After a choice that discards work, a toast
+at the top of the drawing offers **Undo** at once.
+
+The undo history is not saved. Opening a project starts it empty.
+
+## Drawing by hand
+
+**Draw by hand** (with no layout) and **Start a blank sheet** (under **More ▸**)
+both give you an empty sheet, for a diagram that is not the plant's own chain: a
+grid connection scheme, say. *"It won't follow the layout."* The **DIAGRAM** card
+then reads **Drawn by hand**, with the number of elements on the sheet.
+
+<Screenshot id="sld-blank" />
+
+## Checking a diagram
 
 <Steps>
 <Step>
 ### Open the SLD view
 
-Click the **SLD** tab, then tick **Hide Layout & Energy Summary** if the sheet
-needs the extra height.
+Click the **SLD** tab. The automatic diagram is there if a layout is. Clear any
+notice on the **DIAGRAM** card, such as **Load OND…**.
 </Step>
 
 <Step>
-### Choose how to start
+### Choose the form
 
-Choose **Automatic** to place the plant's own chain — modules through
-inverters, combiner boxes, transformers and medium-voltage panel to the grid —
-annotated with quantities and ratings. Choose **Manual** for a blank sheet if
-the plant is not the subject of the drawing.
+Choose **Summary** or **Full** before you start editing, because switching
+discards edits.
 </Step>
 
 <Step>
 ### Add what the chain does not carry
 
-Place the protection, switching and instrumentation symbols your drawing
-standard calls for, and wire them in with **╱ Wire**.
+Click **Edit diagram**, place the protection, switching and instrumentation
+symbols your drawing standard calls for, and connect them with **Wire**.
 </Step>
 
 <Step>
 ### Check every rating
 
-The automatic build annotates what it places from the electrical grouping and
-the inverter file. Read each annotation against the equipment you are actually
-buying and correct it with **📝 Text** where it differs.
+The automatic build annotates what it places from the electrical grouping and the
+inverter file. Read each annotation against the equipment you are buying.
 </Step>
 
 <Step>
-### Complete the title block
+### Read the sheet
 
-Write the document number, the revision, the project name and anything your
-drawing standard adds to the notes with **📝 Text** before the drawing leaves
-your machine.
+Click **Done**, then **Sheet**, and read the title block as it will print. Set
+anything missing with **File ▸ Company…** or in the project details.
 </Step>
 
 <Step>
-### Export
+### Export and save
 
-Send the sheet out as its own PDF or CAD drawing from the tools panel, or leave
-it to be carried into the Detailed Project Report as the report's diagram page.
+Export with **PDF…** or **DWG…**, and save the project: the diagram is part of it.
 </Step>
 </Steps>
 
 <Callout type="warn">
 The automatic build is a starting point derived from counts and grouping rules,
-not a protection design. Nothing on the sheet is checked against a standard, a
-fault level or a grid code. Read every rating and every device before the
-drawing goes to anyone.
+not a protection design. Read every rating and every device before the drawing
+goes to anyone.
 </Callout>
 
 ## Where the diagram goes
 
-Three routes out, covered on [Exporting the diagram](/docs/sld/export):
+**PDF…** and **DWG…** on the **EXPORT** card write this diagram as you built,
+edited or traced it. See [Exporting the diagram](/docs/sld/export).
 
-- **The report's diagram page.** **Export ▾ ▸ Export Detailed Project Report**
-  writes a Word document that carries the diagram as its **Single Line
-  Diagram** annexure, on the same sheet you drew it on. The same page appears
-  in **Export PDF (with Piles)** while the pile overlay is on. See
-  [The Detailed Project Report](/docs/exports/project-report).
-- **A standalone PDF.** **⬇ Export SLD to PDF** in the tools panel — the sheet
-  on its own, for review or for a drawing register.
-- **A CAD drawing.** **⬇ Export SLD to DWG** — the symbols written out as real
-  drawing entities in a `.dxf` file, for a drafting team to take further.
+The [deliverables package](/docs/exports/deliverables) carries a diagram of its
+own, drawn automatically from the design. Your edits and tracing do not reach it.
+
+**Save project** keeps the diagram with the rest of the project: its elements,
+**Summary** or **Full**, its paper and any traced background, along with what it
+was built from, so a reopened project still knows whether it matches the layout.
+See [Projects](/docs/projects).
 
 ## The rest of the SLD view
 
@@ -283,16 +299,16 @@ Three routes out, covered on [Exporting the diagram](/docs/sld/export):
   <Card
     title="Building a diagram from the plant"
     href="/docs/sld/auto-build"
-    description="Generate: Automatic, the Full SLD option, and the grouping it draws"
+    description="The chain the automatic build draws, Summary and Full, and the grouping behind it"
   />
   <Card
     title="Importing diagrams and custom symbols"
     href="/docs/sld/import-and-custom-symbols"
-    description="Bringing in an existing drawing, and tracing your own symbols"
+    description="Tracing an existing drawing, and adding your own symbols"
   />
   <Card
     title="Exporting the diagram"
     href="/docs/sld/export"
-    description="The report page, a standalone PDF, and the CAD file"
+    description="A PDF of the sheet, and a CAD drawing"
   />
 </Cards>

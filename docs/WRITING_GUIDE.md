@@ -333,10 +333,9 @@ Say these the same way everywhere:
   zone. Say this once per page at most, and only where it matters.
 - **Generate Layout** needs a valid licence. Mention it only on the licence
   pages and once in the first-layout walkthrough.
-- Auto-calculated tilt and pitch carry a trailing asterisk in the Summary view.
 - Inputs live on five stage tabs — **Site · Array · Electrical · Yield · Tools** —
   under the pinned **Generate Layout** button; results are the views
-  **Layout · Summary · Energy · BOM · SLD**. Name the tab or view a control is
+  **Layout · Summary · Checks · Workings · Energy · BOM · SLD**. Name the tab or view a control is
   on the first time a page sends the reader to it.
 
 ## 9. Before you finish a page

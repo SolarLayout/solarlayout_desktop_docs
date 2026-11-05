@@ -28,12 +28,12 @@ features appear in the file:
 
 - A polygon that is **not** contained within another polygon is a **plant
   boundary**.
-- A polygon **fully contained** within a boundary is an **obstacle** in that
-  plant — a water body, a building, a substation.
+- A polygon **inside** a boundary is an **area** with no tables on it — a water body, a
+  building, a substation.
 
 So a file with three separate outer polygons produces three plants, and a file
 with one outer polygon containing three inner ones produces one plant with three
-obstacles. The difference is entirely whether the polygons are nested.
+areas. The difference is entirely whether the polygons are nested.
 
 ## Each plant is laid out on its own
 
@@ -80,7 +80,7 @@ there are several.
 | --- | --- |
 | Each boundary is a **closed polygon** — first and last ring coordinate identical | An open ring cannot be shrunk inward or tested for containment |
 | Boundaries must **not overlap** each other | The **Clean boundary** review stops to ask whether to merge them, cut the overlap out of one, or remove one |
-| Every feature must lie **inside** the boundary it belongs to | A polygon drawn clear of every boundary is read as another plot, and gets tables of its own |
+| Every area must lie **inside** the boundary it belongs to | A polygon drawn clear of every boundary is read as another plot, and gets tables of its own, unless its name is a water word |
 
 Full preparation rules, including how to name a feature so it is read as water,
 are on
@@ -96,54 +96,54 @@ Use **Fix in Google Earth first** and reload the file if you need every plant.
 
 ## The Summary view gains a column per plant
 
-The **Summary** view — the second view tab — turns the figures on their side:
-a **Metric** column,
-then **one column per plant**, then a **Total** column that aggregates every
-plant on the site. The rows are the same for every column, grouped under SITE,
-ARRAY, ELECTRICAL, CABLES and ENERGY; the energy rows read `—` until energy
-has been calculated.
+The **Summary** view — the second view tab — has two sheets, switched by **Plant | By
+block** above it.
+
+**Plant** carries a **Metric** column, then **one column per plant**, then a **Total** column
+for the site. The rows are the same for every column, grouped under Capacity, Site, Array,
+Electrical, Cables & trenches and Energy; the energy rows appear once energy has been
+calculated.
 
 <Screenshot id="summary-multi-plot" />
 
-Each plant's column header carries the plant's name with a **›**; clicking it
-shows that plant on the Layout view. Read a multi-plot summary column by column
-before reading the total. A plant with a poor area-to-capacity ratio is visible
-immediately next to its neighbours, and it is usually a plant whose shape or
-corridors are costing it ground. Every row is defined in
-[Summary rows](/docs/reference/summary-columns).
+Each plant's column header carries the plant's name with a **›**; clicking it shows that
+plant on the Layout view. Read a multi-plot summary column by column before reading the
+total. A plant with a poor area-to-capacity ratio is visible immediately next to its
+neighbours, and it is usually a plant whose shape or corridors are costing it ground. Every
+row is defined in [Summary rows](/docs/reference/summary-columns).
 
-With several plants the sheet is wide. **Open in window** in the view's tools
-puts it in a window of its own, and **Copy** puts it on the clipboard as
-tab-separated text for a spreadsheet. When the design has warnings, each line of
-the warnings banner above the sheet starts with the name of the plant it
-concerns.
+**By block**, the sheet a project opens on, has one column per ICR block under a band naming
+each plant, then **Shared** and **Total**. Because every plot numbers its own rooms from 1, the
+blocks read `P1-ICR-1`, `P2-ICR-1` and so on.
+
+With several plants the sheet is wide. **Open in window** in the view's tools puts it in a
+window of its own. On the **Checks** view, a check's sentences start with the name of the plant
+they concern.
 
 ### The Plants chip
 
 The row of plant chips under every view gains a **Plants** chip on a multi-plot
-site, carrying the number of plants laid out; the other chips — DC capacity,
-site area, tables, modules, ICR blocks — are site totals. Water-body results are
-left out of the totals. Clicking any chip opens the Summary view.
+site, carrying the number of plants laid out; the other chips — site area, DC capacity,
+tables, modules, ICR blocks — are site totals. Clicking the Plants chip opens the Summary
+view.
 
 <Screenshot id="kpi-strip-multi" />
 
 ## The main control room and unit substations
 
 The **main control room (MCR)** is placed by hand, once — see
-[Site equipment](/docs/layout/site-equipment). On a multi-plot site, placing it
-does something extra. With the grid connection by others there is no main control room
+[Site equipment](/docs/layout/site-equipment#unit-substations-on-a-multi-plot-site). On a
+multi-plot site, placing it does something extra. With the grid connection by others there is no main control room
 or unit substation, and each plot can have its own handover point: see
 [Grid connection by others](/docs/layout/grid-connection).
 
-Click **Place MCR** on the **Tools** tab and the hint reads *"n plots — click
-INSIDE each plot to drop a USS (Unit Substation). The LAST unassigned plot you
-click gets the MCR. Each plot's ICRs route to its own USS/MCR."* Click inside
-each plot in turn: every plot you click receives a **unit substation (USS)**,
-and the last plot receives the main control room. Each plot's control rooms then
-route their medium-voltage cables to the building in their own plot, rather than
-across open ground to a building in a different plot. That mirrors how the site
-would actually be built: collection stays inside the parcel it belongs to, and
-only one circuit leaves each parcel.
+Click **Place MCR** on the **Tools** tab and the bar over the plot reads *"Click a plot to place
+its USS. The last plot gets the MCR."*, with a count of the plots done. Click inside each plot
+in turn: every plot you click receives a **unit substation (USS)**, and the last plot receives
+the main control room. Each plot's control rooms then route their medium-voltage cables to the
+building in their own plot, rather than across open ground to a building in a different plot.
+That mirrors how the site would actually be built: collection stays inside the parcel it belongs
+to, and only one circuit leaves each parcel.
 
 <Screenshot id="uss-multiplot" />
 
@@ -175,32 +175,25 @@ See [Cable routing](/docs/layout/cables).
 
 ## What the exports do with several plants
 
-Every export covers the whole site in one file, and each handles the split
-differently:
+**Export deliverables…** writes one package for the whole site, and each file handles the
+split in its own way:
 
-- **The project report** — the Word document from **Export ▾ Export Detailed
-  Project Report** — draws the site as one drawing and carries the per-plant
-  figures and the total in its design summary, so it is the document to hand
-  over for the site as a whole. See
-  [The project report](/docs/exports/project-report).
-- **The Google Earth file** gets one folder per plant, named after that plant,
-  plus an **Overall Summary** folder aggregating every plant. That is the export
-  to use when a reviewer wants to look at one plot at a time.
-- **The CAD drawing** has one layer per feature type — boundaries, tables,
-  control rooms, cables — not one layer per plant, so every plant's features
-  share the same layers. See [CAD export](/docs/exports/dxf).
-- **The ICR-block PDF and the ICR-block drawing set** cover the blocks of every
-  plant. Where more than one plot has control rooms, each block's name carries
-  its plot's number — `P1-ICR-1`, `P2-ICR-1` — because every plot numbers its
-  own rooms from 1. See [ICR blocks](/docs/layout/icr-blocks).
-- **The cable schedule** has one sheet per ICR block, and on a multi-plot site
-  each sheet name carries the same plot prefix.
+- **The drawing set** covers the site on one general arrangement sheet, then gives each block
+  its own sheets. Blocks are named for their plot, `P1-B01`, `P2-B01`. See
+  [The drawing set](/docs/exports/drawing-set).
+- **The design report** carries the site as one document, with a block schedule by plot. See
+  [The design report](/docs/exports/design-report).
+- **The schedules workbook** is one workbook for the plant, with a **Plot** column on its
+  sheets. **The land account** gives rows per plot, then the plant.
+- **The KMZ** has a polygon per plot in its **Site** folder, and the blocks in its **Blocks**
+  folder under the same names. See [Schedules and KMZ](/docs/exports/schedules-and-kmz).
+- **The DXF twin** holds the whole site once in model space, so every plant's features share the
+  same layers.
 
 ## Naming the plants
 
 Each plant appears in the Summary view under the name its boundary carries in
-the file, and the exported Google Earth file uses the same name for that plant's
-folder. See [Google Earth export](/docs/exports/kmz).
+the file.
 
 Name the boundaries for the people who will read the report. `Plot A`,
 `Plot B`, `Plot C` is enough to be unambiguous; the parcel or survey numbers

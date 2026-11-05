@@ -1,0 +1,319 @@
+---
+title: Clean boundary
+description: The review every Google Earth file goes through on loading, and what to do with open lines, overlaps, survey maps, finished layouts and field surveys.
+---
+
+Clean boundary is the review every Google Earth file (`.kmz` or `.kml`) goes
+through when you load it. It sorts what the file holds into plots, areas, lines
+and pins, and fits them to what the layout needs. A file with nothing to decide
+loads straight away, with no window. A file with something to decide opens the
+**Clean boundary** window, and **Save clean KMZ and load** writes a corrected
+copy beside the original and loads that.
+
+The review changes only what you see in the window: your original file is never
+altered. How to draw a file so that it asks nothing is in
+[Boundary file requirements](/docs/inputs/kmz-requirements).
+
+## Reading the file
+
+Clicking **Browse…** on a Google Earth file starts the reading under a progress
+card. A file that reads quickly never shows the card.
+
+<Screenshot id="opening-card" />
+
+| Step | The card reads | Under it |
+| --- | --- | --- |
+| 1 | *"Opening your boundary file…"* | The file's name and size, with **Cancel** |
+| 2 | *"Checking the site…"* | How many shapes were read |
+| 3 | *"Preparing the review…"* | What the window will show, for example *"1 plot · 7,874 obstructions · a finished layout"*. Only when the window will open |
+| 4 | The window, then *"Saving the clean copy…"* | *"\<name\>_clean.kmz, next to the original"* |
+| 5 | *"Drawing the site…"* | The file's name |
+
+**Cancel** on the card stops the reading: the status bar reads *"Opening
+cancelled. Nothing changed."* When the file has loaded it reads *"Loaded \<name\>:
+N plot(s), A acres"*. **Generate Layout**, **Browse…** and **Open Project…** do
+nothing while a file is opening.
+
+The bundled sample site skips the review, and a CAD drawing or an image goes to
+the **Site reference** window instead. See
+[CAD drawing boundaries](/docs/inputs/cad-boundary) and
+[Image boundaries](/docs/inputs/image-boundary).
+
+## When the window opens
+
+It opens by itself for:
+
+- a boundary drawn as an open line or in pieces, an outline that crosses itself,
+  a duplicate, an overlap, or a polygon drawn inside another that may be the plot;
+- a pin inside a plot;
+- a [CAD export saved as loose lines](#a-cad-export-of-loose-lines);
+- a [village survey map](#survey-maps);
+- a [finished layout](#a-finished-layout-opened-as-a-boundary) opened as a boundary;
+- a [field survey saved as points](#a-field-survey-of-points-only);
+- in a clean copy, only what was added or redrawn since it was saved.
+
+**Review boundary…** on the **Input Boundary File** card opens the same window
+for a Google Earth file you have loaded, other than the sample, even with nothing
+to ask.
+
+## The window
+
+<Screenshot id="clean-boundary" />
+
+The band at the top names the file and counts what it holds: plots, open lines,
+obstructions and the latitude. The caption *What the file holds* heads a table
+with one row per item:
+
+| Column | What it shows |
+| --- | --- |
+| **Keep** | Whether the item is used |
+| **Item** | Its name |
+| **Found** | What the review found, for example *Open line, ends 12.4 m apart* or *Water: no tables here* |
+| **Action** | What will be done with it. Select a row to change this |
+| **Water** | Whether it is drawn and booked as water |
+| **Height** | An optional height for an area or a kept pin, so tables stay out of its shadow when **Clear tables in shadows** is on |
+
+On the right, a verdict banner sums up the result, for example *"Ready: 1 plot,
+59.3 acres, 1 obstruction kept"*, above a map of the site and tiles for **Boundary
+area**, **Plots in the layout** and **Obstructions kept**.
+
+### What a problem row offers
+
+Each problem offers its own choices. The review's recommended choice is already
+selected, so a file that needs nothing changed takes one click.
+
+| Found | Choices |
+| --- | --- |
+| *Open line, ends 12.4 m apart* | **Close the 12.4 m gap**, **Keep as a line**, **Remove** |
+| *Drawn in 3 pieces, ends … m apart* | **Join into one plot**, **Keep as 3 lines**, **Remove** |
+| *Outline crosses itself* | **Fix the crossing (40.98 ac)**, **Keep as drawn**, **Leave out** |
+| *Same as Plot A (100 % overlap)* | **Remove duplicate**, **Merge with Plot A** |
+| *Overlaps Plot A by 2.1 ac* | **Merge with Plot A**, **Cut the overlap out of this plot**, **Remove** |
+| *Inside Plot A* | **This is the plot**, **No tables here**, **Leave out** |
+| *Outline around 3 plots* | **Context only**, **Lay it out too**, **Leave out** |
+
+An open line is offered as a plot only when its ends are within 50 m and it has
+no name, Google Earth's own name, or a plot word such as `boundary` or `plot`.
+Any other open line is a line to keep clear.
+
+### What each other row means
+
+| Item | Reads | What it does |
+| --- | --- | --- |
+| Area | *"Area: no tables here"* or *"Water: no tables here"* | Keeps tables out, with the **Area setback** |
+| Line | *"Line: no tables within the line corridor (Site tab)"* or *"Water line: …"* | Keeps tables out by the **Line corridor**. Kept up to 500 m from a plot |
+| Too far off to matter | *"Outside the plots, not used"* | A line more than 500 m from a plot, or a water polygon clear of every plot |
+| Pin | *"Pin: a label unless you keep it"* | Kept, it becomes a spot of 1 m radius with no tables |
+| A hole cut in a plot polygon | *"No tables here (land cut out of the plot)"* | Stays with its plot |
+
+Only a name sets a row's **Water** tick to start with, and the tick changes it.
+No keyword picks out a transmission line or a road: every line takes the same
+corridor, which you set for each line on the
+[Site tab](/docs/inputs/site) after loading.
+
+### Warnings before saving
+
+The window warns when the land looks wrong. None of these stops you saving, and
+their thresholds are in
+[Advanced settings](/docs/workspace/advanced-settings) under **Clean boundary**.
+
+| Setting | Default | Range | The warning |
+| --- | --- | --- | --- |
+| **Outer boundary over its plots** | 1.25 × | 1.01–10 | *"The outer boundary adds N ac"*: *"…the extra land may not be yours."* |
+| **Survey map picked** | 50 % | 1–100 | *"You picked 62 % of the survey map"*: *"Check the window caught only your land."* |
+| **Plots of the file's drawing** | 5 % | 0.1–100 | *"The plots cover 3 % of what this file draws"*: *"…Check the map: the boundary may not have been read."* |
+
+With more than 500 obstructions kept, the window adds *"N obstructions to lay
+out around: Generate takes longer with this many."*
+
+## Saving the clean copy
+
+<Steps>
+<Step>
+### Check the verdict
+
+Read the banner and the map. If the banner reads *"No plot left to lay out"*,
+keep at least one plot: **Save clean KMZ and load** stays disabled with the
+reason *"Keep at least one plot"*.
+</Step>
+
+<Step>
+### Click Save clean KMZ and load
+
+The application writes `<your file>_clean.kmz` beside the original and loads it.
+A file that is already a clean copy keeps its own name.
+
+If the folder cannot be written to, **Could not save the clean KMZ** says why and
+asks for another folder.
+</Step>
+
+<Step>
+### Use the clean copy from then on
+
+It reopens straight away, and asks again only about anything you add or redraw
+afterwards.
+</Step>
+</Steps>
+
+**Cancel** leaves the file unloaded; whatever was loaded before stays loaded.
+Saving a clean copy needs no active access.
+
+## Several plots as one piece of land
+
+**Review boundary…** adds three modes above the table:
+
+| Mode | What it does |
+| --- | --- |
+| **Keep separate** | The default. Each plot stays a boundary of its own. Plots that overlap are always merged, so no land is counted twice |
+| **One outer boundary** | Replaces the plots with one boundary around them. **Tight wrap** follows the plots and bridges gaps up to the distance you set, 30 m to start with; a wider gap stays out, so the result can be more than one boundary. **Simple outline** is one plain outline around them all, which can take in land beyond your plots |
+| **Merge selected** | Merges the plots you choose, using the **Merge** column |
+
+A survey map shows the same three modes.
+
+## Survey maps
+
+A village survey map holds numbered parcels rather than your site, so you pick
+your land from it. The application recognises one from its survey-number data,
+such as `survey_no`, `gat_no` or `khasra`, or from a polygon holding ten or more
+others that cover at least half of it. Number pins such as `235` or `235/1` are
+treated as labels.
+
+<Screenshot id="review-survey-map" />
+
+The band counts villages, survey parcels, obstructions and the latitude.
+
+<Steps>
+<Step>
+### Choose the village
+
+Survey numbers repeat from village to village, so pick the village first.
+</Step>
+
+<Step>
+### Pick your parcels
+
+Type survey numbers and click **Pick**, or click parcels on the map.
+
+| You type | It picks |
+| --- | --- |
+| `235` | 235 and its sub-divisions, such as 235/1 and 235/A |
+| `235/1` | Only that one |
+| `240-245` | Every number from 240 to 245 |
+
+On the map, Shift+drag draws a window: left to right takes the parcels fully
+inside it, right to left every parcel it touches. Clicking a picked parcel unpicks
+it, and **Clear** unpicks them all. The wheel zooms, a drag pans and a double-click
+shows everything.
+</Step>
+
+<Step>
+### Check the plot and save
+
+Parcels that touch become one plot. Until something is picked the banner reads
+*"Pick your parcels"* and the reason is *"Pick at least one parcel"*.
+</Step>
+</Steps>
+
+<Screenshot id="review-survey-map-picked" />
+
+## A finished layout opened as a boundary
+
+A KMZ exported from an earlier layout, by this application or another, holds the
+old tables and equipment as well as the site. The review recognises one and
+banners it: *"This file is a finished layout"*.
+
+<Screenshot id="review-finished-layout" />
+
+| Choice | What it does |
+| --- | --- |
+| **Use the site only** | Drops the earlier tables, inverters, buildings and arresters, and keeps the site and its obstructions. The default for a recognised export |
+| **Keep everything** | *"Every table and building of the old layout becomes an obstruction, so little land is left for new tables."* The default for a file recognised only by its pattern |
+
+The pattern is at least 200 identical rectangles, most of them inside other
+polygons: *"They are kept as obstructions; if they are an old layout, choose Use
+the site only."*
+
+## A CAD export of loose lines
+
+A drawing exported to Google Earth as many short two-point lines, with the layer
+named only in each line's description, is rejoined. The application names the
+lines from that description, joins them up, reads a layer's two banks as one area
+and a small tangle such as a well as one spot, then opens the window so you can
+check what it made.
+
+## A field survey of points only
+
+A surveyor's file can hold nothing but points, each named with a code and a
+number: `rasta 12`, `bw_41`. When every placemark is a point, there are at least
+four of them and at least one run of points closes, the review traces them.
+
+<Screenshot id="review-survey-points" />
+
+Points of one code are joined in number order, and a number that does not rise
+starts a new run. A run closes into a boundary when it has at least four points,
+its closing gap is at most 50 m and under a quarter of its length, it does not
+cross itself and it has the shape of a piece of land. When no run closes, nothing
+is guessed, and the file is reviewed as a file of pins.
+
+The table's columns here are **Code**, **Found** and **Use as**:
+
+| The run | Found, for example | Use as |
+| --- | --- | --- |
+| Closes | *"59 points, ends 9.0 m apart"* | A boundary, which you can close, keep as a line or remove. Check it against your survey |
+| One point | *"1 point, inside"* | *Pin: a label* |
+| Three or more points close together, around a small area | *"4 points, about 5 × 4 m, inside"* | *Area: no tables* |
+| Water-coded, open | | *Water line*, with nothing to ask |
+| Open, three or more points, inside | *"11 points, 120 m, inside"* | *Choose…*: you say what it is |
+| Two points, or outside | *"2 points, on the boundary"* | *Not used* |
+
+### Answering what a code is
+
+**Save clean KMZ and load** stays disabled, with a reason such as *"Say what rasta
+is"*, until every open code has an answer. Selecting one run selects every run of
+its code.
+
+Choose **Line to keep clear**, **Water line** or **Nothing to keep clear**. The
+application cannot read the code, but your surveyor will know what it is. Tiles
+show what a line would take of the land inside the perimeter road: nothing kept
+clear, 3 m each side, 5 m each side and the Site tab's corridor. With a line kept,
+change its width on the Site tab after loading.
+
+<Screenshot id="review-survey-points-answered" />
+
+## A file with no plot
+
+A closed path counts as a plot and loads with no window. A file with no plot at
+all cannot be laid out:
+
+| The file holds | What you see |
+| --- | --- |
+| A named open line, or only a nala | **Boundary read error**: *"The file has no plot: draw the site boundary as a closed polygon."* |
+| Only pins | The window, with **Save clean KMZ and load** disabled: *"Keep at least one plot"* |
+| A survey map read without a pick | *"This file is a village survey map. Pick its parcels in the boundary review first."* |
+
+Draw the site boundary as a closed polygon, save the file and load it again.
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Boundary file requirements"
+    href="/docs/inputs/kmz-requirements"
+    description="How to draw and name the features in a Google Earth file"
+  />
+  <Card
+    title="Site parameters"
+    href="/docs/inputs/site"
+    description="The line corridor and area setback, and each item's own row"
+  />
+  <Card
+    title="Multi-plot sites"
+    href="/docs/layout/multi-plot"
+    description="What changes when a file carries several plots"
+  />
+  <Card
+    title="Your first layout"
+    href="/docs/first-layout"
+    description="Boundary file in, finished layout out"
+  />
+</Cards>

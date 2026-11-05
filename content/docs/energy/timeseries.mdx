@@ -4,10 +4,12 @@ description: The hourly energy window with its daily and monthly views, which da
 ---
 
 The Energy view gives you the annual answer and a monthly table. The chart
-window and the time-series export give you the shape underneath them — hour by
+window and the time-series export give you the shape underneath them: hour by
 hour through a day, month by month through a year, and, when you need it, a
-full-year generation series in a file. Both come from the energy calculation,
-so run **Calculate Energy** first; both are greyed out until you have.
+full-year generation series in a file. Both spread the run's own months over the
+year, so they add up to the Energy view's months and its year-one energy. Run
+**Calculate Energy** first; **📊 Show Energy Chart** turns on after an energy run,
+and **Export TMY data CSV** when hourly data exists.
 
 The controls are in the **Run Energy Calculation** card at the top of the
 **Yield** tab: **Calculate Energy**, **📊 Show Energy Chart**, the **Interval:**
@@ -46,20 +48,23 @@ values"*.
 
 <Screenshot id="chart-daily" />
 
-The two charts stacked this way are the point of the view. Energy is in-plane
-irradiance put through the plant's capacity and its losses, so the pairing gives
-you both numbers at a chosen hour: so much irradiance arriving, so much energy
-coming out, on a plant of a known capacity. That is a check anyone can do on the
-back of an envelope, and it is the fastest way to catch a capacity or a loss
-assumption that is not what you thought.
+The two charts stacked this way are the point of the view. Each hour's energy is
+its month's energy from the run, shared among the month's hours by their in-plane
+irradiance, so the pairing gives you both numbers at a chosen hour: so much
+irradiance arriving, so much energy coming out, on a plant of a known capacity. It
+is the fastest way to catch a capacity or a loss assumption that is not what you
+thought.
 
 One thing not to expect from it: the ratio between the two charts is not the same
-figure all year. The monthly performance figures follow IEC 61724-1, and the
-performance ratio inside them varies with module temperature — a hot month
-converts a given irradiance into less energy than a cool one. Comparing the same
-hour in January and in June is therefore comparing two slightly different
-conversion efficiencies, which is the behaviour you want and not an
-inconsistency.
+figure all year. Within a month it is constant, because the month's energy is
+shared by irradiance. Between months it moves, because the performance ratio
+varies with module temperature: a hot month converts a given irradiance into less
+energy than a cool one. Comparing the same hour in January and in June is therefore
+comparing two slightly different conversion efficiencies, which is the behaviour
+you want and not an inconsistency.
+
+The window comes back on the view and the day you last left it on, in the same
+session. It starts on **Daily (hourly)**, day one.
 
 The day slider is what makes it a design tool rather than a picture. Compare a
 day near the winter solstice against one near the summer solstice, at the same
@@ -73,8 +78,8 @@ bars all move, and that swing is what the monthly view then aggregates.
 ### Calculate energy, then open the chart
 
 **📊 Show Energy Chart** has nothing to draw until **Calculate Energy** has run.
-Re-run it after any change to the layout, the losses or the weather source, or
-the chart is describing the previous design — the window title tells you which.
+Run it again after any change to the layout, the losses or the weather source;
+the window title tells you which run the chart shows.
 </Step>
 
 <Step>
@@ -98,8 +103,7 @@ day shown.
 <Step>
 ### Check a midwinter day and a midsummer day
 
-The ratio between them is the seasonal swing your operations and revenue
-profiles have to live with. Then step across two or three consecutive days: if
+The ratio between them is the seasonal swing. Then step across two or three consecutive days: if
 they are indistinguishable smooth curves, the chart is drawn from a
 reconstruction rather than from hourly weather — see the priority list below.
 </Step>
@@ -120,12 +124,9 @@ kWh/m², under the caption *"Full year 2024 · monthly totals"* (the year comes 
 
 <Screenshot id="chart-monthly" />
 
-This is the view to cross-check against the Energy view and against the report
-before either goes out. The irradiance bars are the in-plane irradiation the
-whole calculation is built on, and the energy bars sum to the year-one
-generation. A material disagreement with the figures you are about to issue is
-worth understanding before you issue them — the usual cause is an energy
-calculation that predates a change to the layout or the losses.
+This view shows the same months as the Energy view: each bar is that month's total,
+and the energy bars sum to the year-one energy. The irradiance bars are the in-plane
+irradiation the whole calculation is built on.
 
 ## The Energy view's own charts
 
@@ -138,8 +139,8 @@ reference yield, final yield and performance ratio month by month. See
 [How yield is calculated](/docs/energy/overview#the-energy-view). The chart
 window adds what the view cannot show: the hourly shape inside each day.
 
-The monthly table is also written to the report — see
-[Project report](/docs/exports/project-report).
+The monthly table is also printed in section 9.2 of the design report. See
+[Design report](/docs/exports/design-report).
 
 ## Where the chart's data comes from
 
@@ -149,16 +150,15 @@ available:
 
 | Priority | Source | What it means for the chart |
 | --- | --- | --- |
-| 1 | Hourly in-plane irradiance already present in your loaded weather file | Best case. The hourly shape is measured or modelled data for your site, and the chart is showing real variation |
-| 2 | Hourly horizontal irradiance from your file, transposed to the plane of the array | Strong. The hour-to-hour variation is real; the split into beam and diffuse and the tilt transposition are modelled |
+| 1 | Hourly in-plane irradiance already loaded, from your weather file or an hourly fetch | Best case. The hourly shape is measured or modelled data for your site, and the chart is showing real variation |
+| 2 | Hourly horizontal irradiance, transposed to the plane of the array | Strong. The hour-to-hour variation is real; the split into beam and diffuse and the tilt transposition are modelled |
 | 3 | Synthesised from twelve monthly in-plane values plus solar geometry | Weak for any hourly question. The monthly totals are real; the hourly shape inside each month is a smooth reconstruction from sun position, with no weather variation in it |
-| 4 | A uniform annual distribution | Placeholder only. It carries no daily or seasonal shape at all |
+| 4 | An annual figure distributed by latitude | Weak. It has a generic seasonal shape and no real months |
+| 5 | A flat distribution | Placeholder only. It carries no daily or seasonal shape at all |
 
 **Know which of these you are looking at before you use a chart to make a
 decision.** A daily profile drawn from priority 3 is a clean, plausible-looking
-curve that contains no cloud, no haze and no real day-to-day variation — it will
-never show you the ragged afternoons that matter to a dispatch or a storage
-study. Its monthly totals are still sound; its hourly detail is a reconstruction.
+curve that contains no cloud, no haze and no real day-to-day variation. Its monthly totals are still sound; its hourly detail is a reconstruction.
 
 The way to move up the list is to supply better weather data. An hourly file, or
 an hourly fetch from the automatic service, puts you at priority 1 or 2 — see
@@ -179,37 +179,23 @@ A one-hour file is the smallest and is enough for an annual reconciliation; a
 1-minute file is sixty times the size and, as below, contains no more weather
 detail than the source it was built from.
 
-### The per-interval energy relation
+### Where each interval's energy comes from
 
-```
-E (kWh) = capacity_kWp × GTI(W/m²)/1000 × PR × LID × (interval/60)
-```
+**Each interval's energy is its month's energy from the run, shared among the
+month's intervals by their in-plane irradiance.** The column therefore totals the
+year-one energy on the Energy view, month by month, with first-year degradation, the
+bifacial gain and the weather data correction all in it.
 
-| Term | What it is |
-| --- | --- |
-| `E` | Energy generated in that one interval, in kWh |
-| `capacity_kWp` | Installed DC capacity in kWp |
-| `GTI(W/m²)` | In-plane irradiance at that instant, in W/m² |
-| `/1000` | Converts W/m² to kW/m², so that the product with capacity in kWp comes out in kW |
-| `PR` | Performance ratio — the combined effect of every loss in the breakdown, as a fraction |
-| `LID` | The one-off first-year reduction, as a factor: exactly `1 − 1st year degradation ÷ 100`, from the same field the annual figures use. On the shipped 1.0 % it is 0.99 |
-| `interval/60` | Converts the interval in minutes into hours, turning power into energy. At 15 min it is 0.25; at 1 hour it is 1 |
-
-The `LID` factor is worth pinning down, because it decides which year the file
-describes. It is the **1st year degradation** field and nothing else — the same
-one-off step applied to the annual figures, taken as `1 − 1st year degradation
-÷ 100`. So the exported series is a **first-year** series, consistent with the
-year-one energy on the Energy view, and the annual degradation rate does not
-enter it at all: there is no exported series for year 10. See
+So the exported series is a **first-year** series, and the annual degradation rate
+does not enter it at all: there is no exported series for year 10. See
 [Lifetime, degradation and P-values](/docs/energy/lifetime-and-p-values).
 
-The relation is linear in irradiance, so the exported series has the same shape
-as the irradiance series it was built from. Two consequences the file records
-directly:
+Within a month the series has the same shape as the irradiance series it was built
+from. Two consequences the file records directly:
 
-- **Timestamps are local time.** Values are therefore zero through the night and
-  peak around solar noon. A series that peaks at midnight has been read with the
-  wrong time base somewhere downstream, not exported wrongly.
+- **Times are in the first column's own clock.** With the automatic service the
+  column is headed `DateTime (local)` and the series is on the site's local clock;
+  from a file it is headed `DateTime` and keeps the file's own stamps.
 - **A sub-hourly interval does not create sub-hourly weather.** Choosing 1 min
   gives you 1-minute rows, but the underlying irradiance resolution is whatever
   your weather source provided. Finer intervals give a finer grid, not more
@@ -217,9 +203,10 @@ directly:
 
 ### The export needs an hourly series
 
-**The export requires an hourly series to work from — either an hourly weather
-file you loaded, or an hourly fetch from the automatic service.** Monthly data
-alone is not enough, and the export is not available from it.
+**The export requires an hourly series to work from: either an hourly weather
+file you loaded, or the hourly fetch that comes with **Calculate Energy** on the
+automatic service.** Monthly data alone is not enough, and the export is not
+available from it; a box titled **TMY Export** says so.
 
 This is the one place where the choice of weather source is not a question of
 quality but of capability. If you need a generation series, arrange for hourly
@@ -227,30 +214,27 @@ data before you plan the work around the export.
 
 ## What the file contains, and what it is for
 
-The file carries the full-year series at your chosen interval:
+The file carries the full-year series at your chosen interval, in these columns:
 
-- **Horizontal irradiance (GHI)** — what arrives on a horizontal surface.
-- **In-plane irradiance (GTI)** — what arrives on the plane of the array.
-- **Energy** — the generation computed by the relation above.
+| Column | What it holds |
+| --- | --- |
+| `DateTime (local)` or `DateTime` | The step's date and time |
+| `GHI (W/m²)` | The step's GHI figure |
+| `GTI (W/m²)` | In-plane irradiance: what arrives on the plane of the array |
+| `Energy (kWh)  [plant x kWp]` | The step's share of its month's energy. The heading names the plant's DC capacity |
 
-Having all three in one file is what makes it checkable by someone else: a
-reviewer can re-derive the energy column from the irradiance column, your stated
-capacity and your stated performance ratio, without needing the application.
+On success a box reads **Export Complete** and the status bar gives the path and the
+row count.
 
 Typical uses:
 
 - **A dispatch or curtailment study.** The generation profile against a
   connection limit or a scheduled export, interval by interval.
-- **A storage study.** Sizing a battery against the daily shape and the ramp
-  rates, where the annual total tells you nothing useful on its own.
 - **A tender or grid submission asking for sub-hourly generation.** Set the
   interval selector to whatever the request specifies and export directly,
   rather than resampling an hourly file by hand.
-- **Reconciliation.** Summing the energy column gives a first-year total to
-  set beside the **Year-1 energy** tile on the Energy view. The file applies
-  the annual performance ratio to every interval and carries no bifacial gain,
-  while the tile sums the months with their own temperature losses, so on a
-  monofacial plant expect the two to be close rather than identical.
+- **Reconciliation.** Summing the energy column gives the **Year-1 energy** tile
+  on the Energy view.
 
 <Callout type="warn">
 The exported series is a modelled typical year, not a forecast for any named
@@ -274,11 +258,11 @@ it goes, particularly when it leaves your organisation.
   <Card
     title="Lifetime, degradation and P-values"
     href="/docs/energy/lifetime-and-p-values"
-    description="Turning the first-year figure into a lender's case"
+    description="Turning the first-year figure into a forecast"
   />
   <Card
-    title="Project report"
-    href="/docs/exports/project-report"
-    description="Where the monthly table and the energy drawings are published"
+    title="Design report"
+    href="/docs/exports/design-report"
+    description="Where the monthly table is printed"
   />
 </Cards>

@@ -1,15 +1,14 @@
 ---
 title: Saving and reopening projects
-description: The .slp project file keeps a working session — every input, the layout, hand edits, diagram and materials list — and reopens ready to export, or says what changed.
+description: The .slp project file keeps a working session — every input, the layout, hand edits, diagram, BOM edits and issued revisions — and reopens ready to work on, or says what changed.
 ---
 
 A project file keeps a working session, so you can stop mid-design and come
 back to it. It uses the extension `.slp`, for Solar Layout Project, and it is
 written and read only by the application itself.
 
-This is separate from exporting. The Word report, the Google Earth file, the
-CAD drawings, the cable schedule and the Excel materials list are for the
-people who build the plant. The project file is for you: it is the only thing
+This is separate from exporting. The deliverables package, the BOM files and the
+earthing drawings are for the people who build the plant. The project file is for you: it is the only thing
 that lets you resume work rather than repeat it.
 
 ## What a project file holds
@@ -23,34 +22,43 @@ everything the application worked out from them.
 | The input files | The paths of the module, inverter, hourly weather and contour files — kept even when a file has since gone missing |
 | The Array inputs | Module size and wattage, bifacial and its factor; table orientation, modules per row, rows per table and the gaps; the tilt and pitch override ticks and values; every tracker field; **Maximize placement** and half tables |
 | The Site inputs | Road width, the **Place Lightning Arresters** tick and radius, **ICR Block**, the **Line corridor** and **Area setback** with the rows for each line and area; everything in **Structures & Shadow (keep-clear)**; everything in **Topography (slope-aware exclusion)** |
-| The Electrical inputs | Max strings per inverter or SMB, max SMBs per central inverter, the **Calculate cables** tick, the three cable allowances, and the rules on the **ACCB & Transformer** card |
+| The Electrical inputs | Max strings per inverter or SMB, the DC harness, string fuses, communication and weather stations, max SMBs per central inverter, the **Calculate cables** tick, the three cable allowances, the laying choices, the DC trunk conductor, and the rules on the **ACCB & Transformer** card |
 | The Yield inputs | The weather source, GHI and GTI, every loss, the automatic shading tick and ground clearance, the site conditions, albedo, degradation, lifetime, uncertainty and the three exceedance probabilities |
 | The layout | The placed tables or tracker units, control rooms, inverters or monitoring boxes, arresters, the routed cables, and the electrical grouping into ACCBs and transformers |
-| Your hand edits | Everything done in Sketch Mode — moved and added units, hand-drawn and deleted cable trenches, annotations, dimensions and text — plus drawn obstructions, the main control room, unit substations and placed objects |
+| Your hand edits | What you did in Sketch Mode — moved and added units, hand-drawn and deleted cable trenches, annotations, dimensions and text — plus drawn obstructions, the main control room, unit substations, handover points and placed objects |
 | The pile patterns | The full and half patterns and the radius |
-| The results | The terrain result, the energy result, the robotic-cleaning fleet result, and the AC-capacity target and start point |
-| The single-line diagram | The symbols, wires and text on the drawing sheet, and its background |
-| The bill of materials | The materials list as it currently stands, including any edits or a template you replaced it with |
+| The results | The terrain result, the energy result, and the robotic-cleaning fleet result, which brings the window's answers back with it |
+| The studies' inputs | The **Simulation with AC Capacity** window's inputs, **ICR block AC** included, and the **Earthing Design** inputs you changed |
+| The single-line diagram | The symbols, wires and text on the drawing sheet, its paper and its traced background |
+| The bill of materials | The profile in use and your edits to it. The quantities are not saved: they are counted again when the project opens |
+| The deliverables | The project details, this project's copy of the company, check acceptances, the output folder, and every issued revision with its design kept |
+| **Advanced settings** | Each setting you changed from its default |
+| The grid connection | **On this site** or **By others** |
 | The run record | Which inputs produced the layout, so a reopened project knows whether it is still current |
 
 A saved layout is kept exactly as it was, hand edits included. A later
 **Generate Layout** builds a new one: it re-places every table and re-routes
-every cable, keeping your obstructions, control room, objects and annotations
-but not hand-placed tables or drawn trenches. See
+the cables, keeping your obstructions, control room, objects, annotations and drawn
+trenches but not hand-placed tables. See
 [Sketch Mode](/docs/editing/sketch-mode#what-generate-layout-does-to-your-edits).
 
 ### What it does not keep
 
-- The **Earthing Design** inputs. The window remembers your last values only
-  while the application window stays open.
-- The **Robotic Module Cleaning** window's answers and its bridge and skip
-  previews. The fleet result itself is saved.
 - Anything from **Robot count from DXF…**, which never touches the project.
-- **ICR block AC** in the **Simulation with AC Capacity** window, which opens
-  at *Not set* every time. The **ICR Block** value it wrote is saved like any
-  other input.
+- The last values used in **Shadow View**, the energy chart and the auto grid, and
+  the object size last used in **Place Object**. These last the session.
+- The SLD's undo history, its **Diagram** or **Sheet** choice and its zoom.
 - View settings: the **Layers ▾** switches, **Satellite**, **Wireframe**,
-  **Piles: ON** / **Piles: OFF**, and the SLD paper and expand settings.
+  **Piles: ON** / **Piles: OFF** (**Piles** returns off), **Plant** or **By block**
+  on the Summary (it opens on **By block**), and **Hide passed** on the Checks view.
+
+### What sits outside the project
+
+Three folders in your Windows user folder belong to this computer, not to a project:
+`SolarLayout_Company` (your [companies](/docs/exports/company)),
+`SolarLayout_BOM_Profiles` ([BOM profiles](/docs/bom/profiles)) and
+`SolarLayout_Symbols` (your own SLD symbols). A project keeps its own copy of the
+company and the BOM profile it uses, so it opens elsewhere without them.
 
 ## The File menu
 
@@ -63,6 +71,8 @@ but not hand-placed tables or drawn trenches. See
 | **Save Project…** (**Ctrl+S**) | Writes the current session to a `.slp` file |
 | **Open Project…** (**Ctrl+O**) | Reads a `.slp` file back |
 | **Open Sample Site** | Loads the bundled sample site — one boundary with a pond, a transmission line and an obstruction |
+| **Company…** | Your company's name, logo and drawing-number pattern for the title blocks. See [Company](/docs/exports/company) |
+| **Advanced settings…** | The rare design inputs, kept per project; it reads *"Advanced settings… (N changed)"* when any is changed. See [Advanced settings](/docs/workspace/advanced-settings) |
 | **Exit** (**Ctrl+Q**) | Closes the application |
 
 ## Saving a project
@@ -71,22 +81,42 @@ Use **Save project**, beside **Export ▾** at the right of the view tabs in
 every view, or **File ▸ Save Project…**. Choose a folder and a name; the file
 type row reads *PV Layout Project (\*.slp)*, and the status bar confirms with
 *"Project saved (full): …"*. If the file cannot be written, a **Save Failed**
-box opens with *"Could not save project file:"* and the reason.
+box opens with *"Could not save project file:"* and the reason in words, such as
+*"Permission denied"*. A failed save leaves the old file whole. If the file is held
+by another program the box reads *"The project file could not be replaced: it may be
+open in another program. The copy on disk is unchanged. Close that program and save
+again."*
 
-Saving is allowed at any time, including while the layout is out of date. The
-state is saved with it: a project saved out of date opens out of date.
+Saving needs no active access and is allowed while the layout is out of date. The
+state is saved with it: a project saved out of date opens out of date. While a
+layout, cable, weather or edit run is going, the save waits: the status bar reads
+*"Saving \<name\> when the layout finishes…"*, and the file is written when the run
+ends.
 
-Save after anything you would not want to redo — a run whose inputs took a
-while to settle, a set of hand edits, a diagram you have laid out, or a
-materials list you have corrected.
+Save after anything you would not want to redo: a run whose inputs took a while to
+settle, a set of hand edits, a diagram you have laid out, or changes to the materials
+list.
+
+### Closing with unsaved changes
+
+Changes to the project details, the company, the output folder, the grid connection,
+the earthing inputs, Advanced settings, BOM settings and check acceptances mark the
+project as changed, with a `*` in the window title. Closing such a window asks **Save
+changes?** with **Save**, **Discard** and **Cancel**. Save the project yourself after a
+Generate, input edits, Sketch edits and BOM line edits.
 
 ## Reopening a project
 
 **File ▸ Open Project…**, then pick the `.slp` file. The session is restored
-and you carry on from where you stopped. Any open ICR block summary windows
-close first. A project saved in a different design asks first, under the title
+and you carry on from where you stopped. An open Earthing Design window and the
+Export deliverables window close first, and the SLD editor ends. A project saved in a different design asks first, under the title
 **Design Mode Mismatch**; a project whose inputs could not all be restored
-opens with **Partial Restore** — *"Input settings restored with warnings:"*.
+opens with **Partial Restore** — *"Input settings restored with warnings:"*. A saved
+section the application cannot use says so in a box of its own, for example **Advanced
+settings had problems**.
+
+A project with no company takes this computer's default company, if you have set one;
+a project with a company keeps its own copy.
 
 <Screenshot id="reopened" />
 
@@ -99,33 +129,33 @@ The status bar says what state the project opened in:
 | A project saved by an earlier release of the application | *"Opened \<name\>, saved by an earlier version: 1 input was restored from its saved layout"* (or *"… N inputs were restored …"*) |
 | A project with no layout | *"Project loaded: \<name\>"* |
 
-### Exports and layout tools without a Generate
+<Screenshot id="reopened-status" />
+
+### Tools ready without a Generate
 
 A project whose layout matches its inputs opens with these ready, without
 generating again:
 
-- **Export ▾** offers its exports: the Google Earth file (unless the site was
-  loaded as layout only), the CAD drawing, the ICR-block drawing set and PDF,
-  the cable schedule, the Word report and the image.
+- **Export ▾** offers its items: **Export deliverables…**, the BOM files, the earthing
+  layout and the image.
 - **Satellite**, **Piles** and the **ICR blocks** layer are available (and off);
   saved piles can be shown.
-- The arrester layer is available, and so are the three cable layers when the
-  saved run had cables calculated.
-- On the Tools tab, **Draw Rectangle** and **Draw Polygon** work (with **Undo
-  Last** and **Clear All** when there are obstructions), and so do **Place MCR**
-  and **Place Object**.
+- The arrester layers are available, and so are the cable layers when the saved run
+  had cables calculated.
+- On the Tools tab, the obstruction, MCR and object tools work, with **Remove MCR** and
+  **Remove Objects**, and so do the **Studies** buttons.
 - **Calculate Energy** is available where the site's location is known.
 - The Electrical tab shows the saved grouping of inverters into ACCBs and
   transformers.
+- The Summary opens on **By block**.
 
 ### A project that opens out of date
 
 A project opens out of date when it was saved that way, or when an input it
-was generated from is no longer as it was. For each missing module, inverter,
+was generated from differs from what it was. For each missing module, inverter,
 weather or contour file, the list of changes reads *"not found at \<path\>"*
 and the file's row on its card reads *"Not found: \<name\>"*. The layout is
-still shown, greyed, but every export is refused until the layout is current
-again. The path is kept in the project the next time you save.
+still shown, greyed, and exports wait until the layout is current again. The path is kept in the project the next time you save.
 
 Opening a project restores exactly the files that project was saved with,
 never those of another open window. See
@@ -152,7 +182,8 @@ A project file is a single binary container, not a text file. It carries a
 checksum computed over its own compressed contents, which is verified before
 anything is loaded. A file that has been altered, truncated by a failed copy,
 or is not a project file at all fails that check and is reported as an error —
-**Open Failed**, *"Could not open project file:"* — instead of opening.
+**Open Failed**, *"Could not open project file:"*, with the reason, for example
+*"Project file integrity check failed."* — instead of opening.
 
 <Callout type="warn">
 Do not edit a `.slp` file by hand, and do not try to produce one from another
@@ -166,13 +197,12 @@ Two practical consequences:
 - **Copy project files whole.** Move them with a normal file copy, and check
   the copy opens before deleting the original. A transfer that stops partway
   leaves a file that does not load.
-- **To get the design out of the application, export it.** **Export ▾** carries
-  the layout into formats other tools read: a Google Earth file, a layered CAD
-  drawing, an ICR-block drawing set and PDF, an Excel cable schedule, the Word
-  project report, and the plot as an image. The CAD drawing is in UTM metres,
-  or in the drawing's own coordinates for a CAD or image boundary placed by
-  hand or loaded as layout only. See
-  [The project report](/docs/exports/project-report).
+- **To get the design out of the application, export it.** **Export
+  deliverables…** carries the design into formats other tools read: a drawing set as
+  PDF and DXF, the design report, Excel schedules and a BOM workbook, and a Google
+  Earth file. The DXF is in UTM metres, or in the drawing's own coordinates for a CAD
+  or image boundary placed by hand or loaded as layout only. See
+  [Exports](/docs/exports/overview).
 
 ## Comparing several designs on one site
 
@@ -187,9 +217,9 @@ workable habit:
 2. Give each file a name that states the variable, not a version number, so the
    comparison survives being read months later.
 3. Read the same Summary rows in each — **DC capacity (MWp)**, **Full tables**,
-   **ICR blocks** and, once energy has been calculated, **CUF (%)** and the
-   probability rows. **Copy** on the Summary view puts each sheet on the
-   clipboard for a spreadsheet.
+   **ICR blocks** and, once energy has been calculated, **CUF on DC (%)** and the
+   probability rows. **Open in window** puts the sheet in a window of its own, for
+   example on a second monitor.
 
 Changing the mounting or the inverter topology is the one comparison that
 needs the design chip rather than New Project, because those belong to the
@@ -204,9 +234,9 @@ window rather than the inputs.
     description="How a reopened project knows whether its layout still matches its inputs"
   />
   <Card
-    title="The project report"
-    href="/docs/exports/project-report"
-    description="The Export menu: the Word report, the Google Earth file and the CAD drawings"
+    title="Exports"
+    href="/docs/exports/overview"
+    description="The Export menu and the deliverables package"
   />
   <Card
     title="Choosing a design mode"

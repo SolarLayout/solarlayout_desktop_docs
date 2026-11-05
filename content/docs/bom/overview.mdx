@@ -1,344 +1,371 @@
 ---
 title: Bill of materials
-description: The BOM view — the materials list computed from the placed layout, its five columns, the BOM TOOLS panel, every line item it can carry, and how it reaches the report and the exports.
+description: The BOM view counts a procurement list from the layout through a profile. How to read it, fill what is open, edit a line and export it.
 ---
 
-The bill of materials — the BOM — is a materials list computed from the layout
-you have generated. It is a view of the plant: the **BOM** tab (**Ctrl+4**)
-shows the list as a table in place of the plot, every cell in it is editable,
-and the finished list prints as the **Bill of Materials** pages of the Detailed
-Project Report.
+The bill of materials, the BOM, is a procurement list counted from the layout
+you have generated. A **profile** decides which items the list can hold and how
+each is specified; the design decides which of them apply and how many.
 
-It is not a separate document you keep by hand. The quantities are read out of
-the plant, so a layout that changes and is generated again produces a
-different list. What you add on top of that — extra line items, corrected
-descriptions, remarks for a procurement team — is yours until the list is
-rebuilt, and it is rebuilt both when you ask and after a Generate or a change
-to the plant's grouping (see [What rebuilding does](#what-rebuilding-does)).
+You do not type the list. Everything measurable is counted from the plant. What
+the layout cannot know, such as the CCTV system or the wind speed the structure
+is designed for, shows as a line that needs your answer. Your answers and edits
+sit on top of the count, so a new layout recounts the plant and keeps them.
 
-## The BOM view
+## Opening the BOM view
 
-Click the **BOM** tab, or press **Ctrl+4**. Generate a layout first: the list
-is computed from a placed plant, and there is nothing to compute before one
-exists.
-
-The table takes the whole area under the view header. The left column hands
-its inputs over to a green banner **● Bill of Materials** with an **Exit BOM**
-button, and under it the **BOM TOOLS** panel; **Exit BOM** hands the column
-back to the stage tabs. The status line reads *"BOM Mode ON — double-click any
-cell to edit. It prints on its own page in the PDF."* The view tabs and the
-tools beside them are described on [Views](/docs/workspace/views).
+Click the **BOM** tab, or press **Ctrl+6**. The left column becomes the BOM
+panel under a green banner titled **Bill of Materials**, and the list takes the
+place of the plot. The status bar reads *"BOM Mode ON — select a line to see how
+it is counted; edits apply as you type."* **Exit BOM** gives the column back to
+the stage tabs. See [Views](/docs/workspace/views) for the other views.
 
 <Screenshot id="bom-view" />
 
-The list is part of the session, so it is saved into the project file along
-with the inputs, the layout and your sketch edits, and comes back when the
-project is reopened. See [Projects](/docs/projects).
+The BOM is counted the first time the view opens after a Generate, or when an
+export needs it, under the message *"Working out the bill of materials…"*. Before
+a layout exists the list reads *"Generate a layout to count the plant."* Water
+plots and plots with no tables are not counted.
 
-## The five columns
+## The list
 
-The table has a fixed set of columns, in this order.
+Nothing is edited in the list itself. Select a row and the **Line** card on the
+left shows how it is counted and what you can change.
+
+Three controls run along the top: **Plant | By block** chooses the table, **All |
+Needs attention** filters it, and a search box looks through items,
+specifications and makes. **By block** adds a block selector, which starts on
+**All blocks**.
+
+### The Plant table
+
+Lines are grouped by category, and each group's heading counts its lines and how
+many need attention.
 
 | Column | What it holds |
 | --- | --- |
-| **S.No** | The line number, so a row can be referred to unambiguously in a purchase order or a query |
-| **Material Description** | What the line item is |
-| **Quantity** | How many, or how much |
-| **Unit** | The unit the quantity is counted in |
-| **Remark** | Free text — a specification, a make, a note to whoever prices the line |
+| **Item & specification** | The item's name, then its specification on a second line. The tooltip carries the line's notes and warnings |
+| **Makes** | The makes you accept. The PV module and the inverter take theirs from the PAN and OND files |
+| **Order qty** | The quantity to order, with the design quantity beneath it and any allowance, such as *3,094 + 5 %*. A dash means there is no quantity yet |
+| **Basis** | What the quantity comes from, or what is needed to get one |
+| **Source** | **Measured**, **Rule** or **Manual** |
+| **Status** | **✓ Ready**, or what the line is waiting for |
 
-**Quantity** and **Unit** are deliberately separate. A line counted in numbers
-and a line counted in metres sit in the same table without ambiguity, which
-matters as soon as cables and structures appear on the same list.
-
-## BOM TOOLS
-
-The panel in the left column holds everything that acts on the list.
-
-<Screenshot id="bom-tools" maxWidth={360} />
-
-| Control | What it does |
+| Source | Where the quantity comes from |
 | --- | --- |
-| **➕ Add Row** | Adds an empty row for you to fill in |
-| **🗑 Delete Selected Row** | Removes the row you have selected |
-| **⚙ Rebuild from Layout** | Discards the current list and computes a fresh one from the plant as it now stands |
-| **BOM Template:** | A selector offering **Plant (auto-computed)** and the one built-in template that matches the current design |
-| **📥 Load Template** | Opens the chosen template in a window of its own — see [Materials list templates](/docs/bom/templates) |
-| **⬇ Export BOM to Excel** | Writes the list on screen as a spreadsheet |
-| **⬇ Export BOM to PDF** | Writes the list on screen as a document of its own |
-| **Hide Layout & Energy Summary** | Hides the row of plant chips under the view, so the table gets the full height of the window |
+| **Measured** | Counted from the design: modules, tables, cable lengths, earth pits |
+| **Rule** | A factor times something counted, such as one mounting stand per string inverter |
+| **Manual** | You enter it |
 
-The hint under the buttons says what the panel is for: *"The main table is the
-automated BOM. Load Template opens it in a separate window; edit it there,
-then replace the plant BOM with it (used in the PDF)."*
+**Order qty** is the design quantity × (1 + allowance %), rounded up to the
+unit's precision.
 
-Despite its label, **Hide Layout & Energy Summary** hides the chip row, not a
-table. Untick it and the chips come back;
-nothing is discarded.
+| Unit | Rounded up to |
+| --- | --- |
+| Nos, set, m | Whole numbers |
+| t, m², m³ | 2 decimals |
+| LS, MWp | Not rounded |
 
-### What rebuilding does
+There is no rate or amount column.
 
-**⚙ Rebuild from Layout** is not a refresh that merges. It recomputes the
-whole list from the current plant and puts that in place of what was there.
+### The By block table
 
-The list is also rebuilt **without a button and without asking**. After any of
-these, the next time you open the BOM view the list is recomputed from the
-layout:
+**By block** shows one column for each inverter control room (ICR) block, then
+**Shared**, **Total** and **Unit**. A quantity not tied to a block sits under
+**Shared**. An empty cell is zero.
 
-- **Generate Layout**;
-- a change on the **ACCB & Transformer** card (**Transformer** in a
-  central-inverter design), which regroups the plant — see
-  [ACCB and transformers](/docs/inputs/accb-and-transformers);
-- loading an inverter file on a layout that already exists.
+<Screenshot id="bom-by-block" />
 
-<Callout type="warn">
-A rebuild discards your edits. Every row you added, every description you
-corrected, every remark you typed, and a template you put in place of the
-computed list, are replaced by the computed list. There is no merge and no
-partial rebuild — the plant's own figures are the whole of what comes back.
-Edit the list last, once the layout, the grouping and the inverter file are
-settled.
-</Callout>
+**Total** here is the design quantity, not the order quantity, so it leaves out
+the allowance. Choosing a block in the selector narrows the table to the lines
+with a quantity in that block. The block columns and the totals stay those of
+the whole plant.
 
-That is the behaviour you want in one specific situation and not in any other:
+## Getting to ready
 
-- **Rebuild** after you have changed the plant without generating it again —
-  added or deleted tables by hand, run the cleaning tool — and you want the
-  quantities to match it. After drawing an obstruction or moving a control
-  room, generate again instead: trench lengths are measured afresh only by a
-  full cable run.
-- **Do not rebuild** once you have started editing the list for real. Finish
-  the layout first, rebuild once, then edit. The order costs nothing and saves
-  the work.
+A line is **✓ Ready** when it has a quantity and every required part of its
+specification. Otherwise it carries one status, the first that applies:
 
-If you need both — a fully edited list and a set of current quantities to
-check it against — export the edited list to a spreadsheet before rebuilding,
-then compare the two outside the application.
+| Status | What the line needs | Where to answer it |
+| --- | --- | --- |
+| **! Needs design input** | Something the design has not provided | The **Go** button, below |
+| **! Needs factor** | A factor for a rule whose factor is blank | **Factor** on the **Line** card |
+| **! Needs quantity** | A manual quantity | **Quantity** on the **Line** card |
+| **! Needs specification** | A required specification field | The field marked with an asterisk on the **Line** card |
 
-## Editing a cell
+A new plant always starts with open lines, because some answers cannot come from
+a layout. Dozens of manual lines need a quantity. The ICR cable tray, its canopy
+and the equipment-yard light need a factor, as do the earthing cable and lug for
+central inverters. **MMS table (supply package)** needs **Basic wind speed**, MMS
+being the module mounting structure. The tracker package needs **Basic wind
+speed** and **OEM and model**, and the **Power transformer** needs **Voltage
+ratio**.
 
-Double-click any cell and type. Every column is editable, including the
-computed quantities — so a figure you overwrite is a figure you own from then
-on, and it stands until the list is rebuilt.
+### The Readiness card
 
-Three edits are worth making even on a list you otherwise leave alone:
+The card opens with the verdict, *"✓ All 111 lines ready"* or *"! 71 of 125 lines
+ready"*, and filter chips for each status. Under them, each missing design input
+has a row saying what to do, where, and how many lines it holds up, with a
+**Go** button. **Go** leaves the BOM view and opens the place named.
 
-- **Descriptions.** The computed text is generic. Replacing it with the
-  designation your organisation buys against turns the list into something a
-  supplier can quote from.
-- **Remarks.** Cable specifications, connector types, structure grades and
-  finishes — the detail the layout has no way of knowing.
-- **Missing line items.** Anything the plant's geometry cannot imply. Read the
-  computed list against your own material take-off and add what is not in it.
+| Reason on the line | Row reads | **Go** opens |
+| --- | --- | --- |
+| *"The AC rating comes from the inverter's OND file."* or *"Transformer ratings come from the inverter's OND file."* | Load an OND file · Electrical tab | The inverter card on the Electrical tab |
+| *"The module's Isc comes from its PAN file."* | Load the module's PAN file · Array tab | The module card on the Array tab |
+| *"Cable quantities come from the cable calculation, which is off."* | Turn on Calculate cables · Electrical tab | The Cables card |
+| *"No listed transformer rating is large enough for its load."* | Add a larger transformer rating · Electrical tab | The grouping card |
+| *"Piles are counted from the pile pattern, and none is defined."* | Define a pile pattern · Layout ▸ Piles | The pile window |
+| *"No inverters are placed yet."* | Generate the layout · Generate Layout | **Generate Layout** |
 
-For a starting point written for a reference plant of the same design, load
-the built-in template rather than typing from scratch. See
-[Materials list templates](/docs/bom/templates).
+<Screenshot id="inspector-input" maxWidth={320} />
 
-## Where the quantities come from
+Answer the rest from **Needs attention**: select a line and fill in what it asks for.
 
-Two sources, and understanding the split tells you which figures move when you
-change the design.
+<Screenshot id="bom-ready" />
 
-**The plant's own counts.** Everything the layout has placed and measured is
-already known — the module count, the full and half tables or tracker units,
-the inverter control rooms, the string inverters or string monitoring boxes,
-the lightning arresters, the street lights, the piles, and the cable and trench
-lengths. These are the same figures the Summary view reports, so the two never
-disagree. See [Summary view](/docs/reference/summary-columns).
+## Editing a line
 
-**The electrical grouping.** Some quantities are not placed on the ground and
-are derived from rules instead: the AC combiner boxes (ACCBs), the inverter
-duty transformers (IDTs) and the power transformer at the main control room.
-The rules are yours, on the **ACCB & Transformer** card of the Electrical tab.
-In each ICR block the inverters are shared onto ACCBs — at most 15 per box by
-default — and the ACCBs onto transformers — at most 4 by default — and a block
-whose load exceeds the transformer size limit is given more transformers. Each
-transformer takes the smallest rating in your list at or above its load. The
-power transformer is the whole plant's maximum AC output × the margin ÷ the
-derating, rounded up to the next rating in its own list. The inverter file
-supplies the loads and the low-voltage side, so without one the list carries
-the counts but not the ratings.
+Select a line, and the **Line** card takes its name. It opens with the category,
+source, nature and status, such as *"PV modules · Measured · Supply · ✓ Ready"*.
+Edits apply as you type. What the card shows depends on how the line is counted.
 
-The single-line diagram's automatic build, the Summary view and the cable
-schedule read the **same grouping**, so the diagram and the materials list
-agree on how many of each there are. The diagram never reads this list:
-editing it, or loading a template, does not change the diagram. See
-[Building a diagram from the plant](/docs/sld/auto-build).
+| Line | What the card shows |
+| --- | --- |
+| Waiting for a design input | The reason and a button that opens the fix |
+| **Measured** | The quantity and its basis, read-only |
+| **Rule** | **Factor**, 0 and up, and **Design qty** worked out, such as *"1.0 × 3,144 strings = 3,144 Nos"* |
+| **Manual** | **Quantity**, 0 and up |
 
-### What the list contains
+<Screenshot id="inspector" maxWidth={320} />
 
-The rows come out in a fixed order. A row whose quantity would be zero is
-**left out altogether**, so a short list is not a fault — it means the plant
-has none of that item.
+Below that, on every line:
 
-| # | Description | Unit | Quantity and remark |
+- **Allowance**, 0 to 100 %, and the resulting **Order qty**.
+- The design values, read-only, each with its origin (*from Array tab*).
+- The specification fields, editable, with a list where the item type has set
+  choices. Required ones are marked with an asterisk.
+- **Makes**: type into **Add a make** to add one, or remove one from its chip. The
+  PV module and inverter show *"from the file"* instead.
+- **Remarks**.
+- **Turn this entry off**, or **Remove this line** on a line you added.
+
+<Screenshot id="inspector-sizes" maxWidth={320} caption="A measured line and its specification fields" />
+
+A rule line and a manual line differ only at the top of the card.
+
+<Screenshot id="inspector-rule" maxWidth={320} />
+
+<Screenshot id="inspector-manual" maxWidth={320} />
+
+### One size or all of them
+
+An entry can produce several lines, such as one DC solar cable line per size. On
+those the card offers **All N sizes | This size only**, and your edit lands on
+the whole entry or that one line.
+
+### A number that follows a BOM setting
+
+An allowance that follows a [BOM setting](#bom-settings) shows **This line | All N
+lines** and a hint, such as *"BOM setting · Spare for discrete consumables ·
+5.0 %"*. **All N lines** changes the setting for this project. **This line** gives
+this line a number of its own, and **Use the setting** drops that number again.
+
+### Adding a line
+
+Open the **Add a line** card, or click **+ Add a line** on the empty **Line** card.
+
+| Tab | You give it |
+| --- | --- |
+| **Catalog** | **Item type** and **Quantity** |
+| **Rule** | **Item type**, the design quantity to count from, and **Factor** |
+| **New type** | **Name**, **Category**, **Unit**, the design quantity to count from, and **Factor** |
+
+A preview shows the result, such as *"Preview: 40 Nos"*. Click **Add**, and the
+new line is selected. An item type you add this way is a supply item. **Add a
+line** says *"Generate a layout first."* until a layout exists.
+
+## The Profile card
+
+The top of the panel says what the list is built from.
+
+| Part | What it says |
+| --- | --- |
+| The profile | Its name, kind, version and entries, with **Change…** to choose another. See [BOM profiles](/docs/bom/profiles) |
+| **THIS PROJECT** | How many edits you have made, such as *"54 edits · 5 can go into a profile"*. **Save as profile…** keeps them for other projects |
+| **BOM settings** | How many of the ten are changed, with **Edit…** |
+| **IN THIS BOM** | How many lines come from how many entries, such as *"125 lines from 118 of the profile's 173 entries"* |
+
+Under **IN THIS BOM**, three counts open to name the entries that have no line.
+
+| Count | Why the entry has no line |
+| --- | --- |
+| **Not for this design** | It belongs to another design type, such as tracker items on a fixed-tilt plant |
+| **Switched off** | It is off by default in the profile, or you turned it off. One that holds an edit of yours reads *"your edit kept"* |
+| **None on this layout** | It applies, but the layout has none to count |
+
+A project that carries a structure kit also shows *"This project has a structure
+kit. The BOM lists the structure as a package; the kit is kept for later."*
+
+## What survives a new layout
+
+Edits belong to the project and a Generate keeps them. A change to the
+electrical grouping or to a BOM setting recounts the list and keeps them too.
+
+When a line or entry leaves the design, the edit on it goes to the card **No
+longer in the design**, which opens by itself when a new one arrives. It names the
+line and the edit, such as *"make Comet; 3 % allowance"*. **Dismiss** deletes that
+edit for good.
+
+While the inputs are [out of date](/docs/workspace/out-of-date-results), the view
+shows the last run's plant with no banner of its own, and the BOM's exports are
+refused. Inputs changed since the run reach the list after the next Generate.
+
+## BOM settings
+
+BOM settings are the numbers many lines share. They come from the project's
+profile, and a change here is for this project. Open them with **Edit…** on the
+**Profile** card, or at **File ▸ Advanced settings… ▸ BOM**. **All N lines** on a line
+changes one in place. See [Advanced settings](/docs/workspace/advanced-settings).
+
+<Screenshot id="settings-bom" />
+
+| Setting | Default | Range | What it does |
 | --- | --- | --- | --- |
-| 1 | Plant AC Capacity | MW | Two decimals, or `—` until an inverter file is loaded. Remark *"PmaxOut × no. of inverters (from OND)"*, or after a Simulation with AC capacity *"AC capacity requested in the AC-capacity simulation"* |
-| 2 | Plant DC Capacity | MWp | Three decimals |
-| 3 | PV Module | Nos | The wattage of each |
-| 4 | String Inverter, **or** SMB (String Monitoring Box) | Nos | The capacity of each inverter in kWp; or the SMBs per central inverter |
-| 4b | Central Inverter | Nos | Central inverter only |
-| 5 | MMS Table (Module Mounting Structure) — Full, **or** Tracker (Full) | Nos | — |
-| 6 | Half MMS Table (Module Mounting Structure), **or** Half Tracker | Nos | *"half length; carries half the strings"* — only when the plant has any |
-| 7 | DC String Cable | m | *"incl. +ve / −ve conductors"* |
-| 8 | DC String Trench — **DC String Trench (est.)** on a very large plot | m | Where the trench runs — *"MMS/Tracker → String Inverter"*, or *→ SMB* — and, when estimated, *"; drawn for a sample of clusters, scaled to all tables"* |
-| 9 | DC Cable (SMB → Central Inverter) | m | Central inverter only. A design-warning remark, if any |
-| 10 | AC Cable (Inverter → ICR) | m | String inverter only. A design-warning remark, if any |
-| 11 | AC Trench (Inverter → ICR), **or** DC Trench (SMB → Central Inverter) | m | A design-warning remark, if any |
-| 12 | ACCB (AC Combiner Box) | Nos | String inverter only. *"≤ 15 inverters each"*, following the card's **Inverters per ACCB, max** |
-| 13 | Inverter Duty Transformer (IDT) | Nos | The voltages, the ratings and the most feeders on one transformer, such as *"33 kV / 800 V; 4 × 16,000 kVA; ≤ 4 ACCB/Tx, one LV winding each"* (*C.Inv/Tx* in a central-inverter design). Without an inverter file: *"33 kV / LV from the OND; 4 · rating needs OND; ≤ 4 ACCB/Tx, one LV winding each"* |
-| 14 | ICR (Inverter Control Room) | Nos | A design-warning remark, if any |
-| 15 | MV Panel (Switchgear) | Lot | *"Inside MCR"* — only once a main control room is placed |
-| 16 | MV Cable (ICR → MCR) | m | Main control room only |
-| 17 | MV Trench (ICR → MCR) | m | Main control room only |
-| 18 | Power Transformer | MVA | Main control room only. The rating, such as *63* or *2 × 80*, with its basis as the remark, such as *"Σ PMaxOut 58.1 MVA × margin 1 ÷ derating 1 = 58.1 MVA → next listed rating"*. Without an inverter file the quantity is `—` and the remark *"needs the inverter file (OND)"* |
-| 19 | MCR (Main Control Room) | Nos | Main control room only |
-| 20 | Lightning Arrester | Nos | — |
-| 21 | Street Light (perimeter) | Nos | Pole height and spacing |
+| **Spare for discrete consumables** | 5.0 % | 0–50 | Added to lugs, glands, connectors, bolt sets and the like |
+| **Lugs per 3-core cable end** | 3 | 1–6 | One per core, on LV AC and LV-IDT cable ends. IDT is the inverter duty transformer |
+| **Bifacial current gain** | 10.0 % | 0–30 | Added to the module's Isc when it is bifacial |
+| **String fuse factor** | 1.56 × | 1–3 | Times the design Isc; the fuse is the next size up |
+| **DC disconnector factor** | 1.25 × | 1–2 | Times the strings per string monitoring box (SMB) and the design Isc; the next size up |
+| **String fuse sizes** | 15, 20, 25, 30, 32, 50, 63 A | each 1–200 | The standard fuse sizes to choose from |
+| **DC disconnector sizes** | 250, 320, 400, 500, 630 A | each 50–2000 | The standard disconnector sizes to choose from |
+| **MV cable drum length** | 500 m | 50–2000 | A run longer than a drum needs a straight joint per extra drum, per parallel cable |
+| **Concrete block spacing** | 0.8 m | 0.3–3 | Cable laid above ground rests on a block every this many metres |
+| **Cable tie spacing** | 0.50 m | 0.1–2 | DC cable is tied to the table or tracker every this many metres |
 
-When a solar park provides the main control room, these lines change: see
-[Grid connection by others](/docs/layout/grid-connection#what-changes-in-the-bill-of-materials).
-| 22 | Robotic Module Cleaning Equipment | Nos | The row count, and any robots added for broken lines or battery range |
-| 23 | Cleaning Robot Bridge (table-to-table) | Nos | *"Gaps ≤ … m"* |
-| 24 | Cleaning Robot Bridge (supported span) | Nos | *"Over arresters / buildings / obstructions"* |
-| 25 | Design warning | — | Only for a design warning whose own row is absent: a *"Check: …"* remark, with no quantity or unit |
+A change recounts the BOM at once, marks the project as changed, and does not put
+the rest of the results out of date. To keep a value for other projects, save it
+into a profile.
 
-In the IDT remark the MV figure is the card's **MV voltage** and the LV figure
-the inverter file's output voltage.
+## Remarks from the design checks
 
-### Design-warning remarks
+A failed [design check](/docs/workspace/checks) that concerns a BOM line shows on
+that line as *"Check: &lt;ID&gt; · &lt;the finding&gt;"*, in the item's tooltip and at
+the top of the **Line** card. A remark never changes a quantity, and an
+accepted check drops off the line. These remarks stay in the application.
 
-When the layout breaks a design rule, the row the warning concerns carries a
-remark starting **Check:** and is tinted in the warning colour, with the remark
-as its tooltip. Control-room warnings go on **ICR (Inverter Control Room)**;
-feeder and voltage-drop warnings on **AC Cable (Inverter → ICR)** or **DC Cable
-(SMB → Central Inverter)**; trench warnings on the AC or DC trench row. Several
-on one row are joined with a semicolon. A warning whose row is not on the list
-gets a row of its own, **Design warning**. The remarks travel into the Excel and
-PDF exports and the report. See
-[Design warnings](/docs/reference/design-warnings).
-
-Four things change which rows appear:
-
-- **A tracker plant** carries **Tracker (Full)** and **Half Tracker** in place
-  of the two table rows.
-- **A central-inverter plant** carries **SMB (String Monitoring Box)** and
-  **Central Inverter** in place of **String Inverter**, adds **DC Cable (SMB →
-  Central Inverter)**, and its second trench row is the DC trunk trench —
-  there is no AC leg. See [Choosing a design mode](/docs/design-modes).
-- **Running without cable calculation** leaves the string, AC and DC-trunk
-  cable and trench rows at zero, so they drop out.
-- **Not placing a main control room** drops rows 15 to 19, from the switchgear
-  panel down to the room itself.
-
-### The cleaning robot fleet
-
-Rows 22 to 24 appear only after you have run the cleaning tool. Run
-**🤖 Robotic Module Cleaning** on the Tools tab, decide which wide gaps you
-will bridge, and click its **Add n robots + m bridges to BOM** button. The
-fleet then feeds both the Summary view's **Cleaning robots** row and this list.
-Until you do, there is no fleet on the list at all.
-
-That is deliberate. A cleaning fleet is a purchase decision with a bridge count
-attached to it, not something a layout implies, so the list never carries a
-fleet you did not ask for. See
-[Robotic module cleaning](/docs/simulation/robotic-cleaning).
-
-### What the list does not carry
-
-**Earthing materials are not in the bill of materials.** Earth pits, GI strip,
-earthing cable and the fittings that go with them come only from the
-**Earthing Design** study, whose bill of quantities exports on its own. See
-[Earthing design](/docs/simulation/earthing).
-
-## Exporting the list
-
-Two exports on the tools panel, both of the list on screen rather than the
-computed one — whatever you have edited is what is written.
-
-| Button | What you get |
+| Check finding | Line |
 | --- | --- |
-| **⬇ Export BOM to Excel** | The five columns as a spreadsheet, for pricing, sorting and merging into a wider procurement sheet |
-| **⬇ Export BOM to PDF** | The list as a document of its own, for circulation and sign-off |
+| ICR over its rating or not placed | **ICR building** |
+| Central inverter overloaded | **Central inverter** |
+| Spare winding on a transformer | **Inverter duty transformer** |
+| AC feeder over its flag, no single run carries it, or the drop is over budget | **LV AC cable** |
+| DC trunk too long | **DC trunk cable** |
+| DC string drop | **DC solar cable** |
+| A shadow clearance skipped | **PV module** |
+
+## Exporting
+
+Both exports are on **Export ▾** in the view header, and both need active access.
+**BOM · Excel workbook…** and **BOM · PDF…** stay greyed out until the BOM can be
+written, with *"Generate a layout first"* or *"Inputs changed since the last run.
+Regenerate first."* as the reason. The default file name is `BOM - <project> -
+<yyyy-mm-dd>`, with the project taken from the project file's name or else the
+boundary file's.
+
+An incomplete BOM still exports. Each line goes to one place:
+
+- A line that is not ready goes to **Open items**, and its quantity stays off the
+  main list even when the quantity is known.
+- A manual quantity typed as 0 is dropped.
+- **Mandatory spares** get a section of their own.
+- Everything else goes on the main list.
+
+### The Excel workbook
+
+| Sheet | What it holds |
+| --- | --- |
+| **BOM** | A heading block, then S.No, Category, Item, Specification, Makes, Nature, Unit, Design qty, Allowance %, Order qty, Source, Basis, Remarks |
+| **Block-wise** | Item, Specification, Unit, one column per block, Shared, Total, and Check (*"✓ adds up"* or *"! off by N"*) |
+| **Open items** | S.No, Item, Status, What's needed, Where to fix it. Present when something is open |
+| **Mandatory spares** | Present when there are any |
+
+The heading block gives the project, the capacity, the design, the profile, each
+BOM setting with its source (*"Spare for discrete consumables: 3.0 % (profile
+5.0 %, changed in this project)"*), the date and the status (*"! Incomplete · 56 open
+items"* or *"✓ Complete · 21 lines"*).
+
+### The PDF
+
+Each page carries the title, the project, the capacity, design and profile, and a
+status badge. The body lists the ready lines with S.No, Item & specification, Makes,
+Unit, Order qty and Basis, then **Mandatory spares**, **Open items** on a new page,
+and **BOM settings** with the value used against the profile's.
 
 <Screenshot id="bom-page" />
 
-These are separate from the report. **Export ▾ ▸ Export Detailed Project
-Report**, in the view header, writes a Word document that already carries the
-materials list as its **Bill of Materials** annexure, paginated across as many
-pages as the list needs, alongside the drawing, the summary and the diagram —
-and **Export PDF (with Piles)** carries the same pages while the pile overlay
-is on. Use the standalone buttons when you want the list on its own; a
-purchasing department rarely wants the engineering drawing attached to it.
-See [The Detailed Project Report](/docs/exports/project-report).
+Exported files carry the design notes that belong to a line, such as *"Estimated: the
+DC strings were routed for a sample of the plot"* or *"No listed rating: …"*. They
+carry no design check remarks.
 
-## What the list is, and is not
+### In the deliverables package
 
-State this to whoever receives it, because it sets what they can do with it.
+[Export deliverables…](/docs/exports/deliverables) writes the same workbook as S2.
+The [design report](/docs/exports/design-report) prints the same pages in its
+**Bill of materials** section, with nothing recomputed.
 
-- **It is a materials list, not a priced bill of quantities.** There is no
-  rate column, no amount column and no total. Pricing happens after the
-  export, in the spreadsheet.
-- **The descriptions are generic.** They describe the item, not a supplier's
-  catalogue part. Nothing here is tied to a make, a model or a stock code
-  until you type one in.
-- **It follows from a layout, so it inherits the layout's assumptions.** Cable
-  quantities exist only if cable calculation was on for the run; a fleet
-  exists only if you sized one; arresters exist only if you asked for them. A
-  missing row on this list is usually a setting rather than an absence.
-- **Nothing is checked against a standard.** Quantities are counts and
-  lengths, not a verified schedule of material.
+## What the project keeps
+
+A saved project holds the profile as it was used and your decisions: entry and
+line edits, entries turned off, added lines and types, and BOM settings. Quantities
+are not saved. They are counted again when the project opens. A project file with
+inputs only opens with the default profile. See [Projects](/docs/projects).
+
+<Callout type="warn">
+Click **Save project** when you finish editing the BOM. Your edits reach the project
+file only when it is saved.
+</Callout>
 
 ## A working order
 
-The list is cheapest to produce if the plant is finished before you start
-editing it.
-
 <Steps>
 <Step>
-### Finish the layout
+### Finish the design
 
-Generate, place the main control room, draw any obstructions, and make your
-hand edits in Sketch Mode. See [Sketch Mode](/docs/editing/sketch-mode).
-</Step>
-
-<Step>
-### Turn cable calculation on and generate again
-
-Cable and trench lengths are only computed when you ask for them, and they
-are usually the largest quantities on the list. See
-[Cable routing](/docs/layout/cables).
+Load the PAN and OND files and generate with **Calculate cables** on. Place the main
+control room and generate again, which routes its MV cables. Define the pile pattern. Cable lengths are usually the largest
+quantities on the list. See [Cable routing](/docs/layout/cables).
 </Step>
 
 <Step>
 ### Size the cleaning fleet, if you want one
 
-Run **🤖 Robotic Module Cleaning**, settle the bridge decisions, and add the
-result to the BOM, so the fleet count is on the list before you rebuild.
+Run [Robotic Module Cleaning](/docs/simulation/robotic-cleaning) and click **Add to BOM**.
+The fleet's lines appear only once it is sized.
 </Step>
 
 <Step>
-### Settle the grouping
+### Choose the profile
 
-Load the inverter file and set the **ACCB & Transformer** card before you edit
-the list: a change to either rebuilds the list on your next visit to the BOM
-view, and your edits go with it.
+Click **Change…** on the **Profile** card if your company has its own. Starting from
+the right profile saves entering its makes and specifications again.
 </Step>
 
 <Step>
-### Open the BOM view and rebuild once
+### Clear the design inputs
 
-Click the **BOM** tab, then **⚙ Rebuild from Layout** for a list that matches
-the finished plant.
+Open the **BOM** view and work down the **Go** rows on the **Readiness** card.
 </Step>
 
 <Step>
-### Edit, then export
+### Answer what is open
 
-Correct the descriptions, add the line items the layout cannot know about,
-and export to a spreadsheet, a PDF, or the report. From here on, avoid
-rebuilding.
+Click **Needs attention**, then give each line its quantity, factor or specification.
+</Step>
+
+<Step>
+### Save and export
+
+Click **Save project**, then export from **Export ▾**.
 </Step>
 </Steps>
 
@@ -346,23 +373,23 @@ rebuilding.
 
 <Cards>
   <Card
-    title="Materials list templates"
-    href="/docs/bom/templates"
-    description="The built-in reference list for your design, and the action that replaces the computed one"
+    title="BOM profiles"
+    href="/docs/bom/profiles"
+    description="Your company's makes, allowances and specifications, kept for every project"
   />
   <Card
-    title="Robotic module cleaning"
-    href="/docs/simulation/robotic-cleaning"
-    description="Sizing the fleet that puts a robot count on this list"
+    title="Line reference"
+    href="/docs/bom/line-reference"
+    description="Every entry in the built-in profile and how it is counted"
   />
   <Card
-    title="The Detailed Project Report"
-    href="/docs/exports/project-report"
-    description="Where the materials list appears among the report's sections"
+    title="Export overview"
+    href="/docs/exports/overview"
+    description="Everything the application writes, and where the BOM's files fit"
   />
   <Card
-    title="ACCB and transformers"
-    href="/docs/inputs/accb-and-transformers"
-    description="The grouping behind the ACCB, IDT and power transformer rows"
+    title="Grid connection by others"
+    href="/docs/layout/grid-connection#what-changes-in-the-bill-of-materials"
+    description="The lines that change when a solar park provides the main control room"
   />
 </Cards>
