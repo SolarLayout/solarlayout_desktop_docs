@@ -63,7 +63,10 @@ you report the problem: see [Getting help](/docs/support).
 <Accordion title="The file was refused, or a boundary is listed as a problem">
 
 A plant boundary must be a **closed polygon** — first and last ring coordinate
-identical. When one is open, the **Check boundaries** window lists each problem
+identical. A boundary drawn as an open line or in pieces opens the
+**Clean boundary** review, which offers to close or join it when the gap is up
+to 50 m. A polygon whose ring is open makes **Generate Layout** open the
+**Check boundaries** window, which lists each problem
 boundary with the gap it found, every row ticked under **Leave out**. The
 primary button, **Continue without \<n\>**, carries on with the others; **Fix in
 Google Earth first** closes the window so you can repair the file. Prefer
@@ -84,18 +87,19 @@ top of one mean the feature was not read as an area inside the plant. Check:
    polygon — which is what a plant boundary is.
 2. **Is it a closed polygon?** A shape drawn as a path is a line feature, and a line
    feature is buffered as a corridor rather than treated as an area.
-3. **Is it named so it can be classified?** Classification is by **name
-   keyword**, case-insensitive: `Pond`, `Lake`, `Reservoir`, `Water body`,
-   `Wetland`, `Marsh` or `Swamp` is read as water, while a polygon with no water
-   keyword is still kept clear but as a generic obstruction — so a misnamed pond
-   is drawn and reported as an obstruction rather than as water.
+3. **Is it named as water?** A whole word in the name decides, in any case:
+   `Pond`, `Lake`, `Reservoir`, `Water body`, `Wetland`, `Marsh` or `Swamp` is
+   read as water, while a polygon without a water word is still kept clear but
+   as a plain obstruction. Tick **Water** for it in the **Clean boundary**
+   review, from **Review boundary…** on the card, or rename it. The full list is in
+   [Boundary file requirements](/docs/inputs/kmz-requirements).
 
 </Accordion>
 <Accordion title="An obstruction in the file had no effect">
 
 The polygon lies outside the plant boundary, or crosses its edge. Only polygons
-**fully contained** within a boundary become obstacles; one that is not contained is
-treated as a boundary in its own right. Open the file in Google Earth and check the
+**fully contained** within a boundary become areas to keep clear; one drawn clear of
+it is read as another plot. Open the file in Google Earth and check the
 obstruction sits wholly inside the boundary. If it genuinely straddles the fence
 line, clip it to the boundary, or draw the exclusion by hand after the run from
 the **Tools** tab — see [Obstructions and exclusions](/docs/layout/obstructions).
@@ -172,7 +176,8 @@ they are applied, switching each off in turn to see what it cost you.
 | --- | --- | --- |
 | Perimeter road | **Perimeter road width** on the Site tab, default 6.0 m | Set it to 0 and regenerate |
 | Obstructions and water | Polygons in the boundary file, plus anything drawn by hand on the Tools tab | Compare against the file in Google Earth |
-| Transmission corridors | **Transmission line corridor**, default 15.0 m per side | Set it to 0 and regenerate |
+| Line corridors | **Line corridor (each side)**, default 15.0 m, and each line's own row | Set them to 0 and regenerate |
+| Area setbacks | **Area setback**, default 0.0 m, and each area's own row | Set them to 0 and regenerate |
 | Terrain exclusions | **Avoid steep ground** under Topography | Untick it and regenerate |
 | Structure shadows | **Clear tables in shadows** under Structures & Shadow, on by default | Untick it and regenerate |
 | Lightning arresters | **Place Lightning Arresters**, off by default | Untick it and regenerate |

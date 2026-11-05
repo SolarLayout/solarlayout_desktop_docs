@@ -45,8 +45,6 @@ while they are not computed automatically. See
 
 ## Site tab
 
-<Screenshot id="tab-site" maxWidth={420} />
-
 ### Input Boundary File
 
 A read-only path field with the placeholder *"Select a boundary file…"*, a
@@ -77,7 +75,8 @@ placed, and how much equipment goes on what remains. In depth:
 | **Place Lightning Arresters** | off | — | On, arresters are placed on a coverage grid and the tables they overlap are cleared. Off, tables fill the whole usable area; arresters can still be added by hand in Sketch Mode. |
 | **LA protection radius** | 100.0 m | 10.0–500.0 m | The radius one arrester is taken to protect, and the spacing of the grid they sit on. Enabled only when arresters are on. |
 | **ICR Block** | 18.000 MWp | 0.1–500.0 MWp, three decimals | The DC capacity one inverter control room serves. Each separate piece of land needs its capacity ÷ this, rounded up, in control rooms — see [the derived values](#values-the-application-derives-rather-than-asks-for). The **Simulation with AC Capacity** study can write its block DC here. |
-| **Transmission line corridor** | 15.0 m per side | 0.0–500.0 m | The setback applied to each side of every line feature that is not a road, so the cleared strip is twice this figure — 30 m at the default. A road line takes half its own width each side instead. |
+| **Line corridor (each side)** | 15.0 m | 0.0–500.0 m | No tables within this distance of a line in the boundary file, so the cleared strip is twice this figure — 30 m at the default. Each line of a loaded file also has its own row. |
+| **Area setback** | 0.0 m | 0.0–100.0 m | No tables within this distance of an area in the boundary file. Each area of a loaded file also has its own row. |
 
 The corridor tooltip recommends raising the setback for higher-voltage lines,
 for example 30 m per side for a 400 kV line. How the control rooms are counted

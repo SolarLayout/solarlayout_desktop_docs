@@ -11,6 +11,10 @@ after PRs #274–#319 (fresh results, design warnings, location truth, the
 ACCB & Transformer card, Earthing Design, Robot count from DXF, ICR blocks,
 piles on half tables, the cable schedule rework and the routing lock). Which
 of those changes are in a released build is in [§21](#21-release-mapping).
+Only the boundary reading (§3 intro, §3.1) and the Site tab's line and area
+fields (§4.5) were re-checked on 2026-11-05 against `main` at `ae599a9`, with
+headless runs of the review on sample files; the rest of the sheet still stands
+at the baseline above.
 Where the product's own README, module docstrings, code comments, tooltips or
 in-app F1 help state something different, **they are stale and must not be
 used**. A list of the specific known-stale claims is in
@@ -168,70 +172,110 @@ Accepted extensions (the **Select boundary file** dialog, filter *"Boundary
 Files"*) — `IP:41-53, 1661-1672`:
 `.kmz .kml .dxf .dwg .jpg .jpeg .png .gif .bmp .tif .tiff`
 
-A `.kmz` / `.kml` is read at once and opens no further window (it carries its
-own coordinates, `GR:123-126`). A CAD drawing or an image first opens the
+A `.kmz` / `.kml` carries its own coordinates (`GR:123-126`), so it asks for no
+location. It goes through the **Clean boundary** review (§3.1), which opens a
+window only when there is something to decide. A CAD drawing or an image first opens the
 **Site reference** window (§3.2, §3.3) **before** the file is taken; **Cancel**
 there leaves the file unloaded and the previously loaded file in place —
 `IP:2056-2130`, `tests/test_location_wiring.py:70-79`.
 
 ### 3.1 KMZ / KML
 
-- Plant boundary must be a **closed polygon**; first and last ring
-  coordinate identical. Multiple boundaries in one file are supported
-  (multi-plot). Every feature must lie **inside** a boundary polygon.
-- Boundary detection: top-level polygons not contained within others;
-  polygons fully contained within a boundary become obstacles —
-  `kmz_parser.py:1-8`.
-- Feature classification is **by name keyword**, case-insensitive —
-  `kmz_parser.py:20-32`:
-  - **Water:** `pond`, `lake`, `reservoir`, `water`, `wetland`, `swamp`,
-    `marsh`, `waterbody`, `water body`, `water_body`
-  - **Canal:** `canal`, `channel`, `drain`, `drainage`, `nala`, `nallah`,
-    `nullah`, `river`, `stream`, `creek`, `flood`
-  - **Transmission line:** `transmission`, `transmissionline`,
-    `transmission line`, `powerline`, `power line`, `power_line`, `hv`,
-    `hvl`, `ehv`, `132kv`, `220kv`, `400kv`
-- Polygons **without** a water keyword are treated as generic obstructions
-  (buildings, substations).
-- **LineString** features (transmission lines, canals, roads) get a setback
-  buffer on each side; total corridor = 2 × setback.
-- Open rings raise the **Check boundaries** window (`boundary_validation_dialog.py`,
-  a `ResultDialog`): a warning banner *"N of M boundaries have a problem"* (or
-  *"1 boundary has a problem"*) with the detail *"Leave them out and continue
-  with the others, or fix them in Google Earth and load the file again."*; a
-  table with columns **Leave out** · **Boundary** · **Problem** (each problem
-  reads *"Ring is NOT CLOSED  (gap between first and last point ≈ 42.7 m)"*,
-  `kmz_parser.py:272-275`), every row ticked by default; the note *"An unticked
-  boundary is kept as it is and may produce a wrong layout."*; footer buttons
-  **All**, **None**, **Fix in Google Earth first**, and the primary
-  **Continue without N** (reads **Continue with all boundaries** when nothing is
-  ticked) — `boundary_validation_dialog.py:39-159`. **Fix in Google Earth first**
-  closes the window and the file is not loaded (`MW:3640-3642`); the primary
-  loads the file without the ticked boundaries.
-  ⛔ The window is not called "Boundary Validation Issues" and has no plain Cancel.
+**One reading.** Every KMZ / KML is read through the Clean boundary review:
+`parse_kmz` runs `inspect_kmz`, takes the review's recommended answers and gives
+the engine the result — `SC/kmz_parser.py:270-288`. It finds plots, areas, lines
+and pins. Browse runs it under a progress card; the file loads straight away
+when there is nothing to ask — `IP:2641-2711`, `SC/boundary_review/model.py:113-130`.
 
-#### Road line features get their own width — not the TL setback
+**What is a plot** — `SC/boundary_review/inspect.py:175-260, 508-516`,
+`SC/boundary_review/types.py:12-15, 37-41`:
+- A top-level polygon. A polygon inside another is an area.
+- A polygon clear of every plot is **another plot**, unless its name is a water
+  word, when it is listed as *"Outside the plots, not used"* (probed 2026-11-05).
+- A line drawn closed (ends within 0.5 m).
+- A polygon inside another with a plot word or Google Earth's own name opens the
+  review, default *No tables here* unless the name is a plot word (`inspect.py:382-413`).
+- A line that may be a plot drawn as a line: no name, Google Earth's own name
+  (*Untitled Path*, *Polygon 7*), or a plot word (`boundary plot plant site land
+  parcel survey khasra field acre acres block phase zone stage`). Its ends within
+  **50 m** are offered as a closed plot. A water-word line never is.
+- ⛔ Any other open line is a line to keep clear, not a plot. So is an open line
+  with a gap over 50 m.
 
-A distinct behaviour worth its own subsection, because the corridor width is
-computed differently — `kmz_parser.py:39-44, 96-133, 311-319, 452-470`:
+**Water.** The only thing a name sets: a whole-word match, any case, on `pond
+lake reservoir water waterbody wetland swamp marsh talab talav tank pokhar canal
+channel drain drainage nala nalla nallah nullah river stream creek flood` —
+`SC/boundary_review/types.py:41-44, 67-71`. `Pondicherry store` is not water;
+`Drainage tank` is. A water area or line is drawn and booked as water; the
+**Water** tick changes it. ⛔ There are no transmission-line or road keywords and
+no road width attribute: every line is a line, under the corridor
+(`SC/boundary_review/types.py:1-8`; an `Access road` with a `width` attribute
+probed as a plain line).
 
-- A LineString whose **name matches a road keyword** is treated as a road, not
-  as a transmission line. Road keywords: `road`, `roads`, `street`, `highway`,
-  `internal road`, `access road`, `service road`, `farm road`, `track`.
-- A road corridor is buffered by **half its own width each side** — i.e. the
-  cleared strip is the road width — rather than by the transmission-line
-  setback.
-- The width is read from the placemark's KML `ExtendedData`, under any
-  attribute named `width`, `road_width`, `roadwidth` or `lane_width`. Both the
-  `<Data><value>` and `<SimpleData>` forms are accepted. Values below 1 m are
-  raised to 1 m.
-- With no recognised width attribute the default is **5.0 m**.
-- Roads are assigned to whichever boundary contains the line's midpoint, or to
-  the nearest boundary if none contains it.
-- Every **other** LineString — transmission line, canal, or a line matching
-  no keyword list at all — is buffered by the **Transmission line corridor**
-  setback in §4.5. So an unnamed or oddly-named line still becomes a corridor;
-  it just uses the setback rather than a width.
+**Areas, lines and pins** — `SC/boundary_review/model.py:17-24`:
+- Area: *"Area: no tables here"* / *"Water: no tables here"*; the Area setback
+  applies (§4.5).
+- Line: *"Line: no tables within the line corridor (Site tab)"* / *"Water line: …"*.
+  Kept up to **500 m** from a plot (`LINE_REACH_M`, `types.py:24`); beyond that
+  *"Outside the plots, not used"*.
+- Pin: *"Pin: a label unless you keep it"*. Kept, a spot of 1 m radius
+  (`types.py:21`).
+- A hole cut in a plot polygon: *"No tables here (land cut out of the plot)"*.
+- A height on an area or kept pin: tables stay out of its shadow when **Clear
+  tables in shadows** is on — `clean_boundary_dialog.py:1233-1237`.
+
+**When the window opens by itself** — `SC/boundary_review/model.py:113-130`: a
+survey map; a finished layout opened as a boundary; a CAD export's loose lines
+rebuilt; a plot row needing attention; a pin inside a plot; in a clean copy, only
+what was added or redrawn since.
+
+**Loose CAD lines.** Unnamed two-point lines with their layer in the description
+are named from it and rejoined; a layer's two banks become one area, a small
+tangle one spot — `SC/boundary_review/kml_read.py`, `cad_lines.py`,
+`types.py:27-35`. Added in #662.
+
+**The Clean boundary window** — `clean_boundary_dialog.py:549, 615, 703-707`:
+title **Clean boundary**; caption *"What the file holds"*; columns **Keep**,
+**Item**, **Found**, **Action**, **Water**, **Height** (**Merge** shows only in
+Merge selected, `:65, 630, 1001`); footer *"Saves <name>_clean.kmz beside the
+original"*, **Cancel**, **Save clean KMZ and load** (disabled with *"Keep at least
+one plot"*, `:945`). The choices — `inspect.py:190-254, 302-312, 382-403`:
+
+| Found | Choices (first is the default, except as noted) |
+|---|---|
+| *Open line, ends N m apart* | **Close the N m gap**, **Keep as a line**, **Remove** |
+| *Drawn in N pieces, ends … m apart* | **Join into one plot**, **Keep as N lines**, **Remove** |
+| *Outline crosses itself* | **Fix the crossing (N ac)**, **Keep as drawn**, **Leave out** |
+| *Same as X (100 % overlap)* | **Remove duplicate**, **Merge with X** |
+| *Overlaps X by N ac* | **Merge with X**, **Cut the overlap out of this plot**, **Remove** |
+| *Inside X* | **This is the plot**, **No tables here**, **Leave out** |
+| *Outline around N plot* | **Context only**, **Lay it out too**, **Leave out** |
+
+Save writes `<name>_clean.kmz` beside the original, which is not changed, and
+loads it; a clean file keeps its own name — `clean_kmz.py:55-58`,
+`clean_boundary_dialog.py:958`, `IP:2711-2723`. A folder it cannot write to asks
+for another (`IP:2725-2749`). **Cancel** leaves the file unloaded (`IP:2706-2710`).
+**Review boundary…** on the card, for a KMZ / KML that is not the sample, opens
+the review even with nothing to ask, and adds **Keep separate**, **One outer
+boundary**, **Merge selected** — `IP:746, 2759-2772`, `clean_boundary_dialog.py:751-753`.
+Warnings before saving (in One outer boundary, land much larger than the plots
+inside it; a large share of a survey map; plots tiny beside what the file draws) — `size_check.py:25-68`; their
+thresholds are Advanced settings ▸ Clean boundary.
+
+**Check boundaries.** At **Generate Layout**, not on load: a top-level polygon
+whose ring is open by more than 0.0001° (about 11 m) on either axis —
+`MW:600-612, 4506`, `SC/kmz_parser.py:180-182, 254-265`. The review does not flag
+such a ring (probed: loads straight away). The window
+(`boundary_validation_dialog.py:39-159`): a warning banner *"N of M boundaries
+have a problem"* (or *"1 boundary has a problem"*) with the detail *"Leave them
+out and continue with the others, or fix them in Google Earth and load the file
+again."*; a table with columns **Leave out** · **Boundary** · **Problem** (*"Ring
+is NOT CLOSED  (gap between first and last point ≈ 42.7 m)"*), every row ticked by
+default; the note *"An unticked boundary is kept as it is and may produce a wrong
+layout."*; footer buttons **All**, **None**, **Fix in Google Earth first**, and the
+primary **Continue without N** (**Continue with all boundaries** when nothing is
+ticked). **Fix in Google Earth first** ends the run (`MW:4527-4540`).
+⛔ The window is not called "Boundary Validation Issues" and has no plain Cancel.
 
 #### The preparation guide (ⓘ)
 
@@ -240,10 +284,8 @@ then the sections *1 ▸ Plant / Site Boundary*, *2 ▸ Water Bodies (Ponds, Lak
 Canals …)*, *3 ▸ Transmission Lines (TL) / Canals / Roads*, *4 ▸ Buildings /
 Obstruction Areas*, *5 ▸ Common Mistakes to Avoid*, and a **Quick Reference**
 table with the columns Feature / KML type / Name rule / Colour on map; one
-**Close** button. ⚠️ Its text is fixed: it lists the water keywords as *"pond
-lake reservoir river canal water wetland swamp tank"* and says *"A 15 m setback
-is automatically applied on each side of the line."* — the parser's keyword
-list (above) and the editable corridor field (§4.5) are the truth.
+**Close** button. Its water list (*"pond lake reservoir river canal water wetland
+swamp tank"*) is a subset of the full list above.
 
 ### 3.2 DXF / DWG
 
@@ -606,7 +648,8 @@ Card tooltip *"Horizontal single-axis tracker, N/S axis"*; dividers
 | Place Lightning Arresters | off | — | — |
 | LA protection radius | 100.0 (enabled only when LA is on) | 10.0–500.0 | m |
 | ICR Block | 18.000 (three decimals; the field shows **18.000  MWp**) | 0.1–500.0 | MWp |
-| Transmission line corridor | 15.0 per side (30 m total) | 0.0–500.0 | m |
+| Line corridor (each side) | 15.0 (30 m total) | 0.0–500.0 | m |
+| Area setback | 0.0 | 0.0–100.0 | m |
 
 - **ICR Block** has three decimals because the AC-capacity study writes the
   block DC into it (§10.1) — `IP:1020-1028`.
@@ -618,8 +661,12 @@ Card tooltip *"Horizontal single-axis tracker, N/S axis"*; dividers
 - With Lightning Arresters **off**, no arresters are placed and tables fill
   the whole usable area; they can still be added by hand in Sketch Mode —
   `IP:785-789`.
-- The corridor tooltip suggests raising the setback for higher-voltage lines
-  (e.g. 30 m per side for 400 kV) — `IP:813-819`.
+- The corridor and setback fields are `IP:1203-1217`. Under each, a loaded
+  file adds **one row per line and per area**, with its name and its length or
+  size (`SC/kmz_parser.py:100-123`). The common value moves every row still at the
+  old value; a row edited on its own keeps its value — `IP:1340-1351`.
+- The application's guidance is to raise the corridor for higher-voltage lines
+  (e.g. 30 m per side for 400 kV).
 
 ### 4.6 Structures & Shadow (keep-clear) — `IP:1051-1149` (Site tab)
 
@@ -3439,6 +3486,10 @@ Device ID); the docs site, not the in-app guide, is the reference.
 | Terrain excludes an RL / flood-level band | F1 help, `terrain.py` | No UI fields exist for it — unreachable |
 | Satellite water-body detection is available | F1 help, `water_body_mode_dialog.py` | Hard-set to KMZ-only — unreachable |
 | Image scale example "1000 m = 10 mm" | `image_boundary_parser.py` docstring | Dialog default is 100 m / 10 mm |
+| A line named as a road takes its width from a `width` attribute, 5.0 m by default | this sheet before 2026-11-05, older docs | Every line takes the Line corridor (§3.1) |
+| Name keywords for transmission lines and roads; a canal class apart from water | this sheet before 2026-11-05, older docs | The name only sets water (§3.1) |
+| Check boundaries opens on load | this sheet before 2026-11-05, older docs | Opens at Generate Layout (§3.1) |
+| *Transmission line corridor* as the Site field's label | older docs, screenshots before 2026-11-05 | **Line corridor (each side)** (§4.5). The Sketch Mode prompt keeps its own *Transmission line corridor* label |
 | A 15 m TL setback is fixed | `README.md`, `layout_engine.py:29` | Default 15 m per side, reader-editable 0–500 |
 | Flat `core/` `gui/` `models/` project layout, `main.py` | `README.md` | Restructured into `packages/` + `apps/` — irrelevant to readers either way |
 | A four-card start-up window with **Select** buttons | older docs pages, screenshots before 2026-09-21 | Two segmented controls (MOUNTING, INVERTER), a summary card, **Continue** (§2) |
@@ -3791,6 +3842,18 @@ fixed out of this table.
 | 29 | **Fixed-tilt Maximize placement vs its tooltip** — the tooltip (and §4.2) says rows hug the boundary independently so table columns will not line up; the fixed-tilt packer snaps every row to one global column grid, so columns stay aligned (`layout_engine.py:35-98`, since 2026-08-11). The tracker packer does hug per column (`tracker_layout_engine.py:39-82`). Decided in #348 (2026-09-28): **aligned columns are intended** on fixed tilt (the cable routers depend on the column lanes), so the tooltip is wrong; #348 will hide the option on fixed tilt or make it hug the fence at row ends only, and will list the page changes. Until it lands, the pages keep their current wording. | `layout_engine.py:35-98`, `IP:723-729` |
 | 30 | **The License window offers Get Free Access when access has expired or been revoked.** The trial spec says only the *no trial* state offers it, and `access_view` already returns the right button, but the dialog uses `not ok` (`license_dialog.py:159-162`); the module docstring (`:12-13`) states the intended behaviour. Pages must not tell expired or revoked users to use Get Free Access; **Contact Us** / `sales@solarlayout.app` is the route. | `license_dialog.py:12-13, 159-162`, `access_chip.py:52-87` |
 
+### Noticed 2026-11-05
+
+- **A file whose only boundary is a line can fail at Generate.** A KMZ with no
+  polygon at all and nothing for the review to ask (a closed path; or an open line
+  that is not a plot candidate) loads with no window. `validate_boundaries` then
+  returns a plain string, not a `(name, issue)` pair, at `SC/kmz_parser.py:208-209`,
+  and `boundary_validation_dialog.py:99` cannot unpack it: the dialog raises
+  `ValueError` (reproduced by building the dialog with that list, not by clicking
+  through the whole window). Pages state only the correct route: draw the boundary
+  as a polygon. Files the review opens for are unaffected: their clean copy holds
+  polygons.
+
 ## 21. Release mapping
 
 Verified 2026-09-28 with `git tag --contains <merge>` in the product repo
@@ -3803,6 +3866,12 @@ trailing `.0` (§6.0), so tag `solarlayout-v2.0.2.0` is the build that shows
 | `solarlayout-v2.0.1.0` (shows v2.0.1) | 2026-09-22 | #208 (every device cabled, ICR assignment, containment), #219 (leaving Sketch Mode) |
 | `solarlayout-v2.0.2.0` (shows v2.0.2) | 2026-09-25 | everything in v2.0.1.0, plus #274 (ICR count per land piece, balanced blocks), #275 (DC comb sample, "(est.)"), #276 (Robot count from DXF), #277 (headless BOM core — no visible change), #288 (piles on half tables, spec), #289 (Cables card defaults), #290 (half-table piles), #291 (ICR block window, ICR-Block PDF), #292 (ICR block AC in the AC-capacity study), #295 (location truth — the Site reference window), #296 (half-table piles follow-up), #298 (reopen enables the tools), #299 (Robot count from DXF and AC-capacity window refinements) |
 | `solarlayout-v2.1.0.0` (shows v2.1.0) | 2026-09-28, at `e93f6be` | everything in v2.0.2.0, plus #301 (ACCB & Transformer card), #302 (results that know they are out of date; every input saved), #303 (automatic SLD without the BOM), #305 (AC feeder sizing in the cable schedule), #308 / #309 (power transformer), #310 (cable take-off catalog — no visible change), #315 (design warnings), #318 (Earthing Design), #319 (one cable run at a time) |
+
+Boundary reading, checked 2026-11-05 with `git tag --contains`: #364 (Clean
+boundary, `6e7c416`) is first in `solarlayout-v2.1.10.0`; #620 (the lean review,
+`d4fb07f`) and #624 (a corridor or setback per item, `19f8e6d`) in
+`solarlayout-v2.1.15.0`; #662 (a CAD export of loose lines, `ae599a9`) in
+`solarlayout-v2.1.18.0`.
 
 ⚠️ Pages describe the current `main`. A release-notes entry must name only
 what its release contains.

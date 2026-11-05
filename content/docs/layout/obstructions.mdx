@@ -21,9 +21,8 @@ The order matters, because each step works on the result of the last.
    left is the usable area.
 2. Polygon obstructions and water bodies are **subtracted** from it.
 3. Line features — transmission lines, canals, roads — are buffered into
-   corridors, and those corridors are subtracted too. A transmission line or a
-   canal takes the setback on each side; a road takes half its own width on each
-   side.
+   corridors by the line corridor on each side, and those corridors are
+   subtracted too.
 4. Terrain exclusions are subtracted, when topography is enabled.
 5. Tables and tracker units are then placed only where they fit **entirely**
    inside what remains.
@@ -42,27 +41,26 @@ needs no hand drawing at all. Three kinds are read automatically:
 
 | Kind | Drawn in the file as | What the application does |
 | --- | --- | --- |
-| **Water body** | A closed polygon inside the plant boundary, named with a water keyword | Subtracted from the usable area, drawn blue, and exported as water |
-| **Generic obstruction** | A closed polygon inside the plant boundary, any other name | Subtracted from the usable area, drawn red, and exported as an exclusion |
-| **Line corridor** | A line — not a polygon — for a transmission line, canal or road | Buffered into a corridor and subtracted: the setback on **each** side, or half the road width each side for a road |
+| **Water body** | A closed polygon inside the plant boundary, named with a water word | Subtracted from the usable area with its **Area setback**, drawn blue, and exported as water |
+| **Generic obstruction** | A closed polygon inside the plant boundary, any other name | Subtracted from the usable area with its **Area setback**, drawn red, and exported as an exclusion |
+| **Line corridor** | A line — not a polygon — for a transmission line, canal or road | Buffered into a corridor and subtracted: the line corridor on **each** side |
 
-Every feature must lie **inside** a plant boundary. A polygon drawn outside the
-boundary is subtracted from nothing, so tables are placed straight over the
-ground you meant to keep clear. See
+Draw every feature **inside** a plant boundary. A polygon drawn clear of every
+boundary is read as another plot, and tables are placed on it. See
 [Boundary file requirements](/docs/inputs/kmz-requirements) for how each feature
 must be named and drawn.
 
-### Classification is by name
+### Water is set by name
 
-The application decides what a feature is from its **name**, matching keywords
-case-insensitively — words for ponds, lakes, reservoirs and wetlands for water;
-words for canals, drains, nalas and rivers for a channel; words for transmission
-and power lines and their voltages for an overhead line.
+The shape decides whether a feature is an area or a line. Its **name** sets
+whether it starts as water: a whole word for a pond, lake, reservoir, wetland,
+canal, drain, nala or river, in any case. You can change it with the **Water**
+tick in the **Clean boundary** review.
 
 The consequence to know:
 
 <Callout type="warn">
-A water body whose name carries no water keyword is treated as a **generic
+A water body whose name carries no water word is treated as a **generic
 obstruction**. It still clears the tables over it, so the layout is not wrong —
 but it is drawn in the obstruction colour instead of blue, and it is exported on
 the obstruction layer instead of the water layer. Name your ponds.
@@ -74,16 +72,16 @@ who will read a red polygon as a building and a blue one as water.
 
 ## Line corridors and their setback
 
-A line feature has no width, so it cannot exclude anything on its own. A
-transmission line or canal is buffered on **both** sides by the setback, which
-means the corridor kept clear of modules is **twice** the setback you enter. A
-line named as a road is the exception: it is buffered by half its own width each
-side, so the strip kept clear is the road width, read from the boundary file
-rather than from this field.
+A line feature has no width, so it cannot exclude anything on its own. Every
+line is buffered on **both** sides by its corridor, which means the strip kept
+clear of modules is **twice** the value you enter. For a road, enter half its
+width. Each line in the file has its own row on the Site tab, so a road and a
+transmission line can differ.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Transmission line corridor** | 15.0 per side, 30 m total | 0.0–500.0 | The distance kept clear each side of every line feature that is not a road |
+| **Line corridor (each side)** | 15.0 m, 30 m total | 0.0–500.0 | The distance kept clear each side of a line feature |
+| **Area setback** | 0.0 m | 0.0–100.0 | The distance kept clear around an area in the boundary file |
 
 The setback that suits a distribution line will not suit an export line. The
 application's own guidance is to raise it for higher voltages — for example 30 m
@@ -182,8 +180,8 @@ well: **0** draws a line only, and anything more than 0 makes it a corridor that
 removes the tables under it — a third way to clear an irregular strip. See
 [Sketch Mode](/docs/editing/sketch-mode).
 
-A hand-drawn transmission line **does not use the Transmission line corridor
-setback**. The width you enter is the whole corridor: the centre-line is
+A hand-drawn transmission line **does not use the Line corridor** on the Site
+tab. The width you enter is the whole corridor: the centre-line is
 buffered by half of it on each side, so the strip cleared of tables is the
 width you gave, not twice it. So a line you draw and a line of the same route
 read from the boundary file clear different ground unless you convert one figure
