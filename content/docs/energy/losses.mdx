@@ -6,8 +6,7 @@ description: Every component of the performance ratio — inverter, cables, soil
 The **performance ratio** — PR — is the fraction of the energy a plant would
 generate if every module always ran at its nameplate efficiency that it
 actually delivers to the grid. It is dimensionless, always below 1, and it is
-the single multiplier that turns annual in-plane irradiance into specific yield:
-`Specific yield = GTI × PR`. See
+the multiplier that turns each month's in-plane irradiation into energy. See
 [How yield is calculated](/docs/energy/overview).
 
 You never type a performance ratio. There is no PR field. The application builds
@@ -62,10 +61,9 @@ Rows in the order they appear in the expander.
 <Screenshot id="losses-expander" />
 
 Two rows are stated as efficiencies and eight as losses; the temperature
-readout, the auto tick and the ground clearance are neither. Read the units
-before changing anything: entering 97 in a loss field and 3 in an efficiency
-field describe the same physical inverter, and getting them the wrong way round
-moves the yield by a factor you will not notice in the summary.
+readout, the auto tick and the ground clearance are neither. An efficiency is a
+percentage kept and a loss a percentage lost, so read the label before changing
+a figure.
 
 ### How the components combine
 
@@ -81,17 +79,22 @@ PR = (inverter efficiency / 100)
    × (1 − transformer)     × (1 − other)
 ```
 
-State it this way when the figure is reviewed, because it is the first thing a
-lender's reviewer asks and the two methods do not give the same answer. A
+State it this way when the figure is reviewed, because the two methods do not
+give the same answer. A
 product is always slightly higher than one minus the sum, and the gap widens as
 the individual losses grow: each loss applies to what the losses before it left,
 not to the full nameplate figure.
 
-The **monthly** performance ratio is built the same way, with one substitution —
-the annual temperature loss is left out and a month-specific temperature loss
-put in its place, which is why the **PR (%)** column of the monthly table on
-the Energy view moves through the year while the other nine components stay
-put.
+A normal run works month by month. The **monthly** performance ratio is built the
+same way, with one substitution: the temperature term is left out and a
+month-specific temperature loss put in its place, which is why the **PR (%)**
+column of the monthly table on the Energy view moves through the year while the
+other nine components stay put. The year's performance ratio is the months' ratios
+weighted by their sunlight, and the temperature factor reported for the year is
+the yearly equivalent, so the ten factors still multiply to the year's PR. The
+entered **Temperature losses** figure is therefore not itself applied on a monthly
+run unless the flat rule on [Temperature loss](/docs/energy/temperature#monthly-temperature-loss)
+applies.
 
 ### What changes with the inverter design
 
@@ -175,14 +178,11 @@ sizing exercise from a string cable.
 ### Soiling
 
 Light blocked by whatever settles on the glass — dust, dirt, bird droppings.
-The default of 2.0 % is a moderate figure. It is one of the few rows where
-local knowledge beats any general figure: a site near unpaved roads, cement
-works, or in a region with a long dry season and a monsoon that ends it carries
-a soiling loss that no default can represent, and cleaning frequency changes
-the answer as much as the site does.
+The default is 2.0 %. It depends on the site and on how often the modules are
+cleaned, so set it from what you know of both.
 
-If the design includes robotic cleaning, this is the row that should reflect it
-— see [Robotic cleaning fleet](/docs/simulation/robotic-cleaning).
+The row is yours to set: sizing a
+[robotic cleaning fleet](/docs/simulation/robotic-cleaning) does not change it.
 
 ### Temperature
 
@@ -194,7 +194,8 @@ the row, and the working — the relation with your own values substituted into
 it — appears as a formula trace under the site-condition fields higher up the
 card.
 
-Without a module file it stays at 6.0 % and is an assumption like any other.
+Without a module file it stays at 6.0 %, an assumption like any other, and on a
+monthly run it sets the coefficient the months use.
 The model, the four mounting configurations and the inputs that drive it are on
 [Temperature loss](/docs/energy/temperature).
 
@@ -203,8 +204,7 @@ The model, the four mounting configurations and the inputs that drive it are on
 Modules within a string are never electrically identical — manufacturing
 tolerance, differing degradation, and small differences in operating condition
 mean the string operates at the current its weakest module allows rather than
-the average of all of them. The default of 1.0 % suits modules sorted into
-tight power bins.
+the average of all of them. The default is 1.0 %.
 
 ### Shading
 
@@ -213,7 +213,7 @@ when the sun is low. **Auto (row-to-row, GCR)** ships **on**, so by default this
 figure is derived from your own geometry — the ground coverage ratio (GCR) and
 the tilt — rather than taken from the field, which is greyed out while the tick
 is on. GCR is the collector area divided by the ground area it occupies: here,
-the table height divided by the row pitch.
+the table's slope length divided by the row pitch.
 
 Untick it and the field becomes editable, which is what you want when you are
 entering a figure from a dedicated shading study instead. Note that the
@@ -226,8 +226,8 @@ tab that draws it, are on [Row-to-row shading](/docs/energy/shading).
 The fraction of the year the plant is available to generate, entered as a
 percentage kept. It absorbs planned maintenance, forced outages and grid
 curtailment. The default of 99.0 % allows only a few days of unavailability
-across the whole year. A site with a weak grid connection, or one subject to a
-curtailment regime, does not deserve that number.
+across the whole year, so lower it for a site with a weak grid connection or a
+curtailment regime.
 
 ### Transformer
 
@@ -240,8 +240,7 @@ them into this row rather than carrying one of them somewhere else as well.
 
 The catch-all: monitoring equipment, auxiliary consumption such as control-room
 supply and cooling, and anything else drawing energy that the rows above do not
-cover. At 2.0 % it is as large as the soiling allowance, so it is worth deciding
-deliberately rather than leaving it. If your own loss schedule itemises
+cover. The default is 2.0 %, the same as the soiling allowance. If your own loss schedule itemises
 auxiliaries, put the itemised total here and note what it contains.
 
 ## Module ground clearance
@@ -281,14 +280,12 @@ your design:
 The consequence is worth stating explicitly, because it catches people
 comparing runs. **Change the design and these two move on their own.** Widen
 the row pitch and the shading loss falls. Load a different module and the
-temperature loss changes with its coefficient. Change the table height and both
-move, because the ground coverage ratio moved.
+temperature loss changes with its coefficient. Change the slope length of the table and the shading loss
+moves, because the ground coverage ratio moved.
 
-So when you compare two runs of the same site, expect eight rows to match and
-two not to. If all ten match after a geometry change, the design has not been put
-through the chain that derives them: the shading figure is produced when you
-**Generate Layout**, so generate again first and then click **Calculate
-Energy**. And when you hand a loss schedule to a third party, mark those two
+So when you compare two runs of the same site, expect these two rows to differ.
+The shading figure is produced when you **Generate Layout**, so after a geometry
+change generate again first and then click **Calculate Energy**. And when you hand a loss schedule to a third party, mark those two
 rows as computed rather than assumed, because they will not reconcile against a
 generic loss table and they are not meant to.
 
@@ -299,18 +296,17 @@ ratio** tile on the Energy view shows the combined figure, and the monthly
 table under it shows the month-by-month ratio — see
 [How yield is calculated](/docs/energy/overview#the-energy-view).
 
-When the plant leaves the application, the Word report written by **Export ▾
-Export Detailed Project Report** carries an **Energy Yield & Loss Analysis**
-section, present only when energy has been calculated, beside the yield figures
-the losses produced. That is the section to attach to a loss schedule, because
-it fixes which assumptions produced which number for a specific run rather than
-leaving the two to be matched up later. See
-[Project report](/docs/exports/project-report).
+When the plant leaves the application, section 9.3 of the design report in the
+deliverables package, **Losses**, sets the losses beside the yield they produced.
+That is the section to attach to a loss schedule, because it fixes which
+assumptions produced which number for a specific run rather than leaving the two
+to be matched up later. See [Design report](/docs/exports/design-report).
 
 The performance ratio itself is not a Summary view row. What the Summary
-carries is the result of applying it — the three probability rows, the
-capacity factor and the lifetime figure. See
-[the Summary view reference](/docs/reference/summary-columns).
+carries is the result of applying it: the three probability rows, both capacity
+factors and the lifetime figure. See
+[the Summary view reference](/docs/reference/summary-columns). The **Workings** view
+lists the ten factors behind the year-one energy, each with a link to its input.
 
 ## Where to go next
 

@@ -1,14 +1,13 @@
 ---
 title: Main control room, substations and street lights
-description: Placing the main control room and other structures from the Tools tab on a generated layout, and the perimeter street lights you enable before generating.
+description: Placing the main control room and other structures from the Tools tab, moving them, and the perimeter street lights you enable before generating.
 ---
 
 Some site equipment is not placed with the layout. The **MCR** — main control
 room — and any generic objects are placed by clicking a position on the plot,
 from the **Grid connection & Objects** card of the **Tools** tab. Unit
-substations appear on their own when a multi-plot site gets its main control
-room. Street lights are a setting on the **Site** tab that you turn on before
-you generate.
+substations are placed the same way on a multi-plot site. Street lights are a
+setting on the **Site** tab that you turn on before you generate.
 
 If a solar park or another party provides the main control room and the substation,
 see [Grid connection by others](/docs/layout/grid-connection).
@@ -17,26 +16,26 @@ The inverter control rooms — ICRs — are different: they are counted from the
 plant capacity and sited automatically. See
 [Inverter control rooms](/docs/layout/icr).
 
-| Equipment | How it arrives | When | Footprint set in |
+| Equipment | How it arrives | When | Size set in |
 | --- | --- | --- | --- |
 | **MCR** — main control room | You click **Place MCR**, then click the plot | After a layout exists | **Structures & Shadow**, the **MCR** row |
-| **Object** — anything else on the site | You click **Place Object**, then click the plot | As soon as the object has a size — a layout is not needed | **Structures & Shadow**, the **Object** row |
-| **USS** — unit substation | Placed for you, one per plot, when the main control room is placed | Multi-plot sites only | **Structures & Shadow**, the **USS** row |
+| **Object** — anything else on the site | You click **Place Object**, size it, then click the plot | Once there is a boundary; a layout is not needed | The **Place object** window |
+| **USS** — unit substation | You click **Place MCR**, then click each plot | Multi-plot sites only | **Structures & Shadow**, the **USS** row |
 | **Street lights** | Placed with the layout | Enabled **before** generating | **Structures & Shadow**, the street light rows |
 
 ## The placement card
 
-Until a layout exists the **Tools** tab's tooltip reads *"Generate a layout
-first"* and the card's buttons are greyed out, **Place Object** aside. Once a
+Until a layout exists the **Tools** tab's tooltip reads *"Obstructions, the MCR and
+most studies need a layout; Robot count from DXF works without one"* and the card's
+buttons are greyed out, **Place Object** aside. Once a
 layout is on screen, the **Grid connection & Objects** card offers **Place
-MCR**, **Remove MCR**, **Place Object** and **Remove Objects**, with a hint line
-under them that tells you what the next click on the plot will do.
+MCR**, **Remove MCR**, **Place Object** and **Remove Objects**.
 
 Placing or moving the main control room, a unit substation or an object starts
-a cable-routing run of its own. One run happens at a time: while it runs this
-card is disabled, with the **Obstructions** card beside it, and a change you
-make meanwhile waits until it finishes. See
-[Obstructions](/docs/layout/obstructions#drawing-an-obstruction-by-hand).
+work of its own on the plant. One run happens at a time: while it runs this card
+is disabled, with the **Obstructions** card beside it, and a change you make
+meanwhile waits until it finishes. See
+[Cable routing](/docs/layout/cables#one-cable-run-at-a-time).
 
 <Screenshot id="mcr-controls" />
 
@@ -46,50 +45,64 @@ make meanwhile waits until it finishes. See
 <Step>
 ### Click Place MCR
 
-The button changes to **Cancel Placement** while it is armed, and the plot
-reads *"Click inside the boundary to place the MCR."*, so you can always tell whether
-the next click on the plot will drop a building. Click **Cancel Placement** to
-disarm it without placing anything.
+The button changes to **Cancel Placement**, the view switches to Layout, and a bar over
+the plot reads *"Click inside the boundary to place the MCR."* A frame goes round the
+plot, the cursor becomes a cross, and a ghost at true scale follows the pointer,
+labelled *"MCR · 15 × 8 m"*.
+
+<Screenshot id="placing-mcr-ghost" />
+
+Press **Esc**, or click **Cancel · Esc** on the bar or **Cancel Placement** on the card,
+to stop without placing anything. **Space** + drag pans while you look for the spot.
 </Step>
 
 <Step>
 ### Click the position on the plot
 
-The main control room is placed at the point you click. One click places it and
-the button returns to **Place MCR**.
+The main control room is placed at the point you click. A spot outside the plant
+boundary is refused, under the pointer as well as on the click, with *"This spot is
+outside the boundary. Move inside the plot."* Nothing is placed and the tool stays
+armed, so you can click again in the right place.
+
+<Screenshot id="placing-mcr-refused" />
 </Step>
 
 <Step>
-### Keep it inside the boundary
+### Read the result
 
-A click outside the plant boundary is refused with the message
-*"This spot is outside the boundary. Move inside the plot."* Nothing is placed, and the button stays
-armed so you can click again in the right place.
+The bar reports what the building cost, in the form *"MCR placed. n tables removed, DC
+capacity a → b MWp."*, and stays for 12 seconds or until you close it. The tables under
+the building and under its shadow are gone. The card keeps a line in the form *"MCR placed
+in &lt;plot&gt;. n tables removed under it and its shadow."*
+
+The bar also gives the next step:
+
+| The bar says | What it means |
+| --- | --- |
+| *"The cables on this plot were cleared. Generate again to route them."* | The plot had cables, and they must be routed again around the building |
+| *"Generate again to route the MV cables."* | **Calculate cables** is ticked, and nothing has been routed yet |
+| *"To route its MV cables, tick Calculate cables and generate again."* | **Calculate cables** is off. **Go to Calculate cables** on the bar takes you to it |
 </Step>
 
 <Step>
 ### Generate again to route the medium-voltage cables
 
-As soon as the room is dropped the card says where it went and how many tables
-it removed. Placing the room gives the medium-voltage network its destination;
-it does not route anything. Tick
-**Calculate cables** on the **Cables** card of the Electrical tab if it is not
-already on, and click **Generate Layout**.
+Placing the room gives the medium-voltage network its destination; it does not route
+anything. Tick **Calculate cables** on the **Cables** card of the Electrical tab if it
+is not already on, and click **Generate Layout**.
 </Step>
 </Steps>
 
 <Screenshot id="mcr-placed-regenerate-hint" />
 
-After that run the status line adds *"| MV cable: n m"*, the **MV cables
-(ICR→MCR)** row of the Layers popover has something to draw, and the **MV cable
-(m)** row of the Summary view is filled in. **Remove MCR** is enabled while a
-room exists.
+After that run the status line adds *"| MV cable: n m"*, the **MV cables (ICR→MCR)** row
+of the Layers popover has something to draw, and the **MV cable (m)** row of the Summary
+view is filled in. **Remove MCR** is enabled while a room exists.
 
 <Screenshot id="mcr-placed-hint" />
 
-**Remove MCR** takes the room away again. Place it once more wherever you want
-it, then generate again to re-route the medium-voltage cables to the new
-position.
+**Remove MCR** takes the room away again. To put it somewhere else, move it instead:
+see [Moving a building](#moving-a-building).
 
 ### The footprint
 
@@ -105,9 +118,8 @@ value:
 
 Length is always the east–west dimension and width the north–south one, so a
 building entered as 15 by 8 is wide across the rows, not along them. The height
-drives the shadow footprint rather than the plan area. Set these before you
-place the building; see
-[Structures and shadow](/docs/inputs/structures-and-shadow) for the whole card,
+drives the shadow rather than the plan area. Set these before you place the building;
+see [Structures and shadow](/docs/inputs/structures-and-shadow) for the whole card,
 including the **Clear tables in shadows** option, which is **on** by default and
 removes tables that fall inside the building's year-round shadow.
 
@@ -115,15 +127,15 @@ removes tables that fall inside the building's year-round shadow.
 
 Medium-voltage routing runs **from every inverter control room to the main
 control room**. Until the main control room exists there is no destination, so
-**no medium-voltage cable is routed at all** — the **MV cable (m)** and **MV
-trench (m)** rows of the Summary view read a dash even on a run with cable
-calculation switched on.
+**no medium-voltage cable is routed at all** — the **MV cable (m)** and **MV trench
+(m)** rows of the Summary view read *needs an MCR on the layout*, even on a run with
+cable calculation switched on.
 
 <Callout type="warn">
 Medium-voltage cables are routed on the **next Generate**, not when the room is
 placed. Until you generate again with **Calculate cables** on, the MV row of the
-Layers popover has nothing to show and the Summary's **MV cable (m)** reads
-`—`, however long ago you dropped the room.
+Layers popover has nothing to show and the Summary's **MV cable (m)** has no figure,
+however long ago you dropped the room.
 </Callout>
 
 The order that works is therefore:
@@ -145,48 +157,68 @@ An object is anything on the site that keeps modules off the ground around it
 and that your boundary file does not carry: a tree, a pole, a tank, an existing
 shed, a structure the survey missed.
 
-- **Place Object** arms placement in the same way as **Place MCR** — the button
-  reads **Cancel Placement** while armed, and a click outside the boundary is
-  refused with the same message.
-- **Place Object** is the one button on the card that does not wait for a
-  layout: it is enabled as soon as the **Object** row has a length, a width and
-  a height, so you can mark a tree or a tank before the first run and let the
-  layout be built around it.
-- **Remove Objects** clears the objects you have placed.
+**Place Object** does not wait for a layout: it is enabled once a boundary file is
+selected, so you can mark a tree or a tank before the first run and let the layout be
+built around it.
 
-Their size and height come from the **Object** row of the
-**Structures & Shadow** card:
+<Steps>
+<Step>
+### Click Place Object and size it
 
-| Field | Default | Unit |
-| --- | --- | --- |
-| **Object** length (east–west) | 0.0 | m |
-| **Object** width (north–south) | 0.0 | m |
-| **Object** height | 0.0 | m |
+The **Place object** window opens. It starts at 5.0 × 5.0 m and 10.0 m tall the first
+time, and afterwards at the last size you used in this session.
 
-<Callout type="warn">
-All three object fields ship at **0.0**, which means *not configured*. Fill in a
-length, a width and a height before you place an object, or you are placing
-something with no extent and no shadow.
-</Callout>
+| Field | First value | Range | Unit |
+| --- | --- | --- | --- |
+| **Length (E-W)** | 5.0 | 0–500 | m |
+| **Width (N-S)** | 5.0 | 0–500 | m |
+| **Height** | 10.0 | 0–200 | m |
 
-The point of an object is the **shadow**, not the footprint. With
-**Clear tables in shadows** on, the year-round shadow of each object across
-the shadow window clears the tables it falls on — which is exactly what you want
-for a tree that no boundary file will ever describe. The height is what makes
-that shadow long, so it is the field to get right.
+**Place on layout** stays greyed out until the length and width are more than 0. A height
+of 0 casts no shadow, so only the footprint is kept clear.
+
+<Screenshot id="place-object" maxWidth={400} />
+</Step>
+
+<Step>
+### Click where the object stands
+
+Click **Place on layout**. The plot shows the same bar, frame and ghost as the main
+control room, here *"Click inside the boundary to place the object."* A spot outside the
+boundary is refused the same way, and **Esc** stops.
+
+<Screenshot id="placing-object-ghost" />
+</Step>
+
+<Step>
+### Place the next one, or finish
+
+After each object the window opens again with a line saying what was placed, so you can
+size and place another. **Done** ends.
+</Step>
+</Steps>
+
+**Remove Objects** clears the objects you have placed.
+
+The point of an object is the **shadow**, not the footprint. With **Clear tables in
+shadows** on, the year-round shadow of each object across the shadow window clears the
+tables it falls on — which is exactly what you want for a tree that no boundary file will
+ever describe. The height is what makes that shadow long, so it is the field to get right.
 
 ## Unit substations on a multi-plot site
 
-A **USS** — unit substation — is placed for you, and only on a site whose
-boundary file contains more than one plant boundary.
+A **USS** — unit substation — exists only on a site whose boundary file contains more than
+one plant boundary.
 
-On a multi-plot site the hint under **Place MCR** changes to *"n plots — click
-INSIDE each plot to drop a USS (Unit Substation). The LAST unassigned plot you
-click gets the MCR. Each plot's ICRs route to its own USS/MCR."* Click inside
-each plot in turn: every plot you click receives a unit substation, and the
-last plot you click receives the main control room instead. Each plot's
-inverter control rooms then route their medium-voltage cables to the building
-in their own plot instead of running across country to the main control room.
+Click **Place MCR** and the bar reads *"Click a plot to place its USS. The last plot gets
+the MCR."*, with a count of the plots done. Click inside each plot in turn: every plot you
+click receives a unit substation, marked with a tick, and the last one receives the main
+control room, with the bar reading *"Click the last plot to place the MCR."* Each plot's
+inverter control rooms then route their medium-voltage cables to the building in their own
+plot instead of running across country to the main control room.
+
+A plot that already has its building is refused with *"&lt;plot&gt; already has its USS or MCR.
+Click a different plot."* **Stop · Esc** on the bar ends the round early.
 
 | Field | Default | Unit |
 | --- | --- | --- |
@@ -196,9 +228,21 @@ in their own plot instead of running across country to the main control room.
 
 The link from a unit substation onward to the main control room is an overhead
 line or a buried cable, and it is **not** part of the automatic medium-voltage
-routing — plan and cost it outside the application. See
+routing — plan and cost it outside the application. A box titled **USS → MCR connection**
+says so when the last plot is done. See
 [Multi-plot sites](/docs/layout/multi-plot) for the full behaviour, including
-how each plot gets its own column in the Summary view.
+how each plot appears in the Summary view.
+
+## Moving a building
+
+Buildings move in [Sketch Mode](/docs/editing/sketch-mode) only. In the Layout view a drag
+on a building pans the view. With **Sketch** on, press on the main control room, a unit
+substation or an object and drag it to its new place. It is ignored while cables are being
+routed.
+
+With **Calculate cables** on, moving the main control room or a unit substation can raise
+the **Re-route cables** box if the move would restore automatic trenches you deleted on
+that plot.
 
 ## Street lights
 
@@ -250,25 +294,25 @@ All of them are saved with the project.
 ### Reading the result
 
 The Summary view reports the pole count in the **Street lights** row, one
-column per plant with a Total column on a multi-plot site. The module and
-capacity rows already account for the tables the lights cleared.
+column per plant with a Total column on a multi-plot site, once the design has some. The
+module and capacity rows already account for the tables the lights cleared.
 
 ## If a placement does not do what you expect
 
 <Accordions>
 <Accordion title="The buttons on the Tools tab are greyed out">
-No layout exists yet. The tab's tooltip reads *"Generate a layout first"*.
-Load a boundary file and click **Generate Layout**; on this card only **Place
-Object** works before that, and only once the object has a size.
+No layout exists yet. Load a boundary file and click **Generate Layout**; on this card only **Place
+Object** works before that.
 
 If a layout exists and the whole card is disabled, cables are being routed
 after an edit — the status bar says so. The card comes back when they finish.
 </Accordion>
 
 <Accordion title="Clicking the plot places nothing">
-The tool is not armed. While placement is armed the button reads
-**Cancel Placement**; if it reads **Place MCR** or **Place Object**, the next
-click on the plot is an ordinary click. Arm it first.
+The tool is not armed. While placement is armed the bar is over the plot and the button
+reads **Cancel Placement**; if it reads **Place MCR** or **Place Object**, a click on the
+plot is an ordinary click. Arm it first. Leaving the Layout view, Generate, Open and Sketch
+all stop a placement.
 </Accordion>
 
 <Accordion title="This spot is outside the boundary. Move inside the plot.">
@@ -276,11 +320,9 @@ The point you clicked is outside the plant boundary. Nothing is placed and the
 tool stays armed — click again inside the boundary.
 </Accordion>
 
-<Accordion title="An object was placed but nothing changed">
-The **Object** length, width and height all ship at **0.0**, which means *not
-configured*. An object with no extent and no height has no footprint to clear and
-casts no shadow. Enter its dimensions on the **Structures & Shadow** card, then
-place it.
+<Accordion title="An object was placed but tables stayed under its shadow">
+A height of 0 casts no shadow, and **Clear tables in shadows** must be on for the shadow to
+clear tables. Check both.
 </Accordion>
 
 <Accordion title="Street lights did not appear">
@@ -289,11 +331,12 @@ and click **Generate Layout** again — an existing layout does not gain them,
 and is [out of date](/docs/workspace/out-of-date-results) until you do.
 </Accordion>
 
-<Accordion title="The medium-voltage rows still read a dash">
+<Accordion title="The medium-voltage rows have no figure">
 Three things are needed together: the main control room must be placed,
 **Calculate cables** must be ticked, and the layout must have been generated
 **after** the room was placed. Cable calculation is off by default, and placing
-the room routes nothing on its own.
+the room routes nothing on its own. The row's own words say which one is missing: *needs an
+MCR on the layout* or *needs Calculate cables*.
 </Accordion>
 </Accordions>
 
@@ -301,14 +344,14 @@ the room routes nothing on its own.
 
 - **On the plot.** The main control room, the unit substations, objects and
   street light poles are drawn with the rest of the layout; the main control
-  room is violet.
-- **In the CAD drawing.** The main control room is written to its own `MCR`
-  layer, objects to `OBJECTS` and street light poles to `STREET_LIGHT`, each
-  with its keep-clear shadow on a layer of its own. See
-  [CAD export](/docs/exports/dxf). Street lights are not written to the Google
-  Earth file.
-- **In the bill of materials.** The automated list is computed from the layout,
-  so use **⚙ Rebuild from Layout** after placing or removing equipment. See
+  room is violet. **Shadows (keep-clear)** in the Layers popover shows the ground kept clear
+  for their shadows.
+- **In the drawing set and its DXF twin.** Buildings are drawn with their IDs. See
+  [The drawing set](/docs/exports/drawing-set).
+- **In the KMZ.** The main control room and unit substations are written as placemarks.
+  Street lights are not written. See [Schedules and KMZ](/docs/exports/schedules-and-kmz).
+- **In the bill of materials.** The list is computed from the layout, and recounts the next
+  time it is opened after you place or remove equipment. See
   [Bill of materials](/docs/bom/overview).
 
 ## Where to go next
@@ -332,6 +375,6 @@ the room routes nothing on its own.
   <Card
     title="Lightning arresters"
     href="/docs/layout/lightning-arresters"
-    description="The coverage grid, the footprint, and what it costs in capacity"
+    description="The coverage grid, the keep-clear, and what it costs in capacity"
   />
 </Cards>

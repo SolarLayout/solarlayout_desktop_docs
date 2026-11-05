@@ -7,7 +7,7 @@
 | Fact sheet | `docs/PRODUCT_FACTS.md` — header carries "re-verified <date> against `main` at `<sha>`"; stale sources §18; product issues §20; release mapping §21 |
 | Pages | `content/docs/**` (nav: each folder's `meta.json`) |
 | Release notes | `content/docs/releases.mdx` (`<Release version date tag="current">`) |
-| Screenshot manifest | `content/screenshots.ts` → images under `public/screenshots/<file>` (every folder except `bess/`) |
+| Screenshot manifest | `content/screenshots.ts` → images under `public/screenshots/<file>` (every folder except `bess/` and `rooftop/`) |
 | Screenshot worklist | `docs/screenshot-index.xlsx` (`bun run screenshots:index`) |
 | Video worklist | `content/videos.mjs` → `docs/video-index.xlsx` (`bun run videos:index`) |
 | Product code | `PVlayout_Advance`: `apps/solarlayout-desktop/solarlayout_desktop/` (UI), `packages/solar-core/solar_core/` (engine), `packages/solar-ui/solar_ui/` |
@@ -77,7 +77,7 @@ the captured file list with the manifest's `file` values (both sorted with
 `LC_ALL=C`) so nothing referenced is missing.
 
 **Install.** `git rm -r` the desktop folders under `public/screenshots/`
-(never `bess/`), copy in exactly the files the manifest references, and
+(never `bess/` or `rooftop/`), copy in exactly the files the manifest references, and
 update each changed entry's `alt` / `what` / `state` to match its new image
 — look at the image when you write the alt text. Record the capture date in
 the manifest header. A frame that shows a product bug (e.g. a clipped field)

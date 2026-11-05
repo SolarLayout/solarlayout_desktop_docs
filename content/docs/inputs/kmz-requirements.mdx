@@ -7,7 +7,7 @@ Every Google Earth file goes through the same reading when you load it. The
 application looks for the **plots**, the **areas** to keep clear, the **lines**
 to keep a corridor around, and any **pins**. A file that already fits that shape
 loads straight away. A file with anything to decide opens the
-[Clean boundary](#the-clean-boundary-review) review, which shows what it found
+[Clean boundary](/docs/inputs/clean-boundary) window, which shows what it found
 and saves a clean copy.
 
 That makes file preparation the highest-leverage half hour in the whole design.
@@ -68,7 +68,7 @@ feature starts as water. Use a word from the list below for water —
 
 Save as `.kmz` or `.kml`, then load it with **Browse…** on the **Site** tab. If
 there is anything to decide, the **Clean boundary** window opens — see
-[The Clean boundary review](#the-clean-boundary-review).
+[The Clean boundary review](#the-clean-boundary-review) below.
 </Step>
 </Steps>
 
@@ -180,8 +180,8 @@ One file can carry as many plots as the site has, and all of them are laid out
 in a single run.
 
 - **Each plot becomes its own plant.** It gets its own column in the Summary
-  view, its own area and capacity, and its own folder in the Google Earth
-  export. A **Total** column aggregates every plant.
+  view, its own area and capacity, and its own blocks in the package's
+  Google Earth file. A **Total** column aggregates every plant.
 - **A feature belongs to the plot that contains it.** A pond drawn inside plot 3
   is subtracted from plot 3.
 - **Plots must not overlap.** Touching along a shared edge is fine. If two
@@ -225,7 +225,7 @@ overhanging the real obstacle, and a polygon drawn generously does not. See
 
 | Mistake | What happens | Fix |
 | --- | --- | --- |
-| The boundary is drawn as a line or a path | With no name, Google Earth's own name or a word such as `boundary` or `plot`, and ends within 50 m of each other, the review offers to close it. Any other line is read as a line to keep clear, not as a plot | Redraw it as a polygon, or close it in the review |
+| The boundary is drawn as a line or a path | With no name, Google Earth's own name or a word such as `boundary` or `plot`, and ends within 50 m of each other, the review offers to close it. Any other line is read as a line to keep clear, not as a plot. A file with no plot gives **Boundary read error**: *"The file has no plot: draw the site boundary as a closed polygon."* | Redraw it as a closed polygon, or close it in the review |
 | The boundary is drawn in several pieces | If the pieces meet within 50 m, the review offers **Join into one plot** | Join them in the review, or redraw as one polygon |
 | A polygon's ring is not closed | **Generate Layout** opens the **Check boundaries** window — see [below](#when-a-boundary-fails-the-check) | Repeat the first coordinate as the last, or redraw the polygon with the drawing tool's own close action |
 | An obstruction is drawn clear of the boundary | It is read as another plot and gets tables | Move the polygon inside the boundary, or extend the boundary to contain it |
@@ -235,69 +235,31 @@ overhanging the real obstacle, and a polygon drawn generously does not. See
 
 ## The Clean boundary review
 
-The review opens when the file has something to decide, and from the
-**Review boundary…** link on the card at any time after a Google Earth file is
-loaded. It opens by itself for:
+The review opens when the file has something to decide, and from **Review
+boundary…** on the card at any time after a Google Earth file is loaded. It opens
+by itself for:
 
 - a boundary drawn as an open line or in pieces, an outline that crosses itself,
   a duplicate, an overlap, or a polygon drawn inside another that may be the
   plot;
 - a pin inside a plot;
-- a **CAD export saved as loose lines**, where the outline, the water and the
-  other features arrive as many short segments. The application rejoins them and
-  shows you what it made, using the layer names the export kept in each line's
-  description;
-- a village **survey map**, where you pick your parcels by number or by clicking
-  them, and parcels that touch become one plot;
-- a **finished layout** opened as a boundary, where the earlier layout's tables
-  and equipment are left out.
+- a **CAD export saved as loose lines**;
+- a village **survey map**, where you pick your parcels;
+- a **finished layout** opened as a boundary;
+- a **field survey saved as points only**, where the application traces the
+  boundary and asks what each unknown code is.
 
-<Screenshot id="clean-boundary" />
+**Save clean KMZ and load** writes `<your file>_clean.kmz` beside the original and
+loads it. The original is not changed. **Cancel** leaves the file unloaded, and
+whatever was loaded before stays loaded.
 
-The window is titled **Clean boundary**. The band at the top shows the file's
-name and counts what it holds: plots, open lines, obstructions and the latitude.
-The table lists every item:
-
-| Column | What it shows |
-| --- | --- |
-| **Keep** | Whether the item is used |
-| **Item** | Its name |
-| **Found** | What the review found, for example *Open line, ends 12.4 m apart* or *Water: no tables here* |
-| **Action** | What will be done with it. Select a row to change this |
-| **Water** | Whether it is drawn and booked as water |
-| **Height** | An optional height for an area or a kept pin, so tables keep out of its shadow when **Clear tables in shadows** is on |
-
-Each problem offers its own choices:
-
-| Found | Choices |
-| --- | --- |
-| Open line, up to 50 m between its ends | **Close the 12.4 m gap**, **Keep as a line**, **Remove** |
-| Pieces that meet within 50 m | **Join into one plot**, **Keep as 3 lines**, **Remove** |
-| Outline crosses itself | **Fix the crossing (40.98 ac)**, **Keep as drawn**, **Leave out** |
-| Same as another plot | **Remove duplicate**, **Merge with Plot A** |
-| Overlaps another plot | **Merge with Plot A**, **Cut the overlap out of this plot**, **Remove** |
-| A polygon inside another | **This is the plot**, **No tables here**, **Leave out** |
-
-The review's recommended choice is already selected, so a file that needs
-nothing changed takes one click.
-
-**Save clean KMZ and load** writes a copy named `<your file>_clean.kmz` beside
-the original and loads it. The original is not changed. Use the clean copy from
-then on. It reopens straight away, and asks again only about anything you add or
-redraw afterwards. **Cancel** leaves the file unloaded.
-
-**Review boundary…** also offers **One outer boundary** and **Merge selected**,
-for treating several plots as one piece of land. **Keep separate**, the default,
-leaves each plot as a boundary of its own.
-
-Before saving, the window warns if the land looks wrong: an outer boundary with
-much more land than the plots inside it, a large share of a survey map, or plots
-that are tiny beside what the file draws around them.
+The window, its choices and each of these cases are on
+[Clean boundary](/docs/inputs/clean-boundary).
 
 ## When a boundary fails the check
 
 If a polygon's ring is left open by more than about 11 m, **Generate Layout**
-opens the **Check boundaries** window. A warning banner at the top reads *2 of 4
+opens the **Check boundaries** window. A warning banner at the top reads *2
 boundaries have a problem* — or *1 boundary has a problem* — with the detail
 *Leave them out and continue with the others, or fix them in Google Earth and
 load the file again.*
@@ -318,7 +280,7 @@ The footer offers four buttons:
 | --- | --- |
 | **All** | Ticks **Leave out** on every problem boundary |
 | **None** | Unticks every row, so every boundary is kept as drawn |
-| **Fix in Google Earth first** | Closes the window without generating. Correct the geometry in Google Earth, save, and load again |
+| **Fix in Google Earth first** | Ends the run without generating. Correct the geometry in Google Earth, save, and load again |
 | **Continue without 2** | Generates with the ticked boundaries left out. The number follows the ticks; when nothing is ticked the button reads **Continue with all boundaries** |
 
 Leaving the problem boundaries out is the right answer when one plot of a
@@ -356,6 +318,11 @@ The guide lists the most common water words. The full list is on this page.
     description="The three input types compared, and how to load one"
   />
   <Card
+    title="Clean boundary"
+    href="/docs/inputs/clean-boundary"
+    description="The review a file goes through on loading, survey maps and field surveys included"
+  />
+  <Card
     title="Multi-plot sites"
     href="/docs/layout/multi-plot"
     description="What changes when one file carries several boundaries"
@@ -364,10 +331,5 @@ The guide lists the most common water words. The full list is on this page.
     title="Obstructions and exclusions"
     href="/docs/layout/obstructions"
     description="Adding exclusions after the file is loaded"
-  />
-  <Card
-    title="Site Parameters"
-    href="/docs/inputs/site"
-    description="Perimeter road width, line corridor, area setback and the capacity block"
   />
 </Cards>

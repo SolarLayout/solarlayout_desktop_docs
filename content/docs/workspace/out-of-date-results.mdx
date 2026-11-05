@@ -1,6 +1,6 @@
 ---
 title: Out-of-date results
-description: How the application knows a layout no longer matches its inputs, everything that says so, the exports it refuses meanwhile, and how the state clears.
+description: How the application knows a layout differs from its inputs, everything that says so, the exports it holds back meanwhile, and how the state clears.
 ---
 
 Every layout knows which inputs produced it. When **Generate Layout** starts,
@@ -13,8 +13,8 @@ so until you generate again.
 Nothing is thrown away when a layout goes out of date. The last run stays on
 screen, greyed, so you can still read it while you decide what to change.
 What changes is that nothing leaves the application on the strength of it —
-exports are refused and energy is not calculated for a layout its inputs no
-longer describe.
+the exports wait and energy is not calculated for a layout whose inputs differ
+from the last run.
 
 <Screenshot id="out-of-date" />
 
@@ -24,15 +24,16 @@ Every input on the five stage tabs counts, with a few conditions:
 
 | Input | Counts |
 | --- | --- |
-| **Array** — the module size and wattage, bifacial and its factor, orientation, modules per row, rows per table, the gaps, the **Override tilt angle** and **Override row pitch** ticks, **Maximize placement**, half tables, every tracker field | Always |
+| **Array** — the design, the module size and wattage, **Max series fuse**, bifacial and its factor, orientation, modules per row, rows per table, the gaps, the **Override tilt angle** and **Override row pitch** ticks, **Maximize placement**, half tables, every tracker field | Always |
 | **Tilt angle**, **Row pitch** | Only while its override is ticked |
-| **Site** — road width, the arrester tick and radius, **ICR Block**, the line corridor, the area setback, every **Structures & Shadow** field (the footprints and heights, the arrester height and pile Ø, the shadow window, **Clear tables in shadows**, street lights and their fields), every **Topography** field | Always |
-| **Electrical** — max strings per inverter or SMB, max SMBs per central inverter, **Calculate cables**, the three cable allowances | Always |
+| **Site** — road width, the arrester tick and radius, **ICR Block**, the line corridor and the area setback (each item's own row too), every **Structures & Shadow** field (the footprints and heights, the arrester height and pile Ø, the shadow window, **Clear tables in shadows**, street lights and their fields), every **Topography** field | Always |
+| **Electrical** — max strings per inverter or SMB, the DC harness, **String fuses**, **Communication**, **Weather stations**, max SMBs per central inverter, **Calculate cables**, the three cable allowances, the laying choices, the DC trunk conductor | Always |
 | **Yield** — the weather source, every loss, ambient temperature, wind, mounting, albedo, degradation, lifetime, uncertainty and the three exceedance probabilities | Always |
 | **Temperature losses** | Only while no module file is loaded |
 | **Shading losses** | Only while the automatic shading value is off |
-| **Tools** — the AC-capacity target, inverter count and start point | Always |
+| **Tools** — the AC-capacity target, inverter count, block AC, overload limit and start point | Always |
 | The **Site reference** choice and the image scale | Always |
+| [Advanced settings](/docs/workspace/advanced-settings) with the pill *Sizes cables · Generate again* — one row per setting, *"MV voltage drop 2.0 % → 3.0 %"* | Always |
 | The boundary, module and inverter files | Always |
 | The contour file | Only while **Avoid steep ground** is on |
 | The weather file | Only while **Hourly GHI file (CSV)** is the weather source |
@@ -58,7 +59,13 @@ only the energy. **Calculate Energy** is refused until you regenerate.
   automatic shading value, the temperature loss recomputed from a module file.
 - The **ACCB & Transformer** card, which regroups the equipment live without a
   new layout. See [ACCBs and transformers](/docs/inputs/accb-and-transformers).
-- Hand edits: Sketch Mode, dragging an ICR, drawn obstructions, **Place MCR**
+- Advanced settings with any other pill: *Checks · applies now*, *BOM · applies
+  now*, *Clean boundary · next review* and *Yield · run the energy calculation
+  again*.
+- **Earthing Design** inputs.
+- The project details, the company and the output folder of the deliverables
+  package.
+- Hand edits: Sketch Mode, moving a building, drawn obstructions, **Place MCR**
   and **Place Object**, and pile patterns.
 - Layer toggles and switching views.
 
@@ -95,7 +102,8 @@ The list is titled *"Changed since the last run"*. Each row gives the tab, the
 field, the old value struck through and the new value. Its footer reads
 *"Click a change to go to its input. Change a value back and the layout is
 current again."* — clicking a row opens the tab, unfolds the card, scrolls to
-the field and puts the cursor in it.
+the field and puts the cursor in it. A setting's row opens Advanced settings
+instead.
 
 How a change reads in the list:
 
@@ -115,31 +123,41 @@ How a change reads in the list:
 
 An amber **Out of date** chip comes first in the row under every view — value
 *Out of date*, caption *figures from the last run* — and every other chip is
-greyed. Clicking it opens the Summary view.
+greyed, except **Design checks**, which stays as it is. Clicking the chip opens
+the Summary view.
 
-### The Summary view and its window
+<Screenshot id="out-of-date-chips" />
+
+### The Summary and Workings views and the Summary window
 
 A banner above the sheet names the changes: ***Out of date.*** *These figures
 are from the last run, and 2 inputs have changed since: Module wattage 610.0 Wp
 → 700.0 Wp, Soiling losses 2.0 % → 3.0 %. Regenerate the layout to update them.*
-The sheet is greyed, and **Copy** is disabled with the tooltip *"Inputs changed
-since the last run. Regenerate first."* **Open in window** shows the same
-banner on its **Summary** tab.
+The sheet is greyed. The [Workings view](/docs/workspace/workings) carries the
+same banner, with its values greyed, and **Open in window** shows it on its
+**Summary** tab.
 
 <Screenshot id="summary-out-of-date" />
 
-An ICR block summary window carries a shorter banner — ***Out of date.***
-*These figures are from the last run, and 1 input has changed since.
-Regenerate the layout to update them.* — without the list, and its **PDF…** and
-**Copy** buttons are disabled with the same tooltip. See
-[ICR blocks](/docs/layout/icr-blocks).
+### The Checks view
+
+The [design checks](/docs/workspace/checks) report stays on screen, and a change
+to a checks limit still re-runs it at once. The report is hidden only while the
+plant is being rewritten.
+
+### The Earthing Design window
+
+A banner reads ***Out of date.*** *These figures are from the last run, and 2
+inputs have changed since. Regenerate the layout to update them.* The window's
+exports are off, with the reason *"Inputs changed since the last run. Regenerate
+first."* See [Earthing design](/docs/simulation/earthing).
 
 ### The Energy view and the Yield tab
 
 With an energy result on screen, a banner sits above the tiles —
 ***Out of date.*** *This energy was calculated for the last run, and 2 inputs
 have changed since. Regenerate the layout, then calculate energy again.* — and
-the tiles, table and bars are greyed. The **Monthly energy (Year 1)** tab of the
+the tiles, table and bars are greyed, and **Copy** is disabled. The **Monthly energy (Year 1)** tab of the
 Summary window carries the same banner.
 
 With no energy result yet, the view reads **No energy result yet** with the
@@ -148,8 +166,11 @@ energy** button is disabled. On the **Yield** tab, **Calculate Energy** is
 disabled, and its tooltip and status line read *"Regenerate the layout first:
 inputs changed since the last run."*
 
-The **BOM** and **SLD** views carry no banner, but their exports are refused
-like every other.
+The **BOM** view carries no banner: it shows the last run's plant, and input
+edits do not recount it until you generate. The **SLD** view carries no layout
+banner either, and has an out-of-date state of its own, described on
+[Single-line diagram](/docs/sld/overview). Their exports are refused like the
+others.
 
 ### The status bar
 
@@ -158,11 +179,16 @@ Regenerate the layout to update results and exports."* — or *"Out of date: 2
 inputs changed since the last run. …"* when there are several. The ribbon's
 status mirror does not repeat it.
 
-## Exports are refused
+## What the exports do
 
-**Export ▾** opens with an amber row at the top — ***Inputs changed since the
-last run.*** *Regenerate first.* — and **every item disabled**, **Export Image
-(PNG)** included.
+**Export ▾** opens with an amber row at the top, *"Inputs changed since the last
+run. Regenerate first."*, and **BOM · Excel workbook…**, **BOM · PDF…**,
+**Earthing layout (DXF)…** and **Export Image (PNG)** are disabled with that
+reason.
+
+**Export deliverables…** stays enabled. Its window opens and says **The layout is
+out of date**, and the package waits there until you generate. See
+[Exports](/docs/exports/overview).
 
 <Screenshot id="export-menu-out-of-date" />
 
@@ -170,11 +196,9 @@ These exports outside the menu are refused too. A refused export opens no
 window and no file dialog; the status bar reads *"Inputs changed since the last
 run. Regenerate first."*
 
-- **PDF…** in an ICR block window;
-- **Export to Excel…** in the pile editor;
 - **Export TMY data CSV** on the Yield tab;
-- **⬇ Export BOM to Excel** and **⬇ Export BOM to PDF**;
-- **⬇ Export SLD to DWG** and **⬇ Export SLD to PDF**.
+- **PDF…** and **DWG…** in the SLD view;
+- **Save** in the Expanded View window.
 
 **Save project** is always allowed, out of date or not.
 
@@ -185,7 +209,7 @@ Only three things make a layout current again:
 - **Regenerate Layout** (or **F5**). The new run becomes the record.
 - **Changing the values back.** Once every input matches the last run, the
   amber, the dots, the banners and the chip disappear and the exports return,
-  without a new run.
+  without another run.
 - **Loading a boundary file.** The layout is replaced by a preview of the
   boundary with no tables on it; generate to place the plant.
 
@@ -224,7 +248,7 @@ file:
   never those of another open window.
 
 A project that matches its inputs opens current, with its exports and layout
-tools ready without a new run. See
+tools ready without another run. See
 [Saving and reopening projects](/docs/projects).
 
 ## Where to go next
@@ -238,7 +262,7 @@ tools ready without a new run. See
   <Card
     title="Views, layers and tools"
     href="/docs/workspace/views"
-    description="The plant chips, the Summary view and the Energy view"
+    description="The plant chips and every view"
   />
   <Card
     title="Saving and reopening projects"
@@ -246,8 +270,8 @@ tools ready without a new run. See
     description="What a project file keeps, and what reopening gives back"
   />
   <Card
-    title="Design warnings"
-    href="/docs/reference/design-warnings"
-    description="The other banner above the Summary sheet"
+    title="Design checks"
+    href="/docs/workspace/checks"
+    description="The other line above the Summary sheet, and why it stays while results are out of date"
   />
 </Cards>

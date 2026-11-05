@@ -54,7 +54,7 @@ coverage ratio, the aperture divided by the east–west pitch.
 | **Max rotation angle (±)** | 55.0° | 5.0–75.0° | The rotation limit either side of horizontal |
 | **Tracker height from ground** | 1.5 m | 0.5–10.0 m | Height of the torque tube above ground |
 | **Maximize placement** | off | — | Positions each tracker column independently to hug the boundary |
-| **Add half trackers** | off | — | Allows a shortened tracker where a full unit will not fit |
+| **Add half trackers** | off | — | Allows a shorter tracker, holding whole strings, where a full unit will not fit |
 
 ## P and L configuration
 
@@ -174,8 +174,8 @@ Use it for three checks in particular:
 - **The north–south length is credible against the site.** A unit longer than
   the usable ground is available in that direction will not place at all, and
   the layout will come back sparse or empty.
-- **Modules per tracker matches the electrical design.** This is the count the
-  string monitoring or inverter limits are applied to.
+- **Modules per tracker matches the electrical design.** The inverter or string
+  monitoring box limits count the strings on each unit, not its modules.
 
 ## Setting the unit up in order
 
@@ -216,7 +216,7 @@ Adjust the pitch, not the aperture, to land on the ratio you want.
 ### Record the mechanical figures
 
 Enter **Max rotation angle (±)** and **Tracker height from ground** from your
-supplier's data, so the drawings and schedules carry them.
+supplier's data, so the design carries them.
 </Step>
 </Steps>
 
@@ -229,8 +229,7 @@ worth being plain about how far they reach.
 55.0° as shipped. It is a reference and shading-analysis figure. It does not
 move a tracker unit on the ground and does not change the pitch: on a tracker
 plant the Summary view reports it on the **Max tracking angle (°)** row, in
-place of the fixed-tilt **Tilt (°)** row, so the drawing and the schedule carry
-the mechanical limit you specified.
+place of the fixed-tilt **Tilt (°)** row.
 
 **Tracker height from ground** is the height of the torque tube above ground,
 1.5 m as shipped, and is likewise a reference and shading-analysis figure rather
@@ -245,7 +244,8 @@ application does not validate them against wind, terrain or stow requirements.
 ## No tilt, no row pitch
 
 A fixed-tilt design derives its tilt from the site latitude and its row pitch
-from the no-shading condition at winter solstice, and lets you override either.
+from the shade-free condition across the Shadow Window on 21 December, and lets
+you override either.
 A tracker design has neither control, by construction:
 
 - There is no tilt to derive. The axis is horizontal and the panels rotate; the
@@ -268,12 +268,17 @@ instead of tables:
 - **Maximize placement**, off as shipped, positions each tracker column
   independently against the exact edge of the usable area rather than starting
   every column from a shared origin. It fits extra units against diagonal and
-  curved boundaries, at the cost of columns that no longer line up and a longer
+  curved boundaries, at the cost of columns that do not line up and a longer
   run on a large site.
-- **Add half trackers**, off as shipped, allows a shortened unit where a full
-  one will not fit. Half units are reported on the Summary view's **Half
-  trackers** row, under **Full trackers**, and count as half a unit wherever
-  units are weighted.
+- **Add half trackers**, off as shipped, allows a shorter unit where a full one
+  will not fit. It holds whole strings only. With one module across, a half tracker
+  holds half the strings, rounded down, and a one-string tracker has none: the
+  option is then greyed out, with the line *A half tracker here would hold only
+  half a string.* With two or more modules across it is half the length, with half
+  of all the strings on the unit, rounded down. Half units are reported on the
+  Summary view's **Half trackers** row, under **Full trackers**.
+  Their weight when control rooms are counted is their share of the unit's modules,
+  so a three-string tracker's half weighs one third.
 
 The **Size…** button beside **Modules per string (N–S)** opens the **String
 sizing** window; accepting a pick there writes the series count into
@@ -299,7 +304,7 @@ Both are covered in detail on
   <Card
     title="Lightning arresters"
     href="/docs/layout/lightning-arresters"
-    description="On a tracker plant the poles sit in the inter-row gaps and clear no units"
+    description="Masts stand in the gaps between columns, and clear the units under their pile and shadow"
   />
   <Card
     title="Summary view"

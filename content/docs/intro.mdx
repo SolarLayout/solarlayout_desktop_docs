@@ -51,33 +51,40 @@ the equator. See [How placement works](/docs/layout/how-placement-works).
 set, string inverters or string monitoring boxes clustered across the plant,
 grouped onto AC combiner boxes and transformers by rules you set, lightning
 arresters on a coverage grid, and — when you ask for it — routed DC, AC and
-medium-voltage cables with lengths. With the ICR blocks layer on, click a
-block for a summary of its capacity, equipment and cable. See
+medium-voltage cables with lengths. The Summary view sets out every block's
+capacity, equipment and cable side by side. See
 [Cable routing](/docs/layout/cables) and [ICR blocks](/docs/layout/icr-blocks).
 
-**Design warnings.** Where a finished design falls outside the design rules —
-a control room carrying more inverters than its rating, one that found no room,
-a feeder dropping too much voltage, a trench leaving the plant — the Summary
-view says so in plain words. A warning never blocks anything. See
-[Design warnings](/docs/reference/design-warnings).
+**Design checks.** Twenty-nine checks read the finished design: that its
+quantities reconcile, that nothing it needs is missing, and that it meets the
+engineering limits on transformer loading, voltage drop, clearances and more. The
+Checks view lists each one with its result and a link to the input behind it. A
+check informs and never blocks anything. See
+[Design checks](/docs/workspace/checks).
+
+**The workings.** The Workings view shows how each number was reached: the rule,
+the arithmetic, the inputs it used and which rule decided it. See
+[Workings](/docs/workspace/workings).
 
 **An energy estimate.** Year-one and lifetime generation from a performance
 ratio you can break down loss by loss, with degradation, a capacity factor,
 and exceedance probabilities for a lender's case. See
 [How yield is calculated](/docs/energy/overview).
 
-**Documents.** A detailed project report as a Word document — cover page,
-methodology, design basis, results, energy yield, and the drawing annexures
-with the site layout plan, design summary, single-line diagram and bill of
-materials. Beside it, from the same **Export ▾** menu: a Google Earth file, a
-layered CAD drawing, a drawing set with one sheet per ICR block as DXF or PDF,
-an Excel cable schedule, the plot as an image and, once a pile pattern is on,
-a PDF report with the pile drawing. See
-[The project report](/docs/exports/project-report).
+**A bill of materials.** The materials list for the design, counted from the
+layout under a profile you can adapt, with your edits kept when the layout changes.
+See [Bill of materials](/docs/bom/overview).
+
+**Documents.** One export writes the whole package into one folder from one frozen
+copy of the design: the drawing set as a PDF and its DXF twin, the A4 design report,
+the schedules workbook, the BOM workbook, a Google Earth file and a manifest, with
+a `piles.csv` when there is a pile pattern. It exports as a draft, or as a numbered
+revision kept in the project. See
+[Exports](/docs/exports/overview).
 
 **Studies.** Size the plant from a target AC capacity, size a robotic
 module-cleaning fleet — from the layout, or from any plant layout DXF with no
-layout needed — check row spacing in a shadow view, and run a preliminary IEC
+layout needed — check row spacing in a shadow view, and run an IEC
 earthing design with earth pits, conductor sizes, an earthing plan and a bill
 of quantities. See [Earthing design](/docs/simulation/earthing) and
 [Robot count from a DXF](/docs/simulation/robot-count-from-dxf).
@@ -111,12 +118,12 @@ changes.
   those shadows — but it does not model terrain shading or distant horizon
   profiles.
 - It is **not** a structural design tool. Structure heights and pile patterns
-  are inputs used for shadow geometry and construction schedules, not
-  engineering checks.
+  are inputs used for shadow geometry and construction drawings, not structural
+  checks.
 - It does **not** issue a grid connection study or a protection design. The
   single-line diagram is a drawing you build and edit, not a validated
-  electrical model, and the earthing design is a preliminary calculation, not
-  a site-specific earthing study.
+  electrical model, and the earthing design is a calculation from the inputs
+  you give it, not a site-specific earthing study.
 
 ## Where to go next
 

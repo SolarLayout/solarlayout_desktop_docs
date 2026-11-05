@@ -1,13 +1,13 @@
 ---
 title: Cables
-description: The Cables card on the Electrical tab — whether cable runs are routed and measured, and the three allowances added to the DC string-cable total.
+description: The Cables card on the Electrical tab — whether runs are routed and measured, how each cable class is laid, the DC allowances and the voltage-drop limits.
 ---
 
 The **Cables** card decides whether the application routes and measures the
-cables between the tables, the inverters or string monitoring boxes and the
-control rooms, and, when it does, what allowances are added to the DC
-string-cable total. It is the third card on the **Electrical** tab, after the
-inverter card and the **ACCB & Transformer** card (**Transformer** in a
+cables between the tables, the inverters or string monitoring boxes (SMBs) and the
+control rooms, how each class of cable is laid, and what allowances are added to
+the DC string-cable total. It is the third card on the **Electrical** tab, after
+the inverter card and the **ACCB & Transformer** card (**Transformer** in a
 central-inverter design — see
 [ACCB and transformers](/docs/inputs/accb-and-transformers)). Routing is off as
 shipped, because it is the slow step on a large plant. The equipment is placed
@@ -23,14 +23,20 @@ page covers the card.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Calculate cables** | off | — | Routes every DC and AC run on the next **Generate Layout** and reports the lengths |
+| **Calculate cables** | off | — | Routes every run on the next **Generate Layout** and reports the lengths |
+| **DC string cable laying** | Buried, in conduit | or Buried directly · Above ground, in conduit on concrete blocks | How the DC string cables are laid |
+| **AC cable laying** *(string)* / **DC trunk laying** *(central)* | Buried directly | or Above ground, on concrete blocks | How the AC feeders or the DC trunks are laid |
+| **MV cable laying** | Buried directly | or On cable tray | How the medium-voltage cables are laid |
 | **Inter-module lead** | 0.00 m/module | 0.00–2.00 m/module | Extra string cable per module for the leads between modules, counted once per string. Fixed-tilt tables only |
 | **String return run along table** | off | — | Tick for daisy-chain wiring: adds one conductor's run back along the table per string. Fixed-tilt tables only |
 | **DC cable slack** | 10.0 % | 0.0–30.0 % | Slack and wastage added to the DC string-cable total, trackers included |
+| **DC trunk conductor** *(central)* | Aluminium | or Copper | The metal of the SMB-to-central-inverter cable |
+| **Voltage-drop limits** | *all at defaults* | — | **Advanced…** opens the limits the cables are sized to |
 
-The tick and all three allowances are saved in the project file and come back
-when it is reopened. They are also inputs to the run: change any of them after
-generating and the layout is marked out of date until you generate again. See
+The tick, the laying choices, the conductor and the allowances are saved in the
+project file and come back when it is reopened. They are also inputs to the run:
+change any of them after generating and the layout is marked out of date until
+you generate again. See
 [Out-of-date results](/docs/workspace/out-of-date-results).
 
 ## Calculate cables
@@ -74,7 +80,8 @@ inverter (m)** rows of the Summary view.
 
 Medium-voltage runs from the control rooms to the main control room are routed
 in both designs, once a main control room has been placed and the layout
-generated again with this option on.
+generated again with this option on. With the grid connection by others they run
+to the [handover point](/docs/layout/grid-connection) instead, when there is one.
 
 ### The performance notice
 
@@ -106,19 +113,39 @@ scratch.
 ### What you still get with cables off
 
 - **The inverter and monitoring box counts are computed anyway.** So are their
-  ratings, the central inverter count, and everything downstream that depends
+  loads, the central inverter count, and everything downstream that depends
   on them — the AC capacity, the DC / AC ratio, the single-line diagram and the
   bill of materials.
-- **The cable rows of the Summary view show a dash.** A `—` on any row of the
-  **CABLES** group means the value was not computed, not that it is zero.
-- **The three cable rows of the Layers popover stay disabled**, and the cable
-  layers are left out of the CAD export.
-- **The cable schedule can still be exported.** Its lengths are then straight
-  lines between the ends, increased by 15 %, rather than routed lengths. See
-  [The cable schedule](/docs/layout/cables#the-cable-schedule).
+- **The cable rows of the Summary view read *needs Calculate cables*,** as a link
+  to this card.
+- **The cable rows of the Layers popover stay disabled.**
+- **The design check C-06 Cables computed stays open,** and the checks that read
+  the cables say what they need. See
+  [Design checks](/docs/reference/design-checks).
 
-Everything else about the design is final. Only the cable numbers are missing,
-and one more run with the box ticked fills them in.
+One more run with the box ticked fills in the cable numbers.
+
+## How each cable class is laid
+
+The three laying fields decide what each class needs beside the cable, and
+whether it counts as trench. A plot records the laying it was routed with, so
+changing a field alone changes nothing until the next **Generate Layout**.
+
+| Class | Option | What it means |
+| --- | --- | --- |
+| DC string | **Buried, in conduit** | Each DC route's cables in one 40 mm HDPE conduit, in a trench |
+| | **Buried directly** | In a trench, no conduit |
+| | **Above ground, in conduit on concrete blocks** | In the conduit, on concrete blocks; no trench |
+| AC feeder or DC trunk | **Buried directly** | In a trench |
+| | **Above ground, on concrete blocks** | On concrete blocks, clamped; no trench |
+| MV | **Buried directly** | In a trench |
+| | **On cable tray** | No trench; the BOM measures the tray along the MV route |
+
+Only buried classes count as trench. The Summary view's trench row for a class laid
+above ground reads *laid above ground*, and for MV on a tray *on cable tray*. The
+bill of materials follows: conduit and its fittings, concrete blocks, clamps and
+tray appear with the laying that needs them. See
+[Bill of materials](/docs/bom/overview).
 
 ## The three DC allowances
 
@@ -151,6 +178,36 @@ It applies to **fixed-tilt tables only**.
 as a percentage. It ships at 10 %, the bill-of-quantity convention. Unlike the
 other two allowances it applies to every design, tracker plants included.
 
+## DC trunk conductor
+
+Central-inverter design only. The trunk from each SMB to its central inverter is
+sized in the metal you choose, by voltage drop and current-carrying capacity, as
+two single-core conductors. On one sample plant the same trunk came out at 150 mm²
+in aluminium and 120 mm² in copper. The lugs in the bill of materials follow the
+metal: **DC cable lug, bimetallic** for aluminium, **Cable lug, copper** for copper.
+The string cables are copper either way.
+
+## Voltage-drop limits
+
+The limits the cables are sized to are
+[Advanced settings](/docs/workspace/advanced-settings), not fields on this card. The
+row shows *all at defaults* or how many are changed, and **Advanced…** opens them.
+
+| Setting | Default | What it limits |
+| --- | --- | --- |
+| **DC string voltage drop** | 1.5 % | The DC string cables; design check E-08 |
+| **LV feeder drop limit** | 2.5 % | Each inverter-to-ACCB feeder; design check E-02 |
+| **MV voltage drop** | 2.0 % | The MV cables; design check E-02 |
+
+Each inverter-to-ACCB feeder is one run of the plant's size A or size B. Size A is
+the smallest standard size whose derated current-carrying capacity carries the
+feeder's current; size B is the next one up. A feeder takes A unless its drop
+exceeds the limit, and there is never a third size or a second run. A feeder
+neither can serve is flagged in the [schedules workbook](/docs/exports/schedules-and-kmz)
+and the checks. The current comes from the inverter file, or from the maximum
+strings × the string's power without one. The MV sizing uses the **MV voltage** on
+the [ACCB & Transformer](/docs/inputs/accb-and-transformers) card.
+
 ## Where to go next
 
 <Cards>
@@ -162,7 +219,7 @@ other two allowances it applies to every design, tracker plants included.
   <Card
     title="Inverter settings"
     href="/docs/inputs/inverter"
-    description="Strings per inverter or monitoring box, and the inverter file"
+    description="Strings per inverter or monitoring box, the DC harness and the inverter file"
   />
   <Card
     title="Site equipment"
@@ -172,6 +229,6 @@ other two allowances it applies to every design, tracker plants included.
   <Card
     title="Summary view"
     href="/docs/reference/summary-columns"
-    description="The CABLES rows and what a dash means"
+    description="The cable and trench rows and the reasons they give"
   />
 </Cards>

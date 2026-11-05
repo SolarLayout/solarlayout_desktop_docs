@@ -108,7 +108,7 @@ detailed design needs, and it is the only source that reflects work already done
 on the ground.
 
 **Load contour / levels…** opens the **Select contour / spot-level file**
-dialog, which accepts `.dxf`, `.csv` and `.txt`. Two shapes of data
+dialog, which lists `.dxf`, `.dwg`, `.csv` and `.txt`. Two shapes of data
 are read:
 
 - **A CAD contour file.** Contour lines or spot levels, drawn in the
@@ -158,7 +158,7 @@ another — the pitch direction. This is the slope that fights the array's own
 geometry. A slope falling away from the equator adds to the effective tilt and
 lengthens every shadow the row in front casts; a slope rising toward the equator
 does the reverse and shortens the pitch you could have used. Either way, past
-some angle the row-to-row geometry the layout assumes no longer holds, and the
+some angle the row-to-row geometry the layout assumes does not hold, and the
 tables sitting there are not the tables you designed.
 
 Lower this limit and more of a hillside is excluded. Raise it and you are
@@ -229,10 +229,6 @@ until you ask for it.
   area in acres. The excluded area is the number to check.
 
 <Screenshot id="layers-popover-terrain" maxWidth={320} />
-
-The contour lines are carried into the CAD drawing on their own layer, so the
-ground model the exclusions came from travels with the layout. See
-[CAD drawing export](/docs/exports/dxf).
 
 ## What this does and does not do
 

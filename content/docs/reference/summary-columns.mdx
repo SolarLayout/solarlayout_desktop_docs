@@ -1,272 +1,236 @@
 ---
 title: Summary view
-description: Every row of the Summary view — how the per-plant sheet is laid out, the banners above it, what each row reports, and when a row reads — or 0.
+description: Every row of the Summary view — the Plant and By block sheets, what stands above them, the reasons in place of a figure, and How?
 ---
 
-The **Summary** view is the per-plant sheet turned on its side: a **Metric**
-column on the left, **one column per plant** — one per plant boundary in your
-file — and a **Total** column when there are two or more plants. The rows are
-grouped under **SITE · ARRAY · ELECTRICAL · CABLES · ENERGY**. It is the second
-of the five view tabs across the top of the right side (**Ctrl+2**), and before
-a layout exists it reads *"Generate a layout to see the per-plant summary
-here."* See [Views](/docs/workspace/views).
+The **Summary** view shows the plant's figures as a sheet, in one of two forms: **By
+block**, one column per ICR block, and **Plant**, one column per plant boundary in
+your file. It is the second of the view tabs across the top of the right side
+(**Ctrl+2**). Before a layout exists it reads *"Generate a layout to see the
+per-plant summary here."* See [Views, layers and tools](/docs/workspace/views).
 
 <Screenshot id="summary-with-energy" />
 
-## How the view is laid out
+## What stands above the sheet
 
-- **Plant column headers** carry the plant's name followed by **›**. Clicking
-  one shows that plant on the Layout view.
-- **Total** appears only with two or more plants and sums every plant. See
-  [Multi-plot sites](/docs/layout/multi-plot).
-- Two tools sit right of the view tabs. **Copy** puts the whole sheet on the
-  clipboard as tab-separated text (*"Copied. Paste into Excel or a
-  document."*). **Open in window** opens **SolarLayout — Summary**, a separate
-  window that follows the layout as it changes, with two tabs: **Summary** and
-  **Monthly energy (Year 1)**, the second enabled once energy exists.
-- The **Plant totals** row of the **Layers ▾** popover governs the row of
-  plant chips under every view, not this sheet. Clicking any chip opens the
-  Summary view; the energy chip opens the Energy view.
+In order, each only when it applies:
 
-<Screenshot id="summary-window" />
+| Item | What it says |
+| --- | --- |
+| **The out-of-date banner** | Names each change: **Out of date.** *These figures are from the last run, and 2 inputs have changed since: Module wattage 610.0 Wp → 700.0 Wp, Soiling losses 2.0 % → 3.0 %. Regenerate the layout to update them.* The sheet is greyed meanwhile. See [Out-of-date results](/docs/workspace/out-of-date-results) |
+| **The failed-checks line** | *"1 design check failed"* or *"N design checks failed"*, then the first three by ID and title, *"E-06 ICR inverter count · …"*, then *"and N more"*, with **Open Checks**. See [Design checks](/docs/workspace/checks#the-chip-and-the-summary-line) |
+| **The settings note** | *"Changed in Advanced settings: MV voltage drop 3.0 % (default 2.0 %) · …"* with **Edit…**. See [Advanced settings](/docs/workspace/advanced-settings) |
+| **The bar** | The **Plant \| By block** switch, and a line on the right |
 
-## The banners above the sheet
+The sheet opens on **By block**, in a fresh window and whenever a project opens. Your
+choice lasts while the project is open and is not saved.
 
-Two banners can sit above the figures. Neither appears when it does not apply.
-
-**The out-of-date banner.** When any input has changed since the layout was
-generated, the sheet still shows the last run's figures, greyed, under a
-banner that names each change — for example **Out of date.** *These figures
-are from the last run, and 2 inputs have changed since: Module wattage 610.0 Wp
-→ 700.0 Wp, Soiling losses 2.0 % → 3.0 %. Regenerate the layout to update
-them.* **Copy** is disabled meanwhile, with the tooltip *"Inputs changed since
-the last run. Regenerate first."*, and the **Out of date** chip heads the plant
-chips. Change the values back, or click **Regenerate Layout**, and the banner
-goes. The **SolarLayout — Summary** window carries the same banner. See
-[Out-of-date results](/docs/workspace/out-of-date-results).
-
-**The design warnings banner.** When the last run's design falls outside a
-design rule — a control room over its rating or not placed, a trench outside
-the plant or under a table, a feeder over one run or over its voltage-drop
-limit, the plant's LV drop over budget, a DC trunk too long — a warning-tone
-banner titled *"1 design warning"* or *"2 design warnings"* reads *"The layout
-is complete, but this falls outside the design rules. The PDF summary and the
-BOM carry it too."*, then lists one line per warning, led by the plot name on a
-multi-plot site. A **Design warnings** chip carrying the count sits at the head
-of the plant chips, after the **Out of date** chip when both show. A warning
-never blocks anything, and the banner clears when the design is clean again.
-The trench, feeder and drop checks need **Calculate cables** on. What each
-check means and how to clear it is on
-[Design warnings](/docs/reference/design-warnings).
-
-<Screenshot id="summary-design-warnings" />
-
-The design warnings stay on the sheet, greyed, while the layout is out of
-date. They are not in the **SolarLayout — Summary** window or in what **Copy**
-puts on the clipboard.
+| Sheet | The line on the right |
+| --- | --- |
+| By block | *"4 blocks · 11.92 to 15.37 MWp · the smallest is 78 % of the largest"*, or *"1 block · X MWp"* |
+| Plant | *"Click a plant's name to show it on the layout"* |
+| No blocks | **By block** is greyed, with *"By block needs ICR blocks on the layout"*, and the Plant sheet shows |
 
 ## Reading the sheet
 
-**A trailing asterisk means the value was calculated, not entered.** **Tilt**
-and **Pitch** carry a `*` when the layout derived them from the site latitude
-rather than taking an override from you. It appears on fixed tilt only. No
-asterisk on those two rows means you supplied the number yourself — the fastest
-way to check that an override you ticked took effect. See
-[Spacing and tilt](/docs/inputs/spacing-and-tilt).
+**A reason stands where a figure can't be given.** It is a link to the field or card
+the figure needs.
 
-**A dash means not computed.** A `—` is not a zero and not an error. The
-commonest case is the whole CABLES group when **Calculate cables** was left off:
-the inverter and box counts are still computed, and every cable row reads `—`.
-The ENERGY rows read `—` until energy has been calculated.
-
-**Whole numbers of four or more digits get thousands separators** on screen.
-
-## SITE
-
-| Row | What it means | Reads — or 0 when |
+| Reason | Means | The link goes to |
 | --- | --- | --- |
-| **Plant area (acres)** | The plant's **gross** boundary area, taken before the perimeter road setback | Never — filled by the layout run |
-| **Boundary length (m)** | The perimeter of the plant boundary | Never |
-| **ICR blocks** | Inverter control rooms placed. The number needed is counted per separate piece of land: each piece's capacity ÷ **ICR Block**, rounded up. A room the plot needs but could not fit is reported as the design warning **ICR not placed** | Never |
-| **Lightning arresters** | Arresters placed | 0 unless **Place Lightning Arresters** was on, or you added arresters in Sketch Mode |
-| **Street lights** | Street light poles placed along the perimeter | 0 unless **Place street lights** was on |
-| **Cleaning robots** | The fleet the cleaning study sized | Empty until **Robotic Module Cleaning** has been run |
-| **Piles** | Each unit's own piles, summed: the full pattern on every full table or tracker, the half pattern on every half unit. Counted whether or not the pile overlay is on | `—` until a pile pattern exists |
+| *needs an OND file* | The figure comes from the inverter file | The OND file row |
+| *rating needs an OND file* | The count is known, not the rating: *"8 · rating needs an OND file"* | The OND file row |
+| *not calculated yet* | Energy has not been calculated | **Calculate Energy** |
+| *no pile pattern* | No pile pattern is defined | The pile window |
+| *needs Calculate cables* | **Calculate cables** was off for the run | **Calculate cables** |
+| *needs an MCR on the layout* | No main control room is placed | **Place MCR** |
+| *by others* | The [grid connection is by others](/docs/layout/grid-connection) | — |
+| *laid above ground*, *on cable tray* | That class of cable is not buried, so it has no trench | The laying choice |
 
-**Plant area is the site's area, not the array's.** It is the area enclosed by
-the whole boundary polygon, before the perimeter road setback and before any
-obstruction or terrain exclusion — so it does not fall as exclusions grow. Add
-an obstruction, tighten the slope limits or widen the perimeter road and the
-capacity drops while this row stays exactly where it was.
+<Screenshot id="summary-plant-missing" />
 
-**ICR blocks can exceed the plant capacity ÷ ICR Block.** Tables separated
-from the rest by a gap of more than 300 m form a separate piece of land, and each piece gets its own
-rooms however small it is. The count also follows the capacity left after the
-rooms and the building-shadow keep-clear are cleared, so road width,
-obstructions and the shadow window can change it. See
-[Inverter control rooms](/docs/layout/icr); the per-block figures are in the
-ICR block window, see [ICR blocks](/docs/layout/icr-blocks).
+### How?
 
-**Piles counts every unit's own pattern.** A half table carries the half
-pattern — derived from the full one, or your own — so a plant with half-table
-infill counts fewer piles there than on its full tables. See
-[Piles](/docs/editing/piles).
+**How?** appears at the right of a row's label when you hover over it or select it, on
+any figure that has a working, and opens the [Workings view](/docs/workspace/workings)
+at that figure. Plant area, Boundary length, Modules, DC per acre, Inverter AC rating
+and the trench rows have none.
 
-## ARRAY
+**Tilt and pitch are as used.** Whether they were worked out or typed in, the
+Workings view says how they were reached.
 
-| Row | What it means | Reads — or 0 when |
-| --- | --- | --- |
-| **Full tables** / **Full trackers** | Full MMS tables, or full tracker units, placed | Never |
-| **Half tables** / **Half trackers** | Half units placed | 0 unless **Add half tables** / **Add half trackers** was on, or you placed them in Sketch Mode |
-| **Modules** | Modules placed across the plant, full units plus half units | Never |
-| **Tilt (°)** / **Max tracking angle (°)** | The fixed tilt the layout used, or the tracker's rotation limit — a tracker has no single tilt. May carry a `*` | Never |
-| **Pitch (m)** | The row spacing the layout used. May carry a `*` | Never |
+**Rounding.** Tilt to 1 decimal, pitch and DC capacity to 2, counts to whole numbers,
+with thousands separators on large numbers. A feature the design doesn't use leaves its
+row out, and a group with no rows disappears.
 
-The first word of each row follows the mounting type; the position in the
-sheet does not move.
+## The Plant sheet
 
-## ELECTRICAL
+Columns: *Metric*, one per plant, its head reading *"Demo ›"*, a link that shows that
+plant on the Layout view; and *Total* with two or more plants. See
+[Multi-plot sites](/docs/layout/multi-plot). One plant on a wide window gets two tables
+side by side.
 
-The inverter rows are a different set in each design, not the same rows
-relabelled. The rows after them are common to both, except **ACCBs**, which a
-central design does not have.
-
-<Tabs items={["String inverter", "Central inverter"]}>
-<Tab value="String inverter">
+### Capacity
 
 | Row | What it means |
 | --- | --- |
-| **DC capacity (MWp)** | Plant DC capacity: the placed modules multiplied by the wattage |
-| **String inverters** | String inverters placed |
-| **Inverter rating (kWp)** | The DC capacity one string inverter carries |
+| **DC capacity (MWp)** | The placed modules multiplied by the wattage |
+| **Plant AC capacity (MWac)** | The AC capacity the plant is sized against: the target of a **Simulation with AC Capacity** shared by units when one was run, otherwise the installed inverter capacity |
+| **DC / AC ratio** | DC capacity divided by plant AC capacity |
+| **Inverter AC capacity (MW)**, **DC / AC on inverters** | The installed inverter capacity and the ratio on it. Shown only when it differs from plant AC |
+| **P50 energy, year 1 (MWh)** | Year-one energy at the first exceedance probability |
+| **CUF on DC (%)** | Capacity utilisation factor: year-one energy ÷ (kWp × 8760). Once energy exists |
+| **CUF on AC (%)** | Year-one energy ÷ (plant AC × 8760). Once energy exists |
 
-</Tab>
-<Tab value="Central inverter">
+### Site
 
 | Row | What it means |
 | --- | --- |
-| **DC capacity (MWp)** | Plant DC capacity: the placed modules multiplied by the wattage |
-| **SMBs** | String monitoring boxes placed |
-| **SMB rating (kWp)** | The DC capacity one box carries |
-| **Central inverters** | Central inverters, counted per ICR block: the block's boxes ÷ **Max SMB per Central Inverter**, rounded up, at least one and at most 4 in one control room building |
-| **Central inverter rating (kWp)** | The box capacity multiplied by **Max SMB per Central Inverter** |
+| **Plant area (acres)** | The plant's **gross** boundary area |
+| **Boundary length (m)** | The perimeter of the plant boundary |
+| **DC per acre (MWp)** | DC capacity per acre of plant area |
+| **Street lights** | Poles placed along the perimeter, when the design has some |
+| **Cleaning robots** | The fleet the cleaning study sized, when it has been run |
 
-</Tab>
-</Tabs>
+**Plant area is the site's area, not the array's.** It is the area enclosed by the
+whole boundary polygon, before the perimeter road setback and before any obstruction or
+terrain exclusion, so it does not fall as exclusions grow. Add an obstruction, tighten
+the slope limits or widen the perimeter road and the capacity drops while this row
+stays where it was.
 
-Then, in both designs:
+### Array
 
-| Row | What it means | Reads — when |
-| --- | --- | --- |
-| **AC capacity (MWac)** | The AC capacity the plant is sized against: the target of a **Simulation with AC Capacity** when one was run, otherwise the inverter capacity: the inverter file's AC power rating × the inverter count | No inverter file has been loaded |
-| **Inverter capacity (MW)** | The installed inverter capacity | No inverter file has been loaded |
-| **DC / AC ratio** | DC capacity divided by AC capacity. The design overload limit is 1.5 for string inverters and 1.4 for central inverters | No inverter file has been loaded |
-| **ACCBs** *(string design only)* | AC combiner boxes, from the **ACCB & Transformer** card: each ICR block's inverters ÷ **Inverters per ACCB, max**, rounded up | Before inverters are placed |
-| **Transformers (IDT)** | The inverter duty transformers and their ratings, e.g. *"4 × 16,000 kVA"* or *"2 × 12,500 + 2 × 16,000 kVA"*. Without an inverter file only the count, *"4 · rating needs OND"*; a transformer whose load fits no listed rating reads *"4 · 1 with no listed rating"* | Before inverters are placed |
-| **Power transformer (MVA)** | The whole site's power transformer at the main control room, e.g. *"63"* or *"2 × 80"*; *by others* when the [grid connection is by others](/docs/layout/grid-connection). Shown in the column of the plot that holds the MCR and in **Total**; *needs OND* when there is an MCR but no inverter file | No MCR is placed; in every other plot's column; before inverters are placed |
+| Row | What it means |
+| --- | --- |
+| **Full tables** / **Full trackers** | Full units placed |
+| **Half tables** / **Half trackers** | Half units placed |
+| **Modules** | Modules placed across the plant, full units plus half units |
+| **Piles** | Each unit's own piles, summed: the full pattern on every full unit, the half pattern on every half unit. Counted whether or not the pile overlay is on. See [Piles](/docs/editing/piles) |
+| **Tilt (°)** / **Max tracking angle (°)** | The fixed tilt the layout used, or the tracker's rotation limit |
+| **Pitch (m)** | The row spacing the layout used |
+| **GCR** | The ground coverage ratio |
 
-**Total** sums the ACCBs and the transformers. The three grouping rows follow
-the **ACCB & Transformer** card at once — an edit there regroups the plant and
-updates them without a Generate. See
-[ACCB and transformers](/docs/inputs/accb-and-transformers).
+### Electrical
 
-Comparing a string design against a central design therefore means comparing
-different rows. Read **DC capacity**, **ICR blocks**, **Transformers (IDT)**
-and the CABLES group instead — those are common to both.
+| Row | What it means |
+| --- | --- |
+| **ICR blocks** | Inverter control rooms placed. The number needed is counted per separate piece of land, so it can exceed the plant capacity ÷ **ICR Block**. See [Inverter control rooms](/docs/layout/icr) |
+| **SMBs** *(central)* | String monitoring boxes placed |
+| **Largest DC load per SMB (kWp)** *(central)* | The most DC capacity on one box |
+| **Central inverters** *(central)* | Central inverters. See [Inverter](/docs/inputs/inverter) |
+| **String inverters** *(string)* | String inverters placed |
+| **Inverter AC rating (kW)** | The AC rating from the inverter file |
+| **Largest DC load per inverter (kWp)** *(string)* | The most DC capacity on one inverter |
+| **DC limit per central inverter (kWp)** *(central)* | The box capacity multiplied by **Max SMB per Central Inverter** |
+| **ACCBs** *(string)* | AC combiner boxes, from the **ACCB & Transformer** card |
+| **Transformers (IDT)** | The inverter duty transformers: *"4 × 16,000 kVA"*, *"2 × 12,500 + 2 × 16,000 kVA"*, *"4 · rating needs an OND file"*, *"4 · 1 with no listed rating"* |
+| **Power transformer (MVA)** | The whole site's power transformer at the MCR |
+| **Lightning arresters** | Arresters placed, with arresters on |
+
+The grouping rows follow the **ACCB & Transformer** card at once, without a Generate.
+See [ACCBs and transformers](/docs/inputs/accb-and-transformers).
+
+A string design and a central design have different rows here. To compare them, read
+**DC capacity**, **ICR blocks**, **Transformers (IDT)** and the cable group.
 
 <Screenshot id="summary-tracker-central" />
 
-## CABLES
+### Cables & trenches
 
-Six rows in metres, answering two different questions. The first three are
-**conductor** to procure; the last three are **trench** to dig. Mixing them up
-over-orders cable or under-digs trench.
+The first rows are **conductor** to procure; the trench rows are **trench** to dig.
+Mixing them up over-orders cable or under-digs trench.
 
-| Row | What it means | Reads — when |
-| --- | --- | --- |
-| **String DC cable (m)** | Conductor from the tables to the string inverter or the SMB, counted twice for the positive and negative conductors | **Calculate cables** was off |
-| **AC cable to ICR (m)** *(string)* / **DC cable to central inverter (m)** *(central)* | AC from each inverter to the control room it is assigned to, counted once as a three-phase run — or the DC trunk from each box to the control room, counted twice. There is no AC leg in a central design, because the central inverter sits inside the building | **Calculate cables** was off |
-| **MV cable (m)** | Medium-voltage conductor from the control rooms to the main control room or handover point; *by others* when the grid connection is by others with no point | No MCR placed, or the layout not generated again with cables on since placing it |
-| **DC trench (m)** | Trench length for the string DC cables | **Calculate cables** was off |
-| **AC trench (m)** | Trench length for the second leg | **Calculate cables** was off |
-| **MV trench (m)** | Trench length for the medium-voltage run | As **MV cable (m)** |
+| Row | What it means |
+| --- | --- |
+| **String DC cable (m)** | Conductor from the tables to the string inverter or the SMB |
+| **AC cable to ICR (m)** *(string)* / **DC cable to central inverter (m)** *(central)* | AC from each inverter to its control room, or the DC trunk from each box |
+| **MV cable (m)** | Medium-voltage conductor from the control rooms to the MCR or handover point |
+| **DC trench (m)** | Trench for the string DC cables |
+| **AC trench (m)** *(string)* / **DC trunk trench (m)** *(central)* | Trench for the second leg |
+| **MV trench (m)** | Trench for the medium-voltage run |
+| **String DC cable per MWp (m)** | String DC cable divided by DC capacity |
 
-Each inverter is assigned to the nearest control room along the plant that
-still has room within its rating, not merely the nearest building. How each
-route is chosen is on [Cable routing](/docs/layout/cables).
+A trench total counts a stretch that several cables share once, so the trench figures
+are the smaller ones, and only buried classes count as trench. How each route is chosen
+is on [Cable routing](/docs/layout/cables).
 
-A trench total is the de-duplicated path length per cable type, so a stretch
-several cables share is counted once. The trench figures are therefore the
-smaller ones, and the gap widens as the plant grows, because more cables share
-each corridor near the control rooms; medium-voltage routes in particular merge
-nearby control rooms into one trunk.
+On a very large plot, the DC trench is measured on a drawn sample of the DC cabling and
+scaled to every table, and the figure carries *" (est.)"*.
 
-Because one second-leg figure is counted once and the other twice, the two are
-not comparable as a cable quantity even on the same plant.
+### Energy
 
-On a plot of more than 30 000 tables, the DC trench is measured on a drawn
-sample of the DC cabling and scaled to every table. The bill of materials, the
-PDF summary page and the Word report mark that figure *"(est.)"*.
-
-<Callout type="warn">
-Drawing an obstruction on the Tools tab — and **Undo Last**, **Clear All** or
-dragging a control room — re-places the inverters and, with cables on,
-re-measures **String DC cable (m)** and the second-leg row. The **trench** rows
-keep their previous figures until the next full cable run: a **Generate**, or
-leaving Sketch Mode after a change. Generate again before quoting trench
-lengths.
-</Callout>
-
-## ENERGY
-
-All five rows are empty until energy has been calculated, and every Generate
-that replaces the layout clears them again. See
+Once energy is calculated, this group holds the other two exceedance rows and the
+lifetime total. Every Generate that replaces the layout clears the energy rows. See
 [How yield is calculated](/docs/energy/overview).
 
 | Row | What it means |
 | --- | --- |
-| **P50 energy, year 1 (MWh)** | Year-one energy at the first exceedance probability |
 | **P75 energy, year 1 (MWh)** | Year-one energy at the second exceedance probability |
 | **P90 energy, year 1 (MWh)** | Year-one energy at the third exceedance probability |
-| **CUF (%)** | Capacity utilisation factor: year-one energy divided by capacity in kWp × 8760 hours, as a percentage |
 | **P50 energy, 25 years (MWh)** | The lifetime total — see below |
 
-**The three P rows are named from the exceedance probabilities you set**, not
-fixed. On the shipped defaults of 50 %, 75 % and 90 % they read as above; change
-any of the three fields under **Uncertainty & exceedance** and the row name
-changes with it. Reading a sheet someone else produced, check the row names
-before quoting a number.
+**The P rows are named from the exceedance probabilities you set.** On the shipped
+defaults of 50 %, 75 % and 90 % they read as above; change any of the three fields under
+**Uncertainty & exceedance** and the row name changes with it.
 
-**"P50 energy, 25 years" does not report 25 years.** The figure is the
-cumulative energy over years 1 to **Plant lifetime**, after degradation, at the
-**first** exceedance probability — and the row name does not follow the
-lifetime setting. Plant lifetime ships at 30 years, so on shipped settings a row
-named "25 years" carries a 30-year total, and raising or lowering the lifetime
-moves the figure while the name stands still.
+**"P50 energy, 25 years" does not report 25 years.** The figure is the cumulative energy
+over years 1 to **Plant lifetime**, after degradation, at the **first** exceedance
+probability, and the row's name does not follow either setting. Plant lifetime ships at
+30 years, so on shipped settings a row named "25 years" carries a 30-year total.
 
 <Callout type="warn">
-Do not quote the lifetime row by its name. Read **Plant lifetime** and the
-first exceedance probability off the Yield tab and state both alongside the
-figure, or the number will be attributed to a period it was never computed
-over. How the figures are derived is on
-[Lifetime and P-values](/docs/energy/lifetime-and-p-values).
+Do not quote the lifetime row by its name. Read **Plant lifetime** and the first
+exceedance probability off the Yield tab and state both alongside the figure. How the
+figures are derived is on [Lifetime and P-values](/docs/energy/lifetime-and-p-values).
 </Callout>
+
+## The By block sheet
+
+Columns: one per block, *ICR-1*, or *P1-ICR-1* with several plots; then **Shared** and
+**Total**; and a band naming each plant when there are several. A block's head is a link
+that fits the Layout view to that block's outline. A block is one ICR and the tables
+wired to it. See [ICR blocks](/docs/layout/icr-blocks).
+
+<Screenshot id="summary-by-block" />
+
+| Group | Rows |
+| --- | --- |
+| **Block size** | **DC capacity (MWp)**, with a bar against the largest block · **Share of plant DC (%)** · **Area (acres)** · **Full tables** and **Half tables** (or trackers) · **Modules** · **Piles**, with a pattern |
+| **Equipment** | **String inverters** and **ACCBs**, or **SMBs** and **Central inverters** · **AC capacity (MWac)** · **DC / AC ratio** · **Transformers (IDT)**, *"2 × 12,500 kVA"* · **Transformer load (kVA)**, *"13,200 · 83 %"*, with a bar against the block's rating · **Power transformer (MVA)** · **Lightning arresters** |
+| **Cables & trenches** | String DC, the feeder and MV per block; the trench rows in **Shared** and **Total** only |
+| **Plant-wide** | **Boundary length (m)** · **Street lights** · **Cleaning robots** · the year-one P row · **CUF on DC** · **CUF on AC**: energy is calculated for the whole plant |
+
+**Total is the Plant sheet's own figure, never a sum of the column.** **Shared** area is
+the Total less the blocks as shown.
+
+A note pinned under the sheet says what is shared, for example *"Shared: what belongs to
+no single block: 19.73 acres of roads, gaps and the MCR's ground, the trench networks,
+the boundary, the power transformer and energy."*, then any rounding difference: *"DC
+capacity (MWp): the blocks add up to 54.27; the Total is the plant's own 54.28."*
+
+<Screenshot id="summary-block-missing" />
+
+## Open in window
+
+**Open in window** opens **SolarLayout — Summary**, a separate window for a second
+monitor. It follows the layout, shows whichever sheet is chosen, and has two tabs:
+**Summary** and **Monthly energy (Year 1)**, the second enabled once energy exists. It
+carries the out-of-date banner, not the failed-checks line or the settings note. Use
+**How?**, a reason's link or a plant's or block's head in the Summary view itself.
+
+<Screenshot id="summary-window" />
 
 ## Where the same figures appear elsewhere
 
-The sheet is not the only place these numbers surface, and the other places
-carry a subset rather than a different calculation.
-
 | Destination | What it carries |
 | --- | --- |
-| The plant chips under every view | DC capacity, site area, plants (multi-plot only), tables or trackers, modules, ICR blocks, lightning arresters (when placed) and year-one P50 energy, led by the **Out of date** and **Design warnings** chips when they apply. Water-body results are left out of the totals |
-| The ICR block window | One block's figures — area, tables, modules, inverters, ACCBs, transformer and its load, capacities, DC/AC ratio, cable lengths, arresters and piles. Energy is not split per block |
-| The Yield tab's status line | After a run: PR, year-one energy, CUF and the lifetime total |
-| The Word report | The **Results & Analysis — Output** section and the **Design Summary** annexure, with its design warnings block; the energy sections only when energy was calculated. See [Project report](/docs/exports/project-report) |
-| The cable schedule (Excel) | One sheet per ICR block: the DC strings, the AC feeders or DC trunks, and the collection runs from each combiner box or central inverter to its transformer and on to the main control room. See [The cable schedule](/docs/layout/cables#the-cable-schedule) |
-| The TMY data CSV | The GHI, in-plane irradiance and energy time series the ENERGY rows are built from, at the interval you choose. See [Time series](/docs/energy/timeseries) |
-| The Google Earth file | A summary placemark per plant carrying capacity in MWp, area in acres, pitch and table count, plus an **Overall Summary** folder aggregating every boundary. See [KMZ export](/docs/exports/kmz) |
-| The bill of materials | Quantities computed from the same placed counts and the same grouping, including the cleaning fleet once you have asked for one, and a `Check:` remark on the rows a design warning qualifies. See [Bill of materials](/docs/bom/overview) |
+| The plant chips under every view | Site area, DC capacity, plants (multi-plot only), tables or trackers, modules, ICR blocks, lightning arresters (when placed) and year-one energy, led by **Out of date** and **Design checks** when they apply |
+| The Yield tab's status line | After a run: PR, year-one energy, CUF on DC, CUF on AC and the lifetime total |
+| The design report | The figures, the design basis and the block schedule. See [The design report](/docs/exports/design-report) |
+| The block sheets of the drawing set | One block's figures on each sheet. See [The drawing set](/docs/exports/drawing-set) |
+| The schedules workbook and the KMZ | Every circuit and trench; each block's figures in a pop-up. See [Schedules and KMZ](/docs/exports/schedules-and-kmz) |
+| The TMY data CSV | The time series behind the energy rows, at the interval you choose. See [Time series](/docs/energy/timeseries) |
+| The bill of materials | Quantities computed from the same placed counts and the same grouping. See [Bill of materials](/docs/bom/overview) |
 
 ## Where to go next
 
@@ -277,18 +241,18 @@ carry a subset rather than a different calculation.
     description="The input side of the same reference"
   />
   <Card
-    title="Design warnings"
-    href="/docs/reference/design-warnings"
-    description="Each check behind the warnings banner, and how to clear it"
+    title="Workings"
+    href="/docs/workspace/workings"
+    description="How each figure was reached"
+  />
+  <Card
+    title="Design checks"
+    href="/docs/workspace/checks"
+    description="The line above the sheet, and each check behind it"
   />
   <Card
     title="Out-of-date results"
     href="/docs/workspace/out-of-date-results"
     description="Why the sheet greys out after an input changes"
-  />
-  <Card
-    title="Project report"
-    href="/docs/exports/project-report"
-    description="The Word document that carries the same summary"
   />
 </Cards>

@@ -1,14 +1,14 @@
 ---
 title: The main window
-description: The menu bar, the ribbon, the pinned Generate Layout button, the five stage tabs of inputs on the left, the views on the right, and the status bar.
+description: The menu bar, the ribbon, the pinned Generate Layout button, the five stage tabs of inputs on the left, the seven views on the right, and the status bar.
 ---
 
 The main window has three parts. A navy **ribbon** runs across the top. The
 **left column** holds the pinned **Generate Layout** button and, under it,
 every design input on five stage tabs. The **right side** shows the plant —
-the drawing, the summary sheet, the energy result, the bill of materials and
-the single-line diagram — as five views of the same design, with a row of
-plant totals under whichever view is up.
+the drawing, the summary sheet, the design checks, the workings, the energy
+result, the bill of materials and the single-line diagram — as seven views of
+the same design, with a row of plant totals under whichever view is up.
 
 <Screenshot id="main-window-empty" />
 
@@ -17,20 +17,23 @@ bar reports what the application is doing.
 
 ## The menu bar
 
-Four menus: **File · Edit-Pile · Tools · Help**. Every item is always enabled.
+Four menus: **File · Edit-Pile · Tools · Help**.
 
 | Menu | Items |
 | --- | --- |
-| **File** | **New Project** (**Ctrl+Shift+N**) · **Move to String / Central Window…** (**Ctrl+N**) · **Save Project…** (**Ctrl+S**) · **Open Project…** (**Ctrl+O**) · **Open Sample Site** · **Exit** (**Ctrl+Q**) — see [Saving and reopening projects](/docs/projects) |
+| **File** | **New Project** (**Ctrl+Shift+N**) · **Move to String / Central Window…** (**Ctrl+N**) · **Save Project…** (**Ctrl+S**) · **Open Project…** (**Ctrl+O**) · **Open Sample Site** · **Company…** · **Advanced settings…** · **Exit** (**Ctrl+Q**) — see [Saving and reopening projects](/docs/projects), [Company](/docs/exports/company) and [Advanced settings](/docs/workspace/advanced-settings) |
 | **Edit-Pile** | **Define Pile Layout…** — see [Piles](/docs/editing/piles) |
 | **Tools** | **Robot count from DXF…** · **Earthing Design…** |
 | **Help** | **How to Use This Tool** (**F1**) · **License / Subscription…** — see [Getting help](/docs/support) |
 
-The **Tools** menu repeats two of the studies from the Tools tab.
-**Robot count from DXF…** works at any time, with or without a layout — it
-reads a plant drawing of its own. **Earthing Design…** works on the generated
-layout; before one exists it answers **Generate first** — *"Generate a layout
-first, then open Earthing Design."* Neither has a shortcut.
+**Advanced settings…** reads *"Advanced settings… (N changed)"* while the
+project has settings off their defaults.
+
+The **Tools** menu repeats two of the studies from the Tools tab, and each item
+is enabled when its button is. **Robot count from DXF…** works at any time, with
+or without a layout — it reads a plant drawing of its own. **Earthing Design…**
+works on the generated layout and is disabled until one exists. Neither has a
+shortcut.
 
 <Screenshot id="tools-menu" />
 
@@ -38,11 +41,14 @@ first, then open Earthing Design."* Neither has a shortcut.
 
 <Screenshot id="ribbon" />
 
+<Screenshot id="settings-chip" />
+
 | Item | What it is |
 | --- | --- |
 | **SolarLayout** | The brand. The window's title bar names the design, for example *SolarLayout  [Fixed Tilt  \|  String Inverter]*. |
 | The **design chip** | Reads the design this window holds — *Fixed tilt · String inverter ▾*, *Tracker · Central inverter ▾* and so on. Clicking it opens the New design window and launches a second, independent window for the design you choose there; this window stays open. See [Choosing a design mode](/docs/design-modes). |
-| The status mirror | A gold italic line that repeats most status-bar messages, so a result is readable without looking down. It leaves out the *"Layout ready"* line, the out-of-date line and routine messages. |
+| The **Advanced settings** chip | *Advanced settings · N changed*, shown only while the project has settings off their defaults. An orange dot marks a setting that differs from the last run. Clicking it opens the window on the changed settings. |
+| The status mirror | A gold italic line that repeats most status-bar messages, so a result is readable without looking down. It leaves out the *"Layout ready"* line and the out-of-date line. |
 | The **access chip** | **● Active — until \<date>** when this device has access, with *(offline)* appended while a cached check is in use; **● Access expired** or **● Access revoked** in red with a **Contact Us** button; **● Access status unavailable** when the server cannot be reached. With no access at all the chip is hidden and a gold **Get Free Access** button stands in its place. See [Activate your licence](/docs/licence/activate). |
 | **Docs** | Opens this documentation site in your browser. |
 | **Support** | Opens the **Support / Feedback** window. |
@@ -54,8 +60,7 @@ first, then open Earthing Design."* Neither has a shortcut.
 The gold **Generate Layout** button (**F5**) is pinned above the tabs, so it
 is in the same place whichever tab you are on. Under it a hint line says why
 it is disabled — *"Select a boundary file on the Site tab to generate a
-layout."* until a boundary file is chosen. Generating needs active access for
-this device; without it the License / Subscription window opens instead.
+layout."* until a boundary file is chosen.
 
 Once a layout exists, changing any input it was built from makes it out of
 date. The button then reads **Regenerate Layout**, with a second line inside
@@ -92,16 +97,16 @@ window.
 
 ### The Tools tab
 
-The **Tools** tab opens at any time. Before a layout exists its tooltip reads
-*"Generate a layout first"*, and its buttons are greyed out — all except
-**Robot count from DXF…**, which needs no layout.
+The **Tools** tab opens at any time. Its buttons are greyed out until a layout
+exists, except **Robot count from DXF…**, which needs no layout, and, once a
+boundary is chosen, **Place Object**.
 
 <Screenshot id="tab-tools-locked" />
 
-Once a run has placed control rooms, the tip *"Tip: Click and drag a blue ICR
-to reposition it."* appears between the Obstructions card and the Main Control
-Room card. That is how a control room is moved: with no navigation tool
-active, drag it to a valid spot inside the perimeter road and release.
+Once a run has placed control rooms, the tip *"Tip: In Sketch Mode, drag a blue
+ICR to move it."* appears between the **Obstructions** card and the **Grid
+connection & Objects** card. The Layout view itself is read-only: outside Sketch
+Mode a drag on a building pans the view.
 
 The **Studies** card holds five buttons, in this order:
 
@@ -124,20 +129,21 @@ enabled.
 Three tools take the whole left column over while they are on: **Sketch**
 (hand editing of the drawing), and the **SLD** and **BOM** views. Each replaces
 the pinned button with a coloured banner — orange **● Sketch Mode**, blue
-**● SLD Preparation**, green **● Bill of Materials** — carrying its own
-**Exit** button, and swaps the stage tabs for the tool's palette. Leaving the
-mode gives the column back exactly as it was. See
+**SLD Preparation**, green **Bill of Materials** — carrying its own way out, and
+swaps the stage tabs for the tool's own panel. Leaving the mode gives the column
+back. See
 [Sketch Mode](/docs/editing/sketch-mode), [Single-line diagram](/docs/sld/overview)
 and [Bill of materials](/docs/bom/overview).
 
 ## The right side
 
-Five tabs across the top — **Layout · Summary · Energy · BOM · SLD** — are
-views of one plant, and each takes the whole area under the header. To the
-right of the tabs sits the row of tools for the current view: **Save project**
-and **Export ▾** always; the drawing's view toggles, the **Layers ▾** popover,
-**Sketch**, the navigation icons and the expand button on the Layout view;
-**Copy** and **Open in window** on Summary and Energy. Under every view runs a
+Seven tabs across the top — **Layout · Summary · Checks · Workings · Energy ·
+BOM · SLD** — are views of one plant, and each takes the whole area under the
+header. To the right of the tabs sits the row of tools for the current view:
+**Save project** and **Export ▾** always; the drawing's view toggles, the
+**Layers ▾** popover, **Sketch**, the navigation icons and the expand button on
+the Layout view; **Open in window** on Summary and Energy; **Copy** on Energy.
+Under every view runs a
 single row of **plant chips** — the plant totals, and the only place they are
 shown.
 
@@ -148,7 +154,7 @@ and the Layers rows in full.
 
 | Left | Right |
 | --- | --- |
-| Progress and result messages — *"Calculating layout…"*, *"Layout ready"* with the notes that apply, *"KMZ exported: …"*, *"Project saved (full): …"* and the like. While the layout is out of date it reads *"Out of date: … Regenerate the layout to update results and exports."* | The live **cursor position** over the drawing, and the **application version** — the number to quote when you report a problem. |
+| Progress and result messages — *"Calculating layout…"*, *"Layout ready"* with the notes that apply, *"Project saved (full): …"* and the like. While the layout is out of date it reads *"Out of date: … Regenerate the layout to update results and exports."* | The live **cursor position** over the drawing, and the **application version** — the number to quote when you report a problem. |
 
 The cursor position is in UTM metres for a Google Earth file or a CAD drawing
 located by its own coordinates, and in the drawing's own coordinates for a CAD
@@ -162,7 +168,7 @@ carries the plant totals; those are in the plant chips.
   <Card
     title="Views, layers and tools"
     href="/docs/workspace/views"
-    description="The five views, the tools row, the Layers popover and the plant chips"
+    description="The seven views, the tools row, the Layers popover and the plant chips"
   />
   <Card
     title="Out-of-date results"
@@ -177,6 +183,6 @@ carries the plant totals; those are in the plant chips.
   <Card
     title="Keyboard shortcuts and commands"
     href="/docs/reference/keyboard-and-commands"
-    description="F5, Ctrl+1 to Ctrl+5, and the rest"
+    description="F5, Ctrl+1 to Ctrl+7, and the rest"
   />
 </Cards>

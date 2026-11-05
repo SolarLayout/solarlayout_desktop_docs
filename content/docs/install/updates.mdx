@@ -73,8 +73,7 @@ The **Help** menu carries two items — **How to Use This Tool** and
 **License / Subscription…** — and there is no About window, so the status bar
 is the one place in the application the version is named.
 
-The Store's **Library** listing also shows it, and is the place to check
-whether an update is waiting.
+The Store's **Library** is the place to check whether an update is waiting.
 
 [Release notes](/docs/releases) lists what changed between versions.
 
@@ -100,8 +99,8 @@ headline reading **✓ Active — until \<date>**, **Start your free trial**,
 Access** — **⏳ Waiting for activation** — with your Device ID and its **Copy**
 button folded behind **Having trouble?**.
 
-If the application cannot reach the server, a good check made earlier is
-cached and it keeps working for a three-day offline grace window, the chip
+If the application cannot reach the server, a good check of active access made
+earlier is cached and it keeps working for a three-day offline grace window, the chip
 reading *(offline)* meanwhile.
 
 If a launch after an update or reinstall shows no access, the Device ID has
@@ -109,16 +108,16 @@ not changed and neither has the server record — see
 [Licence problems](/docs/licence/troubleshooting).
 
 <Callout type="info">
-Only **Generate Layout** and the exports need this device's access to be
-active. Reading and changing inputs, opening a project, and the SLD and BOM
-views work regardless of status.
+Only **Generate Layout**, the file exports and **Robot count from DXF…** need this
+device's access to be active. Reading and changing inputs, saving and opening a
+project, and the SLD and BOM views work regardless of status.
 </Callout>
 
 ## Reinstalling
 
 Reinstalling is worth trying when the application will not start at all, or
-starts and misbehaves in a way that survives a restart. It is not a fix for a
-licence problem — the licence is not part of the installation.
+starts and misbehaves in a way that survives a restart. It is not a fix for an
+access problem: access is not part of the installation.
 
 <Steps>
 
@@ -154,8 +153,11 @@ Removing the application removes the application. It does **not** remove the
 work you have done with it:
 
 - **Project files** (`.slp`) sit wherever you saved them and are untouched.
-- **Exported reports, drawings, schedules and mapping files** sit wherever you
-  exported them and are untouched.
+- **Exported packages, drawings and workbooks** sit wherever you exported them and
+  are untouched.
+- **Your companies, BOM profiles and SLD symbols** sit in the folders
+  `SolarLayout_Company`, `SolarLayout_BOM_Profiles` and `SolarLayout_Symbols` in your
+  Windows user folder, apart from the application.
 
 <Callout type="warn">
 A different machine has its own Device ID, and your account covers one device.
@@ -167,9 +169,9 @@ time it checks.
 </Callout>
 
 If you are moving to a different machine rather than leaving the product, copy
-your project files across first, then have your access moved as above — access
+your project files and those three folders across first, then have your access moved as above — access
 belongs to your account, and nothing about it travels with your data.
-See [How licensing works](/docs/licence/overview).
+See [How access works](/docs/licence/overview).
 
 ## Where to go next
 

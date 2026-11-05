@@ -3,6 +3,7 @@
   "pages": [
     "boundary-files",
     "kmz-requirements",
+    "clean-boundary",
     "cad-boundary",
     "image-boundary",
     "module",

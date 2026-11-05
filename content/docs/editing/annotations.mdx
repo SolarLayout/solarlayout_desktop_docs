@@ -1,6 +1,6 @@
 ---
 title: Annotations, measuring and layers
-description: The drafting side of Sketch Mode — shapes, text, measurements and dimensions, the modify tools, layers and groups, the typed command line, and importing a CAD reference.
+description: The drafting side of Sketch Mode — shapes, text, measurements and dimensions, the modify tools, layers and groups, the command line, and a CAD reference.
 ---
 
 A layout is a set of positions. A drawing is a layout somebody can build from:
@@ -12,9 +12,9 @@ without leaving the application.
 Annotations are drawing content. They do not clear ground, they are not
 counted in the plant totals, and they never change the capacity — that is the
 difference between them and the plant objects on
-[Sketch Mode](/docs/editing/sketch-mode). What they do is travel: onto the
-screen, and into the exported CAD drawing on a layer of their own. The one
-exception is a line drawn with a width, below, which does clear ground.
+[Sketch Mode](/docs/editing/sketch-mode). They stay with the project, on screen
+and in **Export ▾ Export Image (PNG)**. The one exception is a line drawn with a
+width, below, which does clear ground.
 
 ## Getting to the tools
 
@@ -31,8 +31,8 @@ what you draw next.
 ## Drawing shapes
 
 The **DRAW** group shows four tools, with four more behind the **More shapes**
-expander. The multi-point tools all end the same way — right-click or
-double-click.
+expander. The multi-point tools end with a right-click; **∿ Spline** and
+**▨ Fill/Zone** also take a double-click.
 
 <Screenshot id="sketch-palette-more-shapes" />
 
@@ -51,9 +51,9 @@ Three of those deserve a note.
 
 **╱ Line and ⌒ Polyline ask for a width.** Enter **0** and you get a line only —
 an annotation like any other. Enter more than 0 and the line becomes a
-**corridor** of that width that removes the tables under it, the same model as
-the **🚧 Road** tool. It is the way to clear an irregular strip — a drain, a
-track that bends — that a straight road centre-line cannot describe.
+**corridor** of that width that removes the tables under it, as the **⚡ T-Line**
+tool does. It is the way to clear an irregular strip — a drain, a track that bends
+— that a straight centre-line cannot describe.
 
 **◜ Arc takes three clicks in a specific order** — start, end, then a point the
 arc must pass through.
@@ -90,8 +90,7 @@ To reposition a label, switch to **↖ Move** and drag it. Labels select, move
 and delete like any other element.
 
 Text is the tool that carries the things the geometry cannot say: a plot name,
-a phase number, an access route, a caveat about a survey. Write them as they
-should read on the printed drawing, because that is where they end up.
+a phase number, an access route, a caveat about a survey.
 
 ## Measuring
 
@@ -119,8 +118,7 @@ distance, not a screen distance. Zooming does not change it.
 
 **📐 Dimension** places a dimension that stays on the drawing: click and drag
 between the two points, or click a start point and then type a length into the
-numeric entry. It is saved with the project, redrawn with the plot and exported
-to the CAD drawing.
+numeric entry. It is saved with the project and redrawn with the plot.
 
 The distinction between the two tools is worth being deliberate about:
 
@@ -128,12 +126,13 @@ The distinction between the two tools is worth being deliberate about:
 | --- | --- | --- |
 | Purpose | Check a distance now | Record a distance for someone else |
 | Stays on the drawing | No | Yes |
-| Goes into the exported drawing | No | Yes |
+| Saved with the project | No | Yes |
 
 Dimension the things a construction team would otherwise have to derive: row
 pitch, the gap between table runs, the setback from the fence to the first row,
 the clearance around a control room. Those are the numbers that get queried on
-site.
+site. To send them out, export the view as an image, as described under
+[What reaches an export](#what-reaches-an-export).
 
 ## Modifying a selection
 
@@ -161,8 +160,7 @@ their own.
 
 ## Layers
 
-Layers control what is visible on screen, and they carry into the exported CAD
-drawing. The three layer controls sit on the
+Layers control what is visible on screen. The three layer controls sit on the
 contextual bar above the plot, not in the palette:
 
 | Control | What it does |
@@ -176,19 +174,18 @@ audience — dimensions on one, civil notes on another, a client's mark-ups on a
 third — because then you can show one and hide the rest instead of deleting
 anything.
 
-### Your layers carry into the CAD drawing
+## What reaches an export
 
-The exported CAD drawing keeps the plant and your annotations apart.
-Boundaries, tables, control rooms, inverters, cables and trenches land on the
-application's own layers. Each Sketch Mode annotation lands on a CAD layer
-named after the layer it was drawn on — `0` for anything drawn on the starting
-layer — and permanent dimensions land on `SKETCH`.
+Annotations belong to the project and to the screen.
 
-That separation is what makes the drawing usable by somebody else. A civil
-contractor opens the file, switches off your annotation layers, and has a clean
-plan of the plant with none of your working on it. Create and name the layers
-before you draw, rather than leaving everything on *0*. See
-[CAD export](/docs/exports/dxf).
+| Output | What it carries |
+| --- | --- |
+| **Save project** | Every annotation, dimension and layer |
+| **Export ▾ Export Image (PNG)** | The plot as it is on screen, so whatever annotations and layers are showing |
+| The [deliverables package](/docs/exports/deliverables) | The design, drawn on its own standard layers. Annotations, dimensions and your layers are not in its drawings or its CAD twin |
+
+Hand-drawn cable trenches are plant rather than annotation, so they do reach the
+package.
 
 ## Bringing an existing drawing in
 
@@ -197,18 +194,17 @@ it — an existing site plan, a survey, a road alignment, a neighbouring
 developer's drawing. It is a reference to work over, not an input to the layout:
 importing a drawing does not create obstructions and does not move any tables.
 
-The drawing's coordinates are read **as they are, in project metres**. Nothing
-is scaled, re-centred, or fitted to the plant, so the drawing has to already be
-in the same coordinate system as the project — the site's UTM zone, for a
-boundary from a Google Earth file or a CAD boundary located by its own
-coordinates.
+The drawing's coordinates are read **in the boundary drawing's own frame**. Nothing
+is scaled, re-centred or fitted to the plant. A site read from a Google Earth file
+sits in its UTM zone, so the reference must be in that zone too. A CAD boundary you
+placed by hand, or one laid out without a location, moves by one offset with its
+plant, so a reference in the boundary drawing's coordinates overlays it.
 
 <Callout type="warn">
-Import a drawing that is not georeferenced to the site — one drawn around a
-local origin, say — and it will not appear over the plant. It lands wherever its
-own coordinates put it, usually far enough away to be off the visible canvas
-altogether. Click **Home** in the Layout tools to fit the view and you will see
-how far out it went.
+Import a drawing that is not in those coordinates — one drawn around a local origin,
+say — and it will not appear over the plant. It lands wherever its own coordinates put
+it, usually far enough away to be off the visible canvas altogether. Click **Home** in
+the Layout tools to fit the view and you will see how far out it went.
 </Callout>
 
 Seven entity types come across: lines, polylines, circles, arcs, ellipses,
@@ -224,15 +220,13 @@ draw it as a road, a corridor or an obstruction. See
 ## The scale bar and north arrow
 
 **🧭 Scale bar + N** switches a metric scale bar and a north arrow on and off
-together. They belong on anything that leaves the application as a picture —
-**Export ▾ Export Image (PNG)**, a drawing handed to somebody who was not part
-of the design.
+together. They belong on anything that leaves the application as a picture, such
+as **Export ▾ Export Image (PNG)**.
 
 <Screenshot id="scale-bar-north" />
 
-The project report draws its own north arrow and title block on the site layout
-plan, so you do not need this for the report itself. See
-[The project report](/docs/exports/project-report).
+The sheets of the [drawing set](/docs/exports/drawing-set) draw their own grid north,
+scale bar and title block, so you do not need this for the package.
 
 ## Clearing annotations
 
@@ -283,25 +277,24 @@ session runs at keyboard speed: `PL`, click the vertices, right-click, `DIM`,
 drag, `T`, type the note. The full keyboard reference is in
 [Keyboard and commands](/docs/reference/keyboard-and-commands).
 
-## What to put on a drawing you hand over
+## What to put on a picture you hand over
 
-The tools are general, so the useful question is which of them a recipient
-actually needs. This is the set that answers the questions a design drawing gets
-asked on site.
+The tools are general, so the useful question is which of them a recipient actually
+needs. This is the set that answers the questions a design picture gets asked on site.
 
 | Add | With | So that |
 | --- | --- | --- |
 | Row pitch, and the gap between table runs | **📐 Dimension** | Nobody sets out spacing from a scaled print |
 | The setback from the fence to the first row | **📐 Dimension** | The perimeter road width is visible as a built dimension, not an assumption |
-| Clearance around each control room | **📐 Dimension** | The access the equipment needs is on the drawing |
+| Clearance around each control room | **📐 Dimension** | The access the equipment needs is on the picture |
 | Plot and phase names | **🅣 Text** | A multi-plot site can be discussed plot by plot |
 | Access routes and gates | **⌒ Polyline** at width 0, plus **🅣 Text** | The route to each part of the plant is agreed before mobilisation |
 | Contractor or phase work areas | **▨ Fill/Zone** | Two teams on site know where their boundary is |
-| Scale and orientation | **🧭 Scale bar + N** | The drawing survives being printed, cropped or pasted |
+| Scale and orientation | **🧭 Scale bar + N** | The picture survives being printed, cropped or pasted |
 
-Keep each of those on a layer that says who it is for, and the same drawing
-serves the client, the civil contractor and the electrical contractor without
-being redrawn three times.
+Keep each of those on a layer that says who it is for, and show only that layer when
+you export the image, so one project serves the client, the civil contractor and the
+electrical contractor without being redrawn three times.
 
 ## Where to go next
 
@@ -314,12 +307,12 @@ being redrawn three times.
   <Card
     title="Pile layout"
     href="/docs/editing/piles"
-    description="Define a pile pattern on one table and export the coordinates"
+    description="Define a pile pattern on one table and apply it to the plant"
   />
   <Card
-    title="CAD export"
-    href="/docs/exports/dxf"
-    description="Every layer in the exported drawing, and what is on it"
+    title="The drawing set"
+    href="/docs/exports/drawing-set"
+    description="The package's sheets and their CAD twin"
   />
   <Card
     title="Keyboard and commands"

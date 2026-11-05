@@ -42,7 +42,63 @@ Each entry names a version and its release date, and the newest carries a
 called out inside the entry it shipped in, because those are the changes that
 alter results between runs.
 
-<Release version="2.1.0" date="2026-09-28" tag="current">
+<Release version="2.1.19" date="2026-11-05" tag="current">
+
+This entry covers everything since 2.1.0.
+
+### Changes that alter results
+
+Regenerate a project before you compare it with an older run.
+
+- **Auto row pitch** is shade-free across the whole Shadow Window on 21 December, not at solar noon.
+- **Lightning arresters** sit on a grid 1.4 × the radius apart, with each mast in a row or column gap. Tables under a mast's shadow keep-clear are removed, on fixed tilt and on trackers.
+- **Half tables and half trackers** hold whole strings only, and placed modules always make up whole strings.
+- **Table size:** a table's north–south footprint on the ground is its slope length × cos(tilt).
+- **Year-1 energy** is one figure everywhere. With twelve months of sunlight it's the sum of the months, each at its own module temperature, and specific yield is year-1 energy ÷ DC capacity.
+- **Weather data correction** is a single setting, default 1.05 on fetched weather data and none on your own file.
+- **CUF** shows on DC and on AC, wherever it appears.
+- **Transformers:** Transformer forms replace ACCBs and central inverters per transformer, and there's no limit of four central inverters per ICR. Standard ratings are lists you can edit.
+- **Earthing:** soil resistivity starts at 50 Ω·m, marked as assumed, and the default array earthing is jumpers with a ring inside the fence.
+- **Sketch roads** move the rows apart instead of deleting them.
+- **The BOM** is built from a profile of 173 entries rather than the earlier short list, so quantities and line names differ.
+
+### One package for the design
+
+- **Export deliverables…** writes the drawing set as PDF with a DXF twin, the design report, the schedules workbook, the BOM workbook, the KMZ, a pile CSV and a manifest, all from one frozen snapshot. It replaces the earlier one-file exports.
+- **Issue a revision** from the same window, for review, approval or construction. The project keeps each issued revision.
+- **File ▸ Company…** keeps your companies and their title blocks.
+
+### New views and windows
+
+- **Checks** tests the design against 29 design checks. You can accept a finding, with a reason.
+- **Workings** shows how each number was reached.
+- **Summary** shows a Plant sheet and a By block sheet, with a reason beside every missing figure.
+- **File ▸ Advanced settings…** holds the rarer design inputs, per project.
+- **The BOM builder** has profiles, a readiness verdict, and edits that are kept across Generate.
+- **The SLD view** opens in review and follows the layout, and a change you've made is never replaced without asking.
+- **Clean boundary** reviews a KMZ or KML when you open it, including survey maps, CAD exports of loose lines and field surveys saved as points.
+
+### New design inputs
+
+- **Grid connection by others:** for a solar park that provides the PSS and the control room, with an optional handover point. Reports and the BOM work fully without an MCR.
+- **DC harness and string fuses**, **communication**, **weather stations**, **Max series fuse**, and how each cable class is laid.
+
+### Working on the plan
+
+- The Layout view is read-only, and buildings move in Sketch Mode.
+- Pan with the middle button, Space and drag, or a plain drag. Pinch to zoom, and press **F** to fit.
+- Placing an MCR or an object prompts on the plot, shows the building under the pointer, and Esc cancels.
+- Layers has ten rows in three groups, including Shadows and Arrester coverage.
+
+### Fixes
+
+- A failed save leaves your existing project file intact and says why in words.
+- Save waits for a run in progress instead of writing a half-routed plant.
+- Long work runs off the main window on large sites, so the window keeps responding.
+
+</Release>
+
+<Release version="2.1.0" date="2026-09-28">
 
 ### New studies
 

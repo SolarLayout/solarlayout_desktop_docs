@@ -1,6 +1,6 @@
 ---
 title: Every parameter and its default
-description: The complete input reference — every card on the five stage tabs and every study window, each field's shipped default, its range, and what it changes.
+description: The complete input reference — every card on the five stage tabs and every study window, each field's shipped default, its range and what it changes.
 ---
 
 Every input ships with a working default, so a first run needs none of them
@@ -28,15 +28,16 @@ table follow the order of the fields on screen.
 | **Site** | Input Boundary File · Site Parameters · Structures & Shadow (keep-clear) · Topography (slope-aware exclusion) | — |
 | **Array** | MOUNTING chip · Module Specifications · MMS-Table Configuration · Spacing & Tilt | A tracker design replaces the last two with a single **Tracker Configuration** card |
 | **Electrical** | String Inverter · ACCB & Transformer · Cables | A central design retitles the first card **SMB – String Monitoring Box** and adds one field, and retitles the second **Transformer** |
-| **Yield** | Run Energy Calculation · Energy Yield | Two loss labels follow the topology |
+| **Yield** | Run Energy Calculation · Energy Yield The inverter efficiency and two loss labels follow the topology |
 | **Tools** | Obstructions · Grid connection & Objects · Studies | — |
 
 ## Inputs and the last run
 
 The layout remembers the inputs it was generated from. Change any field on the
 five tabs and the layout is **out of date**: the button reads **Regenerate
-Layout**, the changed field turns amber, and exports and **Calculate Energy**
-are refused until you regenerate or change the value back. The exceptions are
+Layout**, the changed field turns amber, and the exports and **Calculate Energy**
+wait until you regenerate or change the value back; **Export deliverables…** stays
+enabled and opens saying so. The exceptions are
 **GHI** and **GTI**, values the application fills in itself, and the **ACCB &
 Transformer** card, which regroups the plant on the spot. Tilt and pitch count
 only while their override is ticked, the temperature and shading losses only
@@ -74,8 +75,8 @@ placed, and how much equipment goes on what remains. In depth:
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Perimeter road width** | 6.0 m | 0.0–50.0 m | Shrinks the plant boundary inward by this distance to give the usable area. Nothing is placed in the band left behind. |
-| **Place Lightning Arresters** | off | — | On, arresters are placed on a coverage grid and the tables they overlap are cleared. Off, tables fill the whole usable area; arresters can still be added by hand in Sketch Mode. |
-| **LA protection radius** | 100.0 m | 10.0–500.0 m | The radius one arrester is taken to protect, and the spacing of the grid they sit on. Enabled only when arresters are on. |
+| **Place Lightning Arresters** | off | — | On, arresters are placed on a coverage grid and the tables under each mast's pile and shadow are cleared. Off, tables fill the whole usable area. |
+| **LA protection radius** | 100.0 m | 10.0–500.0 m | The radius one arrester is taken to protect. The grid they sit on is 1.4 times this. Enabled only when arresters are on. |
 | **ICR Block** | 18.000 MWp | 0.1–500.0 MWp, three decimals | The DC capacity one inverter control room serves. Each separate piece of land needs its capacity ÷ this, rounded up, in control rooms — see [the derived values](#values-the-application-derives-rather-than-asks-for). The **Simulation with AC Capacity** study can write its block DC here. |
 | **Line corridor (each side)** | 15.0 m | 0.0–500.0 m | No tables within this distance of a line in the boundary file, so the cleared strip is twice this figure — 30 m at the default. Each line of a loaded file also has its own row. |
 | **Area setback** | 0.0 m | 0.0–100.0 m | No tables within this distance of an area in the boundary file. Each area of a loaded file also has its own row. |
@@ -96,20 +97,17 @@ no unit; the row labels do (*"ICR (m):"*). In depth:
 | **ICR** — L / W / H | 10.0 / 4.0 / 5.0 m | 0.0–500.0 / 0.0–500.0 / 0.0–200.0 m | The inverter control room building. Each room must fit this footprint inside the usable area, and the layout clears every table it overlaps. |
 | **MCR** — L / W / H | 15.0 / 8.0 / 5.0 m | 0.0–500.0 / 0.0–500.0 / 0.0–200.0 m | The main control room, placed by hand once per site. |
 | **USS** — L / W / H | 5.0 / 4.0 / 5.0 m | 0.0–500.0 / 0.0–500.0 / 0.0–200.0 m | The unit substation dropped in every plot that does not hold the MCR, on a multi-plot site. |
-| **Object** — L / W / H | 0.0 / 0.0 / 0.0 m | 0.0–500.0 / 0.0–500.0 / 0.0–200.0 m | A generic structure you place yourself. A height of 0 means not configured. |
-| **LA (m)** — pile Ø | 0.30 m | 0.0–5.0 m | No effect on the design. Recorded only. |
-| **LA (m)** — height | 9.0 m | 0.0–100.0 m | No effect on the design. It casts no shadow and places nothing. |
-| **Shadow Window (h)** | 9.0 to 15.0 | 4–12 / 12–20 solar hours | The solar-time window the keep-clear sweeps on every day of the year. A later end adds the low-sun afternoon tail and roughly doubles the ground each 5 m building sterilises. |
-| **Clear tables in shadows** | on | — | Removes tables and tracker units falling inside the year-round shadow footprint of the ICR, MCR and objects during the window. Arresters are not in that list. |
+| **LA (m)** — height | 9.0 m | 0.0–100.0 m | With the Shadow Window, sets the shadow each mast sweeps; tables under it are removed. Also printed in the arrester's BOM line. |
+| **LA (m)** — pile Ø | 0.30 m | 0.0–5.0 m | Sets the mast's square footprint, never under 0.2 m; tables under it are removed. |
+| **Shadow Window (h)** | 9.0 to 15.0 | 4–12 / 12–20 solar hours | The solar-time window the design keeps shade-free. It sets the automatic row pitch on 21 December and the keep-clear the buildings' shadows sweep on every day of the year. A wider window widens every row gap and roughly doubles the ground each 5 m building sterilises. |
+| **Clear tables in shadows** | on | — | Removes tables and tracker units falling inside the year-round shadow footprint of the ICR, MCR, USS, objects and street lights during the window. |
 | **Street Light — Pile Ø / Height** | 0.30 / 6.0 m | 0.0–5.0 / 0.0–50.0 m | Pole foundation diameter, and the pole height its shadow is cast from. |
 | **Street Light — Span / Setback** | 40.0 / 0.20 m | 1.0–500.0 / 0.0–50.0 m | Pole-to-pole spacing along the perimeter, and how far inside the fence the poles are inset. The count is roughly the perimeter divided by the span. |
 | **Place street lights** | off | — | On, poles are placed along the perimeter and the tables their shadow touches are cleared. |
 
 Every length and width accepts 0.0–500.0 m and every height 0.0–200.0 m, to one
-decimal place, and the ranges are the same for all four structures. The two
-arrester fields are saved with the project, compared with the last run like any
-other input, and printed among the Word report's input parameters — but nothing
-in the layout uses them: no placement, no shadow, no quantity, no drawing.
+decimal place, and the ranges are the same for all three buildings. An object's size
+is asked when it is placed, in the [Place object](#place-object) window.
 
 <Callout>
 On a multi-plot site, **Place MCR** drops a USS of the size above into every
@@ -154,6 +152,7 @@ Shown in both designs. In depth: [Module specifications](/docs/inputs/module).
 | **Length (long side)** | 2.38 m | 0.5–5.0 m | The module's long edge. On fixed tilt it runs north–south in Portrait and east–west in Landscape. |
 | **Width (short side)** | 1.13 m | 0.5–3.0 m | The module's short edge. On fixed tilt it runs east–west in Portrait and north–south in Landscape. |
 | **Wattage** | 610 Wp | 100–1000 Wp | Nameplate DC power of one module. Plant DC capacity is this multiplied by the placed module count. |
+| **Max series fuse** | 0, shown as *Not set* | 0–100 A | From the module datasheet; `.PAN` files don't carry it. The BOM warns when the string fuse is above it. |
 | **Bifacial module** | off | — | Enables the rear-side gain model and unlocks the bifaciality factor. |
 | **Bifaciality factor (φ)** | 0.70 | 0.50–0.95 | Rear-side efficiency as a fraction of the front. Enabled only when **Bifacial module** is on. |
 
@@ -184,7 +183,7 @@ energy gain of 5–15 % over a monofacial module.
 | **Gap between modules N-S** | 0.020 m | 0.0–5.0 m | Clear space between the stacked rows on one table. |
 | **Gap between MMS-Tables** | 1.0 m | 0.0–20.0 m | Clear space between one table and the next in the same row — east–west only; north–south spacing is the row pitch. Also the span of a standard inter-table bridge when a cleaning fleet is sized. |
 | **Maximize placement** | off | — | Positions each row of tables independently to hug the exact boundary edge. Table columns are then not aligned across rows, and generation takes longer on a large site. |
-| **Add half tables** | off | — | Allows a half-width table, carrying half the strings, wherever a full table will not fit. Half tables are also available in Sketch Mode. |
+| **Add half tables** | off | — | Allows a half table wherever a full table will not fit: half the modules wide, rounded up, full height, half the strings, rounded down. Greyed out on a one-row table, which has no half. Half tables are also available in Sketch Mode. |
 
 Table dimensions follow from the counts and the gaps:
 
@@ -208,17 +207,19 @@ override them. In depth: [Spacing and tilt](/docs/inputs/spacing-and-tilt).
 | --- | --- | --- | --- |
 | **Override tilt angle** | off — the line under it reads *"Auto (latitude-based)"* | — | Off, the tilt is derived from the site latitude. On, your value is used. |
 | **Tilt angle** | 20.0° | 0.0–90.0° | The fixed angle of the module plane. Enabled only when the override is on. |
-| **Override row pitch** | off — *"Auto (no-shading, latitude-based)"* | — | Off, the pitch is the no-shading pitch at winter-solstice solar noon. On, your value is used. |
+| **Override row pitch** | off — *"Auto (no-shading, latitude-based)"* | — | Off, the pitch keeps rows shade-free across the Shadow Window on 21 December. On, your value is used. |
 | **Row pitch** | 7.0 m | 1.0–50.0 m | Centre-to-centre spacing between rows of tables. Enabled only when the override is on. |
 
-The automatic rules, both shown in the card's own tooltips:
+The automatic rules:
 
 ```
-tilt  ≈ latitude × 0.76 + 3.1°
-pitch = L·cos(tilt) + L·sin(tilt) / tan(solar elevation)
+tilt  = 0.76 × |latitude| + 3.1°, clipped to 5°–40°
+pitch = L·cos(tilt) + L·sin(tilt)·cos(azimuth) / tan(elevation)
 ```
 
-`L` is the table height in the tilt plane. After a layout runs, the derived
+`L` is the table height in the tilt plane. The pitch is worked for the sun on 21
+December at the Shadow Window's start, its end and solar noon; the largest wins,
+rounded up to the millimetre. After a layout runs, the derived
 values are reported inline — *"Auto → 12.3° (latitude-based)"*,
 *"Auto → 7.42 m (no-shading, latitude-based)"* — and pre-filled into the
 still-greyed-out boxes so you can start from them. Reported **GCR** is the
@@ -245,7 +246,7 @@ Parameters*. In depth: [Tracker configuration](/docs/inputs/tracker).
 | **Max rotation angle (±)** | 55.0° | 5.0–75.0° | The rotation limit either side of horizontal. A reference and shading-analysis input. |
 | **Tracker height from ground** | 1.5 m | 0.5–10.0 m | Torque-tube height. A reference and shading-analysis input. |
 | **Maximize placement** | off | — | Positions each column independently to hug the boundary edge. |
-| **Add half trackers** | off | — | Allows a half-length unit wherever a full one will not fit. |
+| **Add half trackers** | off | — | Allows a half-length unit wherever a full one will not fit, holding whole strings. Greyed out when the unit has no half. |
 
 The unit dimensions as placed:
 
@@ -281,29 +282,33 @@ string design, **SMB – String Monitoring Box** in a central design. In depth:
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Max strings per inverter** *(string)* / **Max strings per SMB** *(central)* | 20 | 1–500 | How many strings one inverter or one string monitoring box accepts. One string is one row of modules within an MMS-Table. |
-| **Max SMB per Central Inverter** *(central only)* | 10 | 1–200 | How many boxes feed one central inverter. The central inverter's capacity is the box capacity multiplied by this. |
+| **DC harness** | One string per input | or Y, two strings per input | With a Y, two strings share one cable from the Y to the device. |
+| **String fuses** | Inline, at the connector *(string)*; Inside the SMB *(central)*; Inline and inside the SMB *(central with a Y)* | those, Inside the inverter, Inline and inside the inverter, or None | Where the string fuses sit. It follows the harness while at the harness's default. |
+| **Communication** | Power-line, over the AC cable *(string)*; RS485, daisy-chained *(central, fixed)* | those two | How the devices talk to their control room. |
+| **Weather stations** | At the MCR | At the MCR, module sensors at every ICR · None | Where the stations stand. By others, the first two read *On site*. |
+| **Max SMB per Central Inverter** *(central only)* | 10 | 1–200 | How many boxes feed one central inverter. The central inverter's capacity is the box capacity multiplied by this. Greyed out while an AC simulation sets the count. |
 | **OND (inverter)** | *"No OND file loaded"* | — | **Load .OND** reads a PVsyst inverter file; **View** opens it read-only once loaded. |
 
-- **Load .OND** shows the manufacturer and model on the row. Its AC power
-  rating, multiplied by the inverter count, gives the plant's inverter capacity
-  and AC capacity. Loading it does not set the inverter efficiency on the Yield
-  tab.
+- **Load .OND** shows the manufacturer and model on the row. Its nominal AC power,
+  or its maximum when the nominal is missing, multiplied by the inverter count,
+  gives the plant's AC capacity. Loading it does not set the inverter efficiency on
+  the Yield tab.
 - The same file feeds the next card: **PmaxOut** sets the transformer loads
   and the power transformer, the output voltage sets the LV voltage, and the
-  maximum AC current sets the inverter feeder current in the cable schedule.
+  maximum AC current sets the inverter feeder current.
   Loading it after a layout regroups the plant at once and marks the layout
   out of date.
 - **View** opens the read-only viewer with the tabs *Main parameters*,
   *Efficiency curve*, *Additional parameters*, *Output parameters* and *Sizes
   and technology*.
 - In a central design the central inverters are counted per ICR block — the
-  block's boxes ÷ **Max SMB per Central Inverter**, rounded up, at least one
-  and at most **4** in one control room building.
+  block's boxes ÷ **Max SMB per Central Inverter**, rounded up, at least one. With
+  an AC simulation the count is the plant AC ÷ the inverter's rated AC, rounded up.
 
 ### ACCB & Transformer, or Transformer
 
 The second card groups each ICR block's inverters into AC combiner boxes
-(ACCBs) and the ACCBs into transformers, and sizes the power transformer at the
+(ACCBs) and the ACCBs onto transformer forms, and sizes the power transformer at the
 main control room. It is titled **ACCB & Transformer** in a string design and
 **Transformer** in a central design, where central inverters feed the
 transformers directly. In depth:
@@ -314,29 +319,26 @@ transformers directly. In depth:
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
 | **Inverters per ACCB, max:** *(string)* | 15 | 1–60 | Most string inverters on one ACCB. Each ICR block gets its own ACCBs, the inverters shared evenly. |
-| **ACCBs per transformer, max:** *(string)* | 4 | 1–12 | Most ACCBs on one transformer; each takes one LV winding. |
-| **Central inverters per transformer, max:** *(central)* | 4 | 1–12 | Most central inverters on one transformer; each takes one LV winding. |
+| **Transformer forms (windings):** | `5, 3, 2` | whole numbers 2–13 | The transformer forms this project allows, by total windings: 5 is one MV and four ACCBs or central inverters. Each ICR takes the largest form first, every transformer full. |
 | **Transformer size limit:** | 17.2 MVA | 0.5–100.0 MVA | The largest transformer allowed; a block whose load is bigger gets more transformers. Never above the largest listed rating — 16,000 kVA with the default list. |
-| **Standard transformer ratings (kVA):** | `2500, 3150, 5000, 6300, 8000, 10000, 12500, 16000` | a list | Each transformer takes the smallest rating at or above its load. |
-| **MV voltage:** | 33.0 kV | 0.4–400.0 kV | The transformers' MV side, as printed in the transformer text, the BOM, the automatic diagram and the ICR block figures. The cable schedule works at 33 kV whatever this reads. |
+| **Standard transformer ratings (kVA):** | `2,500, 3,150, 5,000, 6,300, 8,000, 10,000, 12,500, 16,000` | a list | Each transformer takes the smallest rating at or above its load. |
+| **MV voltage:** | 33.0 kV | 0.4–400.0 kV | The transformers' MV side, and the MV cables to the MCR. |
 | **Power transformer margin:** | 1.00 × | 1.00–3.00 × | Multiplies the plant's maximum AC — every inverter at PmaxOut — before the power transformer is rated. |
 | **Power transformer derating:** | 1.00 × | 0.50–1.00 × | Below 1.00 for a site above about 40 °C ambient or 1,000 m altitude; the power transformer then needs a higher rating for the same load. |
 | **Standard power transformer ratings (MVA):** | `10, 12.5, 16, 20, 25, 31.5, 40, 50, 63, 80, 100` | a list | The power transformer takes the smallest rating at or above the plant's need; above the largest, as many transformers as that needs. |
-| **LV voltage:** | *"needs the OND file"* | read-only | The inverter file's output voltage, e.g. *"800 V · from the OND"*. |
+| **LV voltage:** | *"needs the OND file"* | read-only | The inverter file's output voltage, e.g. *"800 V · from the OND"*, or *"not in the OND file"*. |
 
-- **Rating lists** take commas, semicolons or spaces, and are read when you
-  press Enter or leave the field; the list is then sorted, duplicates dropped
-  and rewritten tidily. An invalid list keeps the previous ratings, with a hint
-  under the field such as *"List at least one rating. Keeping 2500, 5000."*
+- **The lists are chips.** Type in the **Add…** box and press Enter, or paste a
+  list; commas, semicolons and spaces separate values. What cannot go in stays as
+  typed, with the reason, and **Reset to standard** returns a changed list.
 - **The answer line** at the foot of the card reads *"Now: Generate a layout
-  first"* until a layout exists, then, for example, *"Now: 12 ACCBs · 4
-  transformers: 4 × 16,000 kVA"*, or *"… · ratings need the OND file"* without
-  an inverter file.
+  first"* until a layout exists, then, for example, *"Now: 12 ACCBs · 8
+  transformers: 4 × 5,000 + 1 × 8,000 + 3 × 10,000 kVA"*, or *"… · ratings need the
+  OND file"* without an inverter file.
 - **An edit regroups every plot at once, without a Generate.** Nothing is
   re-placed or re-routed, the layout does not go out of date, and the Summary
-  view follows. A stored automatic diagram is not redrawn — choose
-  **Automatic** again in the SLD view — and the next visit to the BOM view
-  recomputes the list, discarding hand edits.
+  view follows. An untouched automatic diagram rebuilds at once, an edited one is
+  marked out of date, and the BOM recounts on its next visit with your edits kept.
 - The power transformer exists only when a plot holds a main control room and
   an inverter file is loaded. It carries every inverter on the site — central
   inverters in a central design — because the other plots feed through their
@@ -355,10 +357,15 @@ The third card. In depth: [Cable options](/docs/inputs/cables).
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Calculate cables** | off | — | Routes and measures the string DC cables and the AC cables (or the DC trunks to the central inverter, counted twice for the two conductors). Off, the inverter and box counts are still computed and every cable row reads `—`. |
+| **Calculate cables** | off | — | Routes and measures the string DC cables and the AC cables (or the DC trunks to the central inverter, counted twice for the two conductors). Off, the inverter and box counts are still computed and every cable row reads *needs Calculate cables*. |
+| **DC string cable laying** | Buried, in conduit | or Buried directly · Above ground, in conduit on concrete blocks | How the DC string cables are laid. Only buried classes count as trench. |
+| **AC cable laying** *(string)* / **DC trunk laying** *(central)* | Buried directly | or Above ground, on concrete blocks | How the AC feeders or DC trunks are laid. |
+| **MV cable laying** | Buried directly | or On cable tray | How the MV cables are laid. |
 | **Inter-module lead** | 0.00 m/module | 0.00–2.00 m/module | Extra string cable per module for the inter-module leads, counted once per string. It ships at 0 because the module supplier provides these leads. Fixed-tilt tables only. |
 | **String return run along table** | off | — | Tick for daisy-chain wiring: the string's two leads end at opposite ends of the table, so one conductor runs back along the table to exit beside the other. Leave off for leapfrog wiring, whose leads exit the same end. Fixed-tilt tables only. |
 | **DC cable slack** | 10.0 % | 0.0–30.0 % | Slack and wastage added to every DC string-cable total, trackers included. |
+| **DC trunk conductor** *(central only)* | Aluminium | or Copper | The metal the DC trunk is sized in; the BOM's lugs follow it. |
+| **Voltage-drop limits** | *"all at defaults"* | — | **Advanced…** opens these limits in Advanced settings. |
 
 The lead and the return run add nothing on a tracker design; the slack applies
 to both.
@@ -414,7 +421,9 @@ accepted as well:
 | GTI | `gti`, `g(i)`, `gi`, `in-plane irradiance` |
 
 When the file carries a temperature column, monthly average temperatures come
-from the file instead of from the seasonal model.
+from the file instead of from the seasonal model. **Weather data correction**, which
+applies to modelled weather, is in
+[Advanced settings](/docs/workspace/advanced-settings), not on this card.
 
 #### Irradiance and site conditions
 
@@ -484,9 +493,13 @@ yield is multiplied by. In depth:
 | **Plant lifetime** | 30 years | 1–50 years | How many years the lifetime total runs for. |
 
 ```
-Year 1 (actual) = capacity (kWp) × specific yield × (1 − 1st year degradation)
-Year n (n ≥ 2)  = Year 1 (actual) × (1 − annual degradation)^(n−1)
+gain            = (1 − 1st year degradation) × (1 + bifacial gain) × weather correction
+Year 1 (MWh)    = Σ months of capacity (kWp) × GTI × PR × gain ÷ 1000
+Year n (n ≥ 2)  = Year 1 × (1 − annual degradation)^(n−1)
 ```
+
+With a yearly irradiance figure alone, Year 1 is worked once from the annual GTI and
+PR. Year 1 already carries the first-year degradation.
 
 **Uncertainty & exceedance** (summary *"P50 / P75 / P90"*). The three
 probability rows of the Summary view are named from these fields, so read the
@@ -510,10 +523,11 @@ P90 = P50 × (1 − 1.282 × σ)
 
 No parameters of its own — this tab edits the generated layout and opens the
 studies. It can be opened at any time; before a layout its tooltip reads
-*"Generate a layout first"* and its buttons are greyed out, except **Robot
-count from DXF…**. Its cards are **Obstructions** (**Draw Rectangle**, **Draw
-Polygon**, **Undo Last**, **Clear All**), the tip *"Tip: Click and drag a blue
-ICR to reposition it."* once a run has placed control rooms, **Grid connection &
+*"Obstructions, the MCR and most studies need a layout; Robot count from DXF works
+without one"* and its buttons are greyed out, except **Robot count from DXF…** and,
+with a boundary, **Place Object**. Its cards are **Obstructions** (**Draw Rectangle**,
+**Draw Polygon**, **Undo Last**, **Clear All**), the tip *"Tip: In Sketch Mode, drag a
+blue ICR to move it."* once a run has placed control rooms, **Grid connection &
 Objects** (**On this site** or **By others**, **Place MCR** and **Remove MCR** or
 **Place handover point** and **Remove point**, **Place Object**, **Remove Objects**) and **Studies**, whose five buttons are, in order:
 
@@ -530,7 +544,7 @@ the next section.
 
 ## Parameters set outside the input panel
 
-Seven windows carry their own inputs, with defaults of their own.
+Nine windows carry their own inputs, with defaults of their own.
 
 ### Site reference
 
@@ -580,9 +594,12 @@ Needs a module file and an inverter file. In depth:
 | **Overload limit** | 1.5 (string) / 1.4 (central) | 1.00–2.00 | The design overload limit, not the inverter's nameplate DC input. A ratio above it is clipped to it. |
 | **Modules per string** *(with **Size…**)* | the panel's **Modules per row** (fixed tilt) or **Modules per string (N–S)** (tracker) | 1–200 | The series count the strings are built from. |
 | **Module Pmax** · **Inverter rated AC** *(under **Override nameplate values**)* | the module file's and the inverter file's nameplate values | 0–2000 W · 0–100,000 kW | The nameplate figures the simulation uses. |
-| **ICR block AC** | **Not set** (0), every time the window opens | 0–5,000,000 kW, step 100 | The AC capacity one ICR block serves. Set, the block DC is this × the ratio, and **Regenerate** writes it into **ICR Block**, rounded up to three decimals. Not set keeps the panel's **ICR Block**. |
+| **ICR block AC** | **Not set** (0) | 0–5,000,000 kW, step 100 | The AC capacity one ICR block serves. Set, the block DC is this × the ratio, and **Regenerate** writes it into **ICR Block**, rounded up to three decimals. Not set keeps the panel's **ICR Block**. |
 | **Strings per SMB** *(central only)* | 20 | 1–500 | Boxes per inverter follow from it. Enabled only when the target fits the layout. |
 | **Let me choose where placement starts** | off | — | After regenerating, click a point on the plot; the tables nearest it are kept. |
+
+The window reopens on the inputs it closed with, and they are saved with the
+project. A new boundary file clears them.
 
 ### Robotic module cleaning
 
@@ -596,9 +613,9 @@ Sizes the fleet for the generated layout. In depth:
 | **Skip lines up to** | 0 | 0–1,000, steps of 0.5 | A segment carrying this many units or fewer gets no robot; a half unit counts 0.5. |
 | **Out and back** | on | — | The robot must return on the same charge, doubling the distance to cover. |
 
-Nothing is bridged unless you tick it in the list of gaps. The fleet result is
-saved with the project; the window's own answers are not, and it opens on
-the defaults every time.
+Nothing is bridged unless you tick it in the list of gaps. The fleet is saved with
+the project, and the window reopens with the answers and ticks of the fleet you
+added.
 
 ### Robot count from DXF
 
@@ -619,23 +636,36 @@ name; only the tables layer is required.
 
 ### Earthing Design
 
-A preliminary IEC earthing calculation for the generated layout, with IS 3043
-and IEEE 80 shown as cross-checks. There is no run button: the window
-calculates when it opens and again as you edit. Its inputs are **not saved in
-the project**; they are remembered only while the application window stays
-open. The fields, their defaults and what each one drives are on
-[Earthing design](/docs/simulation/earthing). The inputs are in seven groups,
-in this order:
+The project's earthing design, on the IEC calculation with IS 3043 and IEEE 80
+shown as cross-checks. There is no run button: the window calculates when it opens
+and again as you edit. Inputs off their default are **saved in the project**, and
+the BOM reads the design. The fields, their defaults and what each one drives are on
+[Earthing design](/docs/simulation/earthing). The inputs are in eight groups, in this
+order:
 
 | Group | What it sets |
 | --- | --- |
-| **Soil & site** | Soil resistivity (100.0 Ω·m) and the season factor (1.50) that give the design resistivity, the gravel layer, the corrosion allowance and the design life |
+| **Array earthing** | **Rule**: **Jumpers and a ring** (the default) or **A strip along each row** |
+| **Soil & site** | Soil resistivity (50.0 Ω·m, assumed until measured; 0 shows *Unknown*) and the season factor (1.50) that give the design resistivity, the gravel layer, the corrosion allowance and the design life |
 | **Fault data** | The LV and MV fault currents and times (5.0 kA and 25.0 kA, 1.00 s each), the MV neutral, the report-only HV duty, and the touch / step duration, split factor and X/R |
 | **Targets** | **Whole plant** (1.00 Ω), **Each earth pit** (5.0 Ω), **LA earth pit** (10.0 Ω) and the pit rule |
 | **Earth pit (maintenance-free)** | Electrode length (3.0 m), rod and bore diameters, backfill resistivity, pit spacing and strip depth |
 | **Conductors** | The initial and final temperatures (30 → 300 °C), the GI strip and Cu cable size lists, and wastage (5 %) |
-| **Equipment rules** | Pits per ICR, USS, MCR, transformer neutral and arrester; fence, gate, CCTV and weather-station pits; frame bonding and tracker jumpers |
-| **Layout rules** | Strip in the AC and MV trenches, and the link, runner-split and cross-link lengths |
+| **Equipment rules** | Pits per ICR or USS (10), MCR (10), transformer and arrester (2); fence, gate, CCTV and weather-station pits; frame bonding and tracker jumpers |
+| **Layout rules** | The jumper allowance, breaks and bridges, the ring inside the fence and its pits, strip in the AC and MV trenches, and the link, runner-split and cross-link lengths |
+
+### Place object
+
+Opened from **Place Object** on the **Tools** tab, before you click the plot.
+
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Length (E-W)** | 5.0 m, then the last size used | 0–500 m | The object's east–west size. |
+| **Width (N-S)** | 5.0 m, then the last size used | 0–500 m | The object's north–south size. |
+| **Height** | 10.0 m, then the last size used | 0–200 m | Casts the object's shadow; tables under it are removed. At 0 there is no shadow. |
+
+The last size lasts for the session. See
+[Site equipment](/docs/layout/site-equipment).
 
 ### Pile layout
 
@@ -656,6 +686,14 @@ tab; **Reset to derived** returns to the derived one. Offsets are measured from
 the unit's own south-west corner. The patterns are saved with the project and
 carried across a Generate; the overlay's ON / OFF is not saved.
 
+### Advanced settings
+
+**File ▸ Advanced settings…** holds the rare inputs — the voltage-drop limits, the
+check limits, cable sizes, RS485 chains, the weather data correction, Sketch road
+rules, the handover point reach and more — for this project only. Each row's pill
+says what a change affects. See
+[Advanced settings](/docs/workspace/advanced-settings).
+
 ## What a project file keeps
 
 A saved `.slp` project keeps **every input on the five stage tabs**:
@@ -665,46 +703,48 @@ A saved `.slp` project keeps **every input on the five stage tabs**:
 - **Files:** the paths of the module, inverter, hourly weather and contour
   files — kept even when a file has gone missing.
 - **Array, Site, Electrical and Yield:** every field on this page, including
-  **Structures & Shadow**, **Topography**, the three cable allowances,
+  **Structures & Shadow**, **Topography**, the cable allowances and laying choices,
   **Maximize placement**, half tables, the **Place Lightning Arresters** tick,
   the shading auto-compute tick, ground clearance and the **ACCB & Transformer**
   card's rules.
 - **Pile patterns:** full, half and the radius.
 
-It also keeps the layout, the control rooms, inverters and cables, the MCR, USS
-and objects, drawn obstructions, sketch elements and hand-drawn trenches, the
-terrain and energy results, the BOM as edited, the SLD and its background, the
-electrical grouping, the cleaning fleet result, and the record of the inputs
-the layout was generated from.
+It also keeps the layout, the control rooms, inverters and cables, the MCR, USS,
+handover points and objects, drawn obstructions, sketch elements and hand-drawn
+trenches, the terrain and energy results, the BOM's profile and your edits to it, the
+SLD and its background, the electrical grouping, the cleaning fleet, the
+**Earthing Design** inputs and **Advanced settings** off their default, the
+AC-capacity window's inputs, the project details, company and issued revisions, and
+the record of the inputs the layout was generated from.
 
-**Not saved:** the **Earthing Design** inputs, the **Robotic Module Cleaning**
-window's answers, anything in **Robot count from DXF**, the AC-capacity
-window's **ICR block AC** (the **ICR Block** value it wrote is saved), and view
-state — the Layers toggles, **Satellite**, **Wireframe** and **Piles: ON/OFF**.
-See [Projects](/docs/projects).
+**Not saved:** anything in **Robot count from DXF**, the object size last used, the
+**Shadow View** values, and view state — the Layers toggles, **Satellite**,
+**Wireframe** and **Piles: ON/OFF**. See [Projects](/docs/projects).
 
 ## Values the application derives rather than asks for
 
 | Value | How it is derived |
 | --- | --- |
 | Tilt angle, override off | Latitude × 0.76 + 3.1° |
-| Row pitch, override off | The no-shading pitch at winter-solstice solar noon |
+| Tilt angle limits | The automatic tilt is clipped to 5°–40° |
+| Row pitch, override off | The widest shade-free pitch over the Shadow Window on 21 December, at its start, its end and solar noon, rounded up to the millimetre |
 | GCR | Table height ÷ row pitch on fixed tilt; aperture ÷ effective east–west pitch on a tracker |
-| Number of control rooms | For each separate piece of land — tables linked by gaps of no more than 300 m — its MWp ÷ **ICR Block**, rounded up, half tables weighing 0.5; the plant count is the sum. Re-checked after the tables under the rooms are cleared, and on fixed tilt again after the building-shadow keep-clear, which can only lower it |
-| Arrester count | A square grid at the protection radius inside the usable area, plus one extra arrester for any table left beyond the radius of every placed one |
+| Number of control rooms | For each separate piece of land — tables linked by gaps of no more than 300 m — its MWp ÷ **ICR Block**, rounded up, half tables weighing their share of a full table's modules; the plant count is the sum. Re-checked after the tables under the rooms are cleared, and on fixed tilt again after the building-shadow keep-clear, which can only lower it |
+| Arrester count | A square grid at 1.4 × the protection radius inside the usable area, each point moved to the nearest gap, plus one extra arrester for any table, ICR, MCR or USS left beyond the radius of every placed one |
 | Street light count | Roughly the perimeter ÷ the pole-to-pole span |
 | Pile count | Full units × the full pattern + half units × the half pattern |
 | ACCBs per ICR block | The block's inverters ÷ **Inverters per ACCB, max**, rounded up |
-| Transformers per ICR block | The larger of feeders ÷ the per-transformer maximum and, with an inverter file, the block load ÷ the size limit, both rounded up |
+| Transformers per ICR block | The feeders on the largest form first, every transformer full. A form whose load would be over the size limit is dropped for that block; the smallest is kept |
 | Transformer (IDT) rating | The load (Σ PmaxOut of the inverters on it) rounded up to the next listed rating within the limit |
-| Transformer windings | Feeders on the transformer + 1 |
+| Transformer windings | The form |
 | Power transformer | Σ PmaxOut × margin ÷ derating, rounded up to the next listed MVA rating |
 | Cleaning fleet | One robot per line to start, growing where a line is broken by an unbridged gap and where a charge cannot finish a segment |
-| Plant AC capacity | The inverter file's AC power rating × the inverter count, or the target of a **Simulation with AC Capacity** when one was run |
+| Plant AC capacity | The inverter file's nominal AC power × the inverter count, or the target of a **Simulation with AC Capacity** when one was run |
 | Temperature loss | The module temperature model, once a module file supplies the power coefficient |
 | Shading loss, auto on | Row-to-row shading from the plant's GCR, computed on **Generate Layout** |
-| Specific yield | Annual GTI × performance ratio |
-| CUF | Year-one energy ÷ (capacity in kWp × 8760 hours) |
+| Specific yield | Year-1 energy ÷ DC capacity |
+| CUF on DC | Year-1 energy ÷ (DC capacity in kWp × 8760 hours) |
+| CUF on AC | Year-1 energy ÷ (plant AC × 8760 hours) |
 
 ## Where to go next
 
@@ -712,7 +752,7 @@ See [Projects](/docs/projects).
   <Card
     title="Summary view"
     href="/docs/reference/summary-columns"
-    description="What every row of the per-plant sheet reports"
+    description="What every row of the Plant and By block sheets reports"
   />
   <Card
     title="Glossary"

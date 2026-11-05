@@ -3,16 +3,16 @@ title: Temperature loss
 description: The thermal model behind the temperature row — module temperature from ambient, irradiance and wind, the four mounting types, and the loss it produces.
 ---
 
-Temperature is the largest single loss in the breakdown and the only one the
-application works out for you. As soon as a module file is loaded, the
+Temperature is the largest loss in the breakdown on the shipped defaults. As soon
+as a module file is loaded, the
 temperature row stops being an assumption and becomes a calculation, because
 the number it needs — the module's temperature coefficient of maximum power —
 is read from that file and appears nowhere on the **Yield** tab.
 
-That is why this loss has its own page. Every other row on
-[The loss breakdown](/docs/energy/losses) is a percentage you defend by
-judgement. This one you defend by showing the working, and the application
-shows it on screen.
+That is why this loss has its own page. Most other rows on
+[The loss breakdown](/docs/energy/losses) are percentages you set by judgement.
+This one you defend by showing the working, and the application shows it on
+screen.
 
 ## The model
 
@@ -29,7 +29,7 @@ Loss (%) = |μ_Pmpp| × (T_module − 25)
 | Term | What it is | Where it comes from |
 | --- | --- | --- |
 | `T_module` | Module operating temperature, °C | Computed, and shown on the **Module temp. (Sandia)** readout under the loss row |
-| `T_ambient` | Average ambient air temperature, °C | **Avg. ambient temp.**, or your weather file's temperature column |
+| `T_ambient` | Average ambient air temperature, °C | **Avg. ambient temp.**; each month uses its own, see [Monthly temperature loss](#monthly-temperature-loss) |
 | `G` | Average operating irradiance on the module plane, W/m² | Derived from the annual in-plane irradiance — see below |
 | `a` | Sandia temperature-rise coefficient for the mounting, dimensionless | Fixed by **Mounting type** |
 | `b` | Sandia wind coefficient for the mounting, in s/m | Fixed by **Mounting type** |
@@ -62,8 +62,7 @@ and wind.
 | **Stand-off Mount** | −3.23 | −0.130 |
 | **Insulated Back** | −2.81 | −0.0455 |
 
-**Open Rack – Ground Mount** is the default, and it is the right one for
-essentially every plant this application designs. Air reaches both faces of the
+**Open Rack – Ground Mount** is the default, for a ground-mounted plant. Air reaches both faces of the
 module and both sides of the rack, so heat leaves the module in every direction.
 It carries the most negative `a` of the four, which is the smallest temperature
 rise per unit of irradiance in still air.
@@ -94,7 +93,7 @@ loss.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Avg. ambient temp.** | 28.0 °C | −10 to 55 °C | The air temperature the rise is added to. Overridden by your weather file's temperature column when one is present. |
+| **Avg. ambient temp.** | 28.0 °C | −10 to 55 °C | The air temperature the rise is added to. The months use your weather file's temperature column instead when it has one. |
 | **Mounting type** | Open Rack – Ground Mount | 4 options | Selects the coefficient pair above. |
 | **Avg. wind speed** | 3.0 m/s | 0.5–15.0 m/s | Convective cooling. Because `b` is negative, a higher wind speed makes the exponential smaller, which makes the temperature rise smaller and the loss lower. |
 
@@ -104,9 +103,10 @@ cooler module, and a smaller loss.** A coastal site with a genuine annual
 average above the default will show a lower temperature loss than the same
 design inland, and that difference is real rather than an artefact.
 
-Use annual averages in both fields, not summer peaks. The relation is applied
-once to produce one annual loss figure, so a peak-condition input produces a
-loss that is true at noon in June and wrong for the year.
+Use annual averages in both fields, not summer peaks. The loss row is worked out
+once from them, and the seasonal model is centred on the ambient figure, so a
+peak-condition input produces a loss that is true at noon in June and wrong for the
+year.
 
 ## Where the operating irradiance comes from
 
@@ -161,20 +161,40 @@ module's datasheet coefficient, and reproduce the percentage by hand.
 <Screenshot id="losses-expander" />
 
 Check the module temperature rather than only the loss. It is the quantity with
-a physical meaning, and it is the one that tells you immediately whether the
-inputs are sane: a module temperature that has not moved from the ambient
-temperature means no irradiance has arrived yet.
+a physical meaning, and the readout shows what it was worked out at: *G = 600 W/m²*
+means no irradiance has arrived yet.
 
 ## Monthly temperature loss
 
-The annual figure is one number, but the monthly table on the Energy view is
-not built by repeating it twelve times. Each month gets its own module
-temperature from the same Sandia relation, using that month's own operating
-irradiance and its own ambient temperature, and both are shown in the table's
-**T_amb (°C)** and **T_cell (°C)** columns. Monthly ambient temperature comes
-from your weather file's temperature column when it has one, and otherwise from
-a sinusoidal seasonal model whose amplitude scales with the site's absolute
-latitude.
+A normal run has twelve months of irradiance, and each month gets its own
+temperature loss. It uses the same Sandia relation with that month's own operating
+irradiance and its own ambient temperature, and both temperatures are shown in the
+table's **T_amb (°C)** and **T_cell (°C)** columns:
+
+```
+G_m     = min(900, GTI_m × 1000 / (days × 8))   W/m²
+T_mod   = T_amb,m + G_m × exp(a + b × W)
+loss_m  = μ × max(0, T_mod − 25)
+PR_m    = PR without temperature × (1 − loss_m)
+```
+
+`μ` is the module file's `|μ_Pmpp|`. **Without a module file**, it is worked back
+from what you entered: **Temperature losses** ÷ (the year's module temperature −
+25). If that comes out above **1.0 %/°C**, the entered loss is used flat for every
+month instead. So on a monthly run the entered figure is not itself applied unless
+it is flat; it sets the coefficient. The temperature factor reported for the year
+is the yearly equivalent of the months.
+
+Monthly ambient temperature comes from an hourly temperature series of at least
+365 values when the run has one, which your weather file's temperature column or a
+PVGIS hourly fetch can provide. Otherwise it comes from a seasonal model:
+
+```
+T_amb,m = T_avg + max(3, |latitude| × 0.45) × cos(2π(m − phase)/12)
+```
+
+`T_avg` is **Avg. ambient temp.**, `m` the month, and `phase` is 6 in the northern
+hemisphere and 0 in the southern.
 
 This is why a hot low-latitude site shows its worst monthly performance ratio
 in the hottest months rather than the least sunny ones. See
@@ -186,8 +206,8 @@ changes.
 
 <Callout type="warn">
 With no module file loaded, **Temperature losses** stays at its shipped default
-of 6.0 % and is an assumption like any other row. The relation cannot run
-without a temperature coefficient, and the coefficient only exists in the
+of 6.0 % and is an assumption like any other row. The relation has no measured
+temperature coefficient to run on, because that coefficient only exists in the
 module file.
 </Callout>
 

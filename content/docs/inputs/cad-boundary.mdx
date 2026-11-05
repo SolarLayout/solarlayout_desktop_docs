@@ -15,9 +15,9 @@ coordinates may be UTM metres, or they may be local drawing coordinates with no
 link to the ground. So every drawing is loaded through the **Site reference**
 window, which asks where it sits: at its own UTM coordinates, at a latitude and
 longitude you type, or nowhere in particular — **Layout only**. That answer
-decides whether the design gets an energy estimate, a Google Earth export and
-automatic tilt and row pitch. The drawing's own coordinates are never changed:
-the exported drawings come back in them.
+decides whether the design gets an energy estimate, a Google Earth file in its
+package and automatic tilt and row pitch. The drawing's own coordinates are never
+changed: the exported drawings come back in them.
 
 ## What is extracted
 
@@ -92,9 +92,10 @@ read only on a line-corridor layer.
 </Callout>
 
 Convert everything you need read into a polyline before exporting, and check
-closure while you are there. Anything else in the drawing is ignored rather than
-misread, so dimensions, text, title blocks and hatching do no harm and a busy
-drawing does not need cleaning up first.
+closure while you are there. Dimensions, text and hatching are ignored, and so are
+title blocks placed as blocks on other layers. A closed polyline is not: one on a
+layer with no keyword that is not inside another, such as a sheet frame, is read
+as a plant boundary, so remove it or put it on a keep-clear layer.
 
 Save the drawing as `.dxf` from your CAD program. The file picker also lists
 `.dwg`, but a `.dwg` opens only if the free ODA File Converter is already
@@ -192,32 +193,38 @@ and the note *"Longitude isn't needed for tilt and row pitch. Without a
 latitude, set them by hand under Array."* The primary button is **Continue with
 layout only**; it waits only when the latitude you typed is out of range.
 
-The banner spells out the cost: no Google Earth export and no energy yield,
+The banner spells out the cost: no Google Earth file and no energy yield,
 and — until you give a latitude — no automatic tilt, row pitch or
 building-shadow clearance. With a latitude it ends *"Tilt and row pitch use
 27.0739° N."*
+
+The **Placed by hand** and **Layout only** banners also say how the design report
+lists the location: placed by the user, or unknown.
 
 ## What each choice gives
 
 | | Drawing's coordinates | Placed by latitude and longitude | Layout only |
 | --- | --- | --- | --- |
 | Where the site is | At the drawing's own numbers, read as UTM metres in the zone chosen | The centre of all the boundaries together is put at the typed point; the drawing is moved, never scaled or rotated | Unknown |
-| Automatic tilt and row pitch | From the site | From the typed latitude | From the typed latitude, if you gave one |
+| Automatic tilt and row pitch | From the site | From the typed latitude | From the typed latitude, if you gave one. With none on a fixed-tilt design, tick both overrides or **Generate Layout** is disabled |
 | Building-shadow clearance | On | On | Skipped without a latitude |
 | Automatic shading value (Yield tab) | Computed | Computed | Without a latitude it reads *"Auto → — (needs the site's latitude)"* |
 | Energy yield | Yes | Yes | Off — **Calculate Energy** is disabled, and its tooltip, the Yield tab's status line and the Energy view read *"Energy yield is off: the site's location is unknown (layout only)."* |
-| Google Earth export | Yes | Yes | Disabled; the menu item reads **Export KMZ — location unknown** |
+| KMZ row in the package | Yes | Yes | Unticked and disabled: *"The site's location is unknown (layout only), so a KMZ would put the plant in the wrong place."* |
 | Satellite image | Yes | Yes | Refused — *"Satellite imagery needs the site's location."* |
 | Shadow View | Yes | Yes | Without a latitude, refused — *"Shadow view needs the site's latitude: pick the boundary file again and enter one."* |
 | Units note, axis ticks, cursor position, pile labels | UTM, e.g. *"UTM 42N · metres"* | The drawing's own coordinates — *"Drawing coordinates · metres"* | The drawing's own coordinates |
-| The CAD drawing and the ICR-block drawing set | UTM — the same coordinates as the input | The drawing's own coordinates, so the export lies exactly over the source drawing | The drawing's own coordinates |
-| Pile coordinates workbook | **Easting (m)** and **Northing (m)**, with longitude and latitude | **X drawing (m)** and **Y drawing (m)**, with longitude and latitude | **X drawing (m)** and **Y drawing (m)**; longitude and latitude blank |
+| The package's DXF | UTM — the same coordinates as the input | The drawing's own coordinates, so the export lies exactly over the source drawing | The drawing's own coordinates |
+| `piles.csv` | East and north in the drawing's coordinates, with latitude and longitude | East and north in the drawing's coordinates, with latitude and longitude | East and north in the drawing's coordinates; latitude and longitude blank |
 
 <Callout type="warn">
-With **Layout only** and no latitude, the automatic tilt and row pitch have
-nothing to work from. Give a latitude in the window, or tick both overrides
-under [Spacing and tilt](/docs/inputs/spacing-and-tilt) and set the tilt angle
-and row pitch by hand before generating.
+With **Layout only** and no latitude, the automatic tilt and row pitch of a
+fixed-tilt design have nothing to work from, so **Generate Layout** is disabled.
+The hint under it reads *"Automatic tilt and row pitch need the site's latitude.
+Pick the boundary file again and enter a latitude, or set tilt and row pitch by
+hand under Array."*, with two links: **Set tilt and pitch** takes you to the
+overrides under [Spacing and tilt](/docs/inputs/spacing-and-tilt), and **Enter a
+latitude** reopens this window. A tracker design never needs a latitude.
 </Callout>
 
 **Placing a drawing distorts nothing.** Its shape and area are kept exactly: a
@@ -225,16 +232,16 @@ and row pitch by hand before generating.
 acres still encloses 120 acres. The point you type is the **centre** of the
 site — the centre of all the boundaries together — not a corner. A corner
 coordinate shifts the whole plant by half its own width, which matters for the
-aerial imagery, the Google Earth export and anything you compare against the
-real site.
+aerial imagery, the package's Google Earth file and anything you compare against
+the real site.
 
 ## Changing the location later
 
 The choice is saved in the project and reused at every **Generate Layout**
-without asking again. The window opens only from **Browse…**, and picking the
-file again replaces the layout with a preview of the boundary, so changing the
-location means **picking the file again, answering the window, and generating
-again**. When that Generate finds the boundary has moved, it carries your
+without asking again. The window opens from **Browse…** and from **Enter a
+latitude**, on the answer already given. Picking the file again replaces the
+layout with a preview of the boundary, so changing the location means **picking
+the file again, answering the window, and generating again**. When that Generate finds the boundary has moved, it carries your
 obstructions, main control room, unit substations, objects and sketch
 annotations to the new position, and the status line says so — for example
 *"Kept your obstructions, MCR, …, moved to the drawing's new location."*
@@ -312,8 +319,8 @@ purposes unless it genuinely is both.
     description="Setting tilt and row pitch by hand when there is no latitude"
   />
   <Card
-    title="The CAD drawing export"
-    href="/docs/exports/dxf"
-    description="The layered drawing, in the same coordinates as your input"
+    title="The drawing set"
+    href="/docs/exports/drawing-set"
+    description="The PDF and its DXF twin, in the same coordinates as your input"
   />
 </Cards>

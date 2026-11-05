@@ -1,1 +1,11 @@
-{ "title": "The workspace", "pages": ["main-window", "views", "out-of-date-results"] }
+{
+  "title": "The workspace",
+  "pages": [
+    "main-window",
+    "views",
+    "checks",
+    "workings",
+    "out-of-date-results",
+    "advanced-settings"
+  ]
+}

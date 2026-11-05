@@ -59,8 +59,7 @@ landing on the back is worth 0.70 of the same unit landing on the front.
 **Ground albedo (ρ)** is the fraction of the light striking the ground that the
 ground reflects back. Fresh concrete reflects a large fraction; dark tilled soil
 reflects little. It is the one input in the rear-side model that describes the
-site rather than the hardware, and on a real project it is the number a lender's
-reviewer will ask about first.
+site rather than the hardware.
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
@@ -127,7 +126,7 @@ Every term:
 | `ρ` | Ground albedo, the field above |
 | `F_ground_rear` | The ground-to-rear view factor — the fraction of the rear face's field of view that is occupied by ground rather than sky |
 | `tilt` | The module tilt angle from horizontal, either derived from latitude or overridden by you |
-| `GCR` | Ground coverage ratio — the collector width as a fraction of the row pitch. The application reports it as table height divided by row pitch |
+| `GCR` | Ground coverage ratio — the collector width as a fraction of the row pitch. The application reports it as the table's slope length divided by row pitch |
 | `1 − GCR` | The fraction of the ground left uncovered by collectors, and therefore able to be lit and to reflect |
 | `GTI_front` | Global tilted irradiance on the front face — the **GTI (in-plane)** field, in kWh/m²/yr |
 | `φ` | Bifaciality factor |
@@ -150,8 +149,7 @@ catch light and bounce it under the modules.
 
 The trade is the familiar one, with a second term in it. Reducing the row
 pitch fits more capacity onto the same site, but it costs row-to-row shading
-*and* rear-side gain at the same time. On a bifacial plant the optimum pitch sits
-wider than the same exercise on monofacial modules would suggest. Pitch is set
+*and* rear-side gain at the same time. Pitch is set
 on [Spacing and tilt](/docs/inputs/spacing-and-tilt).
 
 ### A more reflective ground gains more
@@ -166,13 +164,8 @@ a few years of vegetation management, not on the day of handover.
 ## How much gain to expect
 
 **Typical bifacial energy gain over the same plant built with monofacial modules
-is 5 to 15 %.** Where a specific design lands inside that band is decided far
-more by the ground under the array and by how densely the rows are packed than
-by the bifaciality factor, which barely varies between current products.
-
-A result outside that band is a signal to check the inputs rather than a result
-to report. The usual causes are an albedo entered for the wrong ground cover and
-a row pitch that does not match the design being priced.
+is 5 to 15 %.** Where a specific design lands depends on the albedo, the row
+pitch and the bifaciality factor, through the relations above.
 
 ## Where the gain appears in the results
 
@@ -180,22 +173,21 @@ The gain is an energy effect, so it appears inside the energy figures and
 nowhere else:
 
 - The **Year-1 energy** and **Specific yield** tiles on the Energy view, the
-  **ENERGY** rows of the Summary view — the three exceedance probabilities and
-  the lifetime total — and the **Year-1 P50 energy** chip all carry it.
-- The **CUF** tile and row carry it, because the capacity factor is computed
-  from first-year energy over the same installed DC capacity.
-- The layout rows — table counts, modules, DC capacity — do not change at
-  all. There is no bifacial row in the Summary view.
-- The gain itself is computed as a percentage, and it is printed on the energy
-  pages of the exported report, beside the inputs and the loss analysis that
-  produced the figures. See [Project report](/docs/exports/project-report).
+  exceedance rows of the Summary view and the lifetime total, and the **Year-1 P50
+  energy** chip all carry it. Each month's energy is multiplied by `1 + bifacial
+  gain`.
+- The **CUF on DC** and **CUF on AC** tiles and rows carry it, because both are
+  computed from first-year energy.
+- The layout rows, such as table counts, modules and DC capacity, do not change
+  at all. There is no bifacial row in the Summary view.
+- The **Workings** view lists **Bifaciality** and **Albedo** among the inputs of
+  **Year-1 energy**.
 
 **There is no separate on-screen readout of the gain.** Nothing on the Yield
-tab, the Energy view or the Summary view shows it as its own percentage, so if
-you need the figure itself, take it from the report's energy pages.
+tab, the Energy view or the Summary view shows it as its own percentage.
 
-Failing that, the cleanest way to see the effect on a design you have already run
-is to calculate energy with **Bifacial module** off, note the first-year figure,
+The cleanest way to see the effect on a design you have already run is to calculate
+energy with **Bifacial module** off, note the first-year figure,
 then tick it, generate the layout again and calculate again. The tables are the
 same in both runs, so the difference is the rear-side contribution and nothing
 else.

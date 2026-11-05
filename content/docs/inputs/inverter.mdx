@@ -1,28 +1,31 @@
 ---
 title: Inverter settings
-description: How many strings feed one inverter or string monitoring box, what a manufacturer inverter file changes, and where the AC figures land in the Summary view.
+description: Strings per inverter or SMB, the DC harness and fuses, communication and weather stations, and what a manufacturer inverter file changes.
 ---
 
 The inverter card on the **Electrical** tab sets how the plant's DC output is
 collected and converted, how much of it one piece of collection equipment takes,
-and which manufacturer's machine the AC side is sized from. Its title and its
-fields follow the inverter topology you chose at launch, because the two
-topologies collect the strings in different places. See
-[Choosing a design mode](/docs/design-modes) for the choice itself.
+how the strings reach it and how the devices report, and which manufacturer's
+machine the AC side is sized from. Its title and its fields follow the inverter
+topology you chose at launch, because the two topologies collect the strings in
+different places. See [Choosing a design mode](/docs/design-modes) for the choice
+itself.
 
 The Electrical tab carries three cards, in this order: this inverter card; the
 **ACCB & Transformer** card — titled **Transformer** in a central-inverter
 design — which groups the inverters onto combiner boxes and transformers, see
 [ACCB and transformers](/docs/inputs/accb-and-transformers); and the
-**Cables** card, which decides whether the cables are routed and measured, see
-[Cables](/docs/inputs/cables).
+**Cables** card, which decides whether the cables are routed and how they are
+laid, see [Cables](/docs/inputs/cables).
+
+<Screenshot id="tab-electrical" maxWidth={420} />
 
 One definition governs everything on this page. A **string** is **one row of
 modules within an MMS-Table** (MMS — module mounting structure). A fixed-tilt
-table configured with two rows therefore carries two strings; a half table
-carries half the strings of a full one. Everything you set here is counted in
-strings, so the table configuration and this card are two ends of the same
-decision — see [Table configuration](/docs/inputs/table).
+table configured with two rows therefore carries two strings. A half table
+holds whole strings only, half as many as a full table, rounded down. Everything
+you set here is counted in strings, so the table configuration and this card are
+two ends of the same decision — see [Table configuration](/docs/inputs/table).
 
 ## The card in each design
 
@@ -34,28 +37,43 @@ decision — see [Table configuration](/docs/inputs/table).
 In a central-inverter design the string monitoring box — SMB — is the collection
 point. It does no conversion: it gathers the strings assigned to it and sends
 their combined DC output on to a central inverter, which sits inside an ICR
-(inverter control room) rather than out in the field. The field equipment and
-the conversion equipment are separate objects in that design, and the card gives
-you a field for each.
+(inverter control room) rather than out in the field.
 
 <Tabs items={["String inverter", "Central inverter"]}>
 <Tab value="String inverter">
 
 <Screenshot id="inverter-group-string" maxWidth={520} />
 
-One field and a file row: how many strings one inverter may take, and which
-inverter file the AC side is sized from.
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Max strings per inverter** | 20 | 1–500 | The largest number of strings one string inverter accepts |
+| **DC harness** | One string per input | or Y, two strings per input | How the strings reach the inverter's inputs |
+| **String fuses** | Inline, at the connector | four options | Where the string fuses sit |
+| **Communication** | Power-line, over the AC cable | or RS485, daisy-chained | How the inverters talk to their control room |
+| **Weather stations** | At the MCR | three options | Where the weather stations stand |
+| **OND (inverter)** | *No OND file loaded* | — | **Load .OND** reads a PVsyst inverter file; **View** opens it once loaded |
 
 </Tab>
 <Tab value="Central inverter">
 
 <Screenshot id="inverter-group-central" maxWidth={520} />
 
-The same card gains one field — how many string monitoring boxes one central
-inverter may take.
+| Field | Default | Range | What it does |
+| --- | --- | --- | --- |
+| **Max strings per SMB** | 20 | 1–500 | The largest number of strings one string monitoring box accepts |
+| **DC harness** | One string per input | or Y, two strings per input | How the strings reach the SMB's inputs |
+| **String fuses** | Inside the SMB | four options | Where the string fuses sit. It follows the harness to *Inline and inside the SMB* with a Y |
+| **Communication** | RS485, daisy-chained | fixed | SMBs are on the DC side, so they talk over RS485 and the field is greyed out |
+| **Weather stations** | At the MCR | three options | Where the weather stations stand |
+| **Max SMB per Central Inverter** | 10 | 1–200 | The largest number of SMBs whose DC trunks land on one central inverter |
+| **OND (inverter)** | *No OND file loaded* | — | **Load .OND** reads a PVsyst inverter file; **View** opens it once loaded |
 
 </Tab>
 </Tabs>
+
+These fields are inputs to the run and are saved with the project. A change takes
+effect at the next **Generate Layout**, and marks the layout
+[out of date](/docs/workspace/out-of-date-results) until then.
 
 ## Maximum strings per inverter
 
@@ -64,62 +82,123 @@ The application clusters the placed tables and puts down as many inverters or
 monitoring boxes as the cap requires, so a lower number means more equipment,
 each covering a smaller group of tables.
 
-<Tabs items={["String inverter", "Central inverter"]}>
-<Tab value="String inverter">
+The count works from the **fillable cap**, the highest load at or under your
+maximum that whole tables can reach. On two-string tables with no half tables, a
+maximum of 23 acts as 22, because 23 strings cannot be made from whole tables:
 
-| Field | Default | Range | What it does |
-| --- | --- | --- | --- |
-| **Max strings per inverter** | 20 | 1–500 | The largest number of string cables one string inverter accepts |
+```
+devices = plant kWp ÷ (fillable cap × string kWp), rounded up
+```
 
-</Tab>
-<Tab value="Central inverter">
-
-| Field | Default | Range | What it does |
-| --- | --- | --- | --- |
-| **Max strings per SMB** | 20 | 1–500 | The largest number of string cables one string monitoring box accepts |
-
-</Tab>
-</Tabs>
-
-Set this from the inverter or monitoring box you intend to buy, counted the way
-the application counts: one string per row of modules in a table. The number of
-modules in that row does not enter into it — a row is a string whether it holds
-few modules or many. What the row holds decides the string's voltage and
+At 54,280 kWp and 341.6 kWp a device, that is 159 inverters. Set the maximum from
+the inverter or monitoring box you intend to buy, counted the way the application
+counts: one string per row of modules in a table. The number of modules in that
+row does not enter into it. What the row holds decides the string's voltage and
 current, which is a separate question, settled by
 [string sizing](/docs/inputs/string-sizing).
 
-The unit count and the DC capacity attached to each unit are reported in the
-Summary view's **ELECTRICAL** group — **String inverters** and **Inverter
-rating (kWp)** in a string design, **SMBs** and **SMB rating (kWp)** in a
-central design. See [Summary view](/docs/reference/summary-columns).
+The unit count and the DC load on each unit are reported in the Summary view's
+Electrical group: **String inverters** and **Largest DC load per inverter (kWp)**
+in a string design, **SMBs** and **Largest DC load per SMB (kWp)** in a central
+design. See [Summary view](/docs/reference/summary-columns).
+
+## DC harness and string fuses
+
+**DC harness** decides whether each string has its own home run.
+
+| Option | What it does |
+| --- | --- |
+| **One string per input** | Every string has its own cable to its own inverter or SMB input |
+| **Y, two strings per input** | Two strings share one cable from the Y to the device, so that cable is halved. Each string's own cable before the Y, along the table or tracker, stays its own |
+
+With a Y, two strings of a table share a Y and an odd one runs alone. Tables with
+one string — a one-row table, a one-string tracker, a half unit — share a Y with a
+neighbour on the same device: along the row first, then the next row. The DC cable
+splits accordingly: the part before the Y at **String cable size**, the shared part
+at **Y pair cable size**, both in
+[Advanced settings](/docs/workspace/advanced-settings).
+
+**String fuses** decides where the fuses go. The field names the device in its
+options:
+
+| Option | Default for |
+| --- | --- |
+| **Inline, at the connector** | A string-inverter plant |
+| **Inside the inverter** or **Inside the SMB** | A central-inverter plant |
+| **Inline and inside the inverter** or **Inline and inside the SMB** | A central-inverter plant with a Y |
+| **None** | — |
+
+The field follows the harness while it sits at the harness's default. An option
+you choose yourself stays.
+
+Both reach the bill of materials:
+
+| Harness | Fuses | Connector line |
+| --- | --- | --- |
+| One string per input | Any | **DC connector, male and female**, 1 per string plus spare |
+| One string per input | Inline, or inline and inside | Also **DC connector set with inline fuse** |
+| Y | Inline, or inline and inside | **Y connector set with fused arms**, 1 per pair |
+| Y | Inside the device, or none | **Y connector set**, 1 per pair |
+
+The fuse sizes themselves are worked out from the module's short-circuit current
+and **Max series fuse** — see [Module specifications](/docs/inputs/module) and
+[Bill of materials](/docs/bom/overview).
+
+## Communication and weather stations
+
+**Communication** sets how the devices talk to their control room.
+
+| Option | What it does |
+| --- | --- |
+| **Power-line, over the AC cable** | The default on a string-inverter plant. The BOM carries a **SACU** and a **PLC box** per ICR |
+| **RS485, daisy-chained** | Fixed on a central-inverter plant. The devices are grouped round each ICR into chains, as few as keep within **RS485: devices per chain** (20) and **RS485: chain length** (1,200 m), both in [Advanced settings](/docs/workspace/advanced-settings). The chains are counted, not drawn |
+
+A device farther from its ICR than the chain length gets an over-limit chain of
+its own, and the BOM line says so. Every ICR with an MV run also gets optical fibre
+as long as that run, in conduit, so no fibre is counted without a main control
+room, a unit substation or a handover point.
+
+**Weather stations** sets where they stand.
+
+| Option | What it does |
+| --- | --- |
+| **At the MCR** | A station at the main control room |
+| **At the MCR, module sensors at every ICR** | The same, with a module-temperature sensor station at each ICR |
+| **None** | No stations |
+
+With the grid connection [by others](/docs/layout/grid-connection) the first two
+read **On site** and **On site, module sensors at every ICR**.
 
 ## Maximum SMBs per central inverter
 
-Central-inverter design only.
-
-| Field | Default | Range | What it does |
-| --- | --- | --- | --- |
-| **Max SMB per Central Inverter** | 10 | 1–200 | The largest number of string monitoring boxes whose DC trunks land on one central inverter |
-
-This field and the one above it multiply out to the capacity of a central
-inverter:
+Central-inverter design only. This field and **Max strings per SMB** multiply out
+to the capacity of a central inverter:
 
 **Central inverter capacity = SMB capacity × Max SMB per Central Inverter**
 
-So the two fields are the whole DC-side sizing chain in this design. The strings
-per SMB fix what one monitoring box collects; the SMBs per central inverter fix
-how many of those collections one machine converts. Change either and the
-central inverter count changes with it, reported on the **Central inverters**
-and **Central inverter rating (kWp)** rows of the Summary view.
-
 The central inverters are counted **per ICR block** — one control room and the
 monitoring boxes wired to it. Each block gets its SMBs ÷ **Max SMB per Central
-Inverter**, rounded up: at least one, and at most four, because **one ICR
-building houses up to four central inverters**. After a
-[Simulation with AC capacity](/docs/simulation/ac-capacity) the count is topped
-up to the study's unit count. The control rooms themselves are sized and placed
-from the **ICR Block** capacity on the Site tab, not from this card — see
-[Control rooms](/docs/layout/icr).
+Inverter**, rounded up, and at least one, with no limit per building. Blocks of
+39, 35, 40 and 45 SMBs at a maximum of 2 take 20, 18, 20 and 23 central inverters.
+The control rooms themselves are sized and placed from the **ICR Block** capacity
+on the Site tab, not from this card — see [Control rooms](/docs/layout/icr).
+
+Summary rows **Central inverters** and **DC limit per central inverter (kWp)**
+report the result, the second being SMB kWp × this field.
+
+### After a simulation with AC capacity
+
+A [Simulation with AC capacity](/docs/simulation/ac-capacity) on a central plant
+sets the count from the plant's AC instead: the AC capacity ÷ the inverter's rated
+AC, rounded up, exactly. The inverters are split with full ICRs first and the rest
+in the last, the largest counts going to the ICRs with most SMBs, each ICR with at
+least one and no more inverters than SMBs. The SMBs are shared evenly over each
+ICR's inverters.
+
+While that count applies, **Max SMB per Central Inverter** is greyed out, with the
+hint *Set by the AC simulation: the busiest inverter's SMBs. The inverter count
+comes from the plant AC.* An inverter over the study's overload limit is reported
+by design check **E-14**; it never adds an inverter.
 
 ## Loading a manufacturer inverter file
 
@@ -133,38 +212,42 @@ and **View** becomes available.
 
 The file settles the AC side of the design:
 
-- **The file's AC rating sets the plant AC capacity.** The application takes
-  the AC power rating of one machine from the file, multiplies it by the
-  inverter count and reports the result — the **AC capacity (MWac)** and
-  **Inverter capacity (MW)** rows of the Summary view, and the *Plant AC
-  Capacity* line of the bill of materials, which reads `—` until an inverter
-  file is loaded.
-- **The DC / AC ratio follows.** With a DC capacity from the placed modules and
-  an AC capacity from the file, the ratio is reported on the **DC / AC ratio**
-  row. It is the number a reviewer looks at first, and without an inverter file
-  there is nothing to divide by.
-- **The file carries two AC power figures, nominal and maximum.** When one is
-  missing the other is used, so a file with only one of them still sizes the
-  design.
+- **The file's AC rating sets the plant AC capacity.** The application takes the
+  nominal AC power of one machine from the file, or its maximum when the nominal
+  is missing, and multiplies it by the inverter count. The result is the Summary
+  view's **Plant AC capacity (MWac)**, unless an AC-capacity study set the target.
+  **Inverter AC rating (kW)** gives the one machine's figure.
+- **The DC / AC ratio follows.** **DC / AC ratio** is the DC capacity ÷ the plant
+  AC. Without an inverter file there is nothing to divide by, and the rows read
+  *needs an OND file*. After a study, when the installed machines differ from the
+  target, two further rows show the installed figures: **Inverter AC capacity
+  (MW)** and **DC / AC on inverters**.
 - **The transformers are sized from it.** The file's maximum AC output, summed
   over the inverters on each transformer, is the transformer's load and decides its
   rating, and summed over the plant it sizes the power transformer at the main
   control room. The file's output voltage becomes the transformers'
-  low-voltage side, shown on the card's **LV voltage** line. Without the file
+  low-voltage side, shown on the next card's **LV voltage** line. Without the file
   the grouping is counts only, and the card's answer line ends *ratings need the
   OND file*. See [ACCB and transformers](/docs/inputs/accb-and-transformers).
-- **The cable schedule sizes the AC feeders from it.** Each inverter-to-ACCB
-  feeder carries the file's maximum AC current. See
-  [The cable schedule](/docs/layout/cables#the-cable-schedule).
+- **The AC feeders are sized from it.** Each inverter-to-ACCB feeder carries the
+  file's maximum AC current. See [Cables](/docs/inputs/cables#voltage-drop-limits).
+
+Without the file the bill of materials' *Capacity* line reads *AC not designed:
+the AC rating comes from the inverter's OND file*, and the string inverter and
+transformer lines read *Needs design input*.
+
+Each Generate and each loaded file stamps the machine's make, model and ratings on
+the design. The deliverables name it as *&lt;make&gt; &lt;model&gt; (&lt;power&gt;
+kW)*, or *Inverter (not from a datasheet)* with no file, which design check
+**C-04** reports.
 
 Loading an inverter file on a layout that already exists regroups the plant at
 once, and marks the layout out of date, because the inverter file is an input
-to the run — generate again before exporting. See
-[Out-of-date results](/docs/workspace/out-of-date-results).
+to the run. See [Out-of-date results](/docs/workspace/out-of-date-results).
 
 The file's location is saved in the project. If the file has moved or gone when
-the project is reopened, the row reads *Not found:* and the file name, and the
-layout opens out of date.
+the project is reopened, the row reads *Not found:* and the file name, or *Could
+not load:* for a file it cannot read, and the layout opens out of date.
 
 <Callout>
 Loading an inverter file does **not** set the inverter efficiency used in the
@@ -221,7 +304,7 @@ capacity** study, which sizes the plant backwards from a target AC figure using 
   <Card
     title="Cables"
     href="/docs/inputs/cables"
-    description="Switching cable routing on, and the allowances added to the DC string-cable total"
+    description="Routing the cables, how each class is laid, and the DC allowances"
   />
   <Card
     title="Simulation with AC capacity"

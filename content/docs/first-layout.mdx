@@ -1,10 +1,10 @@
 ---
 title: Your first layout
-description: A complete first run — load a boundary, generate the layout, read the plant chips and the Summary view, calculate energy, and export the report.
+description: A complete first run — load a boundary, generate the layout, read the plant chips and the Summary, calculate energy, and export the deliverables.
 ---
 
 This walkthrough takes one prepared boundary file and produces a placed plant,
-an energy estimate and a project report, changing almost nothing along the
+an energy estimate and a draft package of deliverables, changing almost nothing along the
 way. The point of a first run is to see what the defaults give you on your
 own site before you start fixing values.
 
@@ -30,15 +30,12 @@ Three things:
   **Get Free Access** button. See [Activate your licence](/docs/licence/activate).
 - **One boundary file.** A Google Earth file (`.kmz` or `.kml`) with a closed
   boundary polygon is the easiest starting point. Water bodies, buildings and
-  transmission lines drawn inside the boundary are read as exclusions. If you
+  transmission lines drawn inside the boundary are kept clear. If you
   have no file yet, the bundled sample site — one boundary with a pond, a
   transmission line and an obstruction — does for a first run.
 
 If you are not sure your file is prepared correctly, read
-[Preparing a Google Earth file](/docs/inputs/kmz-requirements) first. A file
-with something to decide, such as an open outline or overlapping plots, opens
-the **Clean boundary** window. Check what it found and click
-**Save clean KMZ and load**.
+[Boundary file requirements](/docs/inputs/kmz-requirements) first.
 </Step>
 
 <Step>
@@ -59,8 +56,8 @@ What happens next depends on the kind of file:
 
 | File | What you are asked |
 | --- | --- |
-| `.kmz` or `.kml` | Nothing. The boundaries, obstacles and line features are read straight from the file, and the site's position comes with them. |
-| `.dxf` | The **Site reference** window asks where the drawing sits: at its own UTM coordinates, at the latitude and longitude of the site's centre, or **Layout only** — the layout is still generated, but there is no energy calculation and automatic tilt and pitch need a latitude. |
+| `.kmz` or `.kml` | Nothing, unless the file has something to decide. It is read under a progress card, and the site's position comes with it. A file with, say, an open outline or overlapping plots opens the [Clean boundary](/docs/inputs/clean-boundary) window: check what it found and click **Save clean KMZ and load**. |
+| `.dxf` | The **Site reference** window asks where the drawing sits: at its own UTM coordinates, at the latitude and longitude of the site's centre, or **Layout only** — the layout is still generated, but there is no energy calculation, and on a fixed-tilt design automatic tilt and pitch need a latitude. |
 | An image | The same **Site reference** window, with a **SCALE** card first: how a real site distance maps to a distance on the drawing. The largest closed outline in the image becomes the boundary. |
 
 Once the file is read, the line under the field becomes the boundary summary —
@@ -69,10 +66,10 @@ previews the boundary, and **Generate Layout** enables.
 
 <Screenshot id="site-loaded" />
 
-Draw every feature in a Google Earth file **inside** a boundary polygon.
-Top-level polygons become plant boundaries; polygons fully inside one become
-areas to keep clear. Every line gets a corridor either side of it. A feature
-with a water word in its name, such as `Pond` or `Reservoir`, is water.
+Draw every area in a Google Earth file **inside** a boundary polygon.
+Top-level polygons become plant boundaries; polygons inside one become areas to
+keep clear. Every line gets a corridor either side of it. A feature with a water
+word in its name, such as `Pond` or `Reservoir`, is water.
 </Step>
 
 <Step>
@@ -120,8 +117,8 @@ inside what is left.
 
 **Tilt and row pitch are derived from the site latitude** unless you tick the
 override boxes. The tilt follows a latitude rule of thumb; the row pitch is the
-spacing at which one row does not shade the row behind it at solar noon on the
-winter solstice. Neither is a value you have to supply for a first run, and
+spacing at which one row does not shade the row behind it across the Shadow Window
+on 21 December. Neither is a value you have to supply for a first run, and
 seeing what the site's latitude implies is more useful than imposing a number.
 See [Spacing and tilt](/docs/inputs/spacing-and-tilt).
 
@@ -135,7 +132,7 @@ Leave **Calculate cables** in the **Cables** card unticked for a first run.
 Cable calculation is the slow step on a large or complex layout — tick the box
 and the application itself offers **Enable Now** and **Not Now (Recommended)**.
 Inverter counts and capacities are computed either way; only the cable rows
-read as not computed. Generate first, review the layout, then enable it for
+read *needs Calculate cables*. Generate first, review the layout, then enable it for
 the final run. See [Cables](/docs/inputs/cables).
 </Callout>
 </Step>
@@ -146,15 +143,15 @@ the final run. See [Cables](/docs/inputs/cables).
 The gold button is pinned above the stage tabs, so it is in the same place
 whichever tab you are on; **F5** does the same.
 
-The application works through the site in a fixed order:
+The application works through the site in a fixed order, under one progress
+overlay with a **Cancel** button:
 
 1. The boundary file is read into boundaries, each carrying its own obstacles
    and line obstructions.
 2. Coordinates are projected into the site's local UTM zone, so all internal
    geometry is in metres.
 3. The boundary is shrunk inward by the perimeter road width.
-4. Polygon obstacles and the buffered transmission line and canal corridors
-   are subtracted.
+4. Areas and the corridors around lines are subtracted.
 5. Terrain exclusions are subtracted, when topography is enabled.
 6. The table grid is placed across what remains. Rows run east to west and
    panels face the equator — south in the northern hemisphere, north in the
@@ -166,10 +163,12 @@ The application works through the site in a fixed order:
    surrounds its own building. Tables overlapping a control room footprint are
    removed, and the control room count is then re-checked against the capacity
    left.
-8. Lightning arresters are placed, if you enabled them, and the tables under
-   them cleared.
-9. String inverters are placed from clusters of tables, sited in the gap bands
-   between rows, and cables are routed if you asked for them.
+8. Tables in the shadows of the buildings are cleared, when **Clear tables in
+   shadows** is on.
+9. Lightning arresters are placed, if you enabled them, and the tables under
+   their piles and shadows cleared.
+10. String inverters are placed from clusters of tables, sited in the gap bands
+    between rows, and cables are routed if you asked for them.
 
 The status bar reads **Layout ready**, followed by any notes that apply — the
 number of water bodies excluded, tables cleared for building shadows. See
@@ -185,36 +184,45 @@ On the **Layout** view: the module tables in blue, the control rooms in dark
 blue, the string inverters in violet, water bodies in blue and other
 obstructions and the transmission corridor in red, the perimeter road band in
 grey. The **Legend ▾** chip in the plot corner unfolds the legend. Cables,
-terrain contours and arresters have their own rows in the **Layers ▾** popover
-and start off, so the first picture is the placement alone.
+terrain contours and arrester coverage have their own rows in the **Layers ▾**
+popover and start off, so the first picture is the placement alone.
 
-Under the view, the **plant chips** carry the totals: **DC capacity**, **Site
-area**, **Tables**, **Modules**, **ICR blocks**, and **Year-1 P50 energy**,
-which reads *—* until energy is calculated. Clicking any chip opens the
-**Summary** view.
+Under the view, the **plant chips** carry the totals: **Site area**, **DC
+capacity**, **Tables**, **Modules**, **ICR blocks**, and **Year-1 P50 energy**,
+which reads *—* until energy is calculated. **Lightning arresters** joins them
+when some are placed, and **Plants** on a multi-plot site. Clicking a chip opens
+the **Summary** view; the energy chip opens **Energy**.
 
-<Screenshot id="summary-view" />
+A **Design checks** chip leads the row while any check is open, and it opens the
+**Checks** view. On a first run it is expected: checks that need company details, a
+pile pattern, a module file or an inverter file have nothing to read yet. No check
+stops you going on. See [Design checks](/docs/workspace/checks).
 
-The Summary view is the per-plant sheet turned on its side — a **Metric**
-column and one column per plant. The rows you care about on a first run:
+<Screenshot id="summary-by-block" />
+
+The Summary view has two sheets, chosen by **Plant | By block**. **By block** sets
+the blocks side by side, each block being one control room and the tables wired to
+it, with **Shared** and **Total** columns. **Plant** lists one column per plant.
+The rows you care about on a first run:
 
 | Group | Row | What it means |
 | --- | --- | --- |
-| SITE | Plant area (acres) | The gross area inside the boundary, before the road setback |
+| Capacity | DC capacity (MWp) | Installed DC capacity |
+| Site | Plant area (acres) | The gross area inside the boundary, before the road setback |
 | | Boundary length (m) | The length of the plant boundary |
-| | ICR blocks | Inverter control rooms placed |
-| ARRAY | Full tables | Full MMS-tables placed |
-| | Half tables | Half tables placed, if you enabled them — half the east–west width, carrying half the strings |
+| Array | Full tables | Full MMS-tables placed |
+| | Half tables | Half tables placed, if you enabled them — each half the east–west width, on whole strings |
 | | Modules | Total modules across the plant |
-| | Tilt (°) | The tilt used. A trailing `*` means it was auto-calculated rather than entered |
-| | Pitch (m) | The row pitch used, with the same `*` convention |
-| ELECTRICAL | DC capacity (MWp) | Installed DC capacity |
+| | Tilt (°) | The tilt used |
+| | Pitch (m) | The row pitch used |
+| Electrical | ICR blocks | Inverter control rooms placed |
 | | String inverters | String inverters placed |
-| | Inverter rating (kWp) | The capacity carried per string inverter |
+| | Largest DC load per inverter (kWp) | The DC capacity on the busiest string inverter |
 
-A `—` in a row means the figure was not computed — the CABLES rows read that
-way until you turn cable calculation on. **Copy** puts the sheet on the
-clipboard for a spreadsheet; **Open in window** opens it in its own window.
+Where a figure cannot be given, the row says why and links to what it needs —
+*needs Calculate cables*, for example, on the cable rows until you turn cable
+calculation on. **How?** beside a label opens the [Workings](/docs/workspace/workings)
+view at that figure. **Open in window** opens the sheet in its own window.
 
 On a tracker plant the array rows read **Full trackers**, **Half trackers** and
 **Max tracking angle (°)**. In a central-inverter design the inverter rows are
@@ -232,12 +240,16 @@ used, and those values have been pre-filled into the greyed-out fields.
 <Screenshot id="spacing-tilt-auto-resolved" />
 
 - The **tilt** comes from the site latitude, following the rule of thumb
-  `tilt ≈ latitude × 0.76 + 3.1°`.
-- The **row pitch** is the no-shading pitch at winter-solstice solar noon:
-  `pitch = L·cos(tilt) + L·sin(tilt) / tan(solar elevation)`, where `L` is the
-  table's height in the tilt plane.
+  `tilt = 0.76 × |latitude| + 3.1°`, kept between 5° and 40°.
+- The **row pitch** keeps rows shade-free across the **Shadow Window** on
+  21 December, 09:00 to 15:00 solar time as shipped. For one solar hour,
+  `pitch = L·cos(tilt) + L·sin(tilt)·cos(azimuth) / tan(elevation)`, where `L` is the
+  table's height in the tilt plane. It is worked at the window's start and end and
+  at noon, and the largest wins.
 - GCR — ground coverage ratio, the collector area as a fraction of the ground
-  it occupies — is reported as the table height divided by the row pitch.
+  it occupies — is reported as the table's slope length divided by the row pitch.
+
+The **Workings** view shows both calculations with your site's numbers.
 
 This is the moment to decide whether to take control. If your design fixes the
 tilt at a value the module supplier or the structure vendor has specified, tick
@@ -280,29 +292,26 @@ a 30-year plant life. Change them when you have supplier figures; see
 
 <Screenshot id="energy-view" />
 
-The result lands on the **Energy** view: four tiles — **Year-1 energy**,
-**Specific yield**, **Performance ratio** and **CUF** — the monthly table to
-IEC 61724-1, and the charts. The **Year-1 P50 energy** chip fills in, and the
-Summary view's ENERGY rows follow:
+The result lands on the **Energy** view: five tiles — **Year-1 energy**, **Specific
+yield**, **Performance ratio**, **CUF on DC** and **CUF on AC** — the monthly table
+to IEC 61724-1, and the charts. **CUF on AC** needs an inverter file. The **Year-1
+P50 energy** chip fills in, and the Summary view's energy rows follow:
 
 | Row | What it means |
 | --- | --- |
 | P50 energy, year 1 (MWh) | Year-one generation at the first exceedance probability |
 | P75 energy, year 1 (MWh) | Year-one generation at the second |
 | P90 energy, year 1 (MWh) | Year-one generation at the third |
-| CUF (%) | Capacity utilisation factor — year-one energy against the plant running at full capacity all year |
-| P50 energy, 25 years (MWh) | Cumulative generation over years 1 to **Plant lifetime**, at the first exceedance probability |
+| CUF on DC (%) | Capacity utilisation factor — year-one energy against the plant's DC capacity running all year |
+| P50 energy, 25 years (MWh) | Cumulative generation over the **Plant lifetime** at the first exceedance probability |
 
 The three probability rows are named from the exceedance probabilities you
 set — 50 %, 75 % and 90 % by default — and change with them. P90 is the figure
 a lender usually asks for: the annual energy the plant is 90 % likely to
 exceed.
 
-The last row is the one to read carefully. Its name is fixed, so it says
-*25 years* whatever you set, while the figure is the cumulative total over the
-**Plant lifetime** — 30 years on the shipped default — at the first exceedance
-probability. Quote it with the lifetime and the probability stated, not by its
-name.
+Read the last row as the total over **Plant lifetime**, 30 years as shipped, and
+quote it with the lifetime and the probability stated.
 
 **📊 Show Energy Chart** on the Yield tab draws the year as hourly bars for any
 day, or as twelve monthly bars with annual totals. **Export TMY data CSV**
@@ -311,32 +320,29 @@ writes the full-year series at an interval you pick. Both are covered in
 </Step>
 
 <Step>
-### Export the report
+### Export the deliverables
 
 **Export ▾** sits beside **Save project** at the right of the view tabs, in
 every view.
 
 <Screenshot id="export-menu" />
 
-Click **Export Detailed Project Report**. It writes a Word document — A3
-landscape — in this order: a cover page, **Project Overview & Methodology**,
-**Design Basis — Input Parameters**, **Results & Analysis — Output**, **Energy
-Yield & Loss Analysis** (only when energy was calculated), and then the
-drawing annexures: the **Site Layout Plan**, the **Design Summary**, the
-**Single Line Diagram**, the **Bill of Materials** and the energy drawings.
+Click **Export deliverables…**. The window lists what the package holds, with
+**Full set** as the preset: the drawing set as a PDF and as a DXF, the design report,
+the schedules workbook, the bill of materials and the KMZ, with a manifest.
 
-Two other items carry the same layout elsewhere. **Export KMZ** writes the
-Google Earth file, with one folder per plant and a summary placemark.
-**Export DXF** writes the CAD drawing in UTM metres on named layers —
-boundaries, tables, control rooms, cables, trenches and annotations each on
-their own. See [The project report](/docs/exports/project-report),
-[The Google Earth export](/docs/exports/kmz) and
-[The CAD drawing export](/docs/exports/dxf).
+<Screenshot id="deliverables-ready" />
+
+Click **Export draft package**. It writes everything into one folder, stamped DRAFT
+on every sheet and page. The company and project details print on the title blocks,
+and they can wait for a later package. Issuing a numbered revision needs a saved
+project. See [Exports](/docs/exports/overview) and
+[Revisions](/docs/exports/revisions).
 
 Finally, save the session itself with **Save project** or **File ▸ Save
 Project…**. The project file holds the inputs, the layout, your hand edits,
-the diagram and the materials list, so you reopen exactly where you stopped.
-See [Saving and reopening projects](/docs/projects).
+the diagram and your edits to the materials list, so you can carry on where you
+stopped. See [Saving and reopening projects](/docs/projects).
 </Step>
 
 </Steps>

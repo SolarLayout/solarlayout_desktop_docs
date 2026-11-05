@@ -1,6 +1,6 @@
 ---
 title: Module specifications
-description: Module dimensions, wattage and bifacial settings on the Array tab, and what loading a manufacturer .PAN file fills in for you.
+description: Module dimensions, wattage, series fuse and bifacial settings on the Array tab, and what loading a manufacturer .PAN file fills in for you.
 ---
 
 The **Module Specifications** card describes the single PV module every other
@@ -35,6 +35,7 @@ can be folded with the button in its header.
 | **Length (long side)** | 2.38 m | 0.5–5.0 m | The module's long edge. Becomes the north–south or the east–west dimension of the module depending on orientation. |
 | **Width (short side)** | 1.13 m | 0.5–3.0 m | The module's short edge, on the other axis. |
 | **Wattage** | 610 Wp | 100–1000 Wp | Nameplate power at standard test conditions (STC). Multiplies the placed module count into plant DC capacity. |
+| **Max series fuse** | 0, shown as *Not set* | 0–100 A | The module datasheet's maximum series fuse. `.PAN` files don't carry it. Left at *Not set* there is no check; set, the bill of materials warns when the string fuse is above it. |
 | **Bifacial module** | off | — | Turns on the rear-side energy contribution and enables the bifaciality factor. |
 | **Bifaciality factor (φ)** | 0.70 | 0.50–0.95 | Rear-side efficiency as a fraction of front-side efficiency. Editable only when **Bifacial module** is ticked. |
 
@@ -123,6 +124,7 @@ inverter file as well as this one — see
 | Temperature coefficient of maximum power | The temperature loss on the Yield tab, recomputed |
 | Nominal operating cell temperature | The **NOCT** field in the String sizing window |
 | Voltage temperature coefficient | The coefficient the String sizing window works from |
+| Short-circuit current | The string fuse and SMB input sizes in the bill of materials, raised by the bifacial gain on a bifacial module |
 
 A file that declares the module bifacial turns the checkbox on for you and
 fills the factor with the manufacturer's value, so you do not have to know
@@ -141,6 +143,11 @@ you reopen the project, the row reads *"Not found: &lt;file&gt;"* (or *"Could
 not load: &lt;file&gt;"* if it cannot be read), the path is kept for the next
 save, and the layout opens
 [out of date](/docs/workspace/out-of-date-results).
+
+Each Generate and each loaded file stamps the module's make, model and rating on
+the design. The deliverables name it as *&lt;make&gt; &lt;model&gt; (&lt;power&gt;
+Wp)*, or *&lt;power&gt; Wp module (not from a datasheet)* with no file, which design
+check **C-04** reports. See [Design checks](/docs/reference/design-checks).
 
 ### The nominal operating cell temperature comes from the file too
 
@@ -235,11 +242,12 @@ have already reviewed, know what else changes with it.
 | --- | --- |
 | **Length** or **Width** | The table's east–west width and north–south height, and through them the automatic row pitch, the ground coverage ratio, and how many tables fit inside the usable area |
 | **Wattage** | Plant DC capacity, and therefore the number of inverter control rooms — one per capacity block — and the DC / AC ratio |
-| **Bifacial module**, **Bifaciality factor (φ)** | Energy yield only. Neither field moves a single table; the layout is identical with the checkbox on or off |
+| **Max series fuse** | The bill of materials' warning on the string fuse. No table moves |
+| **Bifacial module**, **Bifaciality factor (φ)** | Energy yield, and the fuse sizes in the bill of materials. Neither field moves a single table; the layout is identical with the checkbox on or off |
 
 Every field on the card is an input to the layout run, so changing one after a
-run marks the layout out of date: the Summary figures are greyed and the
-exports refused until you generate again.
+run marks the layout out of date, and the Summary figures are greyed, until you
+generate again.
 That holds for a bifacial change too — it moves no table, but energy cannot be
 calculated again until you regenerate, and regenerating clears the previous
 energy result.

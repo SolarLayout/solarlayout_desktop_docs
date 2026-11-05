@@ -9,9 +9,8 @@ the answer reflects the real geometry — where the control rooms landed, where 
 arresters sit, where obstructions broke the rows — rather than a rule of thumb
 applied to a capacity figure.
 
-The output is a count you can procure and price against. It reaches the bill of
-materials, so it is also the point at which a cleaning system stops being an
-assumption in the loss table and becomes a line item.
+The output is a count you can procure and price against, and it reaches the bill
+of materials.
 
 ## Where it is
 
@@ -33,13 +32,13 @@ them.
 
 | Decide first | Why it matters here |
 | --- | --- |
-| Lightning arresters | On a fixed-tilt plant an arrester footprint sits in the row and produces a gap blocked by equipment. Placing them later changes the gap list |
+| Lightning arresters | An arrester clears the tables under its pile and shadow, which produces a gap blocked by equipment. Placing them later changes the gap list |
 | Control rooms and unit substations | Every building footprint clears tables around it and interrupts the lines that ran through it |
 | Obstructions you draw by hand | Each one breaks the rows it crosses, so each one can add segments |
 | Half tables and **Maximize placement** | Both change how rows are packed, and a staggered plant has a different set of gaps from a gridded one |
 
-If any of those change afterwards, open the window again. The gap list is a
-measurement of one particular layout, not a property of the site.
+The gap list is a measurement of one particular layout, not a property of the
+site. If any of those change afterwards, open the window again and read it.
 
 ## How a robot moves
 
@@ -87,20 +86,18 @@ Four fields. On a tracker plant the unit reads "trackers" instead of "tables".
 
 | Field | Default | Range | What it does |
 | --- | --- | --- | --- |
-| **Travel per charge** (m) | 0 — the hint reads *0 = no limit* | 0–100,000 | How far a robot travels on one charge |
-| **Standard bridge span** (m) | the gap already configured | 0–50 | The widest gap a robot crosses unaided, on the plant's own standard bridge |
+| **Travel per charge** (m) | 0, shown as **no limit** | 0–100,000 | How far a robot travels on one charge |
+| **Standard bridge span** (m) | the gap already configured | 0–50 | The widest gap a standard bridge spans |
 | **Skip lines up to** (tables or trackers) | 0 | 0–1,000, in steps of 0.5 | A segment carrying this many units or fewer gets no robot |
 | **Out and back** — *must return on the same charge* | ticked | — | Doubles the distance a robot has to cover, because it travels its segment twice |
 
 **Travel per charge** ships at **0**, so out of the box there is no battery
-constraint at all and every cleaning segment gets one robot. That is the right
-setting when you are sizing on geometry alone, or when the system you are pricing
-is continuously powered. Enter a real range and it becomes a second reason for
+constraint at all and every cleaning segment gets one robot. Enter a real range and it becomes a second reason for
 the fleet to grow, on top of broken lines.
 
 **Out and back** ships ticked, and it halves the effective reach, because the
-robot travels the segment twice. Leave it ticked unless the cleaning system
-genuinely supports a charging point or a swap at the far end of a line.
+robot travels the segment twice. Untick it if the robot need not return on the
+same charge.
 
 **Standard bridge span** starts from your own geometry rather than a constant,
 so it is consistent with the layout on first open. It is taken from the **Gap
@@ -118,15 +115,14 @@ segments below covers what raising it does and does not do.
 
 ### RESULT
 
-A verdict banner gives the answer — **n robots for m lines** — and a line under
-it explains where the count came from:
+A verdict banner gives the answer, the same verdict as
+[Robot count from DXF](/docs/simulation/robot-count-from-dxf):
 
-| When | Detail line |
-| --- | --- |
-| Unticked gaps are costing robots, and a gap you could bridge is left | *"k of them only because of unbridged gaps. Bridge a gap to save its robot."* — the second sentence is left out while a crossing gap is ticked for preview |
-| Gaps are costing robots, but every one left would need a bridge that leaves the site | *"k of them because of gaps whose bridge would leave the site."* |
-| One robot per line | *"One robot per cleaning line."* — also when every gap is bridged and no range is set |
-| The range or the skip threshold moves the count, and no line is split | *"No robot is lost to an unbridged gap."* |
+| When | Headline | Detail |
+| --- | --- | --- |
+| Nothing split, no robots added for range, nothing skipped | **n robots — one per row** (*column* on trackers), with a tick | *"r rows, no wide gap left unbridged."* or *"r rows, k wide gaps bridged."* |
+| Otherwise, with gaps ticked | **n robots with k bridges**, with an exclamation mark | What the count is made of: *"+a for split rows"*, *"+b for battery range"*, *"−c for skipped segments"*, each only when it is not zero |
+| Otherwise, nothing ticked | **n robots at most**, with an exclamation mark | The same parts |
 
 Any crossing gaps ticked for checking add *"n crossing bridge(s) is/are preview
 only."* to the end. On a plant with nothing placed the banner reads **No tables
@@ -139,9 +135,11 @@ Four tiles sit under the banner, each with a line under its figure:
 | Tile | What it reports | The line under it |
 | --- | --- | --- |
 | **Standard bridges** | The bridges of the standard span the lines need | *"gaps up to x m"*, or *"+ n supported"* once supported bridges are ticked |
-| **Longest segment** | The longest stretch one robot serves, in whole metres | *"no range limit"*, *"within range"*, or *"+n robot(s) for range"* |
+| **Longest segment** | The longest stretch one robot serves | *"no range limit"*, *"within range"*, or *"+n robot(s) for range"* |
 | **Cleaning segments** | How many segments the lines are broken into | *"no broken lines"*, *"n unbridged gap(s)"*, or *"k skipped · −n robot(s)"* |
-| **One full pass** | One complete cleaning pass over the plant, in metres | *"out and back"* or *"one way"* |
+| **One full pass** | One complete cleaning pass over the plant | *"out and back"* or *"one way"* |
+
+Lengths are in whole metres, however long.
 
 ## A wide gap is a decision, not an assumption
 
@@ -212,15 +210,15 @@ count. **Bridge all** is there for the case where you genuinely will.
 Sizing starts from the simplest possible answer and grows it for two reasons.
 
 **One robot per line to start.** Each cleaning line gets one robot. On a plant of
-unbroken rows with no range limit — which is what the shipped **Travel per
-charge** of 0 gives you — that is the whole answer, and the verdict says *"One
-robot per cleaning line."*
+unbroken rows with no range limit, which is what the shipped **Travel per charge**
+of 0 gives you, that is the whole answer, and the verdict says **n robots — one per
+row**.
 
 **Broken lines add robots.** Every unticked wide gap splits a line into
 segments, and each segment needs its own robot, because no robot can cross the
 gap to reach the rest of the line. A line broken in two places carries three
-robots where an unbroken one carried a single robot. The verdict's detail line
-counts how many robots exist only for this reason.
+robots where an unbroken one carried a single robot. The verdict's *"+a for split
+rows"* counts how many robots exist only for this reason.
 
 **Travel per charge adds robots.** With a range entered, a robot that cannot
 finish its segment on one charge needs company — the segment is shared between
@@ -260,8 +258,9 @@ directly which bridges pay for themselves in robots saved.
 <Step>
 ### Start with everything unticked
 
-Because nothing is bridged unless you tick it, the first count you see is the
-honest baseline: the fleet required if you build no additional bridges at all.
+Because nothing is bridged unless you tick it, the first count on a new fleet is
+the honest baseline, **n robots at most**: the fleet required if you build no
+additional bridges at all.
 Note it before you change anything — it is the upper bound, and the figure every
 bridge is measured against.
 </Step>
@@ -277,9 +276,8 @@ Settling them first stops you re-deciding the same gaps twice.
 <Step>
 ### Work the open-ground gaps
 
-Filter to **Inside the boundary**: every gap there is open ground. These are
-the cheaper decisions — a longer span of a bridge you are already buying. Tick the ones you will genuinely install and watch the count
-fall.
+Filter to **Inside the boundary**: every gap there is open ground. Tick the ones
+you will genuinely install and watch the count fall.
 </Step>
 
 <Step>
@@ -293,38 +291,47 @@ are a reason to move the equipment while the layout is still editable.
 <Step>
 ### Add the fleet to the bill of materials
 
-The primary button in the footer names what it will add — **Add n robots + m
+The primary button in the footer names what it will add: **Add n robots + m
 bridges to BOM**, where m counts the standard-span bridges and the supported
 bridges you ticked. Click it, and the count and the bridges become materials
-lines. **Close** leaves without adding anything and puts the bridges drawn on
-the plot back as they were before the window opened.
+lines; the status line reads *"Robotic cleaning: n robots for m cleaning lines —
+added to the BOM."* **Close** leaves without adding anything and puts the bridges
+drawn on the plot back as they were before the window opened.
 </Step>
 </Steps>
 
-The result then reaches two places:
+The result then reaches three places:
 
-- **The Summary view.** The **Cleaning robots** row in the **SITE** group sits
-  with the other equipment counts — see
-  [Summary view](/docs/reference/summary-columns).
-- **The bill of materials.** The fleet becomes up to three lines: the cleaning
-  equipment itself, the standard-span bridges, and the supported-span bridges
-  over arresters, buildings and obstructions — so the ticked gaps are carried
-  as a scope item and not only as a lower robot count.
+- **The Summary view.** A **Cleaning robots** row appears in the **Site** group of
+  the Plant sheet. See [Summary view](/docs/reference/summary-columns).
+- **The bill of materials.** The fleet becomes **Cleaning robot** and **Cleaning
+  robot bridge** lines, the bridges split into standard and supported, so the
+  ticked gaps are carried as a scope item and not only as a lower robot count.
+- **The design report**, which says whether robotic cleaning was sized. See
+  [Design report](/docs/exports/design-report).
 
-The fleet you added is saved with the project. The window's own settings and
-ticks are not: it opens afresh each time, from the layout on the plot. When
-you generate the layout again in the same session, the fleet is re-sized for
-the new layout with the answers you last gave.
+## What happens when the layout changes
+
+The fleet you added is saved with the project, with your answers and ticks. The
+window reopens with them, in the session and after opening the project. Only **Add**
+keeps them: **Close** without adding keeps nothing.
+
+When the layout is generated again, the fleet is re-sized for the new layout with
+the answers you gave. Each ticked gap carries to the same gap in the new layout, and
+those that no longer exist are said once on the status line: *" | Robotic cleaning: 1
+ticked gap no longer exists and was dropped"*.
+
+A new site drops the fleet, with *"Robotic cleaning: the fleet was sized for the
+previous site and was dropped. Size it again under Tools."*
 
 **The bill of materials never carries a fleet you did not ask for.** Those
-lines appear only after you have run this study and clicked the add
-button, so a materials list from a plant where you never opened this window
+lines appear only after you have run this study and clicked the add button, so a materials list from a plant where you never opened this window
 contains no cleaning fleet at all — not a zero, not an estimate. If a bill of
 materials has to include the cleaning system, run this first. See
 [Bill of materials](/docs/bom/overview).
 
 The soiling loss in the performance ratio is a separate input that you set, and
-it is not derived from the fleet — see [Loss breakdown](/docs/energy/losses). The
+it is not derived from the fleet. See [Loss breakdown](/docs/energy/losses). The
 two belong together in a report, though: a soiling assumption presumes a cleaning
 regime, and this is where the regime gets counted.
 

@@ -40,9 +40,9 @@ Four things follow from the file being a Google Earth file:
 - **Several plots can be laid out in one run.** Put every plant boundary in the
   one file and each becomes its own plant, with its own column in the Summary
   view. See [Multi-plot sites](/docs/layout/multi-plot).
-- **The result goes back where it came from.** The finished layout exports as a
-  Google Earth file you can open beside the input. See
-  [Google Earth export](/docs/exports/kmz).
+- **The result goes back where it came from.** The deliverables package includes
+  a Google Earth file you can open beside the input. See
+  [Schedules and KMZ](/docs/exports/schedules-and-kmz).
 
 ## What the other two inputs cost you
 
@@ -52,7 +52,8 @@ Four things follow from the file being a Google Earth file:
   image, is placed by the latitude and longitude of the site's centre. Choose
   **Layout only** instead and the layout is still generated, but the site's
   location stays unknown: there is **no energy calculation** and no Google
-  Earth export, and automatic tilt and row pitch need a latitude.
+  Earth file in the package, and on a fixed-tilt design automatic tilt and row
+  pitch need a latitude.
 - **A CAD drawing is read by layer name, an image by nothing.** A CAD drawing
   identifies water, obstructions and line corridors from the names of the
   layers they sit on, so the layers have to be named before you export — see
@@ -104,11 +105,11 @@ sits: at its own UTM coordinates, at a latitude and longitude, or layout only.
 An image opens the same window with a **SCALE** card first, asking how a
 distance on site maps to a distance on the drawing. **Cancel** in that window
 leaves the file unloaded. A Google Earth
-file already carries its position, and a well-drawn one asks nothing. If it has
-something to decide, such as an open outline, overlapping plots or a CAD export
-saved as loose lines, the **Clean boundary** window opens. Check what it found
-and click **Save clean KMZ and load**. See
-[The Clean boundary review](/docs/inputs/kmz-requirements#the-clean-boundary-review).
+file already carries its position, and a well-drawn one asks nothing. It is read
+under a progress card with a **Cancel** button, which a quick file never shows. If
+it has something to decide, such as an open outline, overlapping plots or a survey
+map, the **Clean boundary** window opens. Check what it found and click **Save
+clean KMZ and load**. See [Clean boundary](/docs/inputs/clean-boundary).
 </Step>
 
 <Step>
@@ -117,8 +118,9 @@ and click **Save clean KMZ and load**. See
 Once the file is read, the line under the field changes from the list of
 formats to a summary of what was found — for the sample site,
 *1 boundary · 1 obstacle · 1 line obstruction* — and **Generate Layout**
-becomes available. Load a different file at any time and the next
-**Generate Layout** uses it.
+becomes available. On a Google Earth file the card also offers **Review
+boundary…**, which opens the review whenever you want it. Load a different file at
+any time and the next **Generate Layout** uses it.
 
 <Screenshot id="boundary-file-loaded" />
 </Step>
@@ -138,15 +140,16 @@ The **ⓘ** button beside **Browse…** — its tooltip reads *Open the boundary
 preparation guide* — opens the **KMZ File Preparation Guide**: the rules for
 boundaries, water bodies, transmission lines and obstructions, ending in a
 quick-reference table of what must be a polygon, what must be a line, and how
-each must be named. It is the same material as
+each must be named. It is a short version of
 [Boundary file requirements](/docs/inputs/kmz-requirements), available without
-leaving the application.
+leaving the application. Where the two differ, follow this site.
 
 ## What happens when the file is read
 
 <Callout type="warn">
 Draw every obstruction **inside** a plant boundary. A polygon drawn clear of
-every boundary is read as another plot, and tables are placed on it.
+every boundary is read as another plot, and tables are placed on it, unless its
+name marks it as water.
 </Callout>
 
 In order:
@@ -172,6 +175,11 @@ See [How placement works](/docs/layout/how-placement-works).
     description="How to prepare a Google Earth file so every feature is read correctly"
   />
   <Card
+    title="Clean boundary"
+    href="/docs/inputs/clean-boundary"
+    description="What the review finds in a file and what it asks"
+  />
+  <Card
     title="CAD drawing boundaries"
     href="/docs/inputs/cad-boundary"
     description="Using a DXF, and why the site coordinates matter"
@@ -180,10 +188,5 @@ See [How placement works](/docs/layout/how-placement-works).
     title="Image boundaries"
     href="/docs/inputs/image-boundary"
     description="Tracing a boundary from a scan or an exported picture"
-  />
-  <Card
-    title="Your first layout"
-    href="/docs/first-layout"
-    description="Boundary file in, finished layout out"
   />
 </Cards>

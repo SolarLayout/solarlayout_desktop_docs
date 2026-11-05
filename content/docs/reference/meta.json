@@ -3,7 +3,7 @@
   "pages": [
     "parameters",
     "summary-columns",
-    "design-warnings",
+    "design-checks",
     "keyboard-and-commands",
     "glossary"
   ]
