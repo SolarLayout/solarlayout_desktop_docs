@@ -92,9 +92,11 @@ the name has to match, in any case:
 | `Excl-04` | Not water |
 | `Pondicherry store` | Not water: `pond` is only part of a word |
 
-Water is the only difference the name makes. A water feature and any other
-feature keep tables out in the same way, but only water is drawn and booked as
-water. You can change it for any feature with the **Water** tick in the review.
+Among areas and lines that are not plots, water is the only difference the name
+makes. A water feature and any other feature keep tables out in the same way, but
+only water is drawn and booked as water. You can change it for any feature with
+the **Water** tick in the review, which **Review boundary…** on the card opens at
+any time.
 
 Water bodies are read **only** from what you draw in the file. The application
 does not look for water in satellite imagery, so a pond you did not draw does
@@ -117,9 +119,9 @@ If you discover an obstruction after the layout has been generated, you do not
 have to go back to the file: obstructions can be drawn directly on the plot. See
 [Obstructions and exclusions](/docs/layout/obstructions).
 
-A polygon whose name uses a word such as `plot`, `block`, `phase` or `survey`
-and that sits inside another polygon is not assumed to be an obstruction: the
-review asks you which it is.
+A polygon inside another whose name uses a word such as `plot`, `block`, `phase`
+or `survey`, or that still has Google Earth's own name such as `Untitled Polygon`,
+is not assumed to be an obstruction: the review asks you which it is.
 
 ## Lines
 
@@ -129,7 +131,7 @@ comes from the **Site** tab.
 
 - Draw the feature as a **line** through the site. Drawing it as a thin polygon
   instead means it is read as an area and only the strip you drew is kept clear.
-- **Every line becomes a corridor**, whatever its name. The name does not change
+- **Every line that is not a plot becomes a corridor.** The name does not change
   the width.
 - A line up to 500 m from a plot is kept, because a corridor can reach that far.
   A line further away is listed as *Outside the plots, not used*.
@@ -228,7 +230,7 @@ overhanging the real obstacle, and a polygon drawn generously does not. See
 | A polygon's ring is not closed | **Generate Layout** opens the **Check boundaries** window — see [below](#when-a-boundary-fails-the-check) | Repeat the first coordinate as the last, or redraw the polygon with the drawing tool's own close action |
 | An obstruction is drawn clear of the boundary | It is read as another plot and gets tables | Move the polygon inside the boundary, or extend the boundary to contain it |
 | Two plots overlap | The review offers to merge them, cut the overlap out of one, or remove one | Choose in the review, or edit the polygons so they touch at most along an edge |
-| A water body has no water word in its name | Tables are kept off it, but it is not drawn or booked as water | Tick **Water** in the review, or rename it |
+| A water body has no water word in its name | Tables are kept off it, but it is not drawn or booked as water | Tick **Water** in the review, from **Review boundary…** on the card, or rename it |
 | A transmission line is drawn as a thin polygon | It is read as an area, so only the strip you drew is kept clear | Redraw it as a single line and let the corridor do the work |
 
 ## The Clean boundary review
@@ -250,9 +252,9 @@ loaded. It opens by itself for:
 - a **finished layout** opened as a boundary, where the earlier layout's tables
   and equipment are left out.
 
-The window is titled **Clean boundary**. Its title bar counts what the file
-holds: plots, open lines, obstructions and the latitude. The table lists every
-item:
+The window is titled **Clean boundary**. The band at the top shows the file's
+name and counts what it holds: plots, open lines, obstructions and the latitude.
+The table lists every item:
 
 | Column | What it shows |
 | --- | --- |
@@ -267,11 +269,11 @@ Each problem offers its own choices:
 
 | Found | Choices |
 | --- | --- |
-| Open line, up to 50 m between its ends | **Close the gap**, **Keep as a line**, **Remove** |
-| Pieces that meet within 50 m | **Join into one plot**, **Keep as lines**, **Remove** |
-| Outline crosses itself | **Fix the crossing**, **Keep as drawn**, **Leave out** |
-| Same as another plot | **Remove duplicate**, **Merge** |
-| Overlaps another plot | **Merge**, **Cut the overlap out of this plot**, **Remove** |
+| Open line, up to 50 m between its ends | **Close the 12.4 m gap**, **Keep as a line**, **Remove** |
+| Pieces that meet within 50 m | **Join into one plot**, **Keep as 3 lines**, **Remove** |
+| Outline crosses itself | **Fix the crossing (40.98 ac)**, **Keep as drawn**, **Leave out** |
+| Same as another plot | **Remove duplicate**, **Merge with Plot A** |
+| Overlaps another plot | **Merge with Plot A**, **Cut the overlap out of this plot**, **Remove** |
 | A polygon inside another | **This is the plot**, **No tables here**, **Leave out** |
 
 The review's recommended choice is already selected, so a file that needs
@@ -282,12 +284,13 @@ the original and loads it. The original is not changed. Use the clean copy from
 then on. It reopens straight away, and asks again only about anything you add or
 redraw afterwards. **Cancel** leaves the file unloaded.
 
-Before saving, the window warns if the land looks wrong: much more land than the
-plots you drew, a large share of a survey map, or plots that are tiny beside
-what the file draws around them.
+**Review boundary…** also offers **One outer boundary** and **Merge selected**,
+for treating several plots as one piece of land. **Keep separate**, the default,
+leaves each plot as a boundary of its own.
 
-**Review boundary…** also offers **Keep separate**, **One outer boundary** and
-**Merge selected**, for treating several plots as one piece of land.
+Before saving, the window warns if the land looks wrong: an outer boundary with
+much more land than the plots inside it, a large share of a survey map, or plots
+that are tiny beside what the file draws around them.
 
 ## When a boundary fails the check
 

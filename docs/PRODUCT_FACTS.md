@@ -193,6 +193,8 @@ when there is nothing to ask — `IP:2641-2711`, `SC/boundary_review/model.py:11
 - A polygon clear of every plot is **another plot**, unless its name is a water
   word, when it is listed as *"Outside the plots, not used"* (probed 2026-11-05).
 - A line drawn closed (ends within 0.5 m).
+- A polygon inside another with a plot word or Google Earth's own name opens the
+  review, default *No tables here* unless the name is a plot word (`inspect.py:382-413`).
 - A line that may be a plot drawn as a line: no name, Google Earth's own name
   (*Untitled Path*, *Polygon 7*), or a plot word (`boundary plot plant site land
   parcel survey khasra field acre acres block phase zone stage`). Its ends within
@@ -203,7 +205,7 @@ when there is nothing to ask — `IP:2641-2711`, `SC/boundary_review/model.py:11
 **Water.** The only thing a name sets: a whole-word match, any case, on `pond
 lake reservoir water waterbody wetland swamp marsh talab talav tank pokhar canal
 channel drain drainage nala nalla nallah nullah river stream creek flood` —
-`SC/boundary_review/types.py:43-46, 67-71`. `Pondicherry store` is not water;
+`SC/boundary_review/types.py:41-44, 67-71`. `Pondicherry store` is not water;
 `Drainage tank` is. A water area or line is drawn and booked as water; the
 **Water** tick changes it. ⛔ There are no transmission-line or road keywords and
 no road width attribute: every line is a line, under the corridor
@@ -217,7 +219,7 @@ probed as a plain line).
   Kept up to **500 m** from a plot (`LINE_REACH_M`, `types.py:24`); beyond that
   *"Outside the plots, not used"*.
 - Pin: *"Pin: a label unless you keep it"*. Kept, a spot of 1 m radius
-  (`types.py:22`).
+  (`types.py:21`).
 - A hole cut in a plot polygon: *"No tables here (land cut out of the plot)"*.
 - A height on an area or kept pin: tables stay out of its shadow when **Clear
   tables in shadows** is on — `clean_boundary_dialog.py:1233-1237`.
@@ -256,8 +258,8 @@ for another (`IP:2725-2749`). **Cancel** leaves the file unloaded (`IP:2706-2710
 **Review boundary…** on the card, for a KMZ / KML that is not the sample, opens
 the review even with nothing to ask, and adds **Keep separate**, **One outer
 boundary**, **Merge selected** — `IP:746, 2759-2772`, `clean_boundary_dialog.py:751-753`.
-Warnings before saving (land much larger than the plots, a large share of a
-survey map, plots tiny beside what the file draws) — `size_check.py:25-68`; their
+Warnings before saving (in One outer boundary, land much larger than the plots
+inside it; a large share of a survey map; plots tiny beside what the file draws) — `size_check.py:25-68`; their
 thresholds are Advanced settings ▸ Clean boundary.
 
 **Check boundaries.** At **Generate Layout**, not on load: a top-level polygon
